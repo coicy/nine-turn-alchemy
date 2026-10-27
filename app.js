@@ -56,6 +56,11 @@
     logList: document.getElementById("logList"),
     introModal: document.getElementById("introModal"),
     startButton: document.getElementById("startButton"),
+    compactOrderValue: document.getElementById("compactOrderValue"),
+    compactStockValue: document.getElementById("compactStockValue"),
+    eventTitle: document.getElementById("eventTitle"),
+    valueChange: document.getElementById("valueChange"),
+    runeOrbit: document.getElementById("runeOrbit"),
   };
 
   let state = null;
@@ -82,6 +87,7 @@
       started: false,
       busy: false,
       pillEnded: false,
+      pillEndReason: "",
       roundEnded: false,
       delivered: 0,
       attempt: 0,
@@ -114,6 +120,8 @@
     const turnProgress = Math.min(100, (state.delivered / ORDER_TARGET) * 100);
     const explosionChance = state.pill.shield ? 0 : profile.explode;
     dom.attemptText.textContent = `${state.attempt} / ${MAX_PILLS}`;
+    dom.compactOrderValue.textContent = `${formatNumber(state.delivered)} / ${ORDER_TARGET}`;
+    dom.compactStockValue.textContent = `${state.started ? MAX_PILLS - state.attempt + (state.pillEnded ? 0 : 1) : MAX_PILLS} 颗`;
     dom.attemptBadge.textContent = `第 ${state.attempt || 1} 炉`;
     dom.turnGoalText.textContent = formatNumber(state.delivered);
     dom.turnProgressFill.style.width = `${turnProgress}%`;
@@ -123,22 +131,29 @@
     dom.completedText.textContent = `${state.completedPills} 颗`;
     dom.trialHint.textContent = state.roundEnded
       ? (state.delivered >= ORDER_TARGET ? "订单完成！点击重新开始再挑战。" : "原料已用尽，订单未完成。点击重新开始再挑战。")
-      : state.pillEnded ? "本炉结束，点击再开一炉。" : state.pill.shield
+      : state.pillEnded ? "本炉结束，点击再开一炉。" : state.pill.turn >= 9 ? "九转已成，收丹交付即可锁定价值。" : state.pill.shield
         ? "护丹已准备：下一次炸丹将转为保持。" : `下一次炸丹概率 ${percentage(explosionChance)}，可继续炼化或收丹交付。`;
     dom.pillName.textContent = `${QUALITY_NAMES[state.pill.quality]}${state.pill.runes.length ? `·${state.pill.runes.join("·")}` : ""}丹`;
     dom.turnValue.textContent = TURN_NAMES[state.pill.turn];
-    dom.pillValue.textContent = formatNumber(state.pill.value);
+    dom.pillValue.textContent = state.pillEnded && state.pillEndReason === "explode" ? "已损失" : formatNumber(state.pill.value);
     dom.qualityValue.textContent = QUALITY_NAMES[state.pill.quality];
     dom.runeSummary.textContent = state.pill.runes.length ? state.pill.runes.join(" / ") : "尚未显现";
     dom.riskResultValue.textContent = state.pillEnded || state.pill.turn >= 9 ? "--" : percentage(explosionChance);
     dom.pillVisual.classList.toggle("turn-nine", state.pill.turn >= 9);
+    dom.pillVisual.dataset.quality = String(state.pill.quality);
+    dom.pillStage.dataset.state = state.pillEnded ? state.pillEndReason : state.pill.turn >= 9 ? "complete" : "active";
+    const orbitPositions = [[-88, 0], [88, 0], [-75, 55], [75, 55], [-75, -55], [75, -55]];
+    dom.runeOrbit.innerHTML = state.pill.runes.map((rune, index) => {
+      const [x, y] = orbitPositions[index % orbitPositions.length];
+      return `<span class="orbit-rune" style="--x:${x}px;--y:${y}px;--rune-color:${RUNE_COLORS[rune]}">${rune}</span>`;
+    }).join("");
     dom.pillAura.style.transform = `scale(${1 + state.pill.quality * 0.06 + state.pill.turn * 0.02})`;
     dom.pillAura.style.background = state.pill.runes.length
       ? `radial-gradient(circle, ${RUNE_COLORS[state.pill.runes[state.pill.runes.length - 1]] || "#eac8ff"}55, transparent 68%)`
-      : "radial-gradient(circle, rgba(234, 192, 255, 0.28), transparent 68%)";
-    dom.riskBadge.textContent = "炸丹概率";
+      : "radial-gradient(circle, rgba(183, 204, 135, 0.22), transparent 68%)";
+    dom.riskBadge.textContent = state.pillEnded ? (state.pillEndReason === "explode" ? "丹散炉息" : "已收丹") : state.pill.shield ? "护丹生效" : `${TURN_NAMES[state.pill.turn]}转`;
     dom.riskBadge.className = "risk-badge";
-    dom.riskDescription.textContent = "只显示炸丹概率";
+    dom.riskDescription.textContent = state.pillEnded ? "本炉已结束" : state.pill.turn >= 9 ? "九转已成，可收丹交付" : state.pill.shield ? "护丹会挡下下一次炼化中的炸丹" : "收丹可锁定当前价值";
     renderOutcomes(explosionChance);
     renderRunes();
     renderLogs();
@@ -154,7 +169,7 @@
   }
 
   function renderOutcomes(chance) {
-    dom.outcomeList.innerHTML = `<div class="risk-probability-message"><span>${state.pill.shield ? "护丹生效，本次不会炸丹" : "炸丹概率"}</span><strong>${state.pillEnded || state.pill.turn >= 9 ? "--" : percentage(chance)}</strong></div>`;
+    dom.outcomeList.innerHTML = `<div class="risk-meter" aria-hidden="true"><div style="width:${state.pillEnded || state.pill.turn >= 9 ? 0 : Math.round(chance * 100)}%"></div></div>`;
   }
 
   function renderRunes() {
@@ -177,16 +192,24 @@
       : '<div class="log-entry">炉火等待第一道指令。</div>';
   }
 
-  function setFeedback(message, tone = "") {
+  function setFeedback(message, tone = "", event = "start", value = null) {
+    const titles = { start: "炉火初起", big: "大成功", success: "炼化成功", hold: "火候维持", damage: "丹体受损", explode: "丹散炉息", complete: "九转成丹", collect: "收丹入匣", win: "委托已成", loss: "本局结束", shield: "护丹显灵", fusion: "丹纹融合" };
+    dom.eventTitle.textContent = titles[event] || "炉火流转";
+    dom.valueChange.textContent = typeof value === "number" ? (value === 0 ? "价值持平" : `${value > 0 ? "+" : "−"}${formatNumber(Math.abs(value))}`) : value || "";
     dom.eventBanner.textContent = message;
     dom.eventBanner.classList.remove("flash");
     void dom.eventBanner.offsetWidth;
     dom.eventBanner.classList.add("flash");
     dom.pillStage.dataset.tone = tone;
+    dom.pillStage.dataset.outcome = event;
+    dom.pillStage.classList.remove("is-feedback");
+    void dom.pillStage.offsetWidth;
+    dom.pillStage.classList.add("is-feedback");
     clearTimeout(feedbackTimer);
     feedbackTimer = setTimeout(() => {
       dom.pillStage.dataset.tone = "";
-    }, 500);
+      dom.pillStage.classList.remove("is-feedback");
+    }, 900);
   }
 
   function updateRecord() {
@@ -254,10 +277,12 @@
 
     let feedback = "";
     let feedbackTone = "";
+    let fused = false;
     if (outcome === "big" || outcome === "success") {
       const isBigSuccess = outcome === "big";
       applyAlchemy(outcome);
       const runeResult = tryAddRune();
+      fused = !!runeResult && runeResult.includes("！");
       const qualityName = QUALITY_NAMES[state.pill.quality];
       feedbackTone = "good";
       if (isBigSuccess) {
@@ -278,6 +303,7 @@
     } else {
       state.explosions += 1;
       state.pillEnded = true;
+      state.pillEndReason = "explode";
       feedback = "炸丹！这颗丹没能留下。";
       feedbackTone = "bad";
       updateRecord();
@@ -299,13 +325,13 @@
     if (!state.pillEnded && state.pill.turn < 9) {
       state.riskResult = randomRisk();
       addLog("<strong>下一次风险</strong>：已重新生成。", "");
-      feedback = `${feedback} 下一次风险已重新生成。`;
     }
     updateRecord();
     telemetry?.record("refine_result", playtestSnapshot(), { before, outcome, shieldUsed: usedShield });
     if (state.roundEnded) telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss");
     decisionSince = Date.now();
-    setFeedback(feedback, feedbackTone);
+    const visualOutcome = state.pill.turn >= 9 && !state.pillEnded ? "complete" : fused ? "fusion" : usedShield ? "shield" : outcome;
+    setFeedback(feedback, feedbackTone, visualOutcome, outcome === "explode" ? -before.value : state.pill.value - before.value);
     render();
   }
 
@@ -328,6 +354,7 @@
     state.riskResult = randomRisk();
     state.pill = freshPill();
     state.pillEnded = false;
+    state.pillEndReason = "";
     decisionSince = Date.now();
     telemetry?.record("pill_start", playtestSnapshot());
     addLog(`<strong>再开一炉</strong>：第 ${state.attempt} 颗丹药开始炼化。下一次风险已生成。`, "good");
@@ -351,6 +378,7 @@
     telemetry?.begin(playtestSnapshot());
     addLog("第一道炉火已经点燃。下一次风险已生成。", "good");
     dom.introModal.classList.add("hidden");
+    setFeedback("炉火已起，炼化或收丹皆由你定。", "good", "start");
     render();
   }
 
@@ -362,13 +390,15 @@
     const before = playtestSnapshot();
     state.delivered += state.pill.value;
     state.pillEnded = true;
+    state.pillEndReason = "collect";
     state.roundEnded = state.delivered >= ORDER_TARGET || state.attempt >= MAX_PILLS;
     telemetry?.record("collect", playtestSnapshot(), { before, decisionMs: Date.now() - decisionSince });
     if (state.roundEnded) telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss");
     else void telemetry?.flush();
     addLog(`<strong>收丹交付</strong>：获得 ${formatNumber(state.pill.value)}，订单累计 ${formatNumber(state.delivered)} / ${ORDER_TARGET}。`, "good");
     if (state.roundEnded) addLog(state.delivered >= ORDER_TARGET ? "<strong>订单完成</strong>：宗门已收下丹药！" : "<strong>订单未完成</strong>：原料已用尽。", state.delivered >= ORDER_TARGET ? "good" : "bad");
-    setFeedback(state.roundEnded ? (state.delivered >= ORDER_TARGET ? "订单完成！" : "原料用尽，订单未完成。") : "收丹交付，价值已锁定。", "good");
+    const won = state.delivered >= ORDER_TARGET;
+    setFeedback(state.roundEnded ? (won ? "订单完成！宗门已收下你的丹药。" : "原料用尽，订单未完成。") : "收丹交付，价值已锁定。", state.roundEnded && !won ? "bad" : "good", state.roundEnded ? (won ? "win" : "loss") : "collect", `已交付 +${formatNumber(state.pill.value)}`);
     render();
   });
   dom.newPillButton.addEventListener("click", startNewPill);

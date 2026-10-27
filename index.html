@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#160f2d" />
+    <meta name="theme-color" content="#0b1719" />
     <title>九转丹坊 · MVP</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=visual-2" />
   </head>
   <body>
     <div class="app-shell">
       <header class="topbar">
         <div>
-          <p class="eyebrow">MVP · 炼化风险验证</p>
+          <p class="eyebrow">宗门丹房 · 炉火长明</p>
           <h1>九转丹坊</h1>
         </div>
         <div class="topbar-actions">
@@ -22,7 +22,7 @@
 
       <main class="game-layout">
         <aside class="panel order-panel">
-          <div class="panel-kicker">核心试炼</div>
+          <div class="panel-kicker">宗门委托</div>
           <div class="order-heading">
             <div>
               <h2 id="trialTitle">完成宗门订单</h2>
@@ -66,6 +66,7 @@
         </aside>
 
         <section class="panel forge-panel">
+          <div class="order-strip"><span>本局交付 <strong id="compactOrderValue">0 / 300</strong></span><span>剩余原料 <strong id="compactStockValue">3 颗</strong></span></div>
           <div class="forge-header">
             <div>
               <div class="panel-kicker">当前丹药</div>
@@ -75,17 +76,40 @@
           </div>
 
           <div class="pill-stage" id="pillStage">
+            <div class="scene-mountains" aria-hidden="true"></div>
+            <span class="scene-inscription inscription-left" aria-hidden="true">守火</span>
+            <span class="scene-inscription inscription-right" aria-hidden="true">凝丹</span>
+            <div class="stage-caption"><span class="caption-line"></span><strong id="eventTitle">炉火初起</strong><span class="caption-line"></span></div>
             <div class="stage-ring ring-one"></div>
             <div class="stage-ring ring-two"></div>
             <div class="pill-aura" id="pillAura"></div>
+            <div class="rune-orbit" id="runeOrbit" aria-hidden="true"></div>
+            <div class="pill-levitation">
             <div class="pill-visual" id="pillVisual" aria-label="当前丹药">
               <div class="pill-sheen"></div>
+              <svg class="pill-etching" viewBox="0 0 120 120" aria-hidden="true"><path d="M26 78C5 41 52 9 74 30S62 95 96 76M28 44C51 77 82 7 100 51M32 93C58 65 53 110 87 91" /></svg>
               <div class="pill-core">
                 <span class="pill-turn-label">转</span>
                 <strong id="turnValue">一</strong>
               </div>
               <div class="pill-seal">炼</div>
             </div>
+            </div>
+            <div class="value-change" id="valueChange" aria-hidden="true"></div>
+            <div class="feedback-burst" aria-hidden="true"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i></div>
+            <div class="furnace-glow" aria-hidden="true"></div>
+            <svg class="furnace" viewBox="0 0 320 174" aria-hidden="true">
+              <defs><linearGradient id="bronze" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c0a16a"/><stop offset=".45" stop-color="#62583e"/><stop offset="1" stop-color="#283f37"/></linearGradient><linearGradient id="furnaceBody" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#4f6755"/><stop offset="1" stop-color="#152d2a"/></linearGradient><radialGradient id="ember"><stop stop-color="#ffe5a2"/><stop offset="1" stop-color="#c77d3c" stop-opacity="0"/></radialGradient></defs>
+              <ellipse cx="160" cy="154" rx="126" ry="12" fill="#060d0e" opacity=".7"/>
+              <path d="M89 63C41 29 34 107 88 106M231 63C279 29 286 107 232 106" fill="none" stroke="url(#bronze)" stroke-width="12"/>
+              <path d="M85 57Q76 126 113 137H207Q244 126 235 57Z" fill="url(#furnaceBody)" stroke="url(#bronze)" stroke-width="3"/>
+              <path d="M109 131L99 157H121L132 137M211 131L221 157H199L188 137" fill="url(#bronze)"/>
+              <ellipse cx="160" cy="55" rx="83" ry="17" fill="#243e35" stroke="url(#bronze)" stroke-width="6"/>
+              <ellipse cx="160" cy="53" rx="68" ry="10" fill="#0d1917"/><ellipse class="ember" cx="160" cy="52" rx="63" ry="12" fill="url(#ember)"/>
+              <path d="M96 79Q160 99 224 79M101 119Q160 137 219 119" fill="none" stroke="#b99a66" opacity=".55"/>
+              <circle cx="160" cy="108" r="19" fill="#142a25" stroke="#9b8456" stroke-width="2"/><text x="160" y="116" text-anchor="middle" fill="#dfc18a" font-size="23" font-family="serif">丹</text>
+              <path d="M121 100L113 108L121 116M199 100L207 108L199 116" fill="none" stroke="#9b8456" stroke-width="2"/>
+            </svg>
             <div class="event-banner" id="eventBanner">炉火已起</div>
           </div>
 
@@ -93,19 +117,21 @@
             <div class="summary-item"><span>当前价值</span><strong id="pillValue">24</strong></div>
             <div class="summary-item"><span>当前品质</span><strong id="qualityValue">凡品</strong></div>
             <div class="summary-item"><span>丹纹</span><strong id="runeSummary">尚未显现</strong></div>
-            <div class="summary-item"><span>炸丹概率</span><strong id="riskResultValue">--</strong></div>
           </div>
 
           <div class="risk-panel">
             <div class="risk-heading">
-              <span>下一次炼丹风险</span>
+              <span>下一次炸丹概率</span>
+              <strong id="riskResultValue">--</strong>
+            </div>
+            <div class="risk-detail">
               <strong id="riskDescription">只显示炸丹概率</strong>
             </div>
             <div class="outcome-list" id="outcomeList"></div>
           </div>
 
           <div class="action-row">
-            <button class="primary-button" id="refineButton" type="button">执行炼丹 <span>Enter</span></button>
+            <button class="primary-button" id="refineButton" type="button">继续炼丹 <span>Enter</span></button>
             <button class="secondary-button" id="collectButton" type="button">收丹交付</button>
             <button class="secondary-button" id="newPillButton" type="button">再开一炉</button>
           </div>
@@ -140,7 +166,7 @@
       </main>
 
       <footer class="footer-note">
-        <span>单屏炼化 · 先验证炉火是否值得反复挑战</span>
+        <span>一炉烟火，九转成丹 · MVP 试玩</span>
         <span>空格 / Enter：炼化</span>
       </footer>
     </div>
@@ -164,6 +190,6 @@
     </div>
 
     <script src="telemetry.js"></script>
-    <script src="app.js"></script>
+    <script src="app.js?v=visual-2"></script>
   </body>
 </html>

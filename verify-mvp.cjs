@@ -37,6 +37,8 @@ click("newPillButton");
 assert.equal(api.getState().attempt, 2);
 settle(0, 0.5); // explosion
 assert.equal(api.getState().pillEnded, true);
+assert.equal(element("pillStage").dataset.state, "explode");
+assert.equal(element("pillValue").textContent, "已损失");
 click("newPillButton");
 settle(0, 0.5);
 assert.equal(api.getState().roundEnded, true);
@@ -63,6 +65,8 @@ state.pill.turn = 8;
 state.pill.value = 300;
 settle(0.9, 0.01, 0.9); // big success to nine
 assert.equal(state.pill.turn, 9);
+assert.equal(element("eventTitle").textContent, "九转成丹");
+assert.equal(element("pillStage").dataset.state, "complete");
 assert.equal(element("refineButton").disabled, true);
 assert.equal(element("collectButton").disabled, false);
 click("collectButton");
