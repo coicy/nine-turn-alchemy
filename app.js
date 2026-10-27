@@ -377,9 +377,12 @@
     }
     telemetry?.begin(playtestSnapshot());
     addLog("第一道炉火已经点燃。下一次风险已生成。", "good");
+    document.body.dataset.screen = "playing";
     dom.introModal.classList.add("hidden");
     setFeedback("炉火已起，炼化或收丹皆由你定。", "good", "start");
     render();
+    dom.refineButton.focus?.({ preventScroll: true });
+    window.scrollTo?.(0, 0);
   }
 
   dom.startButton.addEventListener("click", startGame);

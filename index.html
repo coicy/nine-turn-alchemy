@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b1719" />
     <title>九转丹坊 · MVP</title>
-    <link rel="stylesheet" href="styles.css?v=visual-2" />
+    <link rel="stylesheet" href="styles.css?v=opening-1" />
   </head>
-  <body>
+  <body data-screen="opening">
     <div class="app-shell">
       <header class="topbar">
         <div>
@@ -171,25 +171,39 @@
       </footer>
     </div>
 
-    <div class="modal-backdrop" id="introModal">
-      <div class="modal-card intro-card">
-        <div class="modal-mark">九</div>
-        <p class="eyebrow">炼丹坊试炉记录 · 001</p>
-        <h2>一颗丹，值得冲到几转？</h2>
-          <p>三颗原料，累计交付价值达到 300 即可完成订单。炼丹能提高价值，也可能受损或炸丹；随时收丹可以锁定当前价值。</p>
-        <div class="intro-steps">
-          <span><b>1</b> 炼化</span>
-            <span><b>2</b> 看炸丹概率</span>
-            <span><b>3</b> 收丹完成订单</span>
-        </div>
-        <button class="primary-button" id="startButton" type="button">开始炼丹</button>
-        <label class="telemetry-option"><input type="checkbox" id="introTelemetryEnabled" /> 我已阅读并同意上传匿名试玩记录</label>
-        <a class="policy-link" href="data-policy.html" target="_blank" rel="noopener">《试玩数据收集说明与同意》</a>
-        <p class="deferred-note">只记录游戏中的选择和结果。开始后仍可在“试玩记录”中关闭。</p>
-      </div>
+    <div class="opening-screen" id="introModal">
+      <header class="opening-masthead"><span class="opening-brand"><i aria-hidden="true">丹</i> 山门丹房</span><span>试炉篇 · 第一份委托</span></header>
+      <main class="opening-content" aria-labelledby="openingTitle">
+        <section class="opening-story">
+          <p class="eyebrow">丹房初启 · 静候开炉</p>
+          <h1 id="openingTitle">九转丹坊</h1>
+          <p class="opening-tagline">一炉烟火，九转成丹。</p>
+          <p class="opening-prose">山门外，你的丹坊今日挂牌。<br>宗门送来三份药材——第一炉的名声，就在你手中。</p>
+        </section>
+        <aside class="opening-letter" aria-labelledby="letterTitle">
+          <div class="opening-emblem" aria-hidden="true"><div class="emblem-ring"></div><div class="emblem-orb">九</div><span>一炉一念</span></div>
+          <div class="letter-heading"><span>宗门来笺</span><span class="letter-number">初字 · 壹</span></div>
+          <h2 id="letterTitle">请炼首批灵丹</h2>
+          <p class="letter-message">“闻新坊初立，特送灵药三份。<br>请以成丹交付，价值合计三百。”</p>
+          <div class="letter-goals"><div><strong>三</strong><span>份药材</span></div><div><strong>300</strong><span>交付目标</span></div></div>
+          <p class="letter-note">收丹后才计入交付。药材用尽仍未达标，则试单失败。</p>
+          <span class="letter-stamp" aria-hidden="true">试</span>
+        </aside>
+        <section class="opening-launch" aria-label="开始试玩">
+          <button class="primary-button opening-start" id="startButton" type="button">接单开炉 <span aria-hidden="true">→</span></button>
+          <p class="opening-choice">继续炼化追求极品，或及时收丹锁定价值。</p>
+          <details class="opening-help"><summary>查看试炉要诀</summary><ol><li>点击炼丹，转数与价值可能提升，也可能受损或炸丹。</li><li>每次操作前查看炸丹概率，随时可以收丹交付。</li><li>九转后须收丹；三份药材内累计交付价值达到 300 即获胜。</li></ol></details>
+          <div class="opening-consent">
+            <label class="telemetry-option"><input type="checkbox" id="introTelemetryEnabled" /> 我已阅读并同意上传匿名试玩记录</label>
+            <a class="policy-link" href="data-policy.html" target="_blank" rel="noopener">《试玩数据收集说明与同意》</a>
+            <p class="deferred-note">自愿参与；不勾选也可试玩，开始后仍可关闭。</p>
+          </div>
+        </section>
+      </main>
+      <footer class="opening-footer"><span>炉火未起，去留由你。</span><span>九转丹坊 · MVP 试玩版</span></footer>
     </div>
 
     <script src="telemetry.js"></script>
-    <script src="app.js?v=visual-2"></script>
+    <script src="app.js?v=opening-1"></script>
   </body>
 </html>

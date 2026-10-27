@@ -15,7 +15,7 @@ function element(id) {
   });
   return elements.get(id);
 }
-const document = { getElementById: element, addEventListener() {}, activeElement: null };
+const document = { getElementById: element, addEventListener() {}, activeElement: null, body: { dataset: { screen: "opening" } } };
 let rolls = [];
 const math = Object.create(Math);
 math.random = () => rolls.length ? rolls.shift() : 0.5;
@@ -29,6 +29,7 @@ const click = id => element(id).click();
 const settle = (...values) => { rolls = values; api.resolveRefine(); };
 
 click("startButton");
+assert.equal(document.body.dataset.screen, "playing");
 assert.equal(api.getState().attempt, 1);
 click("collectButton");
 assert.equal(api.getState().delivered, 24);

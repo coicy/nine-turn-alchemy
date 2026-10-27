@@ -145,17 +145,47 @@ button:disabled {opacity:.36;cursor:not-allowed}
 .telemetry-option input {flex:none;margin:2px 0;width:18px;height:18px;accent-color:var(--gold)}
 .policy-link {display:inline-block;margin-top:7px;font-size:11px;color:var(--cyan)}
 .footer-note {margin-top:20px;font-size:11px;color:var(--faint)}
-.modal-backdrop {position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:20px;background:#061215df;backdrop-filter:blur(10px);overflow:auto}
-.modal-backdrop.hidden {display:none}
-.modal-card {width:min(500px,100%);max-height:calc(100dvh - 40px);overflow:auto;padding:32px;border:1px solid #d9b97855;border-radius:17px;background:radial-gradient(ellipse at 50% 0,#47604a40,transparent 65%),#142b2c;box-shadow:0 35px 100px #0006;text-align:center}
-.modal-mark {width:65px;height:65px;display:grid;place-items:center;margin:0 auto 20px;border:1px solid #e3c1819c;border-radius:50%;font:33px "STKaiti","KaiTi",serif;color:var(--gold-light);box-shadow:0 0 30px #dfb46e15}
-.modal-card h2 {font:27px/1.5 "STKaiti","KaiTi",serif;color:#efe1bd;margin:12px 0}
-.modal-card>p:not(.eyebrow) {color:var(--muted);font-size:13px;line-height:1.9}
-.intro-steps {display:flex;justify-content:center;gap:16px;margin:23px 0;color:var(--muted);font-size:12px}
-.intro-steps b {color:var(--gold);margin-right:4px}
-.intro-card .primary-button {width:100%}
-.intro-card .telemetry-option {margin-top:21px;justify-content:center}
-.intro-card .deferred-note {font-size:11px!important}
+body[data-screen="opening"] .app-shell {display:none}
+body[data-screen="playing"] .app-shell {animation:opening-enter .45s ease both}
+.opening-screen {min-height:100svh;padding:0 24px;position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 28% 40%,#33544966,transparent 60%),#0c1b1c}
+.opening-screen.hidden {display:none}
+.opening-screen::before {content:"";position:absolute;inset:20% -10% 0;z-index:-1;opacity:.25;background:linear-gradient(150deg,transparent 53%,#38544a 53.2%,transparent 76%),linear-gradient(210deg,transparent 52%,#45644f 52.2%,transparent 80%);mask-image:linear-gradient(transparent,#000 60%,transparent)}
+.opening-masthead,.opening-footer {width:min(1120px,100%);margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--faint);font-size:11px;letter-spacing:.1em}
+.opening-masthead {padding:25px 0;border-bottom:1px solid var(--line)}
+.opening-brand {display:flex;align-items:center;gap:10px;color:#d6c59c;font:16px "STKaiti","KaiTi",serif;letter-spacing:.15em}
+.opening-brand i {font-style:normal;display:grid;place-items:center;width:29px;height:32px;border:1px solid #b9a27588;border-radius:3px;color:var(--gold)}
+.opening-content {width:min(1000px,100%);margin:60px auto;display:grid;grid-template-columns:1.15fr .85fr;column-gap:100px;row-gap:25px;align-items:start}
+.opening-story {grid-column:1;grid-row:1}
+.opening-story h1 {font:700 clamp(62px,7.3vw,92px)/1.18 "STKaiti","KaiTi",serif;letter-spacing:.12em;color:#efdfb8;margin:18px 0 10px;text-shadow:0 4px 35px #bb9d5920;white-space:nowrap}
+.opening-tagline {font:24px/1.6 "STKaiti","KaiTi",serif;letter-spacing:.12em;color:#c1c9b0;margin:0 0 22px}
+.opening-prose {color:var(--muted);font-size:14px;line-height:2;margin:0}
+.opening-letter {grid-column:2;grid-row:1/span 2;align-self:center;position:relative;padding:29px 30px 35px;border:1px solid #c7ae7d;border-radius:3px 18px 3px 18px;background:linear-gradient(145deg,#ece1c7,#d7c69e);color:#34443b;box-shadow:0 28px 80px #0005,0 0 0 5px #d0b77d09;transform:rotate(1deg)}
+.opening-letter::after {content:"";position:absolute;inset:8px;border:1px solid #9c83533d;border-radius:1px 12px 1px 12px;pointer-events:none}
+.opening-emblem {height:148px;position:relative;display:grid;place-items:center;margin-bottom:18px}
+.emblem-ring {position:absolute;width:124px;height:124px;border:1px dashed #92794366;border-radius:50%;animation:slow-spin 45s linear infinite}
+.emblem-ring::after {content:"";position:absolute;inset:9px;border:1px solid #92794355;border-radius:50%}
+.emblem-orb {display:grid;place-items:center;width:84px;height:84px;border:1px solid #e8dcaa;border-radius:50%;background:radial-gradient(circle at 30% 25%,#ffefae,#b8a16d 38%,#385f4c 92%);color:#fff1c9;font:42px "STKaiti","KaiTi",serif;box-shadow:inset 5px 6px 11px #fff9,0 8px 22px #80734933}
+.opening-emblem>span {position:absolute;bottom:-3px;color:#87734c;font:11px "STKaiti","KaiTi",serif;letter-spacing:.35em}
+.letter-heading {display:flex;align-items:center;justify-content:space-between;gap:12px;color:#786441;font-size:11px;letter-spacing:.12em}
+.letter-number {font-size:10px}
+.opening-letter h2 {font:26px/1.6 "STKaiti","KaiTi",serif;color:#3b4b39;margin:10px 0}
+.letter-message {font:15px/2 "STKaiti","KaiTi",serif;color:#5d624b;margin:0 0 22px}
+.letter-goals {display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #8f784144;border-bottom:1px solid #8f784144;padding:14px 0}
+.letter-goals>div {display:flex;align-items:baseline;gap:9px}.letter-goals>div+div {border-left:1px solid #8f784133;padding-left:20px}
+.letter-goals strong {font:35px "STKaiti","KaiTi",serif;color:#344b3c}.letter-goals span {font-size:10px;color:#706548}
+.letter-note {font-size:11px;line-height:1.9;color:#786b4c;margin:15px 18px 0 0}
+.letter-stamp {position:absolute;bottom:12px;right:15px;display:grid;place-items:center;width:31px;height:34px;border:2px solid #aa5a46b3;border-radius:3px;transform:rotate(-12deg);font:21px "STKaiti","KaiTi",serif;color:#aa5a46c2}
+.opening-launch {grid-column:1;grid-row:2;max-width:440px;width:100%}
+.opening-start {display:flex;align-items:center;justify-content:space-between;width:100%;min-height:57px;padding:12px 22px;font-size:17px;letter-spacing:.15em}
+.opening-start span {font-size:22px;margin:0;color:#3d482c;opacity:1}
+.opening-choice {font-size:12px;line-height:1.8;color:var(--muted);margin:12px 0}
+.opening-help {font-size:12px;line-height:1.9;color:var(--muted);margin-bottom:18px}
+.opening-help summary {width:fit-content;cursor:pointer;color:var(--gold);padding:4px 0}.opening-help summary:focus-visible {outline:2px solid var(--gold);outline-offset:3px}
+.opening-help ol {margin:8px 0;padding-left:21px}
+.opening-consent {padding-top:15px;border-top:1px solid var(--line)}
+.opening-consent .telemetry-option {margin:0;font-size:11px}.opening-consent .policy-link {font-size:11px}.opening-consent .deferred-note {font-size:10px;margin:7px 0 0}
+.opening-footer {padding:18px 0;border-top:1px solid var(--line);font-size:10px}
+@keyframes opening-enter {from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slow-spin {to{transform:rotate(360deg)}}
 @keyframes levitate {0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 @keyframes ember-breathe {0%,100%{opacity:.5}50%{opacity:1}}
@@ -197,7 +227,17 @@ button:disabled {opacity:.36;cursor:not-allowed}
   .action-row {grid-template-columns:1fr 1fr;margin-top:12px}.action-row .primary-button {grid-column:1/-1}
   .action-row .primary-button,.action-row .secondary-button {min-height:46px}
   .order-heading h2 {max-width:none}.footer-note {align-items:flex-start;flex-direction:column;gap:6px}
-  .modal-card {padding:25px 22px}.modal-card h2 {font-size:25px}.intro-steps {gap:11px;font-size:11px}
+  .opening-screen {padding:0 20px}
+  .opening-masthead {padding:18px 0;font-size:9px;letter-spacing:0}.opening-brand {font-size:14px;gap:8px}
+  .opening-content {margin:27px auto 30px;grid-template-columns:1fr;row-gap:22px}
+  .opening-story {grid-column:1;grid-row:1}.opening-story h1 {font-size:53px;margin:11px 0 4px;letter-spacing:.14em}
+  .opening-tagline {font-size:19px;margin-bottom:14px}.opening-prose {font-size:12px;line-height:1.9}
+  .opening-letter {grid-column:1;grid-row:2;padding:20px 24px;transform:rotate(.5deg)}
+  .opening-emblem {display:none}.opening-letter h2 {font-size:23px;margin:7px 0}.letter-message {font-size:13px;margin-bottom:13px}
+  .letter-goals {padding:10px 0}.letter-goals strong {font-size:30px}.letter-note {font-size:10px;margin-top:10px}
+  .opening-launch {grid-column:1;grid-row:3;max-width:none}.opening-start {min-height:54px}
+  .opening-choice,.opening-help {font-size:11px}.opening-help {margin-bottom:14px}.opening-consent {padding-top:12px}
+  .opening-footer {font-size:9px;padding:15px 0}
 }
 @media(prefers-reduced-motion:reduce) {
   *,*::before,*::after {animation:none!important;transition:none!important;scroll-behavior:auto!important}
