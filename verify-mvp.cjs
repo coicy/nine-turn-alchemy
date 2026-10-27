@@ -1,0 +1,69 @@
+const fs = require("fs");
+const vm = require("vm");
+const assert = require("assert");
+const path = require("path");
+
+const elements = new Map();
+function element(id) {
+  if (!elements.has(id)) elements.set(id, {
+    textContent: "", innerHTML: "", disabled: false, style: {}, dataset: {},
+    classList: { add() {}, remove() {}, toggle() {} },
+    addEventListener(type, fn) { this[type] = fn; },
+  });
+  return elements.get(id);
+}
+const document = { getElementById: element, addEventListener() {}, activeElement: null };
+let rolls = [];
+const math = Object.create(Math);
+math.random = () => rolls.length ? rolls.shift() : 0.5;
+const timers = [];
+const context = { document, Math: math, clearTimeout() {}, setTimeout() {}, window: { setTimeout(fn) { timers.push(fn); } } };
+let source = fs.readFileSync(path.join(__dirname, "app.js"), "utf8");
+source = source.replace(/\}\)\(\);\s*$/, "globalThis.testApi = { getState: () => state, resolveRefine, render }; })();");
+vm.runInNewContext(source, context);
+const api = context.testApi;
+const click = id => element(id).click();
+const settle = (...values) => { rolls = values; api.resolveRefine(); };
+
+click("startButton");
+assert.equal(api.getState().attempt, 1);
+click("collectButton");
+assert.equal(api.getState().delivered, 24);
+assert.equal(api.getState().pillEnded, true);
+click("newPillButton");
+assert.equal(api.getState().attempt, 2);
+settle(0, 0.5); // explosion
+assert.equal(api.getState().pillEnded, true);
+click("newPillButton");
+settle(0, 0.5);
+assert.equal(api.getState().roundEnded, true);
+assert.equal(element("newPillButton").disabled, true);
+
+click("restartButton");
+let state = api.getState();
+state.pill.runes.push("赤纹", "青纹");
+state.pill.value = 100;
+state.pill.turn = 3;
+settle(0.9, 0.7); // hold grants shield
+assert.equal(state.pill.shield, true);
+assert.equal(element("riskResultValue").textContent, "0%");
+settle(0, 0.5); // shield converts explosion to hold
+assert.equal(state.pillEnded, false);
+assert.equal(state.pill.shield, true); // red rune renews shield on hold
+settle(0.9, 0.95); // shield consumed, damage with blue rune
+assert.equal(state.pill.value, 90);
+assert.equal(state.pill.turn, 2);
+assert.equal(state.pill.shield, false);
+assert.equal(state.pill.quality, 3);
+
+state.pill.turn = 8;
+state.pill.value = 300;
+settle(0.9, 0.01, 0.9); // big success to nine
+assert.equal(state.pill.turn, 9);
+assert.equal(element("refineButton").disabled, true);
+assert.equal(element("collectButton").disabled, false);
+click("collectButton");
+assert.equal(state.roundEnded, true);
+assert.ok(state.delivered >= 300);
+assert.equal(element("newPillButton").disabled, true);
+console.log("MVP checks passed: collection, three-pill loss, rune effects, nine-turn cap, order victory.");

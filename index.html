@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#160f2d" />
+    <title>九转丹坊 · MVP</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">MVP · 炼化风险验证</p>
+          <h1>九转丹坊</h1>
+        </div>
+        <div class="topbar-actions">
+          <div class="stat-chip"><span>本局炉数</span><strong id="attemptText">0 / 3</strong></div>
+          <button class="ghost-button" id="restartButton" type="button">重新开始</button>
+        </div>
+      </header>
+
+      <main class="game-layout">
+        <aside class="panel order-panel">
+          <div class="panel-kicker">核心试炼</div>
+          <div class="order-heading">
+            <div>
+              <h2 id="trialTitle">完成宗门订单</h2>
+              <p id="trialFlavor">三颗原料，收丹累计价值达到 300 即可完成。</p>
+            </div>
+            <span class="order-number" id="attemptBadge">第 1 炉</span>
+          </div>
+
+          <div class="target-card">
+            <div class="target-label">订单已交价值</div>
+            <div class="target-value"><strong id="turnGoalText">0</strong><span>/ 300</span></div>
+            <div class="progress-track" aria-label="订单进度"><div id="turnProgressFill"></div></div>
+          </div>
+
+          <div class="order-rule" id="trialRule">继续炼丹提高价值，或收丹锁定收益。炸丹会消耗一颗原料；九转后可收丹。</div>
+
+          <div class="resource-grid">
+            <div class="resource-card">
+              <span>最高转数</span>
+              <strong id="bestTurnText">1 转</strong>
+            </div>
+            <div class="resource-card">
+              <span>最高价值</span>
+              <strong id="bestValueText">24</strong>
+            </div>
+            <div class="resource-card">
+              <span>累计炸丹</span>
+              <strong id="explosionText">0 次</strong>
+            </div>
+            <div class="resource-card">
+              <span>九转成丹</span>
+              <strong id="completedText">0 颗</strong>
+            </div>
+          </div>
+
+          <div class="hint-box">
+            <span class="hint-icon">✦</span>
+            <p id="trialHint">下一次炼丹风险不会提前揭示，结果会在炼丹后出现。</p>
+          </div>
+          <p class="deferred-note">本局为实验订单，数值尚需试玩调整。</p>
+        </aside>
+
+        <section class="panel forge-panel">
+          <div class="forge-header">
+            <div>
+              <div class="panel-kicker">当前丹药</div>
+              <h2 id="pillName">无名丹</h2>
+            </div>
+            <div class="risk-badge" id="riskBadge">炸丹概率</div>
+          </div>
+
+          <div class="pill-stage" id="pillStage">
+            <div class="stage-ring ring-one"></div>
+            <div class="stage-ring ring-two"></div>
+            <div class="pill-aura" id="pillAura"></div>
+            <div class="pill-visual" id="pillVisual" aria-label="当前丹药">
+              <div class="pill-sheen"></div>
+              <div class="pill-core">
+                <span class="pill-turn-label">转</span>
+                <strong id="turnValue">一</strong>
+              </div>
+              <div class="pill-seal">炼</div>
+            </div>
+            <div class="event-banner" id="eventBanner">炉火已起</div>
+          </div>
+
+          <div class="pill-summary">
+            <div class="summary-item"><span>当前价值</span><strong id="pillValue">24</strong></div>
+            <div class="summary-item"><span>当前品质</span><strong id="qualityValue">凡品</strong></div>
+            <div class="summary-item"><span>丹纹</span><strong id="runeSummary">尚未显现</strong></div>
+            <div class="summary-item"><span>炸丹概率</span><strong id="riskResultValue">--</strong></div>
+          </div>
+
+          <div class="risk-panel">
+            <div class="risk-heading">
+              <span>下一次炼丹风险</span>
+              <strong id="riskDescription">只显示炸丹概率</strong>
+            </div>
+            <div class="outcome-list" id="outcomeList"></div>
+          </div>
+
+          <div class="action-row">
+            <button class="primary-button" id="refineButton" type="button">执行炼丹 <span>Enter</span></button>
+            <button class="secondary-button" id="collectButton" type="button">收丹交付</button>
+            <button class="secondary-button" id="newPillButton" type="button">再开一炉</button>
+          </div>
+          <p class="action-hint" id="actionHint">每次炼丹结束后，下一次风险会重新生成，只显示炸丹概率。</p>
+        </section>
+
+        <aside class="panel side-panel">
+          <div class="panel-kicker">丹纹追踪</div>
+          <h2>本轮发现</h2>
+          <div class="rune-list" id="runeList"></div>
+
+          <div class="divider"></div>
+          <div class="panel-kicker">丹纹效果</div>
+          <div class="fusion-list">
+            <div class="fusion-entry"><span>赤纹：保持时获得一次护丹</span></div>
+            <div class="fusion-entry"><span>青纹：受损时价值仅下降 10%</span></div>
+            <div class="fusion-entry"><span>赤纹 + 青纹</span><strong>→ 金纹（保留两种效果）</strong></div>
+            <div class="fusion-entry"><span>月纹 + 雷纹</span><strong>→ 星痕</strong></div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="panel-kicker">最近炉讯</div>
+          <div class="log-list" id="logList" aria-live="polite"></div>
+        </aside>
+      </main>
+
+      <footer class="footer-note">
+        <span>单屏炼化 · 先验证炉火是否值得反复挑战</span>
+        <span>空格 / Enter：炼化</span>
+      </footer>
+    </div>
+
+    <div class="modal-backdrop" id="introModal">
+      <div class="modal-card intro-card">
+        <div class="modal-mark">九</div>
+        <p class="eyebrow">炼丹坊试炉记录 · 001</p>
+        <h2>一颗丹，值得冲到几转？</h2>
+          <p>三颗原料，累计交付价值达到 300 即可完成订单。炼丹能提高价值，也可能受损或炸丹；随时收丹可以锁定当前价值。</p>
+        <div class="intro-steps">
+          <span><b>1</b> 炼化</span>
+            <span><b>2</b> 看炸丹概率</span>
+            <span><b>3</b> 收丹完成订单</span>
+        </div>
+        <button class="primary-button" id="startButton" type="button">开始炼丹</button>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
