@@ -31,6 +31,9 @@ body {
 }
 
 button { font: inherit; }
+.telemetry-option { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 12px; color: var(--muted); }
+.telemetry-option input { width: 18px; height: 18px; accent-color: var(--gold); }
+.policy-link { display: inline-block; margin-top: 10px; color: var(--cyan); font-size: 12px; }
 button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 
 .app-shell { width: min(1420px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 20px; }

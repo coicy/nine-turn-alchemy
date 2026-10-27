@@ -1,0 +1,32 @@
+const assert = require("node:assert/strict");
+const createTelemetry = require("./telemetry.js");
+const stored = new Map();
+const storage = { getItem: key => stored.get(key), setItem: (key, value) => stored.set(key, value) };
+let sequence = 0, offline = true, uploads = 0;
+const states = [];
+const fetch = async (url, init) => {
+  if (offline) throw new Error("offline");
+  if (url.endsWith("session")) return { ok: true, json: async () => ({ token: "test-token", sessionId: "session-1" }) };
+  const body = JSON.parse(init.body); uploads += body.events.length;
+  return { ok: true, status: 200, json: async () => ({ accepted: body.events.map(e => e.id) }) };
+};
+const options = { storage, endpoint: "https://example.test", fetch, uuid: () => "test-id-" + (++sequence), now: () => 1000, status: value => states.push(value) };
+const snapshot = { turn: 1, quality: 0, value: 24, attempt: 1, delivered: 0, risk: 0.12, runes: [], shield: false };
+(async () => {
+  const first = createTelemetry(options);
+  first.setEnabled(true); first.begin(snapshot);
+  first.record("refine_choice", snapshot, { decisionMs: 200 });
+  first.finish(snapshot, "restart"); first.finish(snapshot, "restart");
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(first.exportData().events.filter(e => e.type === "run_end").length, 1);
+  assert.equal(uploads, 0);
+  const second = createTelemetry(options); second.setEnabled(true);
+  assert.equal(second.exportData().events.length, 4);
+  offline = false; await second.flush();
+  assert.equal(uploads, 4);
+  await second.flush(); assert.equal(uploads, 4);
+  assert.ok(states.includes("匿名记录已上传"));
+  second.setEnabled(false); second.begin(snapshot); await second.flush(); assert.equal(uploads, 4);
+  assert.equal(JSON.stringify(second.exportData()).includes("test-token"), false);
+  console.log("Telemetry checks passed: offline persistence, retry, acknowledgement, opt-out, export without credentials.");
+})();

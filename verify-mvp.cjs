@@ -2,12 +2,15 @@ const fs = require("fs");
 const vm = require("vm");
 const assert = require("assert");
 const path = require("path");
+const createTelemetry = require("./telemetry.js");
+const { randomUUID } = require("node:crypto");
+const collector = createTelemetry({ endpoint: "https://example.test", storage: null, fetch: async () => { throw new Error("offline-test"); }, uuid: randomUUID, now: Date.now });
 
 const elements = new Map();
 function element(id) {
   if (!elements.has(id)) elements.set(id, {
-    textContent: "", innerHTML: "", disabled: false, style: {}, dataset: {},
-    classList: { add() {}, remove() {}, toggle() {} },
+    textContent: "", innerHTML: "", disabled: false, checked: true, style: {}, dataset: {},
+    classList: { add() {}, remove() {}, toggle() {}, contains() { return false; } },
     addEventListener(type, fn) { this[type] = fn; },
   });
   return elements.get(id);
@@ -17,7 +20,7 @@ let rolls = [];
 const math = Object.create(Math);
 math.random = () => rolls.length ? rolls.shift() : 0.5;
 const timers = [];
-const context = { document, Math: math, clearTimeout() {}, setTimeout() {}, window: { setTimeout(fn) { timers.push(fn); } } };
+const context = { document, Math: math, clearTimeout() {}, setTimeout() {}, window: { AlchemyTelemetry: collector, setTimeout(fn) { timers.push(fn); }, setInterval() {}, addEventListener() {} } };
 let source = fs.readFileSync(path.join(__dirname, "app.js"), "utf8");
 source = source.replace(/\}\)\(\);\s*$/, "globalThis.testApi = { getState: () => state, resolveRefine, render }; })();");
 vm.runInNewContext(source, context);
@@ -66,4 +69,15 @@ click("collectButton");
 assert.equal(state.roundEnded, true);
 assert.ok(state.delivered >= 300);
 assert.equal(element("newPillButton").disabled, true);
+assert.ok(collector.exportData().events.some(e => e.type === "run_end" && e.result === "win"));
+assert.ok(collector.exportData().events.some(e => e.type === "run_end" && e.result === "loss"));
+assert.ok(collector.exportData().events.some(e => e.type === "collect" && e.before.value === 24 && e.state.delivered === 24));
+click("restartButton");
+rolls = [0.9, 0.5, 0.9, 0.5];
+click("refineButton");
+assert.equal(api.getState().busy, true);
+timers.shift()();
+assert.equal(api.getState().busy, false);
+assert.ok(collector.exportData().events.some(e => e.type === "refine_choice"));
+assert.ok(collector.exportData().events.some(e => e.type === "refine_result" && e.before.turn === 1 && e.state.turn === 2));
 console.log("MVP checks passed: collection, three-pill loss, rune effects, nine-turn cap, order victory.");

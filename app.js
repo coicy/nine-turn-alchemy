@@ -60,6 +60,14 @@
 
   let state = null;
   let feedbackTimer = null;
+  const telemetry = window.AlchemyTelemetry;
+  let decisionSince = Date.now();
+
+  function playtestSnapshot() {
+    return { attempt: state.attempt, turn: state.pill.turn, quality: state.pill.quality,
+      value: state.pill.value, runes: [...state.pill.runes], shield: state.pill.shield,
+      risk: state.pill.shield ? 0 : state.riskResult.explode, delivered: state.delivered };
+  }
 
   function randomRisk() {
     return RISK_RESULTS[Math.floor(Math.random() * RISK_RESULTS.length)];
@@ -232,6 +240,7 @@
   }
 
   function resolveRefine() {
+    const before = playtestSnapshot();
     const profile = state.riskResult;
     const explode = Math.random() < profile.explode;
     const roll = Math.random();
@@ -293,12 +302,16 @@
       feedback = `${feedback} 下一次风险已重新生成。`;
     }
     updateRecord();
+    telemetry?.record("refine_result", playtestSnapshot(), { before, outcome, shieldUsed: usedShield });
+    if (state.roundEnded) telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss");
+    decisionSince = Date.now();
     setFeedback(feedback, feedbackTone);
     render();
   }
 
   function refine() {
     if (!state.started || state.busy || state.pillEnded || state.roundEnded || state.pill.turn >= 9) return;
+    telemetry?.record("refine_choice", playtestSnapshot(), { decisionMs: Date.now() - decisionSince });
     state.busy = true;
     dom.pillVisual.classList.add("resolving");
     render();
@@ -315,6 +328,8 @@
     state.riskResult = randomRisk();
     state.pill = freshPill();
     state.pillEnded = false;
+    decisionSince = Date.now();
+    telemetry?.record("pill_start", playtestSnapshot());
     addLog(`<strong>再开一炉</strong>：第 ${state.attempt} 颗丹药开始炼化。下一次风险已生成。`, "good");
     setFeedback("炉火重新点燃。下一次风险已生成。", "good");
     render();
@@ -322,9 +337,18 @@
 
   function startGame() {
     if (state && state.busy) return;
+    if (state?.started && !state.roundEnded) telemetry?.finish(playtestSnapshot(), "restart");
     state = createState();
     state.started = true;
     state.attempt = 1;
+    decisionSince = Date.now();
+    if (telemetry) {
+      const intro = document.getElementById("introTelemetryEnabled");
+      const toggle = document.getElementById("telemetryEnabled");
+      if (!dom.introModal.classList.contains("hidden")) toggle.checked = intro.checked;
+      telemetry.setEnabled(toggle.checked);
+    }
+    telemetry?.begin(playtestSnapshot());
     addLog("第一道炉火已经点燃。下一次风险已生成。", "good");
     dom.introModal.classList.add("hidden");
     render();
@@ -335,9 +359,13 @@
   dom.refineButton.addEventListener("click", refine);
   dom.collectButton.addEventListener("click", () => {
     if (!state.started || state.busy || state.pillEnded || state.roundEnded) return;
+    const before = playtestSnapshot();
     state.delivered += state.pill.value;
     state.pillEnded = true;
     state.roundEnded = state.delivered >= ORDER_TARGET || state.attempt >= MAX_PILLS;
+    telemetry?.record("collect", playtestSnapshot(), { before, decisionMs: Date.now() - decisionSince });
+    if (state.roundEnded) telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss");
+    else void telemetry?.flush();
     addLog(`<strong>收丹交付</strong>：获得 ${formatNumber(state.pill.value)}，订单累计 ${formatNumber(state.delivered)} / ${ORDER_TARGET}。`, "good");
     if (state.roundEnded) addLog(state.delivered >= ORDER_TARGET ? "<strong>订单完成</strong>：宗门已收下丹药！" : "<strong>订单未完成</strong>：原料已用尽。", state.delivered >= ORDER_TARGET ? "good" : "bad");
     setFeedback(state.roundEnded ? (state.delivered >= ORDER_TARGET ? "订单完成！" : "原料用尽，订单未完成。") : "收丹交付，价值已锁定。", "good");
@@ -353,5 +381,17 @@
   });
 
   state = createState();
+  if (telemetry) {
+    document.getElementById("exportDataButton").addEventListener("click", () => telemetry.download());
+    document.getElementById("telemetryEnabled").addEventListener("change", event => {
+      telemetry.setEnabled(event.target.checked);
+      if (event.target.checked && state.started && !state.roundEnded) telemetry.begin(playtestSnapshot());
+    });
+    window.setInterval(() => void telemetry.flush(), 8000);
+    window.addEventListener("pagehide", () => {
+      if (state.started && !state.roundEnded) telemetry.record("interrupted", playtestSnapshot());
+      void telemetry.flush();
+    });
+  }
   render();
 })();

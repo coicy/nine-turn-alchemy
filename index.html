@@ -129,6 +129,13 @@
           <div class="divider"></div>
           <div class="panel-kicker">最近炉讯</div>
           <div class="log-list" id="logList" aria-live="polite"></div>
+          <div class="divider"></div>
+          <div class="panel-kicker">试玩记录</div>
+          <label class="telemetry-option"><input type="checkbox" id="telemetryEnabled" /> 同意并开启匿名操作记录</label>
+          <a class="policy-link" href="data-policy.html" target="_blank" rel="noopener">查看数据收集说明</a>
+          <p class="deferred-note">用于分析收丹时机、炼丹结果和订单胜负。不记录姓名和联系方式，可随时关闭。</p>
+          <p class="deferred-note" id="telemetryStatus" role="status">开始游戏后记录；上传失败将在本机暂存。</p>
+          <button class="ghost-button" id="exportDataButton" type="button">导出本机记录</button>
         </aside>
       </main>
 
@@ -150,9 +157,13 @@
             <span><b>3</b> 收丹完成订单</span>
         </div>
         <button class="primary-button" id="startButton" type="button">开始炼丹</button>
+        <label class="telemetry-option"><input type="checkbox" id="introTelemetryEnabled" /> 我已阅读并同意上传匿名试玩记录</label>
+        <a class="policy-link" href="data-policy.html" target="_blank" rel="noopener">《试玩数据收集说明与同意》</a>
+        <p class="deferred-note">只记录游戏中的选择和结果。开始后仍可在“试玩记录”中关闭。</p>
       </div>
     </div>
 
+    <script src="telemetry.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
