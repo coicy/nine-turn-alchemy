@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   'use strict';
   const $ = id => document.getElementById(id);
   const stage = $('pillStage'), pill = $('pillVisual');
@@ -27,12 +27,13 @@
   function select(kind) { held = held === kind ? null : kind; sync(); }
   function animate(name, duration, commit) {
     if (locked) return;
-    locked = true; held = null; stage.classList.add(name); sync();
+    locked = true; window.AlchemyInteractionBusy = true; held = null; stage.classList.add(name); sync();
+    window.dispatchEvent?.(new Event('alchemy:interaction'));
     const token = generation;
     timer = setTimeout(() => {
       timer = null;
       if (token !== generation) return;
-      stage.classList.remove(name); locked = false;
+      stage.classList.remove(name); locked = false; window.AlchemyInteractionBusy = false;
       commit(); sync();
     }, duration);
   }
@@ -129,15 +130,31 @@
     $('fireLabel').textContent = locked ? '操作中' : held === 'herbs' ? '整包投入' : !s.pillEnded && s.turn >= 9 ? '九转已成' : '挥扇催炼';
     $('fireHint').textContent = s.pillEnded ? '等待投药起炉' : '点炉膛 · 每次一炼';
     $('trayHint').textContent = held === 'pill' ? '点此落盘，交还委托' : `已交 ${delivered.length} 颗 · 取丹后落盘`;
-    $('slipValue').textContent = `已交 ${Math.round(s.delivered)} / 300`;
-    $('workInstruction').textContent = locked ? '药材与成丹按本炉结算，请稍候…' : !s.started ? '接下委托，取药开炉' : s.roundEnded ? (s.delivered >= 300 ? '委托已完成 · 成丹已归客' : '三包药材已用尽 · 本单结束') : held === 'herbs' ? '整包药材已展开 · 点炉口倾倒，Esc 放回' : held === 'pill' ? '已托起灵丹 · 点交付盘，Esc 放回炉中' : s.pillEnded ? '取一包药材，拖入炉口 · 也可点药包，再点炉口' : s.busy ? '扇落火起，丹纹正在变化…' : s.turn >= 9 ? '九转已成 · 取丹放入交付盘' : '点炉膛挥扇催炼 · 随时取丹入盘';
+    const target = s.target || 300;
+    $('slipValue').textContent = `已交 ${Math.round(s.delivered)} / ${target}`;
+    const heading = document.querySelector('.commission-slip b');
+    if (s.order && heading) heading.textContent = s.order.name;
+    $('workInstruction').textContent = locked ? '药材与成丹按本炉结算，请稍候…' : !s.started ? '接下委托，取药开炉' : s.roundEnded ? (s.delivered >= target ? '委托已完成 · 成丹已归客' : '三包药材已用尽 · 本单结束') : held === 'herbs' ? '整包药材已展开 · 点炉口倾倒，Esc 放回' : held === 'pill' ? '已托起灵丹 · 点交付盘，Esc 放回炉中' : s.pillEnded ? '取一包药材，拖入炉口 · 也可点药包，再点炉口' : s.busy ? '扇落火起，丹纹正在变化…' : s.turn >= 9 ? '九转已成 · 取丹放入交付盘' : '点炉膛挥扇催炼 · 随时取丹入盘';
   }
+  function updateCampaignContext() {
+    const s = snapshot();
+    if (!s.campaignEnabled) return;
+    if (!s.order) {
+      document.getElementById('workInstruction').textContent = '今日尚未接单 · 在上方委托簿选择一份订单';
+      document.getElementById('slipValue').textContent = '等待接单';
+      document.querySelector('.commission-slip b').textContent = '今日待接单';
+    } else if (s.roundEnded) {
+      document.getElementById('workInstruction').textContent = '本单已结清 · 请接下一单，三单处理完后可日结';
+    }
+  }
+  window.addEventListener('alchemy:render', updateCampaignContext);
   function reset() {
-    generation++; clearTimeout(timer); timer = null; locked = false; held = null; drag = null;
+    generation++; clearTimeout(timer); timer = null; locked = false; window.AlchemyInteractionBusy = false; held = null; drag = null;
     stage.classList.remove('pouring','landing','fanning','dragging-herbs','dragging-pill');
-    $('carriedObject').hidden = true; delivered = []; suppress.clear();
-    $('trayPills').innerHTML = ''; $('deliverySeals').innerHTML = ''; sync();
-    herbs.focus({preventScroll:true});
+    $('carriedObject').hidden = true; delivered = [...(snapshot().collected || [])]; suppress.clear();
+    $('trayPills').innerHTML = delivered.map(d => `<i data-quality="${d.quality}">丹</i>`).join('');
+    $('deliverySeals').innerHTML = delivered.map(d => `<i>${Math.round(d.value)}</i>`).join(''); sync();
+    if (snapshot().order || !snapshot().campaignEnabled) herbs.focus({preventScroll:true});
   }
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { held = null; if (drag) endDrag({type:'pointercancel'}); sync(); return; }
@@ -147,6 +164,7 @@
     if (!e.repeat) { if (held === 'herbs') load(); else if (held === 'pill') collect(); else refine(); }
   }, true);
   window.addEventListener('alchemy:render', sync);
+  window.addEventListener('alchemy:order', reset);
   $('startButton').addEventListener('click',reset);
   $('restartButton').addEventListener('click',reset);
   function cancelCarry() { held = null; if (drag) endDrag({type:'pointercancel'}); sync(); }
@@ -154,3 +172,6 @@
   document.addEventListener('visibilitychange',() => {if(document.hidden)cancelCarry();});
   sync();
 })();
+
+
+

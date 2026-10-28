@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0b1719" />
     <title>九转丹坊 · MVP</title>
     <link rel="stylesheet" href="styles.css?v=workbench-3" />
-  <link rel="stylesheet" href="simulation.css?v=workbench-3" /><link rel="stylesheet" href="opening-story.css?v=story-2" /></head>
+  <link rel="stylesheet" href="simulation.css?v=workbench-3" /><link rel="stylesheet" href="opening-story.css?v=story-2" /><link rel="stylesheet" href="campaign.css?v=days-1" /></head>
   <body data-screen="opening">
     <div class="app-shell">
       <header class="topbar">
@@ -33,7 +33,7 @@
 
           <div class="target-card">
             <div class="target-label">订单已交价值</div>
-            <div class="target-value"><strong id="turnGoalText">0</strong><span>/ 300</span></div>
+            <div class="target-value"><strong id="turnGoalText">0</strong><span id="orderGoalLabel">/ 120</span></div>
             <div class="progress-track" aria-label="订单进度"><div id="turnProgressFill"></div></div>
           </div>
 
@@ -172,7 +172,7 @@
     </div>
 
     <div class="opening-screen" id="introModal">
-      <header class="opening-masthead"><span class="opening-brand"><i aria-hidden="true">丹</i> 坊市丹坊</span><span>试炉篇 · 第一份委托</span></header>
+      <header class="opening-masthead"><span class="opening-brand"><i aria-hidden="true">丹</i> 坊市丹坊</span><span>三十日经营 · 每日三份委托</span></header>
       <main class="opening-content" aria-labelledby="openingTitle">
         <section class="opening-story">
           <p class="eyebrow">丹房初启 · 静候开炉</p>
@@ -184,15 +184,15 @@
           <div class="opening-emblem" aria-hidden="true"><div class="emblem-ring"></div><div class="emblem-orb">九</div><span>一炉一念</span></div>
           <div class="letter-heading"><span>行商留笺</span><span class="letter-number">初字 · 壹</span></div>
           <h2 id="letterTitle">丹坊的第一笔生意</h2>
-          <p class="letter-message">“三包药材，请代炼灵丹，成丹合计价值三百即可。<br>药材和成丹都归我；若未炼成，也不必赔药。<br>炉前的取舍，就交给丹师了。”</p>
-          <div class="letter-goals"><div><strong>三</strong><span>份药材</span></div><div><strong>300</strong><span>交付目标</span></div></div>
+          <p class="letter-message">“三包药材，请代炼灵丹，成丹合计价值一百二十即可。<br>药材和成丹都归我；若未炼成，也不必赔药。<br>炉前的取舍，就交给丹师了。”</p>
+          <div class="letter-goals"><div><strong>三</strong><span>份药材</span></div><div><strong>120</strong><span>交付目标</span></div></div>
           <p class="letter-note">只有落盘收丹才计入交付。三包药材用尽仍未达标，本单便告失败。</p>
           <span class="letter-stamp" aria-hidden="true">试</span>
         </section>
         <section class="opening-launch" aria-label="开始试玩">
           <button class="primary-button opening-start" id="startButton" type="button">接下委托 <span aria-hidden="true">→</span></button>
           <p class="opening-choice">你解开第一包药材。旧炉尚温，这间小丹坊的第一缕药香，就从今天开始。</p>
-          <details class="opening-help"><summary>查看试炉要诀</summary><ol><li>点药包拿起，再点炉口整包投入；也可将药包拖入炉口。</li><li>点击炉膛挥扇催炼，一次一炼。先查看炸丹概率，再决定继续或收丹。</li><li>点灵丹取出，再点交付盘落盘，也可拖入盘中。九转后须收丹；累计交付价值达到 300 即获胜。</li></ol></details>
+          <details class="opening-help"><summary>查看试炉要诀</summary><ol><li>点药包拿起，再点炉口整包投入；也可将药包拖入炉口。</li><li>点击炉膛挥扇催炼，一次一炼。先查看炸丹概率，再决定继续或收丹。</li><li>点灵丹取出，再点交付盘落盘，也可拖入盘中。九转后须收丹；达到本单目标即可结单，每天三单，主动日结后进入次日。</li></ol></details>
           <div class="opening-consent">
             <label class="telemetry-option"><input type="checkbox" id="introTelemetryEnabled" /> 我已阅读并同意上传匿名试玩记录</label>
             <a class="policy-link" href="data-policy.html" target="_blank" rel="noopener">《试玩数据收集说明与同意》</a>
@@ -204,9 +204,11 @@
     </div>
 
     <script src="telemetry.js"></script>
-    <script src="app.js?v=workbench-3"></script>
-  <script src="simulation.js?v=workbench-3"></script><script src="opening-story.js?v=story-2"></script></body>
+    <script src="campaign.js?v=days-1"></script><script src="app.js?v=days-1"></script>
+  <script src="simulation.js?v=days-1"></script><script src="campaign-ui.js?v=days-1"></script><script src="opening-story.js?v=days-1"></script></body>
 </html>
+
+
 
 
 

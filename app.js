@@ -8,8 +8,25 @@
   ];
 
   const QUALITY_NAMES = ["凡品", "良品", "上品", "极品", "绝品"];
-  const ORDER_TARGET = 300;
-  const MAX_PILLS = 3;
+  let ORDER_TARGET = 300;
+  let MAX_PILLS = 3;
+  const campaignRules = window.AlchemyCampaign;
+  let campaign = null;
+  const SAVE_KEY = "alchemy-days-v1";
+  let saved = null;
+  try {
+    const raw = JSON.parse(window.localStorage?.getItem(SAVE_KEY) || "null");
+    if (campaignRules && raw?.version === 1 && Number.isInteger(raw.campaign?.day) && raw.campaign.day >= 1 && raw.campaign.day <= 30
+      && ['open','settled','finished'].includes(raw.campaign.phase)
+      && Array.isArray(raw.campaign.orders) && raw.campaign.orders.length === 3 && Array.isArray(raw.campaign.history)
+      && raw.campaign.orders.every(o => o && typeof o.id === 'string' && Number.isFinite(o.target) && ['pending','active','completed','failed'].includes(o.status))
+      && Number.isFinite(raw.target) && raw.target > 0 && raw.materials === 3
+      && raw.state?.pill && Number.isFinite(raw.state.delivered) && Number.isInteger(raw.state.attempt)
+      && Array.isArray(raw.state.collected) && Array.isArray(raw.state.logs) && Array.isArray(raw.state.discoveredRunes)
+      && Array.isArray(raw.state.pill.runes) && Number.isFinite(raw.state.pill.value)
+      && Number.isFinite(raw.state.riskResult?.explode)
+      && raw.state.attempt >= 0 && raw.state.attempt <= 3 && raw.state.started) saved = raw;
+  } catch (_) { /* Storage is optional; a fresh campaign remains playable. */ }
   const RUNE_COLORS = {
     "赤纹": "#ef8c84",
     "青纹": "#78d7cb",
@@ -71,7 +88,8 @@
   function playtestSnapshot() {
     return { attempt: state.attempt, turn: state.pill.turn, quality: state.pill.quality,
       value: state.pill.value, runes: [...state.pill.runes], shield: state.pill.shield,
-      risk: state.pill.shield ? 0 : state.riskResult.explode, delivered: state.delivered };
+      risk: state.pill.shield ? 0 : state.riskResult.explode, delivered: state.delivered,
+      day: campaign?.day || 1, orderId: state.orderId || null };
   }
 
   function randomRisk() {
@@ -98,6 +116,7 @@
       riskResult: randomRisk(),
       discoveredRunes: [],
       logs: [],
+      collected: [],
       pill: freshPill(),
     };
   }
@@ -121,7 +140,15 @@
     const explosionChance = state.pill.shield ? 0 : profile.explode;
     dom.attemptText.textContent = `${state.attempt} / ${MAX_PILLS}`;
     dom.compactOrderValue.textContent = `${formatNumber(state.delivered)} / ${ORDER_TARGET}`;
-    dom.compactStockValue.textContent = `${state.started ? MAX_PILLS - state.attempt + (state.pillEnded ? 0 : 1) : MAX_PILLS} 颗`;
+    dom.compactStockValue.textContent = `${MAX_PILLS - state.attempt} 包`;
+    document.getElementById("orderGoalLabel").textContent = `/ ${ORDER_TARGET}`;
+    if (campaign) {
+      const order = campaignRules.active(campaign) || campaign.orders.find(o => o.id === state.orderId);
+      if (order) {
+        document.getElementById("trialTitle").textContent = order.name;
+        document.getElementById("trialFlavor").textContent = `${order.client}提供 ${order.materials} 包药材，交付价值达到 ${order.target}；失败免赔。`;
+      }
+    }
     dom.attemptBadge.textContent = `第 ${state.attempt || 1} 炉`;
     dom.turnGoalText.textContent = formatNumber(state.delivered);
     dom.turnProgressFill.style.width = `${turnProgress}%`;
@@ -130,7 +157,7 @@
     dom.explosionText.textContent = `${state.explosions} 次`;
     dom.completedText.textContent = `${state.completedPills} 颗`;
     dom.trialHint.textContent = state.roundEnded
-      ? (state.delivered >= ORDER_TARGET ? "订单完成！点击重新开始再挑战。" : "原料已用尽，订单未完成。点击重新开始再挑战。")
+      ? (campaign ? "本单已结清，请选择下一份委托；三单处理后可结束今日。" : state.delivered >= ORDER_TARGET ? "订单完成！点击重新开始再挑战。" : "原料已用尽，订单未完成。点击重新开始再挑战。")
       : state.pillEnded ? "取一包委托药材，投入炉口开炉。" : state.pill.turn >= 9 ? "九转已成，收丹交付即可锁定价值。" : state.pill.shield
         ? "护丹已准备：下一次炸丹将转为保持。" : `下一次炸丹概率 ${percentage(explosionChance)}，可继续炼化或收丹交付。`;
     dom.pillName.textContent = `${QUALITY_NAMES[state.pill.quality]}${state.pill.runes.length ? `·${state.pill.runes.join("·")}` : ""}丹`;
@@ -172,6 +199,9 @@
       dom.qualityValue.textContent = "未起炉";
       dom.riskBadge.textContent = "待投药";
       dom.riskDescription.textContent = "整包投药后开始本炉";
+    }
+    if (campaign && state.started && !state.busy) {
+      try { window.localStorage?.setItem(SAVE_KEY, JSON.stringify({version:1,campaign,state,target:ORDER_TARGET,materials:MAX_PILLS})); } catch (_) {}
     }
     window.dispatchEvent?.(new Event("alchemy:render"));
   }
@@ -336,7 +366,7 @@
     }
     updateRecord();
     telemetry?.record("refine_result", playtestSnapshot(), { before, outcome, shieldUsed: usedShield });
-    if (state.roundEnded) telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss");
+    if (state.roundEnded) { settleOrder(); telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss"); }
     decisionSince = Date.now();
     const visualOutcome = state.pill.turn >= 9 && !state.pillEnded ? "complete" : fused ? "fusion" : usedShield ? "shield" : outcome;
     setFeedback(feedback, feedbackTone, visualOutcome, outcome === "explode" ? -before.value : state.pill.value - before.value);
@@ -370,14 +400,30 @@
     render();
   }
 
-  function startGame() {
+  function startGame(event) {
     if (state && state.busy) return;
+    if (saved && event?.currentTarget === dom.startButton) {
+      campaign = saved.campaign; state = saved.state; state.busy = false;
+      ORDER_TARGET = saved.target; MAX_PILLS = saved.materials; saved = null;
+      document.body.dataset.screen = "playing"; dom.introModal.classList.add("hidden");
+      if (!state.roundEnded) telemetry?.begin(playtestSnapshot());
+      setFeedback("已回到上次停炉的位置。", "good");
+      window.dispatchEvent?.(new Event("alchemy:order")); render(); return;
+    }
+    saved = null;
     if (state?.started && !state.roundEnded) telemetry?.finish(playtestSnapshot(), "restart");
     state = createState();
     state.started = true;
     state.attempt = 0;
     state.pillEnded = true;
     state.pillEndReason = "waiting";
+    if (campaignRules) {
+      campaign = campaignRules.create();
+      campaignRules.accept(campaign, campaign.orders[0].id);
+      state.orderId = campaign.activeId;
+      ORDER_TARGET = campaignRules.active(campaign).target;
+      MAX_PILLS = campaignRules.active(campaign).materials;
+    }
     decisionSince = Date.now();
     if (telemetry) {
       const intro = document.getElementById("introTelemetryEnabled");
@@ -402,11 +448,12 @@
     if (!state.started || state.busy || state.pillEnded || state.roundEnded) return;
     const before = playtestSnapshot();
     state.delivered += state.pill.value;
+    state.collected.push({value:state.pill.value,quality:state.pill.quality,turn:state.pill.turn});
     state.pillEnded = true;
     state.pillEndReason = "collect";
     state.roundEnded = state.delivered >= ORDER_TARGET || state.attempt >= MAX_PILLS;
     telemetry?.record("collect", playtestSnapshot(), { before, decisionMs: Date.now() - decisionSince });
-    if (state.roundEnded) telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss");
+    if (state.roundEnded) { settleOrder(); telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss"); }
     else void telemetry?.flush();
     addLog(`<strong>收丹交付</strong>：获得 ${formatNumber(state.pill.value)}，订单累计 ${formatNumber(state.delivered)} / ${ORDER_TARGET}。`, "good");
     if (state.roundEnded) addLog(state.delivered >= ORDER_TARGET ? "<strong>订单完成</strong>：客人已收下丹药！" : "<strong>订单未完成</strong>：原料已用尽。", state.delivered >= ORDER_TARGET ? "good" : "bad");
@@ -423,10 +470,45 @@
     }
   });
 
-  window.AlchemyGame = { snapshot: () => ({ ...playtestSnapshot(), started: state.started,
+  function settleOrder() {
+    if (campaign) campaignRules.resolve(campaign, state.delivered, state.attempt);
+  }
+  function chooseOrder(id) {
+    if (!campaign || state.busy || window.AlchemyInteractionBusy || !state.pillEnded || !state.roundEnded) return false;
+    if (!campaignRules.accept(campaign, id)) return false;
+    const o = campaignRules.active(campaign);
+    ORDER_TARGET = o.target; MAX_PILLS = o.materials;
+    state = createState(); state.started = true; state.pillEnded = true; state.pillEndReason = "waiting"; state.orderId = o.id;
+    decisionSince = Date.now(); telemetry?.begin(playtestSnapshot());
+    setFeedback(`${o.client}送来 ${o.materials} 包药材，请投药开炉。`, "good");
+    window.dispatchEvent?.(new Event("alchemy:order")); render(); return true;
+  }
+  function endDay() {
+    if (!campaign || state.busy || window.AlchemyInteractionBusy || !state.pillEnded || !campaignRules.settle(campaign)) return false;
+    render(); return true;
+  }
+  function nextDay() {
+    if (!campaign || !campaignRules.next(campaign)) return false;
+    state.roundEnded = true; state.pillEnded = true;
+    state.delivered = 0; state.attempt = 0; state.orderId = null; state.collected = [];
+    state.pill = freshPill(); state.pillEndReason = "waiting";
+    window.dispatchEvent?.(new Event("alchemy:order")); render(); return true;
+  }
+  function abandonOrder() {
+    if (!campaign || state.busy || window.AlchemyInteractionBusy || !state.pillEnded || state.roundEnded) return false;
+    if (!campaignRules.resolve(campaign, state.delivered, state.attempt, true)) return false;
+    state.roundEnded = true; telemetry?.finish(playtestSnapshot(), "abandoned");
+    setFeedback("本单已终止。已有成丹及未用药材交还客人，免赔。", "", "loss"); render(); return true;
+  }
+  window.AlchemyGame = { chooseOrder, endDay, nextDay, abandonOrder,
+    campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
+    snapshot: () => ({ ...playtestSnapshot(), started: state.started,
     busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
-    endReason: state.pillEndReason, remaining: MAX_PILLS - state.attempt }) };
+    endReason: state.pillEndReason, remaining: campaign && !state.orderId ? 0 : MAX_PILLS - state.attempt, target: ORDER_TARGET,
+    campaignEnabled: !!campaign, collected: state.collected,
+    order: campaign ? (campaignRules.active(campaign) || campaign.orders.find(o => o.id === state.orderId)) : null }) };
   state = createState();
+  if (saved) dom.startButton.textContent = "继续经营";
   if (telemetry) {
     document.getElementById("exportDataButton").addEventListener("click", () => telemetry.download());
     document.getElementById("telemetryEnabled").addEventListener("change", event => {

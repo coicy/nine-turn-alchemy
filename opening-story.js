@@ -31,6 +31,7 @@
   scene.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();finish();}});
   if (reduced) scene.classList.add('reduce-motion');
   start.addEventListener('click', event => {
+    if (start.textContent.includes('继续经营')) return;
     if (closed) return;
     event.preventDefault(); event.stopImmediatePropagation();
     intro.hidden = true; scene.hidden = false; show();
