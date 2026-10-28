@@ -50,3 +50,6 @@
 [data-held=herbs] .loose-herbs{opacity:1;top:auto;bottom:128px;left:calc(5% + 12px);transform:rotate(-8deg)}
 .no-herbs .herb-object svg{visibility:hidden}
 @media(max-width:600px){[data-held=herbs] .loose-herbs{left:8px;bottom:134px;gap:5px}}
+
+/* Keep the pill input above furnace art; pointer ghost is portalled to body. */
+.pill-levitation{z-index:4}.carried-object{z-index:10000}
