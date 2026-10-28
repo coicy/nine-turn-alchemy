@@ -1,24 +1,22 @@
 (() => {
-  const base='assets/alchemy/', furnace=document.querySelector('.furnace'), pill=document.getElementById('pillVisual');
-  const qualityFiles=['common','fine','superior','premium','perfect'];
-  const ready=new Set();let layers=null;
-  function preload(file,callback,extension='.png'){const image=new Image();image.onload=()=>callback(image);image.src=base+file+extension;}
-  if(furnace)preload('furnace-v1',()=>{furnace.style.backgroundImage=`url("${base}furnace-v1.png")`;furnace.classList.add('raster-furnace');});
-  if(pill)preload('pill-base-v1',image=>{
-    image.className='pill-texture';image.alt='';image.draggable=false;image.setAttribute('aria-hidden','true');pill.prepend(image);
-    layers=document.createElement('div');layers.className='pill-rune-layers';layers.setAttribute('aria-hidden','true');pill.append(layers);pill.classList.add('raster-pill');document.getElementById('pillStage').classList.add('surface-runes');update();
-  });
-  function update(){
-    const s=window.AlchemyGame?.snapshot();if(!s||!pill)return;
-    const quality=Math.max(0,Math.min(4,s.quality||0)), file=qualityFiles[quality];
-    const nature=s.order?.nature||'neutral';pill.dataset.nature=['warm','cool','neutral'].includes(nature)?nature:'neutral';
-    if(layers){layers.replaceChildren();if(ready.has(file)&&(quality>0||(s.runes||[]).length)){
-      const image=new Image();image.src=base+'pill-cracks-'+file+'-v3.svg';image.alt='';image.draggable=false;image.className='pill-rune-sprite quality-cracks';layers.append(image);
-    }}
-    const natureLabel=document.getElementById('natureValue');
-    if(natureLabel)natureLabel.textContent=s.pillEnded?'—':({warm:'温性 · 暖赭',cool:'寒性 · 冷蓝',neutral:'平性 · 青绿'}[pill.dataset.nature]);
-    document.querySelectorAll('.rune-entry .rune-dot').forEach(dot=>{dot.style.background='#c8c6b2';});
-  }
-  for(const file of qualityFiles)preload('pill-cracks-'+file+'-v3',()=>{ready.add(file);update();},'.svg');
-  window.addEventListener('alchemy:render',update);update();
+  const pill=document.getElementById('pillVisual'), furnace=document.querySelector('.furnace');
+  const root='assets/pill-layers/';
+  const bodies={warm:'color-04-brown',cool:'color-07-slate',neutral:'color-06-olive'};
+  const patterns={'赤纹':'crack-01-single','青纹':'crack-02-fork','月纹':'crack-04-arc','雷纹':'crack-06-traverse','金纹':'crack-03-opposed','星痕':'crack-05-fragments'};
+  const hues=['#D5DEE1','#91B78B','#74A9D4','#B091CC','#DFB87C'];
+  const cache=new Map();let revision=0;
+  function load(src){if(!cache.has(src))cache.set(src,new Promise(resolve=>{const im=new Image();im.onload=()=>resolve(true);im.onerror=()=>resolve(false);im.src=src;}));return cache.get(src);}
+  function layer(body,crack,q){const wrap=document.createElement('span');wrap.className='layered-pill-art';
+    const base=document.createElement('img');base.src=body;base.alt='';base.draggable=false;wrap.append(base);
+    if(crack){const marks=document.createElement('span');marks.className='layered-pill-crack';marks.style.backgroundColor=hues[q];marks.style.maskImage=`url("${crack}")`;marks.style.webkitMaskImage=`url("${crack}")`;wrap.append(marks);}
+    return wrap;}
+  function selection(nature,quality,runes=[]){const q=Math.max(0,Math.min(4,Number(quality)||0));const body=root+'bodies/'+(bodies[nature]||bodies.neutral)+'.png';const rune=runes[runes.length-1];const crack=root+'cracks/'+(patterns[rune]||'crack-01-single')+'.png';return {body,crack,q};}
+  if(furnace)load('assets/alchemy/furnace-v1.png').then(ok=>{if(ok){furnace.style.backgroundImage='url("assets/alchemy/furnace-v1.png")';furnace.classList.add('raster-furnace');}});
+  function tray(){document.querySelectorAll('#trayPills i').forEach(node=>{const a=selection(node.dataset.nature,node.dataset.quality);node.classList.add('layered-tray-pill');node.replaceChildren(layer(a.body,a.crack,a.q));});}
+  async function update(){const s=window.AlchemyGame?.snapshot();if(!s||!pill)return;const token=++revision;const nature=s.order?.nature||'neutral';const a=selection(nature,s.quality,s.runes);const ready=await Promise.all([load(a.body),load(a.crack)]);if(token!==revision||!ready.every(Boolean))return;
+    pill.querySelectorAll('.layered-pill-art').forEach(n=>n.remove());pill.prepend(layer(a.body,a.crack,a.q));pill.classList.add('layered-game-pill');pill.classList.add('raster-pill');pill.dataset.nature=nature;
+    document.getElementById('pillStage')?.classList.add('surface-runes');const label=document.getElementById('natureValue');if(label)label.textContent=s.pillEnded?'—':({warm:'温性 · 熟褐',cool:'寒性 · 青灰',neutral:'平性 · 草赭'}[nature]||'平性 · 草赭');tray();}
+  window.AlchemyPillArt={selection,patterns,hues};window.addEventListener('alchemy:render',update);
+  if(typeof MutationObserver!=='undefined'){const target=document.getElementById('trayPills');if(target)new MutationObserver(tray).observe(target,{childList:true});}
+  update();
 })();
