@@ -11,3 +11,4 @@
 @media(max-width:480px){.prologue-copy{min-height:230px}.prologue-copy p{font-size:14px}.prologue-table{height:210px}.prologue-sign{font-size:21px}.prologue-parcels{left:0;gap:3px}.prologue-parcels i{width:27px}.prologue-letter{right:0}}
 @media(prefers-reduced-motion:reduce){.story-prologue *{animation:none!important;transition:none!important}}
 #introModal[hidden]{display:none!important}
+.story-prologue[hidden]{display:none!important}
