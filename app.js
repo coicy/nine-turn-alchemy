@@ -160,7 +160,8 @@
       ? (campaign ? "本单已结清，请选择下一份委托；全部订单处理后可结束今日。" : state.delivered >= ORDER_TARGET ? "订单完成！点击重新开始再挑战。" : "原料已用尽，订单未完成。点击重新开始再挑战。")
       : state.pillEnded ? "取一包委托药材，投入炉口开炉。" : state.pill.turn >= 9 ? "九转已成，收丹交付即可锁定价值。" : state.pill.shield
         ? "护丹已准备：下一次炸丹将转为保持。" : `下一次炸丹概率 ${percentage(explosionChance)}，可继续炼化或收丹交付。`;
-    dom.pillName.textContent = `${QUALITY_NAMES[state.pill.quality]}${state.pill.runes.length ? `·${state.pill.runes.join("·")}` : ""}丹`;
+    const activeOrder = campaign && (campaignRules.active(campaign) || campaign.orders.find(o => o.id === state.orderId));
+    dom.pillName.textContent = `${({warm:'温性',cool:'寒性',neutral:'平性'}[activeOrder?.nature || 'neutral'])}灵丹`;
     dom.turnValue.textContent = TURN_NAMES[state.pill.turn];
     dom.pillValue.textContent = state.pillEnded && state.pillEndReason === "explode" ? "已损失" : formatNumber(state.pill.value);
     dom.qualityValue.textContent = QUALITY_NAMES[state.pill.quality];
@@ -452,7 +453,7 @@
     if (!state.started || state.busy || state.pillEnded || state.roundEnded) return;
     const before = playtestSnapshot();
     state.delivered += state.pill.value;
-    state.collected.push({value:state.pill.value,quality:state.pill.quality,turn:state.pill.turn});
+    state.collected.push({value:state.pill.value,quality:state.pill.quality,turn:state.pill.turn,nature:campaignRules?.active(campaign)?.nature || 'neutral'});
     state.pillEnded = true;
     state.pillEndReason = "collect";
     state.roundEnded = state.delivered >= ORDER_TARGET || state.attempt >= MAX_PILLS;

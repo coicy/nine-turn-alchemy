@@ -16,6 +16,8 @@ function ordersFor(day,random=Math.random){
   {client:'闭关散修',name:'静修储备',target:280},
   {client:'探洞修士',name:'秘境备丹',target:260}
  ];
+ const natures={'行路备丹':'neutral','补充行囊':'neutral','出行代炼':'warm','夜巡备用':'warm','入山备药':'neutral','渡江行囊':'cool','游历备丹':'neutral','赶路急需':'warm','静修储备':'cool','秘境备丹':'cool'};
+ for(const o of pool)o.nature=natures[o.name];
  const count=random()<0.5?7:8;
  for(let i=pool.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
  return pool.slice(0,count).map((o,i)=>({...o,target:o.target+step,id:`D${day}-${i+1}`,materials:3,status:'pending',delivered:0,used:0,returned:0}));
@@ -29,3 +31,4 @@ function next(c){if(c.phase!=='settled'||c.day>=DAYS)return false;c.day++;c.orde
 const api={DAYS,ordersFor,create,active,accept,resolve,settle,next};
 if(typeof module!=='undefined')module.exports=api;else root.AlchemyCampaign=api;
 })(typeof window!=='undefined'?window:globalThis);
+
