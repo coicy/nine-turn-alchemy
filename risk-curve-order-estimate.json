@@ -1,0 +1,156 @@
+{
+  "samples": 5000,
+  "conditions": "ForgeTax-referenced turn risk, current early targets, no tools/upgrades",
+  "rows": [
+    {
+      "target": 84,
+      "remaining": {
+        "completion": 0.99,
+        "meanPacks": 1.2734
+      },
+      "balanced": {
+        "completion": 1,
+        "meanPacks": 2.9786
+      },
+      "five": {
+        "completion": 0.9886,
+        "meanPacks": 1.2756
+      }
+    },
+    {
+      "target": 96,
+      "remaining": {
+        "completion": 0.9886,
+        "meanPacks": 1.2842
+      },
+      "balanced": {
+        "completion": 1,
+        "meanPacks": 2.992
+      },
+      "five": {
+        "completion": 0.985,
+        "meanPacks": 1.284
+      }
+    },
+    {
+      "target": 108,
+      "remaining": {
+        "completion": 0.9682,
+        "meanPacks": 1.4102
+      },
+      "balanced": {
+        "completion": 0.9988,
+        "meanPacks": 2.9914
+      },
+      "five": {
+        "completion": 0.974,
+        "meanPacks": 1.5774
+      }
+    },
+    {
+      "target": 114,
+      "remaining": {
+        "completion": 0.9434,
+        "meanPacks": 1.509
+      },
+      "balanced": {
+        "completion": 0.9996,
+        "meanPacks": 2.9882
+      },
+      "five": {
+        "completion": 0.9638,
+        "meanPacks": 1.8256
+      }
+    },
+    {
+      "target": 120,
+      "remaining": {
+        "completion": 0.9368,
+        "meanPacks": 1.5636
+      },
+      "balanced": {
+        "completion": 0.9968,
+        "meanPacks": 2.9842
+      },
+      "five": {
+        "completion": 0.9566,
+        "meanPacks": 1.9166
+      }
+    },
+    {
+      "target": 132,
+      "remaining": {
+        "completion": 0.9234,
+        "meanPacks": 1.6026
+      },
+      "balanced": {
+        "completion": 0.9936,
+        "meanPacks": 2.9886
+      },
+      "five": {
+        "completion": 0.9568,
+        "meanPacks": 1.982
+      }
+    },
+    {
+      "target": 144,
+      "remaining": {
+        "completion": 0.8798,
+        "meanPacks": 1.7394
+      },
+      "balanced": {
+        "completion": 0.9802,
+        "meanPacks": 2.9924
+      },
+      "five": {
+        "completion": 0.9446,
+        "meanPacks": 2.1238
+      }
+    },
+    {
+      "target": 156,
+      "remaining": {
+        "completion": 0.8288,
+        "meanPacks": 1.8632
+      },
+      "balanced": {
+        "completion": 0.979,
+        "meanPacks": 2.9902
+      },
+      "five": {
+        "completion": 0.9394,
+        "meanPacks": 2.1756
+      }
+    },
+    {
+      "target": 168,
+      "remaining": {
+        "completion": 0.8096,
+        "meanPacks": 1.9338
+      },
+      "balanced": {
+        "completion": 0.9608,
+        "meanPacks": 2.9684
+      },
+      "five": {
+        "completion": 0.9332,
+        "meanPacks": 2.2476
+      }
+    },
+    {
+      "target": 180,
+      "remaining": {
+        "completion": 0.7392,
+        "meanPacks": 2.0436
+      },
+      "balanced": {
+        "completion": 0.9416,
+        "meanPacks": 2.9756
+      },
+      "five": {
+        "completion": 0.9078,
+        "meanPacks": 2.2914
+      }
+    }
+  ]
+}

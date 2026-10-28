@@ -1,12 +1,8 @@
 (() => {
   "use strict";
 
-  const RISK_RESULTS = [
-    { explode: 0.02 }, { explode: 0.04 }, { explode: 0.05 }, { explode: 0.07 },
-    { explode: 0.09 }, { explode: 0.12 }, { explode: 0.15 }, { explode: 0.18 },
-    { explode: 0.21 }, { explode: 0.24 },
-  ];
-
+  // ForgeTax reference: grade = turn - 1; after grade 30 retain terminal risk.
+  const BREAK_CURVE=[0,.018,.059,.129,.248,.297,.347,.383,.418,.443,.467,.491,.505,.519,.532,.545,.558,.576,.594,.612,.63,.639,.648,.657,.666,.675,.684,.693,.702,.711,.72];
   function qualityAtTurn(turn){return turn>=60?4:turn>=30?3:turn>=15?2:turn>=5?1:0;}
   const QUALITY_NAMES = ["凡品", "良品", "上品", "极品", "绝品"];
   let ORDER_TARGET = 300;
@@ -93,9 +89,7 @@
       day: campaign?.day || 1, orderId: state.orderId || null };
   }
 
-  function randomRisk() {
-    return RISK_RESULTS[Math.floor(Math.random() * RISK_RESULTS.length)];
-  }
+  function randomRisk(turn=state?.pill?.turn||1) {return {explode:BREAK_CURVE[Math.max(0,Math.min(30,Math.floor(turn)-1))]};}
 
   function freshPill() {
     return { turn: 1, quality: 0, value: 24, runes: [], bestTurn: 1, shield: false, toolUsed:false, damageSoftened:false, runeChoices:[] };
@@ -114,7 +108,7 @@
       completedPills: 0,
       bestTurn: 1,
       bestValue: 24,
-      riskResult: randomRisk(),
+      riskResult: randomRisk(1),
       discoveredRunes: [],
       logs: [],
       collected: [],
@@ -194,7 +188,7 @@
     dom.restartButton.disabled = state.busy;
     dom.actionHint.textContent = state.pillEnded
       ? (state.roundEnded ? "本局结束，点击“重新开始”再试一次。" : "本炉已结束，点击“再开一炉”。")
-      : state.pill.turn >= 100 ? "百转成丹，点击“收丹交付”。" : "每次炼丹后重新生成炸丹概率；收丹可锁定当前价值。";
+      : state.pill.turn >= 100 ? "百转成丹，点击“收丹交付”。" : "炸丹概率随转数上升；收丹可锁定当前价值。";
     if (state.pillEndReason === "waiting") {
       dom.pillName.textContent = "空炉待药";
       dom.pillValue.textContent = "—";
@@ -309,7 +303,7 @@
     const profile = state.riskResult;
     const explode = Math.random() < profile.explode;
     const roll = Math.random();
-    let outcome = explode ? "explode" : roll < 0.12 ? "big" : roll < 0.67 ? "success" : roll < 0.87 ? "hold" : "damage";
+    let outcome = explode ? "explode" : roll < 2/21 ? "big" : roll < 14/21 ? "success" : roll < 19/21 ? "hold" : "damage";
     let usedShield = false;
     if (state.pill.shield) {
       state.pill.shield = false;
@@ -367,7 +361,7 @@
 
     if (!state.pillEnded && state.pill.turn < 100) {
       state.riskResult = randomRisk();
-      addLog("<strong>下一次风险</strong>：已重新生成。", "");
+      addLog("<strong>下一次风险</strong>：已按转数更新。", "");
     }
     updateRecord();
     telemetry?.record("refine_result", playtestSnapshot(), { before, outcome, shieldUsed: usedShield });
@@ -394,22 +388,22 @@
   function startNewPill() {
     if (!state.started || state.busy || !state.pillEnded || state.roundEnded || state.attempt >= MAX_PILLS) return;
     state.attempt += 1;
-    state.riskResult = randomRisk();
+    state.riskResult = randomRisk(1);
     state.pill = freshPill();
     if(campaignRules?.active(campaign)?.tier===1){state.pill.quality=1;state.pill.qualityFloor=1;}
     state.pillEnded = false;
     state.pillEndReason = "";
     decisionSince = Date.now();
     telemetry?.record("pill_start", playtestSnapshot());
-    addLog(`<strong>再开一炉</strong>：第 ${state.attempt} 颗丹药开始炼化。下一次风险已生成。`, "good");
-    setFeedback("炉火重新点燃。下一次风险已生成。", "good");
+    addLog(`<strong>再开一炉</strong>：第 ${state.attempt} 颗丹药开始炼化。下一次风险按转数更新。`, "good");
+    setFeedback("炉火重新点燃。下一次风险按转数更新。", "good");
     render();
   }
 
   function startGame(event) {
     if (state && state.busy) return;
     if (saved && event?.currentTarget === dom.startButton) {
-      campaign = saved.campaign; state = saved.state; state.busy = false;
+      campaign = saved.campaign; state = saved.state; state.busy = false;state.riskResult=randomRisk(state.pill.turn);
       state.pill.qualityFloor=campaignRules.active(campaign)?.tier===1?1:0;state.pill.quality=Math.max(state.pill.qualityFloor,qualityAtTurn(state.pill.turn));
       if (campaign.phase === 'open' && campaign.orders.length === 3) {
         const extra = campaignRules.ordersFor(campaign.day);
@@ -524,7 +518,7 @@
     else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded))ok=window.AlchemyEconomy.buy(campaign,kind,id);
     if(ok)render();return ok;
   }
-  window.AlchemyGame = { economyAction, chooseOrder, endDay, nextDay, abandonOrder,
+  window.AlchemyGame = { riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
     snapshot: () => ({ ...playtestSnapshot(), started: state.started,
     busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,

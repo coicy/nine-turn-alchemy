@@ -26,7 +26,7 @@ source = source.replace(/\}\)\(\);\s*$/, "globalThis.testApi = { getState: () =>
 vm.runInNewContext(source, context);
 const api = context.testApi;
 const click = id => element(id).click();
-const settle = (...values) => { rolls = values; api.resolveRefine(); };
+const settle = (...values) => { rolls = values;if(values[0]===0)api.getState().riskResult={explode:.5}; api.resolveRefine(); };
 
 click("startButton");
 assert.equal(document.body.dataset.screen, "playing");

@@ -4,3 +4,5 @@ for(const [t,q] of [[1,0],[4,0],[5,1],[14,1],[15,2],[29,2],[30,3],[59,3],[60,4],
 const s=a.getState();Object.assign(s,{started:true,attempt:1,pillEnded:false,roundEnded:false,riskResult:{explode:0}});testMath.random=()=>.8;for(let i=0;i<15;i++){a.resolveRefine();timers.clear();}assert.equal(s.pill.turn,1);assert.equal(s.pill.quality,0,'hold must not farm quality');
 for(let i=0;i<20;i++){const orders=C.ordersFor(1);assert.ok(orders.every(o=>o.target>72&&o.target<=204),'early targets require refining and are achievable by three low-grade fourth-turn pills');}
 console.log('PASS: quality bands, no quality farming on hold, early commissions fit low-grade pills');
+
+let last=-1;for(let t=1;t<=100;t++){const risk=context.window.AlchemyGame.riskAtTurn(t);assert.ok(risk>=last&&risk<=.72);last=risk;}assert.equal(context.window.AlchemyGame.riskAtTurn(1),0);assert.equal(context.window.AlchemyGame.riskAtTurn(5),.248);assert.equal(context.window.AlchemyGame.riskAtTurn(11),.467);assert.equal(context.window.AlchemyGame.riskAtTurn(31),.72);console.log('PASS: monotonic turn risk, safe opening, Tax reference anchors and terminal plateau');
