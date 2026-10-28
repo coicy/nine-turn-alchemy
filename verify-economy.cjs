@@ -2,7 +2,7 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const E=require('./economy.js'),C=require('./campaign.js');
 const c=C.create();E.ensure(c);assert.equal(c.economy.coins,80);assert.equal(E.buy(c,'material',0),true);assert.equal(c.economy.coins,62);assert.equal(E.buy(c,'material',-1),false);
 c.economy.coins=5000;assert.ok(E.buy(c,'tool','seal'));assert.equal(E.buy(c,'tool','seal'),false);assert.ok(E.buy(c,'tool','needle'));assert.ok(E.buy(c,'furnace'));assert.ok(E.buy(c,'furnace'));assert.equal(E.buy(c,'furnace'),false);
-const o={target:200,status:'completed'};const cash=c.economy.coins;assert.ok(E.commission(c,o,[{quality:4,turn:9,runes:['金纹']}])>0);assert.equal(E.commission(c,o,[]),0);assert.ok(c.economy.coins>cash);assert.equal(E.sale(c,{value:24,turn:6}),220);
+const o={target:200,status:'completed',returned:2,nature:'cool'};const cash=c.economy.coins;assert.ok(E.commission(c,o,[{quality:4,turn:9,runes:['金纹']}])>0);assert.equal(E.commission(c,o,[]),0);assert.equal(c.economy.herbs.cool,2);assert.equal(o.returned,0);assert.ok(c.economy.coins>cash);assert.equal(E.sale(c,{value:24,turn:6}),220);
 const skipped=C.create();assert.ok(C.settle(skipped));assert.ok(skipped.orders.every(o=>o.status==='skipped'));assert.equal(skipped.history[0].failed,0);
 const base=fs.readFileSync(__dirname+'/verify-simulation.cjs','utf8').split('const click=id=>')[0]
 .replace('getState:()=>state,render','getState:()=>state,getCampaign:()=>campaign,resolveRefine,applyDamage,tryAddRune,render')
@@ -14,3 +14,5 @@ campaign.economy.tools=['seal','needle'];campaign.economy.equipped='seal';state(
 assert.ok(api.economyAction('material',1));assert.ok(api.economyAction('self',1));el('herbObject').click();el('fireObject').click();flush(720);assert.equal(api.snapshot().quality,1);campaign.economy.furnace=1;state().pill.value=100;ctx.testApi.applyDamage();assert.equal(state().pill.value,85);ctx.testApi.applyDamage();assert.equal(state().pill.value,Math.round(85*.7));
 campaign.economy.equipped='needle';state().pill.runes=['赤纹'];state().pill.toolUsed=false;assert.ok(api.economyAction('reroll'));assert.equal(api.economyAction('reroll'),false);
 console.log('PASS: purchases, ownership, economic settlement and material isolation, self-sale once, optional day close, rune choice, tool limits, damage upgrade');
+
+el('trayObject').click();flush(320);campaign.economy.herbs.cool=2;assert.ok(api.economyAction('herbself','cool'));assert.equal(api.snapshot().order.nature,'cool');assert.equal(campaign.economy.herbs.cool,1);assert.equal(api.economyAction('herbself','cool'),false);console.log('PASS: leftover gift is idempotent; selected herb nature and one-pack consumption preserved');

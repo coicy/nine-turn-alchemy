@@ -10,7 +10,7 @@ click('startButton');assert.equal(api().campaign().orders.length,8);assert.ok(st
 assert.equal(api().endDay(),false);assert.equal(api().chooseOrder('D1-2'),false,'cannot mix orders');
 click('herbObject');click('fireObject');assert.equal(api().abandonOrder(),false,'pour locks order');flush(720);assert.equal(api().abandonOrder(),false,'live pill must be handled');
 e.context.testApi.getState().pill.value=500;e.context.testApi.render();click('pillVisual');click('trayObject');flush(320);
-assert.ok(api().campaign().economy.coins>80,'successful commission earns money');assert.equal(api().campaign().orders[0].status,'completed');assert.equal(api().campaign().orders[0].returned,2);assert.equal(state().delivered,500);assert.ok(api().campaign().orders.some(o=>o.status==='pending'));
+assert.ok(api().campaign().economy.coins>80,'successful commission earns money');assert.equal(api().campaign().orders[0].status,'completed');assert.equal(api().campaign().orders[0].returned,0);assert.equal(api().campaign().orders[0].gifted,2);assert.equal(state().delivered,500);assert.ok(api().campaign().orders.some(o=>o.status==='pending'));
 assert.equal(api().chooseOrder('D1-2'),true);assert.ok(state().target>=120);assert.equal(state().delivered,0);assert.equal(state().remaining,3);assert.equal(e.el('trayPills').innerHTML,'','new order clears tray');
 assert.equal(api().abandonOrder(),true);assert.equal(api().abandonOrder(),false,'no duplicate settlement');assert.equal(api().campaign().orders[1].returned,3);
 assert.equal(api().chooseOrder('D1-3'),true);

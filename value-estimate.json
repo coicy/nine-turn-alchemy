@@ -1,0 +1,56 @@
+{
+  "seed": 20261029,
+  "conditions": "ordinary pack, no tools/upgrades; stop at or above target; explosion=0; actual app resolver",
+  "rows": [
+    {
+      "stopTurn": 1,
+      "samples": 20000,
+      "survival": 1,
+      "meanValuePerInput": 24,
+      "meanSurvivingValue": 24,
+      "meanSalePerInput": 13,
+      "meanActions": 0,
+      "capped": 0
+    },
+    {
+      "stopTurn": 3,
+      "samples": 20000,
+      "survival": 0.7143,
+      "meanValuePerInput": 52.08995,
+      "meanSurvivingValue": 72.92447151056979,
+      "meanSalePerInput": 28.64035,
+      "meanActions": 2.48075,
+      "capped": 0
+    },
+    {
+      "stopTurn": 5,
+      "samples": 20000,
+      "survival": 0.5092,
+      "meanValuePerInput": 139.56865,
+      "meanSurvivingValue": 274.0939709347997,
+      "meanSalePerInput": 75.05555,
+      "meanActions": 4.2825,
+      "capped": 0
+    },
+    {
+      "stopTurn": 7,
+      "samples": 20000,
+      "survival": 0.36325,
+      "meanValuePerInput": 396.73945,
+      "meanSurvivingValue": 1092.193943565038,
+      "meanSalePerInput": 154.71845,
+      "meanActions": 5.55585,
+      "capped": 0
+    },
+    {
+      "stopTurn": 9,
+      "samples": 20000,
+      "survival": 0.26975,
+      "meanValuePerInput": 1247.84505,
+      "meanSurvivingValue": 4625.931603336423,
+      "meanSalePerInput": 174.59105,
+      "meanActions": 6.49965,
+      "capped": 0
+    }
+  ]
+}
