@@ -53,3 +53,6 @@
 
 /* Keep the pill input above furnace art; pointer ghost is portalled to body. */
 .pill-levitation{z-index:4}.carried-object{z-index:10000}
+
+/* Drag guidance stays next to the destination, with a separate ready state. */
+.drag-drop-hint{position:absolute;z-index:20;left:12px;right:12px;bottom:172px;text-align:center;padding:12px 16px;border:2px solid #dfb87c;border-radius:10px;background:#102325f5;color:#ffe0a8;font-size:16px;font-weight:700;pointer-events:none;box-shadow:0 4px 20px #0008}.drag-drop-hint[hidden]{display:none}.drag-drop-hint[data-ready=true]{background:#254b35;color:#e2ffd9;border-color:#b2df9a}.dragging-herbs .furnace{outline:3px dashed #f1d598;outline-offset:6px;border-radius:30px}.dragging-pill .tray-object{outline:3px dashed #f1d598;outline-offset:3px;border-radius:18px;opacity:1!important}.furnace.drop-target-ready,.tray-object.drop-target-ready{outline:4px solid #b2df9a;box-shadow:0 0 24px #b2df9a66}.dragging-herbs .fire-object,.dragging-pill .tray-object b{color:#ffe9af}.dragging-herbs .furnace::after{content:'投药到这里';position:absolute;left:0;right:0;top:24px;text-align:center;font:bold 17px "Microsoft YaHei",sans-serif;color:#fff0c5;text-shadow:0 2px 5px #000;pointer-events:none}@media(max-width:600px){.drag-drop-hint{font-size:13px;bottom:168px;padding:10px 8px}}

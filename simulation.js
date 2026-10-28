@@ -22,6 +22,8 @@
   pill.tabIndex = 0; pill.setAttribute('role', 'button');
   let held = null, drag = null, locked = false, timer = null, generation = 0;
   let delivered = [], suppress = new Set();
+  const dropHint=document.createElement('div');dropHint.className='drag-drop-hint';dropHint.hidden=true;dropHint.setAttribute('role','status');stage.appendChild(dropHint);
+  function clearDropHint(){dropHint.hidden=true;stage.classList.remove('drop-ready');furnace?.classList.remove('drop-target-ready');tray.classList.remove('drop-target-ready');}
   const snapshot = () => window.AlchemyGame.snapshot();
   const active = () => snapshot().started && !snapshot().roundEnded;
   const canLoad = () => active() && !controls.load.disabled && !locked;
@@ -79,7 +81,7 @@
   function inside(el, e) { const r = el.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom; }
   function endDrag(e) {
     if (!drag) return;
-    const {kind, moved} = drag; drag = null;
+    const {kind, moved} = drag; drag = null;clearDropHint();
     $('carriedObject').hidden = true;
     stage.classList.remove('dragging-herbs', 'dragging-pill');
     if (moved || e.type !== 'pointerup') {
@@ -107,6 +109,12 @@
       ghost.textContent = kind === 'herbs' ? '药' : '丹'; ghost.dataset.kind = kind;
       ghost.style.left = e.clientX+'px'; ghost.style.top = e.clientY+'px';
       stage.classList.add('dragging-'+kind);
+      const ready=kind==='herbs'?(inside(furnace,e)||inside(fire,e)):inside(tray,e);
+      const selling=!!snapshot().order?.self;
+      dropHint.hidden=false;dropHint.dataset.ready=String(ready);
+      dropHint.textContent=kind==='herbs'?(ready?'松手投入药材 · 开始炼制':'拖到高亮炉口 · 松手投药'):(ready?(selling?'松手出售丹药 · 获得铜钱':'松手交付丹药 · 计入委托'):(selling?'拖到高亮交付盘 · 松手出售':'拖到高亮交付盘 · 松手提交'));
+      furnace.classList.toggle('drop-target-ready',kind==='herbs'&&ready);tray.classList.toggle('drop-target-ready',kind==='pill'&&ready);
+      stage.classList.toggle('drop-ready',ready);
     });
     ['pointerup','pointercancel','lostpointercapture'].forEach(n => object.addEventListener(n,endDrag));
   }
@@ -153,7 +161,7 @@
   }
   window.addEventListener('alchemy:render', updateCampaignContext);
   function reset() {
-    generation++; clearTimeout(timer); timer = null; locked = false; window.AlchemyInteractionBusy = false; held = null; drag = null;
+    clearDropHint();generation++; clearTimeout(timer); timer = null; locked = false; window.AlchemyInteractionBusy = false; held = null; drag = null;
     stage.classList.remove('pouring','landing','fanning','dragging-herbs','dragging-pill');
     $('carriedObject').hidden = true; delivered = [...(snapshot().collected || [])]; suppress.clear();
     $('trayPills').innerHTML = delivered.map(d => `<i data-quality="${d.quality}" data-nature="${d.nature || 'neutral'}">丹</i>`).join('');
