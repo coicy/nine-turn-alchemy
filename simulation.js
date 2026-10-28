@@ -144,7 +144,7 @@
       document.getElementById('slipValue').textContent = '等待接单';
       document.querySelector('.commission-slip b').textContent = '今日待接单';
     } else if (s.roundEnded) {
-      document.getElementById('workInstruction').textContent = '本单已结清 · 请接下一单，三单处理完后可日结';
+      document.getElementById('workInstruction').textContent = '本单已结清 · 请接下一单，全部订单处理完后可日结';
     }
   }
   window.addEventListener('alchemy:render', updateCampaignContext);
@@ -172,6 +172,7 @@
   document.addEventListener('visibilitychange',() => {if(document.hidden)cancelCarry();});
   sync();
 })();
+
 
 
 

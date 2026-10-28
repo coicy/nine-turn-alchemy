@@ -18,7 +18,7 @@
     const raw = JSON.parse(window.localStorage?.getItem(SAVE_KEY) || "null");
     if (campaignRules && raw?.version === 1 && Number.isInteger(raw.campaign?.day) && raw.campaign.day >= 1 && raw.campaign.day <= 30
       && ['open','settled','finished'].includes(raw.campaign.phase)
-      && Array.isArray(raw.campaign.orders) && raw.campaign.orders.length === 3 && Array.isArray(raw.campaign.history)
+      && Array.isArray(raw.campaign.orders) && [3,7,8].includes(raw.campaign.orders.length) && Array.isArray(raw.campaign.history)
       && raw.campaign.orders.every(o => o && typeof o.id === 'string' && Number.isFinite(o.target) && ['pending','active','completed','failed'].includes(o.status))
       && Number.isFinite(raw.target) && raw.target > 0 && raw.materials === 3
       && raw.state?.pill && Number.isFinite(raw.state.delivered) && Number.isInteger(raw.state.attempt)
@@ -157,7 +157,7 @@
     dom.explosionText.textContent = `${state.explosions} 次`;
     dom.completedText.textContent = `${state.completedPills} 颗`;
     dom.trialHint.textContent = state.roundEnded
-      ? (campaign ? "本单已结清，请选择下一份委托；三单处理后可结束今日。" : state.delivered >= ORDER_TARGET ? "订单完成！点击重新开始再挑战。" : "原料已用尽，订单未完成。点击重新开始再挑战。")
+      ? (campaign ? "本单已结清，请选择下一份委托；全部订单处理后可结束今日。" : state.delivered >= ORDER_TARGET ? "订单完成！点击重新开始再挑战。" : "原料已用尽，订单未完成。点击重新开始再挑战。")
       : state.pillEnded ? "取一包委托药材，投入炉口开炉。" : state.pill.turn >= 9 ? "九转已成，收丹交付即可锁定价值。" : state.pill.shield
         ? "护丹已准备：下一次炸丹将转为保持。" : `下一次炸丹概率 ${percentage(explosionChance)}，可继续炼化或收丹交付。`;
     dom.pillName.textContent = `${QUALITY_NAMES[state.pill.quality]}${state.pill.runes.length ? `·${state.pill.runes.join("·")}` : ""}丹`;
@@ -404,6 +404,10 @@
     if (state && state.busy) return;
     if (saved && event?.currentTarget === dom.startButton) {
       campaign = saved.campaign; state = saved.state; state.busy = false;
+      if (campaign.phase === 'open' && campaign.orders.length === 3) {
+        const extra = campaignRules.ordersFor(campaign.day);
+        campaign.orders.push(...extra.slice(3));
+      }
       ORDER_TARGET = saved.target; MAX_PILLS = saved.materials; saved = null;
       document.body.dataset.screen = "playing"; dom.introModal.classList.add("hidden");
       if (!state.roundEnded) telemetry?.begin(playtestSnapshot());
@@ -523,4 +527,5 @@
   }
   render();
 })();
+
 
