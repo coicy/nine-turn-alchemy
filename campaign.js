@@ -3,18 +3,18 @@
 const DAYS=30;
 function ordersFor(day,random=Math.random){
  if(!Number.isInteger(day)||day<1||day>DAYS)throw new Error('Invalid day');
- const step=Math.floor((day-1)/5)*20;
+ const step=Math.floor((day-1)/5)*24;
  const pool=[
-  {client:'采药散修',name:'行路备丹',target:120},
-  {client:'坊市行商',name:'补充行囊',target:200},
-  {client:'远行修士',name:'出行代炼',target:300},
-  {client:'守夜修士',name:'夜巡备用',target:160},
-  {client:'山间药农',name:'入山备药',target:140},
-  {client:'渡口船客',name:'渡江行囊',target:180},
-  {client:'游学弟子',name:'游历备丹',target:240},
-  {client:'驿路信使',name:'赶路急需',target:220},
-  {client:'闭关散修',name:'静修储备',target:280},
-  {client:'探洞修士',name:'秘境备丹',target:260}
+  {client:'采药散修',name:'行路备丹',target:84},
+  {client:'坊市行商',name:'补充行囊',target:120},
+  {client:'远行修士',name:'出行代炼',target:180},
+  {client:'守夜修士',name:'夜巡备用',target:108},
+  {client:'山间药农',name:'入山备药',target:96},
+  {client:'渡口船客',name:'渡江行囊',target:114},
+  {client:'游学弟子',name:'游历备丹',target:156},
+  {client:'驿路信使',name:'赶路急需',target:132},
+  {client:'闭关散修',name:'静修储备',target:168},
+  {client:'探洞修士',name:'秘境备丹',target:144}
  ];
  const natures={'行路备丹':'neutral','补充行囊':'neutral','出行代炼':'warm','夜巡备用':'warm','入山备药':'neutral','渡江行囊':'cool','游历备丹':'neutral','赶路急需':'warm','静修储备':'cool','秘境备丹':'cool'};
  for(const o of pool)o.nature=natures[o.name];

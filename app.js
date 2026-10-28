@@ -7,6 +7,7 @@
     { explode: 0.21 }, { explode: 0.24 },
   ];
 
+  function qualityAtTurn(turn){return turn>=60?4:turn>=30?3:turn>=15?2:turn>=5?1:0;}
   const QUALITY_NAMES = ["凡品", "良品", "上品", "极品", "绝品"];
   let ORDER_TARGET = 300;
   let MAX_PILLS = 3;
@@ -315,7 +316,7 @@
       if (outcome === "explode") { outcome = "hold"; usedShield = true; }
     }
     if(outcome==='explode'&&campaign?.economy?.equipped==='seal'&&!state.pill.toolUsed){state.pill.toolUsed=true;outcome='damage';addLog('镇炉印挡下炸炉，改为丹体受损。','good');}
-    if (outcome !== "explode") state.pill.quality = Math.min(4, state.pill.quality + 1);
+    if(outcome!=='explode'){const nextTurn=outcome==='big'?Math.min(100,state.pill.turn+2):outcome==='success'?Math.min(100,state.pill.turn+1):outcome==='damage'?Math.max(1,state.pill.turn-1):state.pill.turn;state.pill.quality=Math.max(state.pill.qualityFloor||0,qualityAtTurn(nextTurn));}
 
     let feedback = "";
     let feedbackTone = "";
@@ -337,7 +338,7 @@
     } else if (outcome === "hold") {
       if (state.pill.runes.includes("赤纹") || state.pill.runes.includes("金纹")) state.pill.shield = true;
       feedback = usedShield ? "护丹挡下炸丹，火候维持。" : "火候维持，转数和价值不变。";
-      addLog(`<strong>火候维持</strong>：转数和价值不变，品质提升。${usedShield ? "护丹挡下炸丹。" : ""}${state.pill.shield ? "赤纹凝成下一次护丹。" : ""}`, "");
+      addLog(`<strong>火候维持</strong>：转数、价值和品质不变。${usedShield ? "护丹挡下炸丹。" : ""}${state.pill.shield ? "赤纹凝成下一次护丹。" : ""}`, "");
     } else if (outcome === "damage") {
       applyDamage();
       feedback = `丹体受损，转数回落至${(TURN_NAMES[state.pill.turn] || String(state.pill.turn))}转。`;
@@ -395,7 +396,7 @@
     state.attempt += 1;
     state.riskResult = randomRisk();
     state.pill = freshPill();
-    if(campaignRules?.active(campaign)?.tier===1)state.pill.quality=1;
+    if(campaignRules?.active(campaign)?.tier===1){state.pill.quality=1;state.pill.qualityFloor=1;}
     state.pillEnded = false;
     state.pillEndReason = "";
     decisionSince = Date.now();
@@ -409,6 +410,7 @@
     if (state && state.busy) return;
     if (saved && event?.currentTarget === dom.startButton) {
       campaign = saved.campaign; state = saved.state; state.busy = false;
+      state.pill.qualityFloor=campaignRules.active(campaign)?.tier===1?1:0;state.pill.quality=Math.max(state.pill.qualityFloor,qualityAtTurn(state.pill.turn));
       if (campaign.phase === 'open' && campaign.orders.length === 3) {
         const extra = campaignRules.ordersFor(campaign.day);
         campaign.orders.push(...extra.slice(3));

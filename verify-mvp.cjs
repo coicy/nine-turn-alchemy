@@ -64,7 +64,7 @@ settle(0.9, 0.95); // shield consumed, damage with blue rune
 assert.equal(state.pill.value, 90);
 assert.equal(state.pill.turn, 2);
 assert.equal(state.pill.shield, false);
-assert.equal(state.pill.quality, 3);
+assert.equal(state.pill.quality, 0);
 
 state.pill.turn = 99;
 state.pill.value = 300;

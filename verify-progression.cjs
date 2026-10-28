@@ -1,0 +1,6 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),C=require('./campaign.js');
+const base=fs.readFileSync(__dirname+'/verify-simulation.cjs','utf8').split('const click=id=>')[0].replace('getState:()=>state,render','getState:()=>state,qualityAtTurn,resolveRefine,render');const outer={require,__dirname,console};vm.createContext(outer);vm.runInContext(base+';globalThis.env={context,testMath,timers};',outer);const {context,testMath,timers}=outer.env,a=context.testApi;
+for(const [t,q] of [[1,0],[4,0],[5,1],[14,1],[15,2],[29,2],[30,3],[59,3],[60,4],[100,4]])assert.equal(a.qualityAtTurn(t),q);
+const s=a.getState();Object.assign(s,{started:true,attempt:1,pillEnded:false,roundEnded:false,riskResult:{explode:0}});testMath.random=()=>.8;for(let i=0;i<15;i++){a.resolveRefine();timers.clear();}assert.equal(s.pill.turn,1);assert.equal(s.pill.quality,0,'hold must not farm quality');
+for(let i=0;i<20;i++){const orders=C.ordersFor(1);assert.ok(orders.every(o=>o.target>72&&o.target<=204),'early targets require refining and are achievable by three low-grade fourth-turn pills');}
+console.log('PASS: quality bands, no quality farming on hold, early commissions fit low-grade pills');
