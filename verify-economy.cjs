@@ -2,7 +2,7 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const E=require('./economy.js'),C=require('./campaign.js');
 const c=C.create();E.ensure(c);assert.equal(c.economy.coins,80);assert.equal(E.buy(c,'material',0),true);assert.equal(c.economy.coins,62);assert.equal(E.buy(c,'material',-1),false);
 c.economy.coins=5000;assert.ok(E.buy(c,'tool','seal'));assert.equal(E.buy(c,'tool','seal'),false);assert.ok(E.buy(c,'tool','needle'));assert.ok(E.buy(c,'furnace'));assert.ok(E.buy(c,'furnace'));assert.equal(E.buy(c,'furnace'),false);
-const o={target:200,status:'completed',returned:2,nature:'cool'};const cash=c.economy.coins;assert.ok(E.commission(c,o,[{quality:4,turn:9,runes:['金纹']}])>0);assert.equal(E.commission(c,o,[]),0);assert.equal(c.economy.herbs.cool,2);assert.equal(o.returned,0);assert.ok(c.economy.coins>cash);assert.equal(E.sale(c,{value:24,turn:6}),220);
+const o={target:200,status:'completed',returned:2,nature:'cool'};const cash=c.economy.coins;assert.ok(E.commission(c,o,[{quality:4,turn:9,runes:['金纹']}])>0);assert.equal(E.commission(c,o,[]),0);assert.equal(c.economy.herbs.cool,2);assert.equal(o.returned,0);assert.ok(c.economy.coins>cash);assert.equal(E.sale(c,{value:24,turn:6}),16);
 const skipped=C.create();assert.ok(C.settle(skipped));assert.ok(skipped.orders.every(o=>o.status==='skipped'));assert.equal(skipped.history[0].failed,0);
 const base=fs.readFileSync(__dirname+'/verify-simulation.cjs','utf8').split('const click=id=>')[0]
 .replace('getState:()=>state,render','getState:()=>state,getCampaign:()=>campaign,resolveRefine,applyDamage,tryAddRune,render')

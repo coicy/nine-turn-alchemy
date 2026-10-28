@@ -66,11 +66,11 @@ assert.equal(state.pill.turn, 2);
 assert.equal(state.pill.shield, false);
 assert.equal(state.pill.quality, 3);
 
-state.pill.turn = 8;
+state.pill.turn = 99;
 state.pill.value = 300;
 settle(0.9, 0.01, 0.9); // big success to nine
-assert.equal(state.pill.turn, 9);
-assert.equal(element("eventTitle").textContent, "九转成丹");
+assert.equal(state.pill.turn, 100);
+assert.equal(element("eventTitle").textContent, "百转成丹");
 assert.equal(element("pillStage").dataset.state, "complete");
 assert.equal(element("refineButton").disabled, true);
 assert.equal(element("collectButton").disabled, false);
