@@ -1,0 +1,19 @@
+{
+  "tool": "image_gen built-in",
+  "transparent_background": true,
+  "common": "Create ONE single medicinal pill sprite, a restrained hand-painted illustration for a modest Chinese alchemy workshop game with antique bronze tools and parchment props. This is a game illustration with softly simplified painted shading, NOT a photorealistic macro photograph. A round intact opaque compact herbal medicinal pill, front view, sphere centered occupying 80 percent of a square canvas with identical generous transparent margins. Same mid-dark muted olive-brown body color with a quiet tea-brown undertone. Same soft warm upper-left lighting. Same mark: exactly two or three VERY fine shallow closed fissure-like cyan-blue medicinal veins, naturally branched but sparse, embedded in the same sphere and following its curvature, never outside the pill. At least 90% of the body is unmarked. The veins do not divide the body into pieces. No deep dark gaps, no flakes or crumbly surface, no visible herbs, no leaves, no stems, no coarse particles, no stone, no jade, no marble, no mineral veins, no metallic trim, no symbols, no rings, no aura, no labels, no letters, no numbers. Fully transparent background, no ground shadow, no other objects. Must read elegantly at only 118 pixels. ",
+  "variants": [
+    [
+      "a-honey",
+      "Material direction A: fine honey-bound herbal pill. Uniform dense finely milled medicinal surface, gently rounded tiny variations, a soft broad SATIN sheen from the binder. The highlight is low contrast and wide, not a sharp glossy spot. Surface feels smooth and faintly supple, neither wet nor sticky. Minimal fine texture, extremely restrained brush detail."
+    ],
+    [
+      "b-water",
+      "Material direction B: fine water-bound herbal pill. Even densely rolled medicinal powder surface, DRY MATTE finish with barely perceptible fine powder grain. Very diffuse low-contrast shading, no shiny highlights. No pores, no dirt or dried clay texture. Uniform and refined, not rough."
+    ],
+    [
+      "c-concentrate",
+      "Material direction C: refined concentrated-extract pill. Dense homogeneous herbal-extract surface with a subtle smooth SEMIGLOSS sheen. One restrained soft reflection makes the spherical outline clear. Opaque and medicinal, no transparency, no glass-like reflections or polished stone. Nearly invisible surface texture, clean painted values."
+    ]
+  ]
+}

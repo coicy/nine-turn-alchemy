@@ -1,0 +1,41 @@
+[
+  {
+    "file": "assets/pill-styles/style-a-honey-v7.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "bytes": 1313982
+  },
+  {
+    "file": "assets/pill-styles/style-b-water-v7.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "bytes": 1392376
+  },
+  {
+    "file": "assets/pill-styles/style-c-concentrate-v7.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "bytes": 1342113
+  }
+]
