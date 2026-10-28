@@ -2,3 +2,6 @@ body.engine-shell[data-screen=playing]{height:100dvh;overflow:hidden}.engine-she
 
 /* Dock the market beside the workbench instead of covering it. */
 .engine-shell.shop-docked .engine-viewport{right:440px}.engine-shell.shop-docked .economy-board.engine-panel{left:auto!important;right:12px!important;top:148px!important;bottom:12px!important;width:416px!important;padding:16px!important}.engine-shell.shop-docked .economy-board .daily-orders{grid-template-columns:1fr}.engine-shell.shop-docked .economy-board .daily-heading{flex-wrap:wrap}.engine-shell.shop-docked .economy-board h2{font-size:19px}.engine-shell.shop-docked .engine-close{right:16px;top:118px}@media(max-width:800px){.engine-shell.shop-docked .engine-viewport{right:0;bottom:43%}.engine-shell.shop-docked .economy-board.engine-panel{left:8px!important;right:8px!important;top:auto!important;bottom:8px!important;width:auto!important;height:40dvh!important}.engine-shell.shop-docked .economy-board .daily-orders{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.engine-shell.shop-docked .engine-close{top:auto;bottom:calc(40dvh + 10px);right:12px}}
+
+/* Shell navigation owns visibility even when a feature refreshes its content. */
+.engine-panel[data-shell-active="false"]{display:none!important}
