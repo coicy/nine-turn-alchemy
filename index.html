@@ -1,12 +1,12 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b1719" />
     <title>九转丹坊 · MVP</title>
-    <link rel="stylesheet" href="styles.css?v=opening-1" />
-  </head>
+    <link rel="stylesheet" href="styles.css?v=workbench-3" />
+  <link rel="stylesheet" href="simulation.css?v=workbench-3" /></head>
   <body data-screen="opening">
     <div class="app-shell">
       <header class="topbar">
@@ -21,12 +21,12 @@
       </header>
 
       <main class="game-layout">
-        <aside class="panel order-panel">
+        <details class="panel order-panel record-fold"><summary>展开委托簿与本单记录</summary>
           <div class="panel-kicker">宗门委托</div>
           <div class="order-heading">
             <div>
               <h2 id="trialTitle">完成宗门订单</h2>
-              <p id="trialFlavor">三颗原料，收丹累计价值达到 300 即可完成。</p>
+              <p id="trialFlavor">三包委托药材，交付价值累计达到 300。</p>
             </div>
             <span class="order-number" id="attemptBadge">第 1 炉</span>
           </div>
@@ -63,7 +63,7 @@
             <p id="trialHint">下一次炼丹风险不会提前揭示，结果会在炼丹后出现。</p>
           </div>
           <p class="deferred-note">本局为实验订单，数值尚需试玩调整。</p>
-        </aside>
+        </details>
 
         <section class="panel forge-panel">
           <div class="order-strip"><span>本局交付 <strong id="compactOrderValue">0 / 300</strong></span><span>剩余原料 <strong id="compactStockValue">3 颗</strong></span></div>
@@ -130,15 +130,15 @@
             <div class="outcome-list" id="outcomeList"></div>
           </div>
 
-          <div class="action-row">
-            <button class="primary-button" id="refineButton" type="button">继续炼丹 <span>Enter</span></button>
-            <button class="secondary-button" id="collectButton" type="button">收丹交付</button>
-            <button class="secondary-button" id="newPillButton" type="button">再开一炉</button>
+          <div class="action-row scene-actions">
+            <button class="primary-button" id="refineButton" type="button">♨ 守火炼化 <span>Enter</span></button>
+            <button class="secondary-button" id="collectButton" type="button">◉ 收丹交付</button>
+            <button class="secondary-button" id="newPillButton" type="button">♧ 取药开炉</button>
           </div>
           <p class="action-hint" id="actionHint">每次炼丹结束后，下一次风险会重新生成，只显示炸丹概率。</p>
         </section>
 
-        <aside class="panel side-panel">
+        <details class="panel side-panel record-fold"><summary>翻阅丹纹手册与炉讯</summary>
           <div class="panel-kicker">丹纹追踪</div>
           <h2>本轮发现</h2>
           <div class="rune-list" id="runeList"></div>
@@ -162,12 +162,12 @@
           <p class="deferred-note">用于分析收丹时机、炼丹结果和订单胜负。不记录姓名和联系方式，可随时关闭。</p>
           <p class="deferred-note" id="telemetryStatus" role="status">开始游戏后记录；上传失败将在本机暂存。</p>
           <button class="ghost-button" id="exportDataButton" type="button">导出本机记录</button>
-        </aside>
+        </details>
       </main>
 
       <footer class="footer-note">
         <span>一炉烟火，九转成丹 · MVP 试玩</span>
-        <span>空格 / Enter：炼化</span>
+        <span>整包投药起炉 · 点击炉膛催炼 · 引丹入盘</span>
       </footer>
     </div>
 
@@ -180,7 +180,7 @@
           <p class="opening-tagline">一炉烟火，九转成丹。</p>
           <p class="opening-prose">山门外，你的丹坊今日挂牌。<br>宗门送来三份药材——第一炉的名声，就在你手中。</p>
         </section>
-        <aside class="opening-letter" aria-labelledby="letterTitle">
+        <section class="opening-letter" aria-labelledby="letterTitle">
           <div class="opening-emblem" aria-hidden="true"><div class="emblem-ring"></div><div class="emblem-orb">九</div><span>一炉一念</span></div>
           <div class="letter-heading"><span>宗门来笺</span><span class="letter-number">初字 · 壹</span></div>
           <h2 id="letterTitle">请炼首批灵丹</h2>
@@ -188,11 +188,11 @@
           <div class="letter-goals"><div><strong>三</strong><span>份药材</span></div><div><strong>300</strong><span>交付目标</span></div></div>
           <p class="letter-note">收丹后才计入交付。药材用尽仍未达标，则试单失败。</p>
           <span class="letter-stamp" aria-hidden="true">试</span>
-        </aside>
+        </section>
         <section class="opening-launch" aria-label="开始试玩">
-          <button class="primary-button opening-start" id="startButton" type="button">接单开炉 <span aria-hidden="true">→</span></button>
+          <button class="primary-button opening-start" id="startButton" type="button">接下委托 <span aria-hidden="true">→</span></button>
           <p class="opening-choice">继续炼化追求极品，或及时收丹锁定价值。</p>
-          <details class="opening-help"><summary>查看试炉要诀</summary><ol><li>点击炼丹，转数与价值可能提升，也可能受损或炸丹。</li><li>每次操作前查看炸丹概率，随时可以收丹交付。</li><li>九转后须收丹；三份药材内累计交付价值达到 300 即获胜。</li></ol></details>
+          <details class="opening-help"><summary>查看试炉要诀</summary><ol><li>点药包拿起，再点炉口整包投入；也可将药包拖入炉口。</li><li>点击炉膛挥扇催炼，一次一炼。先查看炸丹概率，再决定继续或收丹。</li><li>点灵丹取出，再点交付盘落盘，也可拖入盘中。九转后须收丹；累计交付价值达到 300 即获胜。</li></ol></details>
           <div class="opening-consent">
             <label class="telemetry-option"><input type="checkbox" id="introTelemetryEnabled" /> 我已阅读并同意上传匿名试玩记录</label>
             <a class="policy-link" href="data-policy.html" target="_blank" rel="noopener">《试玩数据收集说明与同意》</a>
@@ -204,6 +204,11 @@
     </div>
 
     <script src="telemetry.js"></script>
-    <script src="app.js?v=opening-1"></script>
-  </body>
+    <script src="app.js?v=workbench-3"></script>
+  <script src="simulation.js?v=workbench-3"></script></body>
 </html>
+
+
+
+
+

@@ -1,0 +1,52 @@
+﻿/* One workbench; supporting records fold away below it. */
+.action-row[hidden]{display:none!important}
+.app-shell{width:min(1000px,calc(100% - 32px));padding-top:18px}
+.game-layout{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
+.forge-panel{order:0;width:100%;background:radial-gradient(ellipse at 50% 40%,#3b5a4777,transparent 65%),linear-gradient(#16302d,#10241f);padding-bottom:16px}
+.order-panel,.side-panel{order:1;flex:1 1 300px;font-size:13px}
+.record-fold>summary{cursor:pointer;font:18px 'STKaiti','KaiTi',serif;color:#dec596;min-height:30px}
+.record-fold:not([open]){padding:16px 23px}.record-fold[open]>summary{margin-bottom:18px}
+.pill-stage{min-height:600px;margin-bottom:12px;border-bottom:14px solid #59432c;background:linear-gradient(transparent 69%,#60482f88 70%,#30261c 100%)}
+.pill-stage::after{content:'';position:absolute;inset:70% 0 0;z-index:-1;border-top:2px solid #b3975b66;background:repeating-linear-gradient(2deg,transparent 0 26px,#bda67b0b 27px 28px)}
+.commission-slip{position:absolute;left:24px;top:25px;z-index:3;width:155px;min-height:153px;padding:18px 14px;background:linear-gradient(135deg,#d3bd88,#ad9769);color:#3e3627;box-shadow:3px 6px 12px #0005;transform:rotate(-3deg);border:1px solid #dac999;display:flex;flex-direction:column;gap:10px}
+.commission-slip small{font-size:10px;line-height:1.7}.commission-slip b{font:23px 'STKaiti','KaiTi',serif}.commission-slip>span{font-size:12px}
+#deliverySeals{display:flex;gap:5px;flex-wrap:wrap}#deliverySeals i{font:12px serif;border:1px solid #843f32;color:#843f32;padding:3px;transform:rotate(-7deg)}
+.pill-stage .risk-panel{position:absolute;z-index:3;right:24px;top:25px;width:160px;margin:0;padding:16px 12px;background:#192d26e8;border:1px solid #b69b5f77;border-radius:3px;box-shadow:3px 6px 12px #0004;transform:rotate(2deg)}
+.risk-heading{align-items:start;gap:5px;flex-direction:column}.risk-heading span{font-size:11px}.risk-heading strong{font-size:28px}.risk-detail{margin-top:9px}.risk-detail strong{font-size:11px}
+.stage-caption{top:203px}.ring-one{top:235px}.ring-two{top:249px}.pill-aura{top:233px}.pill-levitation{top:275px}.orbit-rune{top:calc(335px + var(--y))}
+.furnace{top:375px;left:calc(50% - 155px);width:310px;height:168px;cursor:pointer;z-index:1}.furnace-glow{top:370px}
+.furnace-lid{position:absolute;top:386px;left:calc(50% - 72px);width:144px;height:20px;background:linear-gradient(#b6a06c,#3b5141);border-radius:70% 70% 15% 15%;border:2px solid #ad945d;z-index:2;pointer-events:none;opacity:.35}
+.can-collect .furnace-lid{opacity:0}.empty-furnace .furnace-lid{opacity:1}
+.empty-furnace .pill-levitation,.empty-furnace .pill-aura,.empty-furnace .rune-orbit,.empty-furnace .stage-ring{visibility:hidden}
+.empty-furnace .furnace-glow{opacity:.1}.empty-furnace .ember{opacity:.2}
+.event-banner{top:177px;bottom:auto;left:12px;right:12px;pointer-events:none;font-size:12px}
+.work-object{position:absolute;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:4px;width:135px;min-height:130px;padding:8px;background:transparent;border:0;color:#e4d0a8;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none}
+.work-object svg{width:85px;height:80px;filter:drop-shadow(0 7px 4px #0007);pointer-events:none;transition:filter .15s,transform .15s}
+.work-object b{font:18px 'STKaiti','KaiTi',serif}.work-object small{font-size:10px;white-space:nowrap;color:#c6b18b}
+.work-object:disabled{opacity:.42;cursor:default}.work-object:focus-visible{outline:2px solid #efd498;outline-offset:0;border-radius:10px}.work-object:hover:not(:disabled) svg{filter:drop-shadow(0 0 10px #e5c47b77);transform:translateY(-2px)}
+.herb-object{left:5%;bottom:34px}.fire-object{left:50%;transform:translateX(-50%);bottom:12px;min-height:91px}.fire-object svg{display:none}.tray-object{right:5%;bottom:34px}.tray-object svg{width:120px;height:80px}
+.pack-stack{position:absolute;top:9px;left:8px;display:flex;gap:4px}.pack-stack i{display:block;width:13px;height:19px;background:#b29864;border:1px solid #ead6a1;box-shadow:0 2px 2px #0005}
+.awaiting-herbs .herb-object svg,[data-held=herbs] .furnace,.dragging-herbs .furnace,[data-held=pill] .tray-object svg,.dragging-pill .tray-object svg{filter:drop-shadow(0 0 12px #e4ca8b99)}
+[data-held=herbs] .herb-object svg{transform:rotate(-18deg) translateY(-12px)}
+[data-held=pill] .pill-visual{transform:translateY(-12px)}
+.can-collect .pill-visual{cursor:grab;touch-action:none}.pill-visual[aria-disabled=true]{cursor:default}.pill-visual:focus-visible{outline:3px solid #efd198;outline-offset:5px}
+.hand-fan{position:absolute;z-index:3;top:327px;left:calc(50% + 105px);width:85px;height:125px;transform:rotate(26deg);transform-origin:60% 95%;pointer-events:none}
+.fanning .hand-fan{animation:fan-stroke .28s ease-in-out}.fanning .furnace-glow{animation:fan-fire .28s ease-in-out}
+.loose-herbs{position:absolute;top:300px;left:calc(50% - 54px);display:flex;gap:12px;z-index:7;pointer-events:none;opacity:0}.loose-herbs i{display:grid;place-items:center;width:28px;height:20px;border-radius:80% 10%;background:#8ca276;color:#203e2a;font:12px serif}.loose-herbs i:nth-child(2){background:#b39461}.loose-herbs i:nth-child(3){background:#c99487}
+.pouring .loose-herbs{animation:pour-herbs .72s ease-in forwards}.pouring .loose-herbs i:nth-child(2){transform:translateY(-12px)}.pouring .loose-herbs i:nth-child(3){transform:translateY(-24px)}.pouring .furnace-lid{opacity:0}
+.landing .pill-levitation{animation:land-pill .32s ease-in forwards}.landing .tray-object svg{filter:drop-shadow(0 0 16px #e8cf8a)}
+#trayPills{position:absolute;top:39px;display:flex;gap:4px}#trayPills i{display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:radial-gradient(circle at 30% 20%,#fbefca,#86aa8c 45%,#315044);font:11px serif;color:#fff3c8;box-shadow:0 2px 3px #0008}#trayPills i[data-quality="4"]{background:#caac65}
+.work-instruction{position:absolute;bottom:0;left:8px;right:8px;text-align:center;font-size:12px;color:#e4d0a8;pointer-events:none;margin:8px}
+.carried-object{position:fixed;z-index:100;pointer-events:none;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff0bf,#89b69b 45%,#234d3c);box-shadow:0 0 18px #e4c68088;color:#fff5d7;text-align:center;font:22px/46px serif}.carried-object[data-kind=herbs]{border-radius:5px;background:#ad9764;transform:translate(-50%,-50%) rotate(-15deg)}
+.carried-object[hidden]{display:none}.action-hint{display:none}.finished-order .commission-slip{border:2px solid #a65d48}
+@keyframes fan-stroke{50%{transform:rotate(-32deg) translateX(-20px)}}
+@keyframes fan-fire{50%{transform:scale(1.65);filter:blur(5px);background:#e9b56c66}}
+@keyframes pour-herbs{0%{opacity:0;transform:translate(-45px,-35px) rotate(-12deg)}20%{opacity:1}90%{opacity:1}100%{opacity:0;transform:translate(25px,100px) rotate(35deg)}}
+@keyframes land-pill{to{transform:translate(210px,170px) scale(.3);opacity:0}}
+@media(max-width:600px){.app-shell{width:calc(100% - 20px)}.forge-panel{padding-left:12px;padding-right:12px}.pill-stage{margin-left:-12px;margin-right:-12px;min-height:620px}.commission-slip{left:12px;top:20px;width:130px;padding:12px;min-height:149px}.pill-stage .risk-panel{right:12px;top:20px;width:130px;padding:12px}.work-object{width:100px}.herb-object{left:0;bottom:40px}.tray-object{right:0;bottom:40px}.work-object small{font-size:9px}.work-object b{font-size:16px}.tray-object svg{width:95px}.hand-fan{left:calc(50% + 85px);width:65px}.work-instruction{font-size:10px;line-height:1.6}.footer-note{flex-wrap:wrap}.topbar-actions{flex-direction:column;align-items:end}.stat-chip{padding:6px}.topbar h1{font-size:29px}.order-strip{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}.order-panel,.side-panel{flex-basis:100%}}
+@media(prefers-reduced-motion:reduce){.fanning .hand-fan,.fanning .furnace-glow,.pouring .loose-herbs,.landing .pill-levitation{animation:none}.pouring .loose-herbs{opacity:1;top:380px}.work-object svg{transition:none}}
+
+
+[data-held=herbs] .loose-herbs{opacity:1;top:auto;bottom:128px;left:calc(5% + 12px);transform:rotate(-8deg)}
+.no-herbs .herb-object svg{visibility:hidden}
+@media(max-width:600px){[data-held=herbs] .loose-herbs{left:8px;bottom:134px;gap:5px}}

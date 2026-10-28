@@ -131,7 +131,7 @@
     dom.completedText.textContent = `${state.completedPills} 颗`;
     dom.trialHint.textContent = state.roundEnded
       ? (state.delivered >= ORDER_TARGET ? "订单完成！点击重新开始再挑战。" : "原料已用尽，订单未完成。点击重新开始再挑战。")
-      : state.pillEnded ? "本炉结束，点击再开一炉。" : state.pill.turn >= 9 ? "九转已成，收丹交付即可锁定价值。" : state.pill.shield
+      : state.pillEnded ? "取一包委托药材，投入炉口开炉。" : state.pill.turn >= 9 ? "九转已成，收丹交付即可锁定价值。" : state.pill.shield
         ? "护丹已准备：下一次炸丹将转为保持。" : `下一次炸丹概率 ${percentage(explosionChance)}，可继续炼化或收丹交付。`;
     dom.pillName.textContent = `${QUALITY_NAMES[state.pill.quality]}${state.pill.runes.length ? `·${state.pill.runes.join("·")}` : ""}丹`;
     dom.turnValue.textContent = TURN_NAMES[state.pill.turn];
@@ -166,6 +166,14 @@
     dom.actionHint.textContent = state.pillEnded
       ? (state.roundEnded ? "本局结束，点击“重新开始”再试一次。" : "本炉已结束，点击“再开一炉”。")
       : state.pill.turn >= 9 ? "九转成丹，点击“收丹交付”。" : "每次炼丹后重新生成炸丹概率；收丹可锁定当前价值。";
+    if (state.pillEndReason === "waiting") {
+      dom.pillName.textContent = "空炉待药";
+      dom.pillValue.textContent = "—";
+      dom.qualityValue.textContent = "未起炉";
+      dom.riskBadge.textContent = "待投药";
+      dom.riskDescription.textContent = "整包投药后开始本炉";
+    }
+    window.dispatchEvent?.(new Event("alchemy:render"));
   }
 
   function renderOutcomes(chance) {
@@ -367,7 +375,9 @@
     if (state?.started && !state.roundEnded) telemetry?.finish(playtestSnapshot(), "restart");
     state = createState();
     state.started = true;
-    state.attempt = 1;
+    state.attempt = 0;
+    state.pillEnded = true;
+    state.pillEndReason = "waiting";
     decisionSince = Date.now();
     if (telemetry) {
       const intro = document.getElementById("introTelemetryEnabled");
@@ -376,12 +386,12 @@
       telemetry.setEnabled(toggle.checked);
     }
     telemetry?.begin(playtestSnapshot());
-    addLog("第一道炉火已经点燃。下一次风险已生成。", "good");
+    addLog("委托已接下，三包药材放在案上。取一包投入炉口，开始第一炉。", "good");
     document.body.dataset.screen = "playing";
     dom.introModal.classList.add("hidden");
-    setFeedback("炉火已起，炼化或收丹皆由你定。", "good", "start");
+    setFeedback("委托药材已备齐，等待投药。", "good", "start");
     render();
-    dom.refineButton.focus?.({ preventScroll: true });
+    document.getElementById("herbObject")?.focus?.({ preventScroll: true });
     window.scrollTo?.(0, 0);
   }
 
@@ -413,6 +423,9 @@
     }
   });
 
+  window.AlchemyGame = { snapshot: () => ({ ...playtestSnapshot(), started: state.started,
+    busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
+    endReason: state.pillEndReason, remaining: MAX_PILLS - state.attempt }) };
   state = createState();
   if (telemetry) {
     document.getElementById("exportDataButton").addEventListener("click", () => telemetry.download());

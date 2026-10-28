@@ -1,4 +1,4 @@
-const fs = require("fs");
+﻿const fs = require("fs");
 const vm = require("vm");
 const assert = require("assert");
 const path = require("path");
@@ -30,6 +30,9 @@ const settle = (...values) => { rolls = values; api.resolveRefine(); };
 
 click("startButton");
 assert.equal(document.body.dataset.screen, "playing");
+assert.equal(api.getState().attempt, 0);
+assert.equal(element("collectButton").disabled, true);
+click("newPillButton");
 assert.equal(api.getState().attempt, 1);
 click("collectButton");
 assert.equal(api.getState().delivered, 24);
@@ -46,6 +49,7 @@ assert.equal(api.getState().roundEnded, true);
 assert.equal(element("newPillButton").disabled, true);
 
 click("restartButton");
+click("newPillButton");
 let state = api.getState();
 state.pill.runes.push("赤纹", "青纹");
 state.pill.value = 100;
@@ -78,6 +82,7 @@ assert.ok(collector.exportData().events.some(e => e.type === "run_end" && e.resu
 assert.ok(collector.exportData().events.some(e => e.type === "run_end" && e.result === "loss"));
 assert.ok(collector.exportData().events.some(e => e.type === "collect" && e.before.value === 24 && e.state.delivered === 24));
 click("restartButton");
+click("newPillButton");
 rolls = [0.9, 0.5, 0.9, 0.5];
 click("refineButton");
 assert.equal(api.getState().busy, true);
@@ -86,3 +91,4 @@ assert.equal(api.getState().busy, false);
 assert.ok(collector.exportData().events.some(e => e.type === "refine_choice"));
 assert.ok(collector.exportData().events.some(e => e.type === "refine_result" && e.before.turn === 1 && e.state.turn === 2));
 console.log("MVP checks passed: collection, three-pill loss, rune effects, nine-turn cap, order victory.");
+
