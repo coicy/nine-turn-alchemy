@@ -131,11 +131,12 @@
     $('herbHint').textContent = held === 'herbs' ? '已拆包 · 点炉口投入' : `剩余 ${s.remaining} 包 · 取药`;
     $('fireLabel').textContent = locked ? '操作中' : held === 'herbs' ? '整包投入' : !s.pillEnded && s.turn >= 9 ? '九转已成' : '挥扇催炼';
     $('fireHint').textContent = s.pillEnded ? '等待投药起炉' : '点炉膛 · 每次一炼';
-    $('trayHint').textContent = held === 'pill' ? '点此落盘，交还委托' : `已交 ${delivered.length} 颗 · 点盘收丹交付`;
+    $('trayHint').textContent = s.order?.self ? '自炼成丹 · 点盘出售' : held === 'pill' ? '点此落盘，交还委托' : `已交 ${delivered.length} 颗 · 点盘收丹交付`;
     const target = s.target || 300;
     $('slipValue').textContent = `已交 ${Math.round(s.delivered)} / ${target}`;
     const heading = document.querySelector('.commission-slip b');
     if (s.order && heading) heading.textContent = s.order.name;
+    document.querySelector('.commission-slip small').textContent=s.order?.self?'自购材料 · 成丹自售':'客人委托 · 材料与成丹归客';
     $('workInstruction').textContent = locked ? '药材与成丹按本炉结算，请稍候…' : !s.started ? '接下委托，取药开炉' : s.roundEnded ? (s.delivered >= target ? '委托已完成 · 成丹已归客' : '三包药材已用尽 · 本单结束') : held === 'herbs' ? '整包药材已展开 · 点炉口倾倒，Esc 放回' : held === 'pill' ? '已托起灵丹 · 点交付盘，Esc 放回炉中' : s.pillEnded ? '取一包药材，拖入炉口 · 也可点药包，再点炉口' : s.busy ? '扇落火起，丹纹正在变化…' : s.turn >= 9 ? '九转已成 · 取丹放入交付盘' : '点炉膛挥扇催炼 · 点交付盘收丹，也可拖丹入盘';
   }
   function updateCampaignContext() {
@@ -145,6 +146,7 @@
       document.getElementById('workInstruction').textContent = '今日尚未接单 · 在上方委托簿选择一份订单';
       document.getElementById('slipValue').textContent = '等待接单';
       document.querySelector('.commission-slip b').textContent = '今日待接单';
+    } else if(s.order.self){document.getElementById('workInstruction').textContent=s.roundEnded?'自炼结束 · 可继续购料或接委托':s.runeChoices?.length?'灵性药包：请在坊市栏选择丹纹':'自购药包 · 投料、催炼，点交付盘出售成丹';
     } else if (s.roundEnded) {
       document.getElementById('workInstruction').textContent = '本单已结清 · 请接下一单，全部订单处理完后可日结';
     }
