@@ -1,0 +1,154 @@
+[
+  {
+    "file": "assets/alchemy/furnace-v1.png",
+    "size": [
+      1315,
+      1196
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "center_alpha": 253,
+    "bytes": 2023457,
+    "bbox": [
+      0,
+      3,
+      1303,
+      1196
+    ]
+  },
+  {
+    "file": "assets/alchemy/pill-base-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "center_alpha": 253,
+    "bytes": 1576829,
+    "bbox": [
+      0,
+      7,
+      1253,
+      1250
+    ]
+  },
+  {
+    "file": "assets/alchemy/rune-azure-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "center_alpha": 0,
+    "bytes": 1300223,
+    "bbox": [
+      0,
+      1,
+      1236,
+      1254
+    ]
+  },
+  {
+    "file": "assets/alchemy/rune-crimson-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "center_alpha": 0,
+    "bytes": 1008314,
+    "bbox": [
+      0,
+      21,
+      1253,
+      1254
+    ]
+  },
+  {
+    "file": "assets/alchemy/rune-gold-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "center_alpha": 0,
+    "bytes": 1710798,
+    "bbox": [
+      0,
+      10,
+      1241,
+      1254
+    ]
+  },
+  {
+    "file": "assets/alchemy/rune-moon-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "center_alpha": 0,
+    "bytes": 907436,
+    "bbox": [
+      0,
+      0,
+      1254,
+      1254
+    ]
+  },
+  {
+    "file": "assets/alchemy/rune-star-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "center_alpha": 0,
+    "bytes": 1360551,
+    "bbox": [
+      0,
+      9,
+      1254,
+      1254
+    ]
+  },
+  {
+    "file": "assets/alchemy/rune-thunder-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "center_alpha": 0,
+    "bytes": 1040142,
+    "bbox": [
+      8,
+      22,
+      1241,
+      1254
+    ]
+  }
+]
