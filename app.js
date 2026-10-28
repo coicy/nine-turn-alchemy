@@ -89,7 +89,7 @@
       day: campaign?.day || 1, orderId: state.orderId || null };
   }
 
-  function randomRisk(turn=state?.pill?.turn||1) {return {explode:BREAK_CURVE[Math.max(0,Math.min(30,Math.floor(turn)-1))]};}
+  function randomRisk(turn=state?.pill?.turn||1) {const base=BREAK_CURVE[Math.max(0,Math.min(30,Math.floor(turn)-1))];return {explode:base*(window.AlchemyEconomy?.toolRisk(campaign?.economy?.equipped,state?.pill)||1)};}
 
   function freshPill() {
     return { turn: 1, quality: 0, value: 24, runes: [], bestTurn: 1, shield: false, toolUsed:false, damageSoftened:false, runeChoices:[] };
@@ -257,11 +257,11 @@
 
   function applyAlchemy(outcome) {
     const isBigSuccess = outcome === "big";
-    const turnGain = isBigSuccess ? 2 : 1;
+    const turnGain = (isBigSuccess ? 2 : 1)+(state.pill.toolTurnBonus||0);state.pill.toolTurnBonus=0;
     const priceFor = (turn,quality,runes) => {const t=Math.max(0,Math.min(100,turn)-1);return Math.round((24+8*t+2*t*t+.08*t*t*t)*(1+quality*.08+runes.length*.12+(runes.includes('金纹')?.25:0)+(runes.includes('星痕')?.35:0)));};
     state.pill.turn = Math.min(100, state.pill.turn + turnGain);
     const qualityValueBoost = 1 + state.pill.quality * 0.03;
-    state.pill.value = priceFor(state.pill.turn,state.pill.quality,state.pill.runes);
+    state.pill.value = Math.round(priceFor(state.pill.turn,state.pill.quality,state.pill.runes)*(state.pill.valueFactor??1));
     state.pill.bestTurn = Math.max(state.pill.bestTurn, state.pill.turn);
   }
 
@@ -303,14 +303,19 @@
     const profile = state.riskResult;
     const explode = Math.random() < profile.explode;
     const roll = Math.random();
-    let outcome = explode ? "explode" : roll < 2/21 ? "big" : roll < 14/21 ? "success" : roll < 19/21 ? "hold" : "damage";
+    const tool=campaign?.economy?.equipped;
+    const w=window.AlchemyEconomy?.outcomeWeights(tool)||{big:2,success:12,hold:5,damage:2};const total=w.big+w.success+w.hold+w.damage;
+    let outcome=explode?'explode':roll<w.big/total?'big':roll<(w.big+w.success)/total?'success':roll<(w.big+w.success+w.hold)/total?'hold':'damage';
     let usedShield = false;
     if (state.pill.shield) {
       state.pill.shield = false;
       if (outcome === "explode") { outcome = "hold"; usedShield = true; }
     }
     if(outcome==='explode'&&campaign?.economy?.equipped==='seal'&&!state.pill.toolUsed){state.pill.toolUsed=true;outcome='damage';addLog('镇炉印挡下炸炉，改为丹体受损。','good');}
-    if(outcome!=='explode'){const nextTurn=outcome==='big'?Math.min(100,state.pill.turn+2):outcome==='success'?Math.min(100,state.pill.turn+1):outcome==='damage'?Math.max(1,state.pill.turn-1):state.pill.turn;state.pill.quality=Math.max(state.pill.qualityFloor||0,qualityAtTurn(nextTurn));}
+    if(outcome==='explode'&&tool==='phoenix'&&!state.pill.toolUsed){state.pill.toolUsed=true;state.pill.valueFactor=(state.pill.valueFactor??1)*.6;state.pill.value=Math.max(1,Math.round(state.pill.value*.6));outcome='hold';addLog('返生鼎符挡下炸炉：丹值损失40%，本炉持续承受此折损。','good');}
+    if(tool==='chain'){state.pill.successChain=['big','success'].includes(outcome)?(state.pill.successChain||0)+1:0;if(state.pill.successChain>0&&state.pill.successChain%2===0){state.pill.toolTurnBonus=1;addLog('双仪环：连续两次成丹，额外提升一转。','good');}}
+    if(tool==='repair'&&outcome==='damage'&& !usedShield){state.pill.scars=Math.min(4,(state.pill.scars||0)+1);addLog('淬火盏：本炉炸炉率相对降低'+(state.pill.scars*15)+'%。','good');}
+    if(outcome!=='explode'){const nextTurn=outcome==='big'?Math.min(100,state.pill.turn+2+(state.pill.toolTurnBonus||0)):outcome==='success'?Math.min(100,state.pill.turn+1+(state.pill.toolTurnBonus||0)):outcome==='damage'?Math.max(1,state.pill.turn-1):state.pill.turn;state.pill.quality=Math.max(state.pill.qualityFloor||0,qualityAtTurn(nextTurn));}
 
     let feedback = "";
     let feedbackTone = "";
@@ -388,8 +393,8 @@
   function startNewPill() {
     if (!state.started || state.busy || !state.pillEnded || state.roundEnded || state.attempt >= MAX_PILLS) return;
     state.attempt += 1;
-    state.riskResult = randomRisk(1);
     state.pill = freshPill();
+    state.riskResult = randomRisk(1);
     if(campaignRules?.active(campaign)?.tier===1){state.pill.quality=1;state.pill.qualityFloor=1;}
     state.pillEnded = false;
     state.pillEndReason = "";
@@ -523,7 +528,7 @@
     snapshot: () => ({ ...playtestSnapshot(), started: state.started,
     busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
     endReason: state.pillEndReason, remaining: campaign && !state.orderId ? 0 : MAX_PILLS - state.attempt, target: ORDER_TARGET,
-    runeChoices:state.pill.runeChoices||[],toolUsed:!!state.pill.toolUsed,campaignEnabled: !!campaign, collected: state.collected,
+    toolProgress:{scars:state.pill.scars||0,chain:state.pill.successChain||0,valueFactor:state.pill.valueFactor??1},runeChoices:state.pill.runeChoices||[],toolUsed:!!state.pill.toolUsed,campaignEnabled: !!campaign, collected: state.collected,
     order: campaign ? (campaignRules.active(campaign) || (campaign.selfOrder?.id===state.orderId?campaign.selfOrder:campaign.orders.find(o => o.id === state.orderId))) : null }) };
   state = createState();
   if (saved) dom.startButton.textContent = "继续经营";
