@@ -32,13 +32,15 @@ reset(['burn','return','ash'],['青纹','月纹']);result(0);a.render();const sa
 const legacy=JSON.parse(store.get('alchemy-days-v1'));legacy.campaign.economy.equipped='seal';legacy.state.pill.toolUsed=true;delete legacy.state.pill.toolUses;store.set('alchemy-days-v1',JSON.stringify(legacy));e=env();w=e.window;a=e.context.testApi;s=a.getState();c=a.getCampaign();assert.equal(c.economy.equipped[0],'seal');assert.equal(s.pill.toolUses.seal,1);s.pill.runes=[];s.pill.shield=false;s.riskResult={explode:1};result(0);assert.equal(s.pillEnded,true,'reload cannot recharge old protection');
 console.log('PASS: all six rune abilities; automatic producer/burn/return/value/fusion combos; three slots; finite independent charges; dynamic risk; new and legacy save recovery');
 
-// Render and operate the actual shop code: no new in-furnace rune button.
-let created=0;e.document.createElement=()=>e.el('shop-created-'+(++created));e.el('.game-layout').prepend=()=>{};e.el('.forge-panel').prepend=()=>{};e.document.body.classList={contains:()=>false};
+// Render actual market and equipment drawer scripts with a shared game state.
+let created=0;e.document.createElement=()=>{const n=e.el('shop-created-'+(++created));n.querySelector=()=>null;return n;};e.el('.game-layout').prepend=()=>{};e.el('.game-layout').append=()=>{};e.el('.forge-panel').prepend=()=>{};e.document.body.classList={contains:()=>false};
 s.pillEnded=true;c.economy.tools=['needle','burn','return','ash'];c.economy.equipped=['needle','burn','return'];
 vm.runInContext(fs.readFileSync(__dirname+'/economy-ui.js','utf8'),e.context);
-const shop=e.el('shop-created-1'),badge=e.el('shop-created-2');assert.match(shop.innerHTML,/同时装备三件/);assert.ok(!shop.innerHTML.includes('data-kind="reroll"'));assert.match(badge.textContent,/3\/3/);
-shop.emit('click',{target:{closest:()=>({disabled:false,dataset:{kind:'equip',id:'return'}})}});assert.equal(c.economy.equipped.length,2);shop.emit('click',{target:{closest:()=>({disabled:false,dataset:{kind:'equip',id:'ash'}})}});assert.ok(c.economy.equipped.includes('ash'));assert.match(badge.textContent,/烬金印/);
-console.log('PASS: actual shop renders three slots, toggles owned tools and exposes no manual reroll button');
+vm.runInContext(fs.readFileSync(__dirname+'/equipment-ui.js','utf8'),e.context);
+const shop=e.el('shop-created-1'),badge=e.el('shop-created-2'),drawer=e.el('shop-created-3');assert.match(shop.innerHTML,/法器购置/);assert.ok(!shop.innerHTML.includes('data-kind="equip"'));assert.ok(!shop.innerHTML.includes('data-kind="reroll"'));assert.match(badge.textContent,/3\/3/);assert.match(drawer.innerHTML,/当前三件法器/);
+function equipClick(id){drawer.emit('click',{target:{closest:selector=>selector==='[data-equipment]'?{disabled:false,dataset:{equipment:id}}:null}});}
+equipClick('return');assert.equal(c.economy.equipped.length,2);equipClick('ash');assert.ok(c.economy.equipped.includes('ash'));assert.match(badge.textContent,/烬金印/);
+console.log('PASS: market purchases separated from three-slot drawer; equipment toggles update workbench');
 const allRunes=['赤纹','青纹','月纹','雷纹'];
 for(const t of E.TOOL_DEFS.filter(t=>t.runeTarget)){
  let hits=0;for(let i=0;i<1000;i++){let seq=[i/1000,.5];if(E.pickRune(allRunes,[t.id],()=>seq.shift())===t.runeTarget)hits++;}assert.equal(hits,750,'direction has exactly 75% conditional weight');
