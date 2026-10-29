@@ -268,6 +268,7 @@
     dom.eventBanner.classList.add("flash");
     dom.pillStage.dataset.tone = tone;
     dom.pillStage.dataset.outcome = event;
+    if (typeof CustomEvent !== 'undefined') window.dispatchEvent?.(new CustomEvent('alchemy:feedback', {detail:{event,message,value,turn:state.pill.turn,quality:state.pill.quality,runes:[...state.pill.runes]}}));
     dom.pillStage.classList.remove("is-feedback");
     void dom.pillStage.offsetWidth;
     dom.pillStage.classList.add("is-feedback");
