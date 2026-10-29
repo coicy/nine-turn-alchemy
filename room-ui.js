@@ -15,7 +15,7 @@
     stage.dataset.loading = String(!!s.busy);
     document.querySelector('.room-observation').hidden = !live;
     document.getElementById('roomEmpty').hidden = true;
-    document.getElementById('roomEmpty').textContent = !s.order ? '尚未接单 · 前往柜台接待客人' : s.roundEnded ? '本炉已结清 · 可返回柜台或开始下一炉' : '空炉待投料 · 将一份药包拖至炉口';
+    document.getElementById('roomEmpty').textContent = !s.order ? '尚未接单 · 前往柜台接待客人' : s.roundEnded ? '本炉已结清 · 可返回柜台或开始下一炉' : '空炉待投料 · 从药柜取药包投入炉口';
     document.getElementById('herbObject').hidden = live || !s.order || s.roundEnded || s.remaining <= 0;
     fire.hidden = !live;
     document.getElementById('trayObject').hidden = !live;
@@ -49,5 +49,6 @@
   window.addEventListener('alchemy:order', update);
   update();
 })();
+
 
 
