@@ -21,7 +21,12 @@
     document.getElementById('trayObject').hidden = !live;
     document.getElementById('trayPills').hidden = true;
     document.getElementById('deliverySeals').hidden = true;
-    document.getElementById('roomFacts').textContent = live ? `${s.turn}转 · ${document.getElementById('qualityValue').textContent}　当前价值 ${Math.round(s.value)}　下次炸丹 ${document.getElementById('riskResultValue').textContent}` : '';
+    const facts = document.getElementById('roomFacts');
+    facts.replaceChildren();
+    if (live) for (const [label, value] of [['转数', `${s.turn}转`], ['品质', document.getElementById('qualityValue').textContent], ['价值', String(Math.round(s.value))], ['炸丹概率', document.getElementById('riskResultValue').textContent]]) {
+      const row = document.createElement('div'), name = document.createElement('span'), number = document.createElement('strong');
+      name.textContent = label; number.textContent = value; row.append(name, number); facts.append(row);
+    }
     document.getElementById('roomRunes').textContent = live ? document.getElementById('runeSummary').textContent : '';
     document.getElementById('fireLabel').textContent = s.busy ? '炼化中' : '炼化';
     document.getElementById('fireHint').textContent = '点器具或炉口继续炼化';

@@ -26,3 +26,7 @@
 .painted-room .drag-drop-hint{bottom:18%;left:25%;right:25%}
 .painted-room .pill-stage:not([data-live=true]) .pill-levitation{display:none}
 .painted-room .stage-ring,.painted-room .loose-herbs{display:none}
+.painted-room #roomFacts{padding-left:120px;min-height:145px;font-size:17px;line-height:1.5}
+.painted-room #roomFacts>div{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin:0 0 9px;white-space:nowrap}
+.painted-room #roomFacts strong{font-weight:600;font-variant-numeric:tabular-nums}
+.painted-room #roomRunes{margin:12px 0 14px;line-height:1.6;overflow-wrap:anywhere}

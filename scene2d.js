@@ -6,7 +6,7 @@
   const ctx=canvas.getContext('2d'),cache=new Map();
   let state=game.snapshot(),dirty=true; const stats={frames:0,drawn:[]};
   window.addEventListener('alchemy:render',()=>{state=game.snapshot();noticeUntil=0;dirty=true;});
-  const objects={herbs:{x:100,y:650,w:180,h:150,src:'herb-parcel-v1'},tool:{x:1030,y:465,w:190,h:85,src:'alchemy-fan-v1',flat:true},tray:{x:1330,y:470,w:195,h:100,src:'delivery-tray-v1',flat:true},pill:{x:1280,y:95,w:120,h:120}};
+  const objects={herbs:{x:100,y:650,w:180,h:150,src:'herb-parcel-v1'},tool:{x:1030,y:465,w:190,h:85,src:'alchemy-fan-v1',flat:true},tray:{x:1330,y:470,w:195,h:100,src:'delivery-tray-v1',flat:true},pill:{x:1255,y:100,w:85,h:85}};
   const mouth={x:470,y:285,w:310,h:150};
   let held=null,pointer=null,hover=null,focusIndex=0,notice='',noticeUntil=0;
   const live=()=>{const s=state;return s.started&&!s.roundEnded&&!s.pillEnded;};
