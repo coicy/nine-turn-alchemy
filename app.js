@@ -507,7 +507,7 @@
   dom.startButton.addEventListener("click", startGame);
   dom.restartButton.addEventListener("click", startGame);
   dom.refineButton.addEventListener("click", refine);
-  dom.collectButton.addEventListener("click", () => {
+  function collectPill() {
     if (!state.started || state.busy || state.pillEnded || state.roundEnded || state.pill.runeChoices?.length) return;
     const before = playtestSnapshot();
     const isSelf=!!campaignRules?.active(campaign)?.self;
@@ -526,9 +526,11 @@
     if(isSelf)setFeedback(campaign.economy.last,"good","collect");
     else setFeedback(state.roundEnded ? (won ? "订单完成！客人已收下你的丹药。" : "原料用尽，订单未完成。") : "收丹交付，价值已锁定。", state.roundEnded && !won ? "bad" : "good", state.roundEnded ? (won ? "win" : "loss") : "collect", `已交付 +${formatNumber(state.pill.value)}`);
     render();
-  });
+  }
+  dom.collectButton.addEventListener("click", collectPill);
   dom.newPillButton.addEventListener("click", startNewPill);
   document.addEventListener("keydown", (event) => {
+    if (event.target.id === "alchemyScene") return;
     if (event.key === "Enter" || event.key === " ") {
       if (document.activeElement && ["BUTTON", "INPUT"].includes(document.activeElement.tagName)) return;
       event.preventDefault();
@@ -576,7 +578,7 @@
     else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded))ok=window.AlchemyEconomy.buy(campaign,kind,id);
     if(ok){state.riskResult=randomRisk();render();}return ok;
   }
-  window.AlchemyGame = { RUNE_CHANCE, RUNE_DEFS, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
+  window.AlchemyGame = { RUNE_CHANCE, RUNE_DEFS, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
     snapshot: () => ({ ...playtestSnapshot(), started: state.started,
     busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
@@ -599,5 +601,6 @@
   }
   render();
 })();
+
 
 

@@ -170,6 +170,7 @@
   }
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { held = null; if (drag) endDrag({type:'pointercancel'}); sync(); return; }
+    if (e.target.id === 'alchemyScene') return;
     if (!['Enter',' '].includes(e.key) || !active()) return;
     if (e.target.closest('button,input,a,summary,[role="button"]')) return;
     e.preventDefault(); e.stopImmediatePropagation();
@@ -184,6 +185,7 @@
   document.addEventListener('visibilitychange',() => {if(document.hidden)cancelCarry();});
   sync();
 })();
+
 
 
 
