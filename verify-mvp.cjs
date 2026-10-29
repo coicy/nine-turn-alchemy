@@ -22,7 +22,7 @@ math.random = () => rolls.length ? rolls.shift() : 0.5;
 const timers = [];
 const context = { document, Math: math, clearTimeout() {}, setTimeout() {}, window: { AlchemyTelemetry: collector, setTimeout(fn) { timers.push(fn); }, setInterval() {}, addEventListener() {} } };
 let source = fs.readFileSync(path.join(__dirname, "app.js"), "utf8");
-source = source.replace(/\}\)\(\);\s*$/, "globalThis.testApi = { getState: () => state, resolveRefine, render }; })();");
+source = source.replace(/\}\)\(\);\s*$/, "globalThis.testApi = { getState: () => state, resolveRefine, render, tryAddRune, tryFusion }; })();");
 vm.runInNewContext(source, context);
 const api = context.testApi;
 const click = id => element(id).click();
@@ -92,3 +92,21 @@ assert.ok(collector.exportData().events.some(e => e.type === "refine_choice"));
 assert.ok(collector.exportData().events.some(e => e.type === "refine_result" && e.before.turn === 1 && e.state.turn === 2));
 console.log("MVP checks passed: collection, three-pill loss, rune effects, nine-turn cap, order victory.");
 
+
+// Repeated generation reaches all six distinct runes through both fusions.
+click("restartButton");
+click("newPillButton");
+state = api.getState();
+for(let i=0;i<20;i++){rolls=[0,0];api.tryAddRune();assert.ok(state.pill.runes.length<=6);}
+assert.equal(state.pill.runes.length,6);
+assert.equal(new Set(state.pill.runes).size,6);
+assert.ok(state.pill.runes.includes("金纹") && state.pill.runes.includes("星痕"));
+const fullValue=state.pill.value;
+assert.equal(api.tryAddRune(),null);
+assert.equal(state.pill.value,fullValue);
+api.render();
+assert.ok(element("runeSummary").textContent.includes("6/6 道 · 已满"));
+assert.equal(element("refineButton").disabled,false);
+click("collectButton");
+assert.equal(state.collected[0].runes.length,6);
+console.log("PASS: six-rune capacity, fusion occupancy, full-cap rejection and collection");

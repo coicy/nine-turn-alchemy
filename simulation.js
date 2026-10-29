@@ -52,7 +52,7 @@
       if (controls.collect.disabled) return;
       controls.collect.click();
       delivered.push({value:before.value, quality:before.quality, turn:before.turn, nature:before.order?.nature || 'neutral'});
-      $('trayPills').innerHTML = delivered.map(d => `<i data-quality="${d.quality}" data-nature="${d.nature || 'neutral'}" title="${d.turn}转 · ${Math.round(d.value)}">丹</i>`).join('');
+      $('trayPills').innerHTML = delivered.map(d => `<i data-runes="${(d.runes || []).join(',')}" data-quality="${d.quality}" data-nature="${d.nature || 'neutral'}" title="${d.turn}转 · ${Math.round(d.value)}">丹</i>`).join('');
       $('deliverySeals').innerHTML = delivered.map(d => `<i>${Math.round(d.value)}</i>`).join('');
     });
   }
@@ -164,7 +164,7 @@
     clearDropHint();generation++; clearTimeout(timer); timer = null; locked = false; window.AlchemyInteractionBusy = false; held = null; drag = null;
     stage.classList.remove('pouring','landing','fanning','dragging-herbs','dragging-pill');
     $('carriedObject').hidden = true; delivered = [...(snapshot().collected || [])]; suppress.clear();
-    $('trayPills').innerHTML = delivered.map(d => `<i data-quality="${d.quality}" data-nature="${d.nature || 'neutral'}">丹</i>`).join('');
+    $('trayPills').innerHTML = delivered.map(d => `<i data-runes="${(d.runes || []).join(',')}" data-quality="${d.quality}" data-nature="${d.nature || 'neutral'}">丹</i>`).join('');
     $('deliverySeals').innerHTML = delivered.map(d => `<i>${Math.round(d.value)}</i>`).join(''); sync();
     if (snapshot().order || !snapshot().campaignEnabled) herbs.focus({preventScroll:true});
   }

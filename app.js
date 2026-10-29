@@ -4,6 +4,7 @@
   // ForgeTax reference: grade = turn - 1; after grade 30 retain terminal risk.
   const BREAK_CURVE=[0,.018,.059,.129,.248,.297,.347,.383,.418,.443,.467,.491,.505,.519,.532,.545,.558,.576,.594,.612,.63,.639,.648,.657,.666,.675,.684,.693,.702,.711,.72];
   function qualityAtTurn(turn){return turn>=60?4:turn>=30?3:turn>=15?2:turn>=5?1:0;}
+  const MAX_RUNES = 6;
   const QUALITY_NAMES = ["凡品", "良品", "上品", "极品", "绝品"];
   let ORDER_TARGET = 300;
   let MAX_PILLS = 3;
@@ -84,7 +85,7 @@
 
   function playtestSnapshot() {
     return { attempt: state.attempt, turn: state.pill.turn, quality: state.pill.quality,
-      value: state.pill.value, runes: [...state.pill.runes], shield: state.pill.shield,
+      value: state.pill.value, runes: [...state.pill.runes], maxRunes: MAX_RUNES, shield: state.pill.shield,
       risk: state.pill.shield ? 0 : state.riskResult.explode, delivered: state.delivered,
       day: campaign?.day || 1, orderId: state.orderId || null };
   }
@@ -160,7 +161,7 @@
     dom.turnValue.textContent = (TURN_NAMES[state.pill.turn] || String(state.pill.turn));
     dom.pillValue.textContent = state.pillEnded && state.pillEndReason === "explode" ? "已损失" : formatNumber(state.pill.value);
     dom.qualityValue.textContent = QUALITY_NAMES[state.pill.quality];
-    dom.runeSummary.textContent = state.pill.runes.length ? state.pill.runes.join(" / ") : "尚未显现";
+    dom.runeSummary.textContent = `${state.pill.runes.length}/${MAX_RUNES} 道${state.pill.runes.length >= MAX_RUNES ? " · 已满" : ""} · ${state.pill.runes.length ? state.pill.runes.join(" / ") : "尚未显现"}`;
     dom.riskResultValue.textContent = state.pillEnded || state.pill.turn >= 100 ? "--" : percentage(explosionChance);
     dom.pillVisual.classList.toggle("turn-nine", state.pill.turn >= 100);
     dom.pillVisual.dataset.quality = String(state.pill.quality);
@@ -272,6 +273,7 @@
   }
 
   function tryAddRune() {
+    if (state.pill.runes.length >= MAX_RUNES) return null;
     if(campaignRules?.active(campaign)?.tier===2 && !state.pill.spiritUsed){const choices=['赤纹','青纹','月纹','雷纹'].filter(r=>!state.pill.runes.includes(r));state.pill.spiritUsed=true;if(choices.length){state.pill.runeChoices=choices.sort(()=>Math.random()-.5).slice(0,2);return null;}}
     const chance = 0.25;
     if (Math.random() > chance) return null;
@@ -518,7 +520,7 @@
   function economyAction(kind,id,nature='neutral'){if(!campaign||state.busy||window.AlchemyInteractionBusy)return false;window.AlchemyEconomy.ensure(campaign);let ok=false;
     if(kind==='equip'){const e=campaign.economy;if(!state.pillEnded||(!e.tools.includes(id)&&id!==null))return false;e.equipped=id;ok=true;}
     else if(kind==='self'||kind==='herbself'){if(campaign.phase!=='open'||campaignRules.active(campaign)||!state.pillEnded||!state.roundEnded)return false;const e=campaign.economy;if(!['warm','cool','neutral'].includes(nature))return false;if(kind==='herbself'){nature=id;if(!['warm','cool','neutral'].includes(nature)||!e.herbs[nature])return false;e.herbs[nature]--;id=0;}else{if(!Number.isInteger(id)||id<0||id>2||!e.stock[id])return false;e.stock[id]--;}e.selfCount++;const o={id:'S'+e.selfCount,self:true,tier:id,status:'active',client:'自炼自售',name:['普通药包自炼','精选药包自炼','灵性药包自炼'][id],nature,materials:1,target:1};campaign.selfOrder=o;ORDER_TARGET=1;MAX_PILLS=1;state=createState();state.started=true;state.pillEnded=true;state.pillEndReason='waiting';state.orderId=o.id;window.dispatchEvent?.(new Event('alchemy:order'));ok=true;}
-    else if(kind==='chooseRune'){if(!state.pill.runeChoices?.includes(id))return false;state.pill.runes.push(id);state.pill.runeChoices=[];state.pill.value=Math.round(state.pill.value*1.18);tryFusion();updateRecord();ok=true;}
+    else if(kind==='chooseRune'){if(state.pillEnded||state.pill.runes.length>=MAX_RUNES||state.pill.runes.includes(id)||!state.pill.runeChoices?.includes(id))return false;state.pill.runes.push(id);state.pill.runeChoices=[];state.pill.value=Math.round(state.pill.value*1.18);tryFusion();updateRecord();ok=true;}
     else if(kind==='reroll'){if(state.pillEnded||campaign.economy.equipped!=='needle'||state.pill.toolUsed||!state.pill.runes.length||state.pill.runeChoices?.length)return false;const old=state.pill.runes.pop();const pool=['赤纹','青纹','月纹','雷纹'].filter(r=>r!==old&&!state.pill.runes.includes(r));if(!pool.length){state.pill.runes.push(old);return false;}state.pill.runes.push(pool[Math.floor(Math.random()*pool.length)]);state.pill.toolUsed=true;tryFusion();updateRecord();ok=true;}
     else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded))ok=window.AlchemyEconomy.buy(campaign,kind,id);
     if(ok)render();return ok;
