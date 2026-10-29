@@ -30,7 +30,7 @@
     document.getElementById('roomRunes').textContent = live ? document.getElementById('runeSummary').textContent : '';
     document.getElementById('fireLabel').textContent = s.busy ? '炼化中' : '炼化';
     document.getElementById('fireHint').textContent = '点器具或炉口继续炼化';
-    if (live && !s.busy && !window.AlchemyInteractionBusy) document.getElementById('workInstruction').textContent = '拿起扇子对火门扇风 · 从炉口取丹放入收丹盘';
+    if (live && !s.busy && !window.AlchemyInteractionBusy) document.getElementById('workInstruction').textContent = '点击火门扇风 · 从炉口取丹放入收丹盘';
     document.getElementById('trayHint').textContent = s.order?.self ? '收丹即出售 · 按实际售价结算' : '收丹计入本单';
     document.querySelector('.herb-object b').textContent = s.order?.self ? '自有药包' : '本单药包';
     document.querySelector('.commission-slip').hidden = !s.order || s.roundEnded;
