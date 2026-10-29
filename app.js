@@ -440,7 +440,7 @@
       dom.pillVisual.classList.remove("resolving");
       state.busy = false;
       resolveRefine();
-    }, 280);
+    }, document.body.classList?.contains("canvas-room") ? 100 : 280);
   }
 
   function startNewPill() {
@@ -601,6 +601,8 @@
   }
   render();
 })();
+
+
 
 
 
