@@ -3,7 +3,7 @@
   const stage = document.getElementById('pillStage');
   document.body.classList.add('painted-room');
   forge.dataset.room = 'true';
-  stage.insertAdjacentHTML('beforeend', '<section class="room-observation" aria-label="炉中丹药"><h2>炉中丹药</h2><div id="roomFacts"></div><p id="roomRunes"></p><small>拖动丹药到收丹盘</small></section><p class="room-empty" id="roomEmpty" role="status"></p>');
+  stage.insertAdjacentHTML('beforeend', '<section class="room-observation" aria-label="炉中丹药"><h2>炉中丹药</h2><div id="roomFacts"></div><p id="roomRunes"></p><small>从炉口取丹放入收丹盘</small></section><p class="room-empty" id="roomEmpty" role="status"></p>');
   const fire = document.getElementById('fireObject');
   fire.insertAdjacentHTML('afterbegin', '<img class="room-tool" src="assets/runtime-v10/alchemy-fan-v1.webp" alt="" draggable="false">');
   document.querySelector('.tray-object b').textContent = '收丹盘';
@@ -30,7 +30,7 @@
     document.getElementById('roomRunes').textContent = live ? document.getElementById('runeSummary').textContent : '';
     document.getElementById('fireLabel').textContent = s.busy ? '炼化中' : '炼化';
     document.getElementById('fireHint').textContent = '点器具或炉口继续炼化';
-    if (live && !s.busy && !window.AlchemyInteractionBusy) document.getElementById('workInstruction').textContent = '点击炼化器具继续 · 将丹药拖至收丹盘收取';
+    if (live && !s.busy && !window.AlchemyInteractionBusy) document.getElementById('workInstruction').textContent = '拿起扇子对火门扇风 · 从炉口取丹放入收丹盘';
     document.getElementById('trayHint').textContent = s.order?.self ? '收丹即出售 · 按实际售价结算' : '收丹计入本单';
     document.querySelector('.herb-object b').textContent = s.order?.self ? '自有药包' : '本单药包';
     document.querySelector('.commission-slip').hidden = !s.order || s.roundEnded;
@@ -49,4 +49,5 @@
   window.addEventListener('alchemy:order', update);
   update();
 })();
+
 

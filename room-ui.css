@@ -30,3 +30,6 @@
 .painted-room #roomFacts>div{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin:0 0 9px;white-space:nowrap}
 .painted-room #roomFacts strong{font-weight:600;font-variant-numeric:tabular-nums}
 .painted-room #roomRunes{margin:12px 0 14px;line-height:1.6;overflow-wrap:anywhere}
+
+.canvas-room #roomFacts{padding-left:0}.canvas-room .room-observation{min-height:200px}
+
