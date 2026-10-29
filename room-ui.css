@@ -1,0 +1,28 @@
+.painted-room[data-screen=playing] .topbar{display:none}
+.painted-room .engine-nav{background:#eee2ca;color:#403326;flex-basis:54px}
+.painted-room .engine-nav button{background:#f5ead4;color:#4a392b;border-color:#bba486}
+.painted-room .engine-nav button[aria-pressed=true]{background:#9b4e35;color:#fff4dd}
+.painted-room .engine-nav span{color:#493a2e}
+.painted-room .engine-viewport{background:#c8b69a}
+.painted-room .engine-viewport>.forge-panel{width:1600px!important;height:900px!important;padding:0;border:0;border-radius:0;background:none;overflow:hidden;box-shadow:none}
+.painted-room .pill-stage{position:absolute;inset:0;width:1600px;height:900px;min-height:0;margin:0;border:0;background:url('assets/room-v25/room.png') center/100% 100% no-repeat;overflow:hidden}
+.painted-room .pill-stage::after,.painted-room .forge-header,.painted-room .order-strip,.painted-room .pill-summary,.painted-room .risk-panel,.painted-room .stage-caption,.painted-room .scene-mountains,.painted-room .scene-inscription,.painted-room .stage-ring,.painted-room .pill-aura,.painted-room .rune-orbit,.painted-room .furnace-glow,.painted-room .furnace-lid,.painted-room .hand-fan,.painted-room .event-banner{display:none!important}
+.painted-room .furnace{position:absolute;left:27%;top:31%;width:24%;height:22%;opacity:0;background:none!important;z-index:2;cursor:pointer}
+.painted-room .dragging-herbs .furnace{opacity:1;outline:5px dashed #fff0bb;background:#ffdc7133!important;border-radius:50%}
+.painted-room .furnace>*{visibility:hidden}
+.painted-room .commission-slip{left:3%;top:4%;width:240px;min-height:0;transform:none;background:#f5e9cf;color:#493c30;padding:18px;font-size:16px}
+.painted-room .room-observation{position:absolute;right:2%;top:3%;width:330px;min-height:230px;background:#f7ecd4ed;border:2px solid #b79b77;color:#49382a;padding:20px;z-index:3;box-sizing:border-box}
+.painted-room .room-observation h2{font-size:23px;margin:0 0 12px}.painted-room #roomFacts{padding-left:130px;font-size:18px;line-height:1.8;min-height:140px}.painted-room #roomRunes{font-size:16px;clear:both}.painted-room .room-observation small{font-size:14px}
+.painted-room .pill-levitation{position:absolute;left:79%;top:11%;width:115px;height:115px;transform:none;z-index:6;animation:none}
+.painted-room .pill-visual{width:110px;height:110px;position:relative;left:0;top:0;margin:0;animation:none}
+.painted-room .work-object{width:190px;min-height:120px;color:#463526;z-index:5;background:#f3e7ccab;border:1px solid #bca587;border-radius:8px;padding:10px}
+.painted-room .work-object small{color:#493a2c;font-size:14px}.painted-room .work-object b{font-size:23px}
+.painted-room .herb-object{left:5%;bottom:11%}.painted-room .fire-object{left:66%;bottom:34%;transform:none}.painted-room .tray-object{right:3%;bottom:33%}
+.painted-room .room-tool{width:85px;height:85px;object-fit:contain;pointer-events:none}
+.painted-room .work-instruction{bottom:2%;left:20%;right:20%;padding:12px;background:#f6ebd4e8;color:#48392c;font-size:18px;border-radius:4px}
+.painted-room .room-empty{position:absolute;right:3%;top:4%;max-width:360px;padding:20px;background:#f6ead3e8;color:#493c30;font-size:22px}
+.painted-room .rune-trigger-status{position:absolute;top:36%;right:2%;width:330px;padding:8px;background:#f6ead3;color:#513b27;z-index:7}
+.painted-room [hidden]{display:none!important}
+.painted-room .drag-drop-hint{bottom:18%;left:25%;right:25%}
+.painted-room .pill-stage:not([data-live=true]) .pill-levitation{display:none}
+.painted-room .stage-ring,.painted-room .loose-herbs{display:none}
