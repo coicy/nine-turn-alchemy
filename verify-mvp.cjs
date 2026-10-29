@@ -59,7 +59,7 @@ assert.equal(state.pill.shield, true);
 assert.equal(element("riskResultValue").textContent, "0%");
 settle(0, 0.5); // shield converts explosion to hold
 assert.equal(state.pillEnded, false);
-assert.equal(state.pill.shield, true); // red rune renews shield on hold
+assert.equal(state.pill.shield, false); // protection-generated hold cannot renew the shield
 settle(0.9, 0.95); // shield consumed, damage with blue rune
 assert.equal(state.pill.value, 90);
 assert.equal(state.pill.turn, 2);

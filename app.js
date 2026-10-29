@@ -37,6 +37,33 @@
     "赤纹|青纹": { name: "金纹", multiplier: 2.05, message: "赤青相济，凝成金纹！" },
     "月纹|雷纹": { name: "星痕", multiplier: 2.25, message: "月雷交汇，留下星痕！" },
   };
+  const BASIC_RUNES = ['赤纹','青纹','月纹','雷纹'];
+  const RUNE_DEFS = {
+    '赤纹':'自然维持后获得下一次护丹；炸炉转维持。护丹触发的维持不会再次蓄盾。',
+    '青纹':'受损时丹值仅下降10%；转数仍回落一转。',
+    '月纹':'自然维持后蓄月力，下一次成功额外升一转；最多蓄一层。',
+    '雷纹':'大成功额外升一转；持有期间自动生效。',
+    '金纹':'赤纹与青纹融合，占一道位置，继承护丹和受损减值保护。',
+    '星痕':'月纹与雷纹融合，占一道位置，继承蓄月力和大成功额外升转。'
+  };
+  function hasTool(id){return !!window.AlchemyEconomy?.hasTool(campaign?.economy?.equipped,id);}
+  function uses(id){return state.pill.toolUses?.[id]||0;}
+  function useTool(id){state.pill.toolUses ||= {};state.pill.toolUses[id]=uses(id)+1;state.pill.toolUsed=true;}
+  function hasRune(...names){return names.some(n=>state.pill.runes.includes(n));}
+  function turnBonus(outcome){return (state.pill.toolTurnBonus||0)+(['success','big'].includes(outcome)?(state.pill.moonCharge||0):0)+(outcome==='big'&&hasRune('雷纹','星痕')?1:0);}
+  function triggerLog(message,tone='good'){state.pill.triggers ||= [];state.pill.triggers.push(message);addLog(message,tone);}
+  function consumeBasicRune(){
+    const p=state.pill,index=p.runes.findLastIndex(r=>BASIC_RUNES.includes(r));
+    if(index<0)return false;
+    const [rune]=p.runes.splice(index,1);useTool('burn');
+    // Removing a passive also removes its stored charge/shield unless its fusion remains.
+    if(!hasRune('月纹','星痕'))p.moonCharge=0;
+    if(!hasRune('赤纹','金纹'))p.shield=false;
+    triggerLog(`燃纹盏消耗${rune}，挡下炸炉（${uses('burn')}/2）。`,'good');
+    if(hasTool('return')&&!uses('return')&&!p.returnRune){p.returnRune=rune;triggerLog('回纹环：下一次成功补回'+rune+'。','good');}
+    if(hasTool('ash')&&uses('ash')<2){const old=1+.15*uses('ash');useTool('ash');p.value=Math.round(p.value*(1+.15*uses('ash'))/old);triggerLog('烬金印：本炉丹值加成 '+uses('ash')*15+'%。','good');}
+    return true;
+  }
   const TURN_NAMES = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
 
   const dom = {
@@ -161,7 +188,7 @@
     dom.turnValue.textContent = (TURN_NAMES[state.pill.turn] || String(state.pill.turn));
     dom.pillValue.textContent = state.pillEnded && state.pillEndReason === "explode" ? "已损失" : formatNumber(state.pill.value);
     dom.qualityValue.textContent = QUALITY_NAMES[state.pill.quality];
-    dom.runeSummary.textContent = `${state.pill.runes.length}/${MAX_RUNES} 道${state.pill.runes.length >= MAX_RUNES ? " · 已满" : ""} · ${state.pill.runes.length ? state.pill.runes.join(" / ") : "尚未显现"}`;
+    dom.runeSummary.textContent = `${state.pill.runes.length}/${MAX_RUNES} 道${state.pill.runes.length >= MAX_RUNES ? " · 已满" : ""} · ${state.pill.runes.length ? state.pill.runes.join(" / ") : "尚未显现"}${state.pill.moonCharge ? " · 月力待发" : ""}`;
     dom.riskResultValue.textContent = state.pillEnded || state.pill.turn >= 100 ? "--" : percentage(explosionChance);
     dom.pillVisual.classList.toggle("turn-nine", state.pill.turn >= 100);
     dom.pillVisual.dataset.quality = String(state.pill.quality);
@@ -178,6 +205,8 @@
     dom.riskBadge.textContent = state.pillEnded ? (state.pillEndReason === "explode" ? "丹散炉息" : "已收丹") : state.pill.shield ? "护丹生效" : `${(TURN_NAMES[state.pill.turn] || String(state.pill.turn))}转`;
     dom.riskBadge.className = "risk-badge";
     dom.riskDescription.textContent = state.pillEnded ? "本炉已结束" : state.pill.turn >= 100 ? "百转已成，可收丹交付" : state.pill.shield ? "护丹会挡下下一次炼化中的炸丹" : "收丹可锁定当前价值";
+    const triggerStatus=document.getElementById('runeTriggerStatus');
+    if(triggerStatus){triggerStatus.textContent=(state.pill.triggers||[]).slice(-3).join(' → ');triggerStatus.title=(state.pill.triggers||[]).join(' → ');}
     renderOutcomes(explosionChance);
     renderRunes();
     renderLogs();
@@ -217,7 +246,7 @@
       <div class="rune-entry">
         <i class="rune-dot" style="color:${RUNE_COLORS[rune] || "#e7c8ff"}; background:${RUNE_COLORS[rune] || "#e7c8ff"}"></i>
         <strong>${rune}</strong>
-        <span>已发现</span>
+        <span>${RUNE_DEFS[rune] || "已发现"}</span>
       </div>
     `).join("");
   }
@@ -258,11 +287,11 @@
 
   function applyAlchemy(outcome) {
     const isBigSuccess = outcome === "big";
-    const turnGain = (isBigSuccess ? 2 : 1)+(state.pill.toolTurnBonus||0);state.pill.toolTurnBonus=0;
+    const turnGain = (isBigSuccess ? 2 : 1)+turnBonus(outcome);state.pill.toolTurnBonus=0;state.pill.moonCharge=0;
     const priceFor = (turn,quality,runes) => {const t=Math.max(0,Math.min(100,turn)-1);return Math.round((24+8*t+2*t*t+.08*t*t*t)*(1+quality*.08+runes.length*.12+(runes.includes('金纹')?.25:0)+(runes.includes('星痕')?.35:0)));};
     state.pill.turn = Math.min(100, state.pill.turn + turnGain);
     const qualityValueBoost = 1 + state.pill.quality * 0.03;
-    state.pill.value = Math.round(priceFor(state.pill.turn,state.pill.quality,state.pill.runes)*(state.pill.valueFactor??1));
+    state.pill.value = Math.round(priceFor(state.pill.turn,state.pill.quality,state.pill.runes)*(state.pill.valueFactor??1)*(1+.15*uses('ash')));
     state.pill.bestTurn = Math.max(state.pill.bestTurn, state.pill.turn);
   }
 
@@ -272,18 +301,22 @@
     state.pill.value = Math.max(8, Math.round(state.pill.value * (campaign?.economy?.furnace>=1&&!state.pill.damageSoftened?(state.pill.damageSoftened=true,protectedValue ? .95 : .85):(protectedValue ? 0.9 : 0.7))));
   }
 
+  function grantRune(rune,label){
+    if(state.pill.runes.length>=MAX_RUNES||state.pill.runes.includes(rune))return null;
+    state.pill.runes.push(rune);state.pill.value=Math.round(state.pill.value*1.18);
+    if(label)triggerLog(label+'：显现'+rune+'。','good');
+    return tryFusion()||rune;
+  }
   function tryAddRune() {
     if (state.pill.runes.length >= MAX_RUNES) return null;
-    if(campaignRules?.active(campaign)?.tier===2 && !state.pill.spiritUsed){const choices=['赤纹','青纹','月纹','雷纹'].filter(r=>!state.pill.runes.includes(r));state.pill.spiritUsed=true;if(choices.length){state.pill.runeChoices=choices.sort(()=>Math.random()-.5).slice(0,2);return null;}}
-    const chance = 0.25;
-    if (Math.random() > chance) return null;
-    const pool = ["赤纹", "青纹", "月纹", "雷纹"];
-    const available = pool.filter((rune) => !state.pill.runes.includes(rune));
-    if (!available.length) return null;
-    const rune = available[Math.floor(Math.random() * available.length)];
-    state.pill.runes.push(rune);
-    state.pill.value = Math.round(state.pill.value * 1.18);
-    return tryFusion() || rune;
+    const available=BASIC_RUNES.filter(r=>!state.pill.runes.includes(r));
+    if(!available.length)return null;
+    const guaranteed=(hasTool('needle')&&!uses('needle'))||(state.pill.fusionPending&&(state.pill.refineSerial||0)>(state.pill.fusionReadyAfter||0));
+    if(hasTool('needle')&&!uses('needle'))useTool('needle');
+    if((state.pill.refineSerial||0)>(state.pill.fusionReadyAfter||0))state.pill.fusionPending=false;
+    if(campaignRules?.active(campaign)?.tier===2 && !state.pill.spiritUsed){state.pill.spiritUsed=true;state.pill.runeChoices=[...available].sort(()=>Math.random()-.5).slice(0,2);return null;}
+    if(!guaranteed&&Math.random()>.25)return null;
+    return grantRune(available[Math.floor(Math.random()*available.length)],guaranteed?'法器生纹':null);
   }
 
   function tryFusion() {
@@ -294,6 +327,8 @@
         state.pill.runes = state.pill.runes.filter((rune) => !needed.includes(rune));
         state.pill.runes.push(fusion.name);
         state.pill.value = Math.round(state.pill.value * 1.08);
+        triggerLog(fusion.message,'good');
+        if(hasTool('fusion')&&uses('fusion')<2&&!state.pill.fusionPending){useTool('fusion');state.pill.fusionPending=true;state.pill.fusionReadyAfter=state.pill.refineSerial||0;triggerLog('合璧镜：下一次成功必显基础纹。','good');}
         return fusion.message;
       }
     }
@@ -301,6 +336,8 @@
   }
 
   function resolveRefine() {
+    state.pill.triggers=[];
+    state.pill.refineSerial=(state.pill.refineSerial||0)+1;
     const before = playtestSnapshot();
     const profile = state.riskResult;
     const explode = Math.random() < profile.explode;
@@ -313,19 +350,30 @@
       state.pill.shield = false;
       if (outcome === "explode") { outcome = "hold"; usedShield = true; }
     }
-    if(outcome==='explode'&&campaign?.economy?.equipped==='seal'&&!state.pill.toolUsed){state.pill.toolUsed=true;outcome='damage';addLog('镇炉印挡下炸炉，改为丹体受损。','good');}
-    if(outcome==='explode'&&tool==='phoenix'&&!state.pill.toolUsed){state.pill.toolUsed=true;state.pill.valueFactor=(state.pill.valueFactor??1)*.6;state.pill.value=Math.max(1,Math.round(state.pill.value*.6));outcome='hold';addLog('返生鼎符挡下炸炉：丹值损失40%，本炉持续承受此折损。','good');}
-    if(tool==='chain'){state.pill.successChain=['big','success'].includes(outcome)?(state.pill.successChain||0)+1:0;if(state.pill.successChain>0&&state.pill.successChain%2===0){state.pill.toolTurnBonus=1;addLog('双仪环：连续两次成丹，额外提升一转。','good');}}
-    if(tool==='repair'&&outcome==='damage'&& !usedShield){state.pill.scars=Math.min(4,(state.pill.scars||0)+1);addLog('淬火盏：本炉炸炉率相对降低'+(state.pill.scars*15)+'%。','good');}
-    if(outcome!=='explode'){const nextTurn=outcome==='big'?Math.min(100,state.pill.turn+2+(state.pill.toolTurnBonus||0)):outcome==='success'?Math.min(100,state.pill.turn+1+(state.pill.toolTurnBonus||0)):outcome==='damage'?Math.max(1,state.pill.turn-1):state.pill.turn;state.pill.quality=Math.max(state.pill.qualityFloor||0,qualityAtTurn(nextTurn));}
+    const naturalHold=outcome==='hold'&&!explode;
+    let protectedByTool=false;
+    if(outcome==='explode'&&hasTool('burn')&&uses('burn')<2&&consumeBasicRune()){outcome='hold';protectedByTool=true;}
+    if(outcome==='explode'&&hasTool('seal')&&!uses('seal')){useTool('seal');outcome='damage';protectedByTool=true;triggerLog('镇炉印挡下炸炉，改为丹体受损。','good');}
+    if(outcome==='explode'&&hasTool('phoenix')&&!uses('phoenix')){useTool('phoenix');state.pill.valueFactor=(state.pill.valueFactor??1)*.6;state.pill.value=Math.max(1,Math.round(state.pill.value*.6));outcome='hold';protectedByTool=true;triggerLog('返生鼎符挡下炸炉：本炉丹值持续折损40%。','good');}
+    if(hasTool('chain')){state.pill.successChain=['big','success'].includes(outcome)?(state.pill.successChain||0)+1:0;if(state.pill.successChain>0&&state.pill.successChain%2===0){state.pill.toolTurnBonus=1;triggerLog('双仪环：连续两次成丹，额外提升一转。','good');}}
+    if(hasTool('repair')&&outcome==='damage'&&!protectedByTool){state.pill.scars=Math.min(4,(state.pill.scars||0)+1);triggerLog('淬火盏：本炉炸炉率相对降低'+(state.pill.scars*15)+'%。','good');}
+    if(outcome!=='explode'){const nextTurn=['big','success'].includes(outcome)?Math.min(100,state.pill.turn+(outcome==='big'?2:1)+turnBonus(outcome)):outcome==='damage'?Math.max(1,state.pill.turn-1):state.pill.turn;state.pill.quality=Math.max(state.pill.qualityFloor||0,qualityAtTurn(nextTurn));}
 
     let feedback = "";
     let feedbackTone = "";
     let fused = false;
     if (outcome === "big" || outcome === "success") {
       const isBigSuccess = outcome === "big";
+      if(state.pill.moonCharge)triggerLog('月力释放：本次额外升一转。');
+      if(outcome==='big'&&hasRune('雷纹','星痕'))triggerLog('雷纹激发：大成功额外升一转。');
       applyAlchemy(outcome);
-      const runeResult = tryAddRune();
+      // Restore before the normal rune roll. Only the next refinement can consume a new fusion charge.
+      let restored=null;
+      if(hasTool('return')&&state.pill.returnRune&&state.pill.runes.length<MAX_RUNES){
+        const rune=state.pill.returnRune;state.pill.returnRune=null;useTool('return');
+        restored=grantRune(rune,'回纹环');
+      }
+      const runeResult = tryAddRune()||restored;
       fused = !!runeResult && runeResult.includes("！");
       const qualityName = QUALITY_NAMES[state.pill.quality];
       feedbackTone = "good";
@@ -337,9 +385,10 @@
         addLog(`<strong>炼丹成功</strong>：丹转提升至${(TURN_NAMES[state.pill.turn] || String(state.pill.turn))}转，品质提升为${qualityName}，价值 ${formatNumber(state.pill.value)}。${runeResult ? `显现${runeResult}。` : ""}`, "good");
       }
     } else if (outcome === "hold") {
-      if (state.pill.runes.includes("赤纹") || state.pill.runes.includes("金纹")) state.pill.shield = true;
-      feedback = usedShield ? "护丹挡下炸丹，火候维持。" : "火候维持，转数和价值不变。";
-      addLog(`<strong>火候维持</strong>：转数、价值和品质不变。${usedShield ? "护丹挡下炸丹。" : ""}${state.pill.shield ? "赤纹凝成下一次护丹。" : ""}`, "");
+      if(naturalHold&&hasRune('赤纹','金纹'))state.pill.shield=true;
+      if(naturalHold&&hasRune('月纹','星痕')){state.pill.moonCharge=1;triggerLog('月力蓄成：下一次成功额外升一转。','good');}
+      feedback=usedShield?'护丹挡下炸丹，本次不再蓄盾。':protectedByTool?'法器自动护丹，火候维持。':'火候维持。';
+      addLog(`<strong>火候维持</strong>：${feedback}${naturalHold&&state.pill.shield?'赤纹蓄成下一次护丹。':''}`, '');
     } else if (outcome === "damage") {
       applyDamage();
       feedback = `丹体受损，转数回落至${(TURN_NAMES[state.pill.turn] || String(state.pill.turn))}转。`;
@@ -410,7 +459,7 @@
   function startGame(event) {
     if (state && state.busy) return;
     if (saved && event?.currentTarget === dom.startButton) {
-      campaign = saved.campaign; state = saved.state; state.busy = false;state.riskResult=randomRisk(state.pill.turn);
+      campaign = saved.campaign; state = saved.state; state.busy = false;if(state.pill.toolUsed&&!state.pill.toolUses){state.pill.toolUses={};for(const id of window.AlchemyEconomy?.equippedIds(campaign.economy?.equipped)||[])if(['seal','phoenix','needle'].includes(id))state.pill.toolUses[id]=1;}state.riskResult=randomRisk(state.pill.turn);
       state.pill.qualityFloor=campaignRules.active(campaign)?.tier===1?1:0;state.pill.quality=Math.max(state.pill.qualityFloor,qualityAtTurn(state.pill.turn));
       if (campaign.phase === 'open' && campaign.orders.length === 3) {
         const extra = campaignRules.ordersFor(campaign.day);
@@ -518,19 +567,19 @@
     setFeedback("本单已终止。已有成丹及未用药材交还客人，免赔。", "", "loss"); render(); return true;
   }
   function economyAction(kind,id,nature='neutral'){if(!campaign||state.busy||window.AlchemyInteractionBusy)return false;window.AlchemyEconomy.ensure(campaign);let ok=false;
-    if(kind==='equip'){const e=campaign.economy;if(!state.pillEnded||(!e.tools.includes(id)&&id!==null))return false;e.equipped=id;ok=true;}
+    if(kind==='equip'){const e=campaign.economy;if(!state.pillEnded||(!e.tools.includes(id)&&id!==null))return false;const ids=window.AlchemyEconomy.equippedIds(e.equipped);if(id===null)e.equipped=[];else if(ids.includes(id))e.equipped=ids.filter(t=>t!==id);else{if(ids.length>=window.AlchemyEconomy.EQUIP_SLOTS)return false;e.equipped=[...ids,id];}ok=true;}
     else if(kind==='self'||kind==='herbself'){if(campaign.phase!=='open'||campaignRules.active(campaign)||!state.pillEnded||!state.roundEnded)return false;const e=campaign.economy;if(!['warm','cool','neutral'].includes(nature))return false;if(kind==='herbself'){nature=id;if(!['warm','cool','neutral'].includes(nature)||!e.herbs[nature])return false;e.herbs[nature]--;id=0;}else{if(!Number.isInteger(id)||id<0||id>2||!e.stock[id])return false;e.stock[id]--;}e.selfCount++;const o={id:'S'+e.selfCount,self:true,tier:id,status:'active',client:'自炼自售',name:['普通药包自炼','精选药包自炼','灵性药包自炼'][id],nature,materials:1,target:1};campaign.selfOrder=o;ORDER_TARGET=1;MAX_PILLS=1;state=createState();state.started=true;state.pillEnded=true;state.pillEndReason='waiting';state.orderId=o.id;window.dispatchEvent?.(new Event('alchemy:order'));ok=true;}
-    else if(kind==='chooseRune'){if(state.pillEnded||state.pill.runes.length>=MAX_RUNES||state.pill.runes.includes(id)||!state.pill.runeChoices?.includes(id))return false;state.pill.runes.push(id);state.pill.runeChoices=[];state.pill.value=Math.round(state.pill.value*1.18);tryFusion();updateRecord();ok=true;}
-    else if(kind==='reroll'){if(state.pillEnded||campaign.economy.equipped!=='needle'||state.pill.toolUsed||!state.pill.runes.length||state.pill.runeChoices?.length)return false;const old=state.pill.runes.pop();const pool=['赤纹','青纹','月纹','雷纹'].filter(r=>r!==old&&!state.pill.runes.includes(r));if(!pool.length){state.pill.runes.push(old);return false;}state.pill.runes.push(pool[Math.floor(Math.random()*pool.length)]);state.pill.toolUsed=true;tryFusion();updateRecord();ok=true;}
+    else if(kind==='chooseRune'){if(state.pillEnded||state.pill.runes.length>=MAX_RUNES||state.pill.runes.includes(id)||!state.pill.runeChoices?.includes(id))return false;state.pill.runeChoices=[];grantRune(id,'灵性药包');updateRecord();ok=true;}
+    else if(kind==='reroll')return false; // 生纹针现为自动生效，不保留额外炉内操作。
     else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded))ok=window.AlchemyEconomy.buy(campaign,kind,id);
-    if(ok)render();return ok;
+    if(ok){state.riskResult=randomRisk();render();}return ok;
   }
-  window.AlchemyGame = { riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
+  window.AlchemyGame = { RUNE_DEFS, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
     snapshot: () => ({ ...playtestSnapshot(), started: state.started,
     busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
     endReason: state.pillEndReason, remaining: campaign && !state.orderId ? 0 : MAX_PILLS - state.attempt, target: ORDER_TARGET,
-    toolProgress:{scars:state.pill.scars||0,chain:state.pill.successChain||0,valueFactor:state.pill.valueFactor??1},runeChoices:state.pill.runeChoices||[],toolUsed:!!state.pill.toolUsed,campaignEnabled: !!campaign, collected: state.collected,
+    toolProgress:{uses:{...state.pill.toolUses},moonCharge:state.pill.moonCharge||0,returnRune:state.pill.returnRune||null,fusionPending:!!state.pill.fusionPending,scars:state.pill.scars||0,chain:state.pill.successChain||0,valueFactor:state.pill.valueFactor??1,triggers:[...(state.pill.triggers||[])]},runeChoices:state.pill.runeChoices||[],toolUsed:!!state.pill.toolUsed,campaignEnabled: !!campaign, collected: state.collected,
     order: campaign ? (campaignRules.active(campaign) || (campaign.selfOrder?.id===state.orderId?campaign.selfOrder:campaign.orders.find(o => o.id === state.orderId))) : null }) };
   state = createState();
   if (saved) dom.startButton.textContent = "继续经营";

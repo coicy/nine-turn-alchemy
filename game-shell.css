@@ -7,3 +7,5 @@ body.engine-shell[data-screen=playing]{height:100dvh;overflow:hidden}.engine-she
 .engine-panel[data-shell-active="false"]{display:none!important}
 
 .equipped-tool-status{margin:0 -24px;padding:9px 20px;border-bottom:1px solid #dfb87c44;color:#dfb87c;background:#152c2b;font-size:12px;line-height:1.6}
+
+.rune-trigger-status{margin:4px 0;color:#dfb87c;font-size:12px;line-height:1.5;overflow-wrap:anywhere}.rune-trigger-status:empty{display:none}

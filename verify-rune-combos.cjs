@@ -1,0 +1,41 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),E=require('./economy.js');
+const store=new Map(),storage={getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)};
+const base=fs.readFileSync(__dirname+'/verify-simulation.cjs','utf8').split('const click=id=>')[0]
+.replace('getState:()=>state,render','getState:()=>state,getCampaign:()=>campaign,resolveRefine,freshPill,tryAddRune,tryFusion,render')
+.replace('vm.runInContext(source,context);',"window.localStorage=storage;vm.runInContext(fs.readFileSync(__dirname+'/campaign.js','utf8'),context);vm.runInContext(fs.readFileSync(__dirname+'/economy.js','utf8'),context);vm.runInContext(source,context);");
+function env(){const outer={require,__dirname,console,storage};vm.createContext(outer);vm.runInContext(base+';globalThis.env={window,el,context,testMath,timers,document};',outer);outer.env.el('startButton').emit('click',{currentTarget:outer.env.el('startButton')});return outer.env;}
+let e=env(),w=e.window,a=e.context.testApi,s=a.getState(),c=a.getCampaign();
+function reset(ids=[],runes=[]){c.economy.equipped=ids;Object.assign(s,{pill:a.freshPill(),pillEnded:false,roundEnded:false,attempt:1});Object.assign(s.pill,{turn:5,value:100,runes:[...runes]});s.riskResult={explode:w.AlchemyGame.riskAtTurn(5)};}
+function result(x=.99,y=.5,rest=[.9]){let seq=[x,y,...rest];e.testMath.random=()=>seq.length?seq.shift():.9;a.resolveRefine();e.timers.clear();}
+assert.equal(Object.keys(w.AlchemyGame.RUNE_DEFS).length,6);
+reset([],['月纹']);result(.99,.8);assert.equal(s.pill.moonCharge,1);result();assert.equal(s.pill.turn,7);assert.equal(s.pill.moonCharge,0);result();assert.equal(s.pill.turn,8,'moon charge consumed once');
+reset([],['雷纹']);result(.99,.01);assert.equal(s.pill.turn,8,'big + thunder');
+reset([],['星痕']);result(.99,.8);result(.99,.01);assert.equal(s.pill.turn,9,'moon and thunder both inherited');
+reset([],['金纹']);result(.99,.8);assert.equal(s.pill.shield,true);result(0);assert.equal(s.pill.shield,false,'synthetic hold cannot renew shield');assert.equal(s.pillEnded,false);result(0);assert.equal(s.pillEnded,true);
+reset([],['青纹']);result(.99,.99);assert.equal(s.pill.value,90);
+reset(['chain'],['月纹','雷纹']);s.pill.moonCharge=1;s.pill.successChain=1;result(.99,.01);assert.equal(s.pill.turn,10,'moon, thunder and chain stack');assert.equal(s.pill.quality,1);
+reset(['needle','burn','return']);result(.99,.5,[.999,.9]);assert.equal(s.pill.runes.length,1,'first success guarantees rune even when random roll misses');assert.equal(s.pill.toolUses.needle,1);const fuel=s.pill.runes[0];result(0);assert.equal(s.pill.runes.length,0);assert.equal(s.pill.returnRune,fuel);assert.equal(s.pill.toolUses.burn,1);assert.equal(s.pill.moonCharge||0,0);assert.equal(s.pill.shield,false);result();assert.ok(s.pill.runes.includes(fuel));assert.equal(s.pill.toolUses.return,1);result(0);assert.equal(s.pill.toolUses.burn,2);result(0);assert.equal(s.pillEnded,true,'finite protection; no infinite regeneration');
+reset(['burn','return','ash'],['青纹','月纹']);result(0);assert.equal(s.pill.value,115);result();result();const boosted=s.pill.value;const turn=s.pill.turn,runes=[...s.pill.runes];reset([],runes);s.pill.turn=turn-1;result();assert.ok(Math.abs(boosted-s.pill.value*1.15)<2,'ash bonus persists on later success');
+reset(['burn','ash'],['赤纹','青纹']);result(0);result(0);assert.equal(s.pill.toolUses.ash,2);assert.equal(s.pill.toolUses.burn,2);
+reset(['burn'],['金纹','星痕']);result(0);assert.equal(s.pillEnded,true,'fused runes cannot be burned');
+reset(['burn','seal','phoenix'],['青纹']);s.pill.shield=true;result(0);assert.equal(s.pill.toolUses,undefined,'shield has first priority');s.riskResult={explode:1};result(0);assert.equal(s.pill.toolUses.burn,1);assert.equal(s.pill.toolUses.seal,undefined);s.riskResult={explode:1};result(0);assert.equal(s.pill.toolUses.seal,1);assert.equal(s.pill.toolUses.phoenix,undefined);s.riskResult={explode:1};result(0);assert.equal(s.pill.toolUses.phoenix,1,'once counts are independent');
+reset(['fusion'],['赤纹']);result(.99,.5,[0,0]);assert.ok(s.pill.runes.includes('金纹'));assert.equal(s.pill.toolUses.fusion,1);assert.equal(s.pill.fusionPending,true);result(.99,.5,[.999,.999]);assert.equal(s.pill.runes.length,2,'mirror guarantees next success');assert.equal(s.pill.fusionPending,false);
+reset(['fusion'],['赤纹','青纹','月纹']);a.tryFusion();assert.equal(s.pill.toolUses.fusion,1);s.pill.refineSerial=1;s.pill.returnRune='雷纹';c.economy.equipped=['fusion','return'];result(.99,.5,[.999]);assert.ok(s.pill.runes.includes('星痕'));assert.equal(s.pill.toolUses.fusion,1);assert.equal(s.pill.fusionPending,false,'existing pending grant is consumed once without recursive fusion charges');
+reset(['six'],['金纹','星痕','赤纹','青纹','月纹','雷纹']);assert.ok(Math.abs(w.AlchemyGame.riskAtTurn(5)-.248*.7)<1e-10);s.pill.runes.pop();assert.ok(Math.abs(w.AlchemyGame.riskAtTurn(5)-.248*.85)<1e-10);s.pill.runes.splice(0,2);assert.equal(w.AlchemyGame.riskAtTurn(5),.248);
+reset(['six','burn'],['金纹','星痕','赤纹','青纹','月纹','雷纹']);result(0);assert.equal(s.pill.runes.length,5);assert.ok(Math.abs(s.riskResult.explode-.248*.85)<1e-10,'burn updates six-rune risk immediately');
+reset(['ward','repair','six'],['金纹','星痕','赤纹','青纹','月纹','雷纹']);s.pill.scars=4;assert.ok(Math.abs(w.AlchemyGame.riskAtTurn(5)-.248*.9*.4*.7)<1e-10,'multiple risk effects multiply');
+// Configuration is the same existing empty-furnace flow, with three slots.
+reset([]);s.pillEnded=true;c.economy.tools=E.TOOL_DEFS.map(t=>t.id);for(const id of ['needle','burn','return'])assert.ok(w.AlchemyGame.economyAction('equip',id));assert.equal(w.AlchemyGame.economyAction('equip','ash'),false);assert.ok(w.AlchemyGame.economyAction('equip','return'));assert.ok(w.AlchemyGame.economyAction('equip','ash'));assert.equal(c.economy.equipped.length,3);s.pillEnded=false;assert.equal(w.AlchemyGame.economyAction('equip','burn'),false);assert.equal(w.AlchemyGame.economyAction('reroll'),false);
+// Save real progress, then restore it in a fresh runtime.
+reset(['burn','return','ash'],['青纹','月纹']);result(0);a.render();const saved=JSON.parse(store.get('alchemy-days-v1'));e=env();w=e.window;a=e.context.testApi;s=a.getState();c=a.getCampaign();assert.equal(s.pill.toolUses.burn,1);assert.equal(s.pill.returnRune,'月纹');assert.equal(s.pill.toolUses.ash,1);assert.equal(c.economy.equipped.length,3);assert.equal(s.pill.value,saved.state.pill.value);result();assert.equal(s.pill.toolUses.return,1,'pending return survives refresh');
+// Legacy single equipment and spent once-per-furnace protection migrate.
+const legacy=JSON.parse(store.get('alchemy-days-v1'));legacy.campaign.economy.equipped='seal';legacy.state.pill.toolUsed=true;delete legacy.state.pill.toolUses;store.set('alchemy-days-v1',JSON.stringify(legacy));e=env();w=e.window;a=e.context.testApi;s=a.getState();c=a.getCampaign();assert.equal(c.economy.equipped[0],'seal');assert.equal(s.pill.toolUses.seal,1);s.pill.runes=[];s.pill.shield=false;s.riskResult={explode:1};result(0);assert.equal(s.pillEnded,true,'reload cannot recharge old protection');
+console.log('PASS: all six rune abilities; automatic producer/burn/return/value/fusion combos; three slots; finite independent charges; dynamic risk; new and legacy save recovery');
+
+// Render and operate the actual shop code: no new in-furnace rune button.
+let created=0;e.document.createElement=()=>e.el('shop-created-'+(++created));e.el('.game-layout').prepend=()=>{};e.el('.forge-panel').prepend=()=>{};e.document.body.classList={contains:()=>false};
+s.pillEnded=true;c.economy.tools=['needle','burn','return','ash'];c.economy.equipped=['needle','burn','return'];
+vm.runInContext(fs.readFileSync(__dirname+'/economy-ui.js','utf8'),e.context);
+const shop=e.el('shop-created-1'),badge=e.el('shop-created-2');assert.match(shop.innerHTML,/同时装备三件/);assert.ok(!shop.innerHTML.includes('data-kind="reroll"'));assert.match(badge.textContent,/3\/3/);
+shop.emit('click',{target:{closest:()=>({disabled:false,dataset:{kind:'equip',id:'return'}})}});assert.equal(c.economy.equipped.length,2);shop.emit('click',{target:{closest:()=>({disabled:false,dataset:{kind:'equip',id:'ash'}})}});assert.ok(c.economy.equipped.includes('ash'));assert.match(badge.textContent,/烬金印/);
+console.log('PASS: actual shop renders three slots, toggles owned tools and exposes no manual reroll button');
