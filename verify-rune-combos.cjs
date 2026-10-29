@@ -39,3 +39,17 @@ vm.runInContext(fs.readFileSync(__dirname+'/economy-ui.js','utf8'),e.context);
 const shop=e.el('shop-created-1'),badge=e.el('shop-created-2');assert.match(shop.innerHTML,/同时装备三件/);assert.ok(!shop.innerHTML.includes('data-kind="reroll"'));assert.match(badge.textContent,/3\/3/);
 shop.emit('click',{target:{closest:()=>({disabled:false,dataset:{kind:'equip',id:'return'}})}});assert.equal(c.economy.equipped.length,2);shop.emit('click',{target:{closest:()=>({disabled:false,dataset:{kind:'equip',id:'ash'}})}});assert.ok(c.economy.equipped.includes('ash'));assert.match(badge.textContent,/烬金印/);
 console.log('PASS: actual shop renders three slots, toggles owned tools and exposes no manual reroll button');
+const allRunes=['赤纹','青纹','月纹','雷纹'];
+for(const t of E.TOOL_DEFS.filter(t=>t.runeTarget)){
+ let hits=0;for(let i=0;i<1000;i++){let seq=[i/1000,.5];if(E.pickRune(allRunes,[t.id],()=>seq.shift())===t.runeTarget)hits++;}assert.equal(hits,750,'direction has exactly 75% conditional weight');
+ const missing=allRunes.filter(r=>r!==t.runeTarget);assert.ok(missing.includes(E.pickRune(missing,[t.id],()=>.1)),'already-held target falls back to other missing rune');
+ assert.equal(E.pickRune([t.runeTarget],[t.id],()=>.99),t.runeTarget);assert.equal(E.runeCandidates(allRunes,[t.id],()=>.5)[0],t.runeTarget);
+}
+assert.equal(E.pickRune([],['guide_red']),null);
+reset([]);result(.99,.5,[.4]);assert.equal(s.pill.runes.length,0,'normal success does not generate at .4');
+reset([]);result(.99,.01,[.4,0]);assert.equal(s.pill.runes.length,1,'big success generates at .4');
+reset([]);result(.99,.01,[.5,0]);assert.equal(s.pill.runes.length,0,'big success upper boundary is .5');
+reset(['needle','guide_red']);result(.99,.5,[.1]);assert.ok(s.pill.runes.includes('赤纹'),'guaranteed generation respects direction');
+reset(['guide_blue']);c.selfOrder={status:'active',tier:2};result(.99,.5,[.5,.5]);assert.ok(s.pill.runeChoices.includes('青纹'));assert.equal(s.pill.runeChoices.length,2);delete c.selfOrder;
+reset([]);s.pillEnded=true;c.economy.tools=['guide_red','guide_blue'];assert.ok(w.AlchemyGame.economyAction('equip','guide_red'));assert.equal(w.AlchemyGame.economyAction('equip','guide_blue'),false,'one directional tool even with empty slots');assert.equal(c.economy.equipped.length,1);assert.ok(w.AlchemyGame.economyAction('equip','guide_red'));assert.ok(w.AlchemyGame.economyAction('equip','guide_blue'));
+console.log('PASS: normal 25% versus big 50%, four 75% direction weights, guaranteed and spiritual generation, missing-target fallback and exclusive direction slot');

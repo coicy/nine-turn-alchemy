@@ -13,10 +13,17 @@ const TOOL_DEFS=[
 {id:'return',name:'回纹环',price:380,day:3,description:'每炉首次燃纹后，下一次成功自动补回所消耗的纹；满纹则顺延。'},
 {id:'ash',name:'烬金印',price:400,day:3,description:'每次燃纹，本炉丹值系数永久增加15%，最多两层；换炉清零。'},
 {id:'fusion',name:'合璧镜',price:440,day:4,description:'融合后，下一次成功必显基础纹；每炉最多触发两次，不在同次炼化递归。'},
-{id:'six',name:'六合盘',price:520,day:5,description:'持有4–5道纹时炸炉率相对降低15%；6道时降低30%。失去纹路即重算。'}];
+{id:'six',name:'六合盘',price:520,day:5,description:'持有4–5道纹时炸炉率相对降低15%；6道时降低30%。失去纹路即重算。'},
+{id:'guide_red',name:'赤砂引',price:260,day:2,runeTarget:'赤纹',description:'生纹时若尚无赤纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包候选优先包含赤纹。同炉限一件定向法器。'},
+{id:'guide_blue',name:'青苔引',price:260,day:2,runeTarget:'青纹',description:'生纹时若尚无青纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包候选优先包含青纹。同炉限一件定向法器。'},
+{id:'guide_moon',name:'月华引',price:260,day:2,runeTarget:'月纹',description:'生纹时若尚无月纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包候选优先包含月纹。同炉限一件定向法器。'},
+{id:'guide_thunder',name:'雷砂引',price:260,day:2,runeTarget:'雷纹',description:'生纹时若尚无雷纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包候选优先包含雷纹。同炉限一件定向法器。'}];
 const PRICES=[18,42,70],TOOLS=Object.fromEntries(TOOL_DEFS.map(t=>[t.id,t.price])),UPGRADES=[0,360,900];
 const EQUIP_SLOTS=3;
-function equippedIds(value){return [...new Set((Array.isArray(value)?value:value?[value]:[]).filter(id=>TOOLS[id]))].slice(0,EQUIP_SLOTS);}
+function equippedIds(value){let directed=false;return [...new Set(Array.isArray(value)?value:value?[value]:[])].filter(id=>{const tool=TOOL_DEFS.find(t=>t.id===id);if(!tool)return false;if(tool.runeTarget){if(directed)return false;directed=true;}return true;}).slice(0,EQUIP_SLOTS);}
+function runeTarget(value){return TOOL_DEFS.find(t=>t.runeTarget&&equippedIds(value).includes(t.id))?.runeTarget||null;}
+function pickRune(available,value,random=Math.random){if(!available.length)return null;const target=runeTarget(value);if(target&&available.includes(target)){const others=available.filter(r=>r!==target);if(!others.length||random()<.75)return target;return others[Math.floor(random()*others.length)];}return available[Math.floor(random()*available.length)];}
+function runeCandidates(available,value,random=Math.random){const target=runeTarget(value),pool=available.filter(r=>r!==target);for(let i=pool.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}return target&&available.includes(target)?[target,...pool].slice(0,2):pool.slice(0,2);}
 function hasTool(value,id){return equippedIds(value).includes(id);}
 function toolRisk(value,pill){let factor=1;if(hasTool(value,'ward'))factor*=.9;if(hasTool(value,'repair'))factor*=Math.max(.4,1-.15*Math.min(4,pill?.scars||0));if(hasTool(value,'six'))factor*=pill?.runes?.length>=6?.7:pill?.runes?.length>=4?.85:1;return factor;}
 function outcomeWeights(value){return {big:hasTool(value,'lucky')?4:2,success:hasTool(value,'stone')?14:12,hold:hasTool(value,'stone')?3:5,damage:2};}
@@ -26,5 +33,5 @@ function credit(c,n,label){const e=ensure(c);n=Math.max(0,Math.round(n));e.coins
 function fee(o){return 30+Math.round(o.target*.15);}
 function commission(c,o,pills){if(o.paid)return 0;o.paid=true;if(o.status!=='completed')return 0;const e=ensure(c);const leftover=Math.max(0,o.returned||0);const nature=['warm','cool'].includes(o.nature)?o.nature:'neutral';e.herbs[nature]+=leftover;o.gifted=leftover;o.returned=0;const bonus=Math.min(fee(o),pills.reduce((n,p)=>n+(p.quality||0)*3+Math.max(0,(p.turn||1)-4)*2+(p.runes?.length||0)*4,0));o.reward=fee(o)+bonus;return credit(c,o.reward,'委托工钱与加赏');}
 function sale(c,p){const e=ensure(c);const floor=e.furnace>=2&&p.turn>=6?Math.round(p.value*.65):0;const n=Math.max(floor,Math.round(p.value*.55));e.sold++;return credit(c,n,'自炼成丹出售');}
-const api={EQUIP_SLOTS,equippedIds,hasTool,TOOL_DEFS,toolRisk,outcomeWeights,PRICES,TOOLS,UPGRADES,ensure,buy,credit,fee,commission,sale};if(typeof module!=='undefined')module.exports=api;else root.AlchemyEconomy=api;
+const api={runeTarget,pickRune,runeCandidates,EQUIP_SLOTS,equippedIds,hasTool,TOOL_DEFS,toolRisk,outcomeWeights,PRICES,TOOLS,UPGRADES,ensure,buy,credit,fee,commission,sale};if(typeof module!=='undefined')module.exports=api;else root.AlchemyEconomy=api;
 })(typeof window!=='undefined'?window:globalThis);

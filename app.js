@@ -5,6 +5,7 @@
   const BREAK_CURVE=[0,.018,.059,.129,.248,.297,.347,.383,.418,.443,.467,.491,.505,.519,.532,.545,.558,.576,.594,.612,.63,.639,.648,.657,.666,.675,.684,.693,.702,.711,.72];
   function qualityAtTurn(turn){return turn>=60?4:turn>=30?3:turn>=15?2:turn>=5?1:0;}
   const MAX_RUNES = 6;
+  const RUNE_CHANCE={success:.25,big:.5};
   const QUALITY_NAMES = ["凡品", "良品", "上品", "极品", "绝品"];
   let ORDER_TARGET = 300;
   let MAX_PILLS = 3;
@@ -307,16 +308,17 @@
     if(label)triggerLog(label+'：显现'+rune+'。','good');
     return tryFusion()||rune;
   }
-  function tryAddRune() {
+  function tryAddRune(outcome='success') {
     if (state.pill.runes.length >= MAX_RUNES) return null;
     const available=BASIC_RUNES.filter(r=>!state.pill.runes.includes(r));
     if(!available.length)return null;
     const guaranteed=(hasTool('needle')&&!uses('needle'))||(state.pill.fusionPending&&(state.pill.refineSerial||0)>(state.pill.fusionReadyAfter||0));
     if(hasTool('needle')&&!uses('needle'))useTool('needle');
     if((state.pill.refineSerial||0)>(state.pill.fusionReadyAfter||0))state.pill.fusionPending=false;
-    if(campaignRules?.active(campaign)?.tier===2 && !state.pill.spiritUsed){state.pill.spiritUsed=true;state.pill.runeChoices=[...available].sort(()=>Math.random()-.5).slice(0,2);return null;}
-    if(!guaranteed&&Math.random()>.25)return null;
-    return grantRune(available[Math.floor(Math.random()*available.length)],guaranteed?'法器生纹':null);
+    if(campaignRules?.active(campaign)?.tier===2 && !state.pill.spiritUsed){state.pill.spiritUsed=true;state.pill.runeChoices=window.AlchemyEconomy?.runeCandidates(available,campaign?.economy?.equipped)||available.slice(0,2);return null;}
+    if(!guaranteed&&Math.random()>=(RUNE_CHANCE[outcome]||RUNE_CHANCE.success))return null;
+    const rune=window.AlchemyEconomy?.pickRune(available,campaign?.economy?.equipped)||available[Math.floor(Math.random()*available.length)];
+    return grantRune(rune,guaranteed?'法器生纹':null);
   }
 
   function tryFusion() {
@@ -373,7 +375,7 @@
         const rune=state.pill.returnRune;state.pill.returnRune=null;useTool('return');
         restored=grantRune(rune,'回纹环');
       }
-      const runeResult = tryAddRune()||restored;
+      const runeResult = tryAddRune(outcome)||restored;
       fused = !!runeResult && runeResult.includes("！");
       const qualityName = QUALITY_NAMES[state.pill.quality];
       feedbackTone = "good";
@@ -567,14 +569,14 @@
     setFeedback("本单已终止。已有成丹及未用药材交还客人，免赔。", "", "loss"); render(); return true;
   }
   function economyAction(kind,id,nature='neutral'){if(!campaign||state.busy||window.AlchemyInteractionBusy)return false;window.AlchemyEconomy.ensure(campaign);let ok=false;
-    if(kind==='equip'){const e=campaign.economy;if(!state.pillEnded||(!e.tools.includes(id)&&id!==null))return false;const ids=window.AlchemyEconomy.equippedIds(e.equipped);if(id===null)e.equipped=[];else if(ids.includes(id))e.equipped=ids.filter(t=>t!==id);else{if(ids.length>=window.AlchemyEconomy.EQUIP_SLOTS)return false;e.equipped=[...ids,id];}ok=true;}
+    if(kind==='equip'){const e=campaign.economy;if(!state.pillEnded||(!e.tools.includes(id)&&id!==null))return false;const ids=window.AlchemyEconomy.equippedIds(e.equipped);if(id===null)e.equipped=[];else if(ids.includes(id))e.equipped=ids.filter(t=>t!==id);else{if(ids.length>=window.AlchemyEconomy.EQUIP_SLOTS)return false;const def=window.AlchemyEconomy.TOOL_DEFS.find(t=>t.id===id);if(def?.runeTarget&&window.AlchemyEconomy.runeTarget(ids))return false;e.equipped=[...ids,id];}ok=true;}
     else if(kind==='self'||kind==='herbself'){if(campaign.phase!=='open'||campaignRules.active(campaign)||!state.pillEnded||!state.roundEnded)return false;const e=campaign.economy;if(!['warm','cool','neutral'].includes(nature))return false;if(kind==='herbself'){nature=id;if(!['warm','cool','neutral'].includes(nature)||!e.herbs[nature])return false;e.herbs[nature]--;id=0;}else{if(!Number.isInteger(id)||id<0||id>2||!e.stock[id])return false;e.stock[id]--;}e.selfCount++;const o={id:'S'+e.selfCount,self:true,tier:id,status:'active',client:'自炼自售',name:['普通药包自炼','精选药包自炼','灵性药包自炼'][id],nature,materials:1,target:1};campaign.selfOrder=o;ORDER_TARGET=1;MAX_PILLS=1;state=createState();state.started=true;state.pillEnded=true;state.pillEndReason='waiting';state.orderId=o.id;window.dispatchEvent?.(new Event('alchemy:order'));ok=true;}
     else if(kind==='chooseRune'){if(state.pillEnded||state.pill.runes.length>=MAX_RUNES||state.pill.runes.includes(id)||!state.pill.runeChoices?.includes(id))return false;state.pill.runeChoices=[];grantRune(id,'灵性药包');updateRecord();ok=true;}
     else if(kind==='reroll')return false; // 生纹针现为自动生效，不保留额外炉内操作。
     else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded))ok=window.AlchemyEconomy.buy(campaign,kind,id);
     if(ok){state.riskResult=randomRisk();render();}return ok;
   }
-  window.AlchemyGame = { RUNE_DEFS, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
+  window.AlchemyGame = { RUNE_CHANCE, RUNE_DEFS, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
     snapshot: () => ({ ...playtestSnapshot(), started: state.started,
     busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
