@@ -1,0 +1,80 @@
+[
+  {
+    "source": "assets\\alchemy\\furnace-v1.png",
+    "runtime": "assets\\runtime-v10\\furnace-v1.webp",
+    "before": 2023457,
+    "after": 66634
+  },
+  {
+    "source": "assets\\props\\herb-parcel-v1.png",
+    "runtime": "assets\\runtime-v10\\herb-parcel-v1.webp",
+    "before": 1378806,
+    "after": 42300
+  },
+  {
+    "source": "assets\\props\\delivery-tray-v1.png",
+    "runtime": "assets\\runtime-v10\\delivery-tray-v1.webp",
+    "before": 1800856,
+    "after": 20354
+  },
+  {
+    "source": "assets\\props\\alchemy-fan-v1.png",
+    "runtime": "assets\\runtime-v10\\alchemy-fan-v1.webp",
+    "before": 1832454,
+    "after": 54802
+  },
+  {
+    "source": "assets\\pill-layers\\bodies\\color-04-brown.png",
+    "runtime": "assets\\runtime-v10\\color-04-brown.webp",
+    "before": 701895,
+    "after": 24480
+  },
+  {
+    "source": "assets\\pill-layers\\bodies\\color-07-slate.png",
+    "runtime": "assets\\runtime-v10\\color-07-slate.webp",
+    "before": 743437,
+    "after": 25184
+  },
+  {
+    "source": "assets\\pill-layers\\bodies\\color-06-olive.png",
+    "runtime": "assets\\runtime-v10\\color-06-olive.webp",
+    "before": 738062,
+    "after": 27390
+  },
+  {
+    "source": "assets\\pill-layers\\cracks\\crack-01-single.png",
+    "runtime": "assets\\runtime-v10\\crack-01-single.webp",
+    "before": 25223,
+    "after": 4066
+  },
+  {
+    "source": "assets\\pill-layers\\cracks\\crack-02-fork.png",
+    "runtime": "assets\\runtime-v10\\crack-02-fork.webp",
+    "before": 22019,
+    "after": 3924
+  },
+  {
+    "source": "assets\\pill-layers\\cracks\\crack-03-opposed.png",
+    "runtime": "assets\\runtime-v10\\crack-03-opposed.webp",
+    "before": 29107,
+    "after": 5062
+  },
+  {
+    "source": "assets\\pill-layers\\cracks\\crack-04-arc.png",
+    "runtime": "assets\\runtime-v10\\crack-04-arc.webp",
+    "before": 34113,
+    "after": 6158
+  },
+  {
+    "source": "assets\\pill-layers\\cracks\\crack-05-fragments.png",
+    "runtime": "assets\\runtime-v10\\crack-05-fragments.webp",
+    "before": 22788,
+    "after": 5246
+  },
+  {
+    "source": "assets\\pill-layers\\cracks\\crack-06-traverse.png",
+    "runtime": "assets\\runtime-v10\\crack-06-traverse.webp",
+    "before": 42426,
+    "after": 6676
+  }
+]
