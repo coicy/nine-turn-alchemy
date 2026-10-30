@@ -1,0 +1,8 @@
+.tool-art{display:block;width:76px;height:76px;background:url('assets/scene-props-v42/tools.png') no-repeat;background-size:600% 300%;flex-shrink:0;pointer-events:none}
+.artifact-picker{grid-template-columns:repeat(3,1fr);max-height:260px}.artifact-picker button{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#6a4930;color:#f3dfbc;border:2px solid #a17b4e;font-size:12px;min-width:0}.artifact-picker button .tool-art{width:66px;height:66px}.artifact-picker button[aria-pressed=true]{border-color:#f2d18d;background:#8c6139}
+.market-description>.tool-art{float:left;width:90px;height:90px;margin:8px 15px 8px 0}.market-description:after{content:'';display:block;clear:both}
+.equipment-slot>.tool-art{width:58px;height:58px}.equipment-card>.tool-art{float:left;width:60px;height:60px;margin-right:10px}
+.market-merchant{position:absolute;left:10%;bottom:35%;height:52%;max-width:26%;object-fit:contain;pointer-events:none;z-index:0}.market-heading,.market-stalls{position:relative;z-index:1}
+.counter-waiting{position:absolute;left:18%;bottom:46%;height:26%;display:flex;gap:4px;pointer-events:none;z-index:0;opacity:.72}.waiting-person{width:92px;height:100%;background-image:url('assets/customers-v12/customers.webp');background-size:300% 100%;background-repeat:no-repeat;filter:saturate(.65)}
+.counter-board .counter-visitor{z-index:1}
+@media(max-width:800px){.artifact-picker{grid-template-columns:repeat(2,1fr)}.market-merchant{height:26%;bottom:65%}.counter-waiting{display:none}}
