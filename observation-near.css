@@ -1,0 +1,11 @@
+.canvas-room .room-observation{left:770px;right:auto;top:150px;width:340px;min-height:260px;padding:18px;z-index:4}
+.canvas-room .room-observation h2{font-size:21px;margin-bottom:16px}
+.canvas-room .observation-pill{position:absolute;left:18px;top:70px;width:90px;height:90px;pointer-events:none;isolation:isolate}
+.canvas-room .room-observation #roomFacts{padding-left:112px;min-height:140px;font-size:16px}
+.canvas-room .room-observation #roomRunes{margin:6px 0 10px;font-size:15px}
+.canvas-room .room-observation small{font-size:14px}
+.canvas-room .room-observation[data-busy=true] .observation-pill{animation:observed-breath .3s ease-in-out infinite alternate}
+.canvas-room .refine-feedback{left:780px;top:430px;width:320px}
+.canvas-room .rune-trigger-status{left:780px;right:auto;top:620px;width:300px}
+@keyframes observed-breath{from{filter:brightness(1)}to{filter:brightness(1.15)}}
+@media(prefers-reduced-motion:reduce){.canvas-room .room-observation[data-busy=true] .observation-pill{animation:none}}
