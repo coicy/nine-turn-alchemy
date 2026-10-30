@@ -2,7 +2,7 @@
 .counter-board .counter-visitor{left:calc(var(--counter-origin-x,0px) + 950 * var(--counter-scale,1px));top:calc(var(--counter-origin-y,0px) + 145 * var(--counter-scale,1px));bottom:auto;width:calc(385 * 400 / 675 * var(--counter-scale,1px));height:calc(385 * var(--counter-scale,1px));transform:translateX(-50%);max-width:none;flex-basis:auto;overflow:visible}
 .counter-board .visitor-portrait{width:100%;height:100%;max-width:none;aspect-ratio:400/675;background-size:300% 100%;margin:0;flex:none}
 .counter-board .visitor-dialogue{left:calc(100% - 10px);top:5%;width:clamp(180px,16vw,230px);box-sizing:border-box}
-.counter-board .counter-waiting{left:calc(var(--counter-origin-x,0px) + 310 * var(--counter-scale,1px));top:calc(var(--counter-origin-y,0px) + 260 * var(--counter-scale,1px));bottom:auto;height:calc(270 * var(--counter-scale,1px));gap:calc(12 * var(--counter-scale,1px));opacity:1}
+.counter-board .counter-waiting{left:calc(var(--counter-origin-x,0px) + 280 * var(--counter-scale,1px));top:calc(var(--counter-origin-y,0px) + 170 * var(--counter-scale,1px));bottom:auto;height:calc(360 * var(--counter-scale,1px));gap:calc(20 * var(--counter-scale,1px));opacity:1}
 .counter-board .waiting-person{width:auto;height:100%;aspect-ratio:400/675;flex:none;background-size:300% 100%;filter:saturate(.85)}
 .counter-board .visitor-departed{position:absolute;top:20%;width:250px;padding:12px;background:#f3e5c8;color:#59432c}
 @media(max-width:800px){.counter-board .counter-waiting{display:none}.counter-board .visitor-dialogue{left:auto;right:0;top:12%;width:180px;transform:translateX(55%);font-size:12px}}
