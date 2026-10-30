@@ -1,0 +1,7 @@
+#refineAnimation{position:absolute;inset:0;width:1600px;height:900px;z-index:13;pointer-events:none}
+/* Keep the furnace, firebox and collection path unobstructed. */
+.canvas-room .refine-feedback{left:54%;top:34%;width:350px;padding:14px 18px;animation:refine-caption .16s ease-out}
+.canvas-room .refine-feedback strong{font-size:25px}.canvas-room .refine-feedback p{font-size:17px}.canvas-room #fireResponse{display:none}
+.canvas-room #valueChange{display:none}
+@keyframes refine-caption{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.canvas-room .refine-feedback{animation:none}}
