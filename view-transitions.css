@@ -1,0 +1,27 @@
+.view-entering{animation:room-enter .24s ease-out both!important;transform-origin:center}
+.view-leaving{animation:room-leave .12s ease-in both!important;pointer-events:none!important}
+.view-entering[data-motion-view=work]{animation-name:forge-enter!important}
+.view-entering[data-motion-view=orders]{animation-name:counter-enter!important}
+.view-entering[data-motion-view=shop]{animation-name:market-enter!important}
+.view-entering[data-motion-view=equipment]{animation-name:drawer-enter!important}
+.view-entering[data-motion-view=record],.view-entering[data-motion-view=manual]{animation-name:book-enter!important;transform-origin:left center}
+.view-leaving[data-motion-view=equipment]{animation-name:drawer-leave!important}
+.view-leaving[data-motion-view=work]{animation-name:forge-leave!important}
+.view-leaving[data-motion-view=orders]{animation-name:counter-leave!important}
+.view-leaving[data-motion-view=shop]{animation-name:market-leave!important}
+.view-leaving[data-motion-view=record],.view-leaving[data-motion-view=manual]{animation-name:book-leave!important;transform-origin:left center}
+@keyframes room-enter{from{opacity:.25}to{opacity:1}}@keyframes room-leave{from{opacity:1}to{opacity:0}}
+@keyframes forge-enter{from{opacity:.2;transform:scale(1.015)}to{opacity:1;transform:none}}
+@keyframes forge-leave{to{opacity:0;transform:scale(.992)}}
+@keyframes counter-enter{from{opacity:.2;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes counter-leave{to{opacity:0;transform:translateY(6px)}}
+@keyframes market-enter{from{opacity:.2;transform:translateX(16px)}to{opacity:1;transform:none}}
+@keyframes market-leave{to{opacity:0;transform:translateX(-10px)}}
+@keyframes drawer-enter{from{opacity:.3;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes drawer-leave{to{opacity:0;transform:translateX(18px)}}
+@keyframes book-enter{from{opacity:.2;transform:perspective(1200px) rotateY(-5deg)}to{opacity:1;transform:none}}
+@keyframes book-leave{to{opacity:0;transform:perspective(1200px) rotateY(3deg)}}
+/* The shell owns entrance timing; prevent the legacy drawer animation from restarting. */
+#equipmentDrawer.engine-panel:not(.view-entering):not(.view-leaving){animation:none!important}
+@media(max-width:650px){.view-entering[data-motion-view=equipment]{animation-name:counter-enter!important}.view-leaving[data-motion-view=equipment]{animation-name:room-leave!important}}
+@media(prefers-reduced-motion:reduce){.view-entering,.view-leaving{animation:none!important}}

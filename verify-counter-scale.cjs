@@ -8,5 +8,5 @@ const{chromium}=require('playwright'),assert=require('node:assert/strict'),path=
   await p.screenshot({path:path.join(out,'counter-'+size.width+'.png')});
  }
  await p.setViewportSize({width:1440,height:900});for(let type=0;type<3;type++){await p.evaluate(t=>{document.querySelector('.visitor-portrait').className='visitor-portrait visitor-type-'+t;},type);await p.waitForTimeout(400);assert.equal(await p.locator('.visitor-portrait').isVisible(),true);}
- await p.locator('[data-view=work]').click();assert.equal(await p.locator('.visitor-portrait').isVisible(),false);assert.deepEqual(errors,[]);console.log('PASS counter portraits retain 400:675 ratio, align with counter at 3 desktop sizes, remain proportional on mobile, 3 archetypes and navigation');
+ await p.locator('[data-view=work]').click();await p.waitForFunction(()=>AlchemyViewState.snapshot().phase==='idle');assert.equal(await p.locator('.visitor-portrait').isVisible(),false);assert.deepEqual(errors,[]);console.log('PASS counter portraits retain 400:675 ratio, align with counter at 3 desktop sizes, remain proportional on mobile, 3 archetypes and navigation');
  }finally{await b.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
