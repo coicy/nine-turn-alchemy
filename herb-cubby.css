@@ -1,0 +1,13 @@
+.herb-tray{left:24px;top:250px;width:330px;max-height:520px;padding:12px 10px;color:#f4e5c4;background:#4e3424;border:5px solid #7f5938;border-radius:4px;box-shadow:4px 6px 12px #30221655}
+.herb-tray h2{font:24px KaiTi,STKaiti,serif;letter-spacing:5px;text-align:center;color:#f7ead3}.herb-tray p{font-size:13px;text-align:center;color:#e4cda4}
+.herb-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;max-height:392px;overflow:auto;scrollbar-width:thin;scrollbar-color:#b59768 #4c3422}
+.herb-slot{position:relative;display:block;aspect-ratio:1/1.12;min-width:0;min-height:0;padding:0;margin:0;border:0;background:#5a3b24 url('assets/herb-cabinet-v38/cubby.png') center/100% 100% no-repeat;cursor:grab;touch-action:none;isolation:isolate}
+.herb-slot img{position:absolute;left:20%;top:16%;width:62%;height:55%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 6px 3px #1e120b88);transition:transform .12s ease-out}
+.herb-slot:hover:not([aria-disabled=true]) img{transform:translateY(-5px) rotate(-3deg)}
+.herb-slot span{position:absolute;bottom:6%;left:8%;right:8%;text-align:center;background:#ead7b4;border:1px solid #9e7e4c;padding:4px 2px;box-shadow:0 2px 2px #21140a66;transform:rotate(-1deg)}
+.herb-slot b{display:block;font:17px KaiTi,STKaiti,serif;color:#493423;line-height:1.1;overflow-wrap:anywhere}.herb-slot small{display:block;font-size:11px;color:#795a38;margin-top:3px}
+.herb-slot strong{position:absolute;top:8%;right:10%;font:14px KaiTi,serif;padding:2px 4px;background:#ead7b4;color:#5e4028;border-radius:2px}
+.herb-slot[data-empty=true] img{display:none}.herb-slot[data-empty=true] strong{top:34%;left:20%;right:20%;background:none;color:#d7bb8b;text-align:center;letter-spacing:4px;font-size:18px;font-weight:400}
+.herb-slot[aria-disabled=true]:not([data-empty=true]) img{filter:brightness(.8) drop-shadow(0 4px 3px #24150d77)}
+.herb-slot:focus-visible{outline:3px solid #f0d099;outline-offset:-4px}
+@media(prefers-reduced-motion:reduce){.herb-slot img{transition:none}}
