@@ -11,3 +11,15 @@
 .herb-slot[aria-disabled=true]:not([data-empty=true]) img{filter:brightness(.8) drop-shadow(0 4px 3px #24150d77)}
 .herb-slot:focus-visible{outline:3px solid #f0d099;outline-offset:-4px}
 @media(prefers-reduced-motion:reduce){.herb-slot img{transition:none}}
+/* Two inventory rows with stable, equal-sized wooden slots. */
+.herb-tray{top:320px;width:368px;max-height:none;padding:12px;border-width:5px}
+.herb-tray h2{font-size:22px;margin:0 0 5px}.herb-tray p{font-size:12px;margin:5px 0}
+.herb-slots{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,80px);max-height:none;overflow:visible;gap:3px;margin:12px 0}
+.herb-slot{aspect-ratio:1;width:100%;height:80px}
+.herb-slot img{left:13%;top:10%;width:74%;height:73%}
+.herb-slot strong{top:auto;bottom:7px;right:9px;padding:0;background:none;font:bold 17px sans-serif;color:#fff2cb;text-shadow:1px 2px 2px #241408}
+.herb-slot span{display:none;z-index:3;bottom:100%;left:-5px;right:auto;min-width:125px;padding:7px;transform:none;pointer-events:none}
+.herb-slot:hover span,.herb-slot:focus-visible span{display:block}
+.herb-slot b{font-size:16px}.herb-slot small{font-size:12px}
+.herb-slot[data-empty=true] strong{display:none}
+.herb-slot:not([data-slot]){cursor:default}.herb-slot:not([data-slot]):hover span{display:none}
