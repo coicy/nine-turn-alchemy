@@ -1,0 +1,4 @@
+.herb-tray{position:absolute;left:24px;top:280px;width:300px;max-height:470px;background:#f3e6cfee;border:2px solid #a48a63;padding:16px;color:#4b3827;z-index:20;box-sizing:border-box;border-radius:5px}
+.herb-tray h2{font-size:23px;margin:0 0 6px}.herb-tray p{font-size:14px;line-height:1.5;margin:6px 0}.herb-slots{max-height:335px;overflow:auto;overscroll-behavior:contain}
+.herb-slot{display:flex;align-items:center;gap:8px;border:1px solid #b7a184;background:#f8efdc;padding:7px;margin:6px 0;min-height:60px;cursor:grab;touch-action:none}
+.herb-slot img{width:52px;height:52px;object-fit:contain;pointer-events:none}.herb-slot span{flex:1}.herb-slot b{display:block;font-size:16px}.herb-slot small{display:block;font-size:12px;color:#816d53;margin-top:4px}.herb-slot strong{font-size:15px}.herb-slot:focus-visible{outline:3px solid #a65b36}
