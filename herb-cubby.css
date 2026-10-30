@@ -23,3 +23,4 @@
 .herb-slot b{font-size:16px}.herb-slot small{font-size:12px}
 .herb-slot[data-empty=true] strong{display:none}
 .herb-slot:not([data-slot]){cursor:default}.herb-slot:not([data-slot]):hover span{display:none}
+.herb-tray .herb-slots{grid-template-columns:repeat(var(--herb-columns,1),80px);justify-content:center}
