@@ -1,5 +1,5 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-function node(tag='DIV'){return {tagName:tag,dataset:{},style:{},hidden:false,inert:false,listeners:{},clientWidth:900,clientHeight:700,offsetHeight:800,classList:{add(){},toggle(){}},append(){},after(){},setAttribute(k,v){this[k]=v},focus(){},addEventListener(k,f){this.listeners[k]=f},querySelectorAll(){return buttons}};}
+function node(tag='DIV'){return {tagName:tag,dataset:{},style:{},hidden:false,inert:false,listeners:{},clientWidth:900,clientHeight:700,offsetHeight:800,classList:{add(){},toggle(){},contains(){return false}},append(){},after(){},setAttribute(k,v){this[k]=v},focus(){},addEventListener(k,f){this.listeners[k]=f},querySelectorAll(){return buttons}};}
 const buttons=['work','orders','shop','record','manual','equipment'].map(view=>{const b=node('BUTTON');b.dataset.view=view;return b});
 const forge=node(),layout=node(),board=node(),shop=node(),record=node('DETAILS'),manual=node('DETAILS'),equipment=node(),top=node(),wallet=node();
 const nodes={'.forge-panel':forge,'.game-layout':layout,'.daily-board:not(.economy-board)':board,'.economy-board':shop,'.order-panel':record,'.side-panel':manual,'.topbar':top,'.equipment-drawer':equipment};

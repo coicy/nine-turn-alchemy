@@ -10,7 +10,7 @@ const labels={pending:'待接单',active:'炼制中',completed:'已完成',faile
 function render(){const c=api.campaign();if(!c)return;const s=api.snapshot(),completed=c.orders.filter(o=>o.status==='completed').length,resolved=c.orders.filter(o=>['completed','failed'].includes(o.status)).length,active=!!(c.selfOrder?.status==='active'||c.orders.some(o=>o.status==='active'));
  $('dayTitle').textContent=`第 ${c.day} 天 / 30 天`;
  $('careerTotal').textContent=`累计完成 ${c.history.reduce((n,d)=>n+d.completed,0)+(c.phase==='open'?completed:0)} 单`;
- $('dailyHint').textContent=c.phase==='finished'?`三十日累计收入 ${c.economy?.earned||0} 铜钱，余额 ${c.economy?.coins||0} 铜钱。经营结束。查看总评，或重新经营。`:c.phase==='settled'?'今日已结清，准备迎接下一天。':`今日 ${completed} / ${c.orders.length} 单完成 · ${resolved} / ${c.orders.length} 单已处理。一次只接一单，成丹与余料归客人，失败免赔。`;
+ $('dailyHint').textContent=c.phase==='finished'?`三十日累计收入 ${c.economy?.earned||0} 铜钱，余额 ${c.economy?.coins||0} 铜钱。经营结束。查看总评，或重新经营。`:c.phase==='settled'?'今日已结清，准备迎接下一天。':`今日 ${completed} / ${c.orders.length} 单完成 · ${resolved} / ${c.orders.length} 单已处理。一次只接一单，成丹归客；成功余药赠留，失败退回且免赔。`;
  if(!c.orders.some(o=>o.id===selectedId))selectedId=c.orders.find(o=>o.status==='active')?.id||c.orders.find(o=>o.status==='pending')?.id||c.orders[0]?.id;
  const selected=c.orders.find(o=>o.id===selectedId);
  $('dailyOrders').innerHTML=c.orders.map((o,i)=>`<button type="button" class="counter-ticket ${o.status} ${o.id===selectedId?'selected':''}" data-letter="${o.id}" aria-pressed="${o.id===selectedId}"><small>来笺 ${i+1} · ${labels[o.status]}</small><strong>${o.client}</strong><span>${o.name}</span></button>`).join('');
@@ -29,7 +29,7 @@ function render(){const c=api.campaign();if(!c)return;const s=api.snapshot(),com
  $('settleDay').textContent='敲铃 · 结束今日（未接委托跳过）';
  $('nextDay').hidden=c.phase!=='settled';$('nextDay').textContent=`迎接第 ${c.day+1} 天`;
  const total=c.history.reduce((n,d)=>n+d.completed,0); const totalOrders=c.history.reduce((n,d)=>n+d.completed+d.failed,0);
- $('dailySummary').textContent=c.phase==='finished'?`三十日总评：完成 ${total} / ${totalOrders} 单，未完成 ${totalOrders-total} 单。累计收入 ${c.economy?.earned||0} 铜钱，余额 ${c.economy?.coins||0} 铜钱。经营结束。`:c.phase==='settled'?`今日结算：完成 ${completed} 单，未完成 ${c.orders.length-completed} 单；已有成丹及未用材料均交还各自客人。`:active&&!s.pillEnded?'日结或终止委托前，请先处理炉内丹药。':'';
+ $('dailySummary').textContent=c.phase==='finished'?`三十日总评：完成 ${total} / ${totalOrders} 单，未完成 ${totalOrders-total} 单。累计收入 ${c.economy?.earned||0} 铜钱，余额 ${c.economy?.coins||0} 铜钱。经营结束。`:c.phase==='settled'?`今日结算：完成 ${completed} 单，未完成 ${c.orders.length-completed} 单；成丹归客；成功余药已赠留，失败余药已退回。`:active&&!s.pillEnded?'日结或终止委托前，请先处理炉内丹药。':'';
 }
 board.addEventListener('click',e=>{const letter=e.target.closest('[data-letter]');if(letter){selectedId=letter.dataset.letter;render();return;}if(e.target.closest('[data-return-forge]')){window.dispatchEvent(new Event('alchemy:work'));return;}const target=e.target.closest('[data-order]');if(target&&!target.disabled){abandonConfirm=false;api.chooseOrder(target.dataset.order);}});
 $('abandonOrder').addEventListener('click',()=>{if(!abandonConfirm){abandonConfirm=true;render();}else{abandonConfirm=false;api.abandonOrder();}});

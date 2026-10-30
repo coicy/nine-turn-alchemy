@@ -7,10 +7,22 @@
   const fire = document.getElementById('fireObject');
   fire.insertAdjacentHTML('afterbegin', '<img class="room-tool" src="assets/runtime-v10/alchemy-fan-v1.webp" alt="" draggable="false">');
   document.querySelector('.tray-object b').textContent = '收丹盘';
+  stage.insertAdjacentHTML('beforeend', '<section id="roomChoices" class="room-loop-card" hidden aria-label="选择丹纹"><strong>灵性显纹 · 选择一道丹纹</strong><div></div></section><section id="roomSettlement" class="room-loop-card" hidden aria-live="polite"><p></p><button data-destination="orders">回柜台接单／日结</button> <button data-destination="shop">用余药自炼／购料</button></section>');
+  const decision=document.createElement('p');decision.id='roomDecision';document.querySelector('.room-observation').append(decision);
+  document.getElementById('roomChoices').addEventListener('click',e=>{const b=e.target.closest('[data-rune]');if(b){window.AlchemyGame.economyAction('chooseRune',b.dataset.rune);document.getElementById('alchemyScene').focus({preventScroll:true});}});
+  document.getElementById('roomSettlement').addEventListener('click',e=>{const b=e.target.closest('[data-destination]');if(b)document.querySelector('.engine-nav [data-view="'+b.dataset.destination+'"]').click();});
   let triggerKey = '', triggerTimer;
   function update() {
     const s = window.AlchemyGame.snapshot();
+    const c=window.AlchemyGame.campaign(),E=window.AlchemyEconomy;
     const live = s.started && !s.pillEnded && !s.roundEnded;
+    const choices=document.getElementById('roomChoices'),settlement=document.getElementById('roomSettlement');
+    choices.hidden=!s.runeChoices?.length;
+    choices.querySelector('div').replaceChildren(...(s.runeChoices||[]).map(name=>{const b=document.createElement('button');b.dataset.rune=name;b.textContent='凝成'+name;return b;}));
+    settlement.hidden=!s.roundEnded||!s.order;
+    if(!settlement.hidden){const o=s.order;settlement.querySelector('p').textContent=o.self?(c?.economy?.last||'自炼已结算'):o.status==='completed'?`本单完成 · 工钱 ${E.fee(o)} + 加赏 ${Math.max(0,(o.reward||0)-E.fee(o))} 铜钱 · 赠留余药 ${o.gifted||0} 包`:`本单未完成 · 失败免赔 · 退回余药 ${o.returned||0} 包，已有成丹归客`;}
+    decision.textContent=live?(s.order?.self?`现在收丹实收 ${E.saleValue(c,s)} 铜钱`:`收丹后交付 ${Math.round(s.delivered+s.value)} / ${s.target} · ${s.delivered+s.value>=s.target?'可完成本单':'尚差 '+Math.ceil(s.target-s.delivered-s.value)}`):'';
+    if(live)decision.textContent+=` · 未投药材 ${s.remaining} 包`;
     stage.dataset.live = String(live);
     stage.dataset.loading = String(!!s.busy);
     document.querySelector('.room-observation').hidden = !live;
