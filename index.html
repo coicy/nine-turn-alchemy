@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0b1719" />
     <title>九转丹坊 · MVP</title>
     <link rel="stylesheet" href="styles.css?v=workbench-3" />
-  <link rel="stylesheet" href="simulation.css?v=drag-hints-15" /><link rel="stylesheet" href="opening-story.css?v=story-2" /><link rel="stylesheet" href="campaign.css?v=customers-12" /><link rel="stylesheet" href="art-assets.css?v=props-1" /><link rel="stylesheet" href="alchemy-assets.css?v=layers-13-1" /><link rel="stylesheet" href="game-shell.css?v=equipment-drawer-9"><link rel="stylesheet" href="room-ui.css?v=30"><link rel="stylesheet" href="scene2d.css?v=27"><link rel="stylesheet" href="scene-feedback.css?v=33"><link rel="stylesheet" href="refine-animation.css?v=35"><link rel="stylesheet" href="observation-near.css?v=loop-flow-41"><link rel="stylesheet" href="herb-tray.css?v=38"><link rel="stylesheet" href="herb-cubby.css?v=40"><link rel="stylesheet" href="painted-scenes.css?v=41"><link rel="stylesheet" href="scene-props.css?v=42"><link rel="stylesheet" href="journal-ui.css?v=43"><link rel="stylesheet" href="counter-people.css?v=45"><link rel="stylesheet" href="unified-theme.css?v=46"><link rel="stylesheet" href="view-transitions.css?v=46"></head>
+  <link rel="stylesheet" href="simulation.css?v=drag-hints-15" /><link rel="stylesheet" href="opening-story.css?v=story-2" /><link rel="stylesheet" href="campaign.css?v=customers-12" /><link rel="stylesheet" href="art-assets.css?v=props-1" /><link rel="stylesheet" href="alchemy-assets.css?v=layers-13-1" /><link rel="stylesheet" href="game-shell.css?v=equipment-drawer-9"><link rel="stylesheet" href="room-ui.css?v=30"><link rel="stylesheet" href="scene2d.css?v=27"><link rel="stylesheet" href="scene-feedback.css?v=33"><link rel="stylesheet" href="refine-animation.css?v=35"><link rel="stylesheet" href="observation-near.css?v=loop-flow-41"><link rel="stylesheet" href="herb-tray.css?v=38"><link rel="stylesheet" href="herb-cubby.css?v=40"><link rel="stylesheet" href="painted-scenes.css?v=41"><link rel="stylesheet" href="scene-props.css?v=42"><link rel="stylesheet" href="journal-ui.css?v=43"><link rel="stylesheet" href="counter-people.css?v=45"><link rel="stylesheet" href="unified-theme.css?v=46"><link rel="stylesheet" href="view-transitions.css?v=46"><link rel="stylesheet" href="customers.css?v=48"><link rel="stylesheet" href="onboarding.css?v=53"></head>
   <body data-screen="opening">
     <div class="app-shell">
       <header class="topbar">
@@ -177,27 +177,27 @@
     </div>
 
     <div class="opening-screen" id="introModal">
-      <header class="opening-masthead"><span class="opening-brand"><i aria-hidden="true">丹</i> 坊市丹坊</span><span>三十日经营 · 每日七至八份委托</span></header>
+      <header class="opening-masthead"><span class="opening-brand"><i aria-hidden="true">丹</i> 坊市丹坊</span><span>接下第一单，点起第一炉火</span></header>
       <main class="opening-content" aria-labelledby="openingTitle">
         <section class="opening-story">
           <p class="eyebrow">丹房初启 · 静候开炉</p>
           <h1 id="openingTitle">九转丹坊</h1>
           <p class="opening-tagline">一炉烟火，百转成丹。</p>
-          <p class="opening-prose">离开山门后，你带着一只旧丹炉，在坊市租下了临街的小屋。<br>木牌刚挂好，一位行商便停在门前，将三包药材轻轻放上案台。<br>“新开的丹坊？那就请你替我试这一炉。”</p>
+          <p class="opening-prose">一只旧丹炉，一间新丹坊。<br>第一位客人带来了药材，等你开炉。</p>
         </section>
         <section class="opening-letter" aria-labelledby="letterTitle">
           <div class="opening-emblem" aria-hidden="true"><div class="emblem-ring"></div><div class="emblem-orb">九</div><span>一炉一念</span></div>
           <div class="letter-heading"><span>行商留笺</span><span class="letter-number">初字 · 壹</span></div>
           <h2 id="letterTitle">丹坊的第一笔生意</h2>
-          <p class="letter-message">“三包药材，请代炼灵丹，成丹达到本单目标即可。<br>药材和成丹都归我；若未炼成，也不必赔药。<br>炉前的取舍，就交给丹师了。”</p>
-          <div class="letter-goals"><div><strong>三</strong><span>份药材</span></div><div><strong>7–8</strong><span>每日随机委托</span></div></div>
-          <p class="letter-note">只有落盘收丹才计入交付。三包药材用尽仍未达标，本单便告失败。</p>
+          <p class="letter-message">“请替我炼一炉丹。<br>药材由我出，炼坏了也不用赔。”</p>
+          <div class="letter-goals"><div><strong>三</strong><span>份药材</span></div><div><strong>免赔</strong><span>安心试炉</span></div></div>
+          <p class="letter-note">炼得更好，还是及时收丹？由你做主。</p>
           <span class="letter-stamp" aria-hidden="true">试</span>
         </section>
         <section class="opening-launch" aria-label="开始试玩">
           <button class="primary-button opening-start" id="startButton" type="button">接下委托 <span aria-hidden="true">→</span></button>
-          <p class="opening-choice">你解开第一包药材。旧炉尚温，这间小丹坊的第一缕药香，就从今天开始。</p>
-          <details class="opening-help"><summary>查看试炉要诀</summary><ol><li>点药包拿起，再点炉口整包投入；也可将药包拖入炉口。</li><li>点击炉膛挥扇催炼，一次一炼。先查看炸丹概率，再决定继续或收丹。</li><li>点灵丹取出，再点交付盘落盘，也可拖入盘中。九转后须收丹；达到本单目标即可结单，每天随机七至八单，主动日结后进入次日。</li></ol></details>
+          <p class="opening-choice">接单后，从取一包药材开始。</p>
+          <details class="opening-help"><summary>查看试炉要诀</summary><ol><li>点药包拿起，再点炉口整包投入；也可将药包拖入炉口。</li><li>点击炉膛挥扇催炼，一次一炼。先查看炸丹概率，再决定继续或收丹。</li><li>点灵丹取出，再点交付盘落盘，也可拖入盘中。随时可收丹，百转后必须收丹；交付达到本单目标即可结单。</li></ol></details>
           <div class="opening-consent">
             <label class="telemetry-option"><input type="checkbox" id="introTelemetryEnabled" /> 我已阅读并同意上传匿名试玩记录</label>
             <a class="policy-link" href="data-policy.html" target="_blank" rel="noopener">《试玩数据收集说明与同意》</a>
@@ -209,8 +209,8 @@
     </div>
 
     <script src="telemetry.js"></script>
-    <script src="asset-loader.js?v=props-42"></script><script src="economy.js?v=loop-flow-41"></script><script src="campaign.js?v=progression-2"></script><script src="app.js?v=feedback-33"></script>
-  <script src="simulation.js?v=runes-6"></script><script src="campaign-ui.js?v=loop-flow-41"></script><script src="opening-story.js?v=days-2"></script><script src="art-assets.js?v=assets-10"></script><script src="alchemy-assets.js?v=assets-10"></script><script src="economy-ui.js?v=loop-flow-41"></script><script src="equipment-ui.js?v=equipment-drawer-9"></script><script src="game-shell.js?v=transitions-46"></script><script src="room-ui.js?v=loop-flow-41"></script><script src="scene2d.js?v=loop-flow-41"></script><script src="scene-feedback.js?v=33"></script><script src="refine-animation.js?v=35"></script><script src="observation-near.js?v=36"></script><script src="herb-tray.js?v=40"></script><script src="market-scene.js?v=41"></script><script src="scene-props.js?v=42"></script><script src="journal-ui.js?v=43"></script><script src="counter-people.js?v=44"></script></body>
+    <script src="customer-catalog.js?v=48"></script><script src="customers.js?v=48"></script><script src="customer-view.js?v=48"></script><script src="asset-loader.js?v=customers-48"></script><script src="economy.js?v=loop-flow-41"></script><script src="campaign.js?v=progression-2"></script><script src="app.js?v=customers-48"></script>
+  <script src="simulation.js?v=onboarding-53"></script><script src="campaign-ui.js?v=customers-48"></script><script src="opening-story.js?v=onboarding-53"></script><script src="art-assets.js?v=assets-10"></script><script src="alchemy-assets.js?v=assets-10"></script><script src="economy-ui.js?v=onboarding-53"></script><script src="equipment-ui.js?v=equipment-drawer-9"></script><script src="game-shell.js?v=transitions-46"></script><script src="room-ui.js?v=onboarding-53"></script><script src="scene2d.js?v=onboarding-53"></script><script src="scene-feedback.js?v=33"></script><script src="refine-animation.js?v=35"></script><script src="observation-near.js?v=36"></script><script src="herb-tray.js?v=40"></script><script src="market-scene.js?v=41"></script><script src="scene-props.js?v=customers-48"></script><script src="journal-ui.js?v=43"></script><script src="counter-people.js?v=44"></script><script src="onboarding.js?v=53"></script></body>
 </html>
 
 

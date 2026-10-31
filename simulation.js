@@ -154,9 +154,9 @@
       document.getElementById('workInstruction').textContent = '今日尚未接单 · 在上方委托簿选择一份订单';
       document.getElementById('slipValue').textContent = '等待接单';
       document.querySelector('.commission-slip b').textContent = '今日待接单';
-    } else if(s.order.self){document.getElementById('workInstruction').textContent=s.roundEnded?'自炼结束 · 可继续购料或接委托':s.runeChoices?.length?'灵性药包：请在坊市栏选择丹纹':'自购药包 · 投料、催炼，点交付盘出售成丹';
+    } else if(s.order.self){document.getElementById('workInstruction').textContent=s.roundEnded?'自炼结束 · 可继续购料或接委托':s.runeChoices?.length?'灵性药包：请在炉旁选择一道丹纹':'自购药包 · 投料、催炼，点交付盘出售成丹';
     } else if (s.roundEnded) {
-      document.getElementById('workInstruction').textContent = '本单已结清 · 请接下一单，全部订单处理完后可日结';
+      document.getElementById('workInstruction').textContent = '本单已结清 · 请接下一单，也可在柜台结束今日，未接委托会跳过';
     }
   }
   window.addEventListener('alchemy:render', updateCampaignContext);

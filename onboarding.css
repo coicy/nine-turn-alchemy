@@ -1,0 +1,18 @@
+/* First commission: keep the next action and its consequences in view. */
+.guided-opening .engine-nav button[data-view]:not([data-view="work"]),
+.guided-opening .scene-loadout,
+.guided-opening .equipped-tool-status,
+.guided-opening #roomFacts > div:nth-child(2),
+.guided-opening #roomFacts > div:nth-child(3),
+.guided-opening .room-observation > small { display:none!important }
+.onboarding-expand { margin-left:auto; font-size:13px!important }
+.onboarding-expand[hidden], .observation-details[hidden] { display:none!important }
+.guided-opening #engineWallet { display:none }
+.guided-opening #roomDecision { font-weight:700; font-size:18px; line-height:1.6; border-top:1px solid #b79b77; padding-top:12px }
+.guided-opening #roomFacts { min-height:0 }
+.observation-details { font-size:14px; line-height:1.6; margin-top:10px }
+.observation-details summary, .market-help summary { cursor:pointer }
+.observation-details > p { margin:8px 0 }
+.market-help { margin:12px 0; padding:12px; border:1px solid #b79b77; border-radius:6px }
+
+.guided-opening.canvas-room .refine-feedback { top:550px }

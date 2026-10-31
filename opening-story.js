@@ -8,9 +8,7 @@
   intro.before(scene); scene.hidden = true;
   const start = document.getElementById('startButton');
   const shots = [
-    ['一张新招牌','你是一名四处谋生的散修。攒下些积蓄，你终于在坊市租到一间小屋，支起旧丹炉，挂上了自己的招牌。'],
-    ['第一位客人','晨雾未散，一位行商走进门，将三包药材放上案台：“听说这里接代炼？这第一笔生意，就托付给你了。”'],
-    ['这一炉，由你做主','“成丹交还于我，若未炼成，不必赔药。”你展开来笺，又望了一眼炉火。继续催炼，还是及时收丹——从此刻起，都由你决定。']
+    ['先试这一炉','客人已留下三包药材，炼坏免赔。先取一包投入炉口，再试着催炼。']
   ];
   let index = 0, timer = null, closed = false;
   function finish() {
@@ -22,11 +20,11 @@
     clearTimeout(timer); scene.dataset.shot = String(index);
     document.getElementById('prologueTitle').textContent = shots[index][0];
     document.getElementById('prologueText').textContent = shots[index][1];
-    document.getElementById('prologueStep').textContent = `${index+1} / 3`;
-    document.getElementById('prologueNext').textContent = index === 2 ? '进入丹坊 →' : '下一幕 →';
+    document.getElementById('prologueStep').textContent = `${index+1} / ${shots.length}`;
+    document.getElementById('prologueNext').textContent = index === shots.length - 1 ? '进入丹坊 →' : '下一幕 →';
     // Manual advance keeps reading time in the player's hands; scenery animates independently.
   }
-  document.getElementById('prologueNext').addEventListener('click',()=>{if(index<2){index++;show();}else finish();});
+  document.getElementById('prologueNext').addEventListener('click',()=>{if(index<shots.length - 1){index++;show();}else finish();});
   document.getElementById('prologueSkip').addEventListener('click',finish);
   scene.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();finish();}});
   if (reduced) scene.classList.add('reduce-motion');
