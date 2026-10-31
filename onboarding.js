@@ -6,8 +6,8 @@
   expand.setAttribute('aria-label','显示全部经营功能，保留当前进度');
   document.querySelector('.engine-nav').append(expand);
   let expanded=false;
-  try { expanded=localStorage.getItem('alchemy-onboarding-expanded-v53')==='true'; } catch {}
-  expand.onclick=()=>{expanded=true;try {localStorage.setItem('alchemy-onboarding-expanded-v53','true');} catch {} update();};
+  try { expanded=window.AlchemySaves ? window.AlchemySaves.preference('expanded')===true : localStorage.getItem('alchemy-onboarding-expanded-v53')==='true'; } catch {}
+  expand.onclick=()=>{expanded=true;try {if(window.AlchemySaves)window.AlchemySaves.setPreference('expanded',true);else localStorage.setItem('alchemy-onboarding-expanded-v53','true');} catch {} update();};
   const runes=document.getElementById('roomRunes'),details=document.createElement('details');
   details.className='observation-details';
   const summary=document.createElement('summary');summary.textContent='品质与丹纹详情';

@@ -38,7 +38,7 @@
     if(held){const target=held==='pill'?objects.tray:held==='tool'?firebox:mouth;ctx.save();ctx.strokeStyle=rect(target,hover)?'#709653':'#a65b36';ctx.lineWidth=4;ctx.setLineDash([12,8]);ctx.strokeRect(target.x,target.y,target.w,target.h);ctx.restore();label(rect(target,hover)?'松手使用':'放到这里',target.x+target.w/2,target.y-12);}else if(hover){const k=list.find(k=>hit(k,hover));if(k)label({herbs:'从药柜取药包，投入炉口',tool:'拿起扇子，对火门扇风',pill:'从炉口取丹，放入收丹盘'}[k],hover.x,hover.y-30);}
     if(t>noticeUntil){const el=document.getElementById('workInstruction');const next=window.AlchemyOnboarding?.instruction(s)||(!s.order?'前往接待柜台，选择委托':s.roundEnded?(s.order.self?'自炼已结算 · 前往坊市购料或柜台接单':'本单已结清 · 前往接待柜台接下一单'):s.runeChoices?.length?'请先完成丹纹选择':s.busy?'正在炼化…':held?(held==='pill'?'将丹药放入收丹盘':'将手中物件用于炉口'):live()?'点击火门扇风，或从炉口取丹放入收丹盘':'从药柜取药包，投入炉口');if(el.textContent!==next)el.textContent=next;}}
   requestAnimationFrame(draw);
-  window.AlchemyScene2D={takeHerbs:e=>{if(!ready()||live()||!state.order||state.roundEnded||state.remaining<=0)return false;held='herbs';hover=point(e);dirty=true;return true;},moveHerbs:e=>{hover=point(e);dirty=true;},dropHerbs:e=>use(point(e)),stats,get held(){return held;},objects,mouth,firebox,cancel};
+  window.AlchemyScene2D={takeHerbs:e=>{if(!ready()||live()||!state.order||state.roundEnded||state.remaining<=0)return false;held='herbs';hover=point(e);dirty=true;return true;},moveHerbs:e=>{hover=point(e);dirty=true;},dropHerbs:e=>use(point(e)),stats,get busy(){return !!fanTimer;},get held(){return held;},objects,mouth,firebox,cancel};
 })();
 
 

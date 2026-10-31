@@ -14,7 +14,7 @@
   const SAVE_KEY = "alchemy-days-v1";
   let saved = null;
   try {
-    const raw = JSON.parse(window.localStorage?.getItem(SAVE_KEY) || "null");
+    const raw = (window.AlchemySaves ? window.AlchemySaves.read() : JSON.parse(window.localStorage?.getItem(SAVE_KEY) || "null"));
     if (campaignRules && raw?.version === 1 && Number.isInteger(raw.campaign?.day) && raw.campaign.day >= 1 && raw.campaign.day <= 30
       && ['open','settled','finished'].includes(raw.campaign.phase)
       && Array.isArray(raw.campaign.orders) && [3,7,8].includes(raw.campaign.orders.length) && Array.isArray(raw.campaign.history)
@@ -158,7 +158,7 @@
     state.logs = state.logs.slice(0, 8);
   }
 
-  function render() {
+  function render() { window.AlchemyCustomers?.bind(campaign);
     const profile = state.riskResult;
     const turnProgress = Math.min(100, (state.delivered / ORDER_TARGET) * 100);
     const explosionChance = state.pill.shield ? 0 : profile.explode;
@@ -229,7 +229,7 @@
     }
     if (campaign && state.started && !state.busy) {
       window.AlchemyEconomy?.ensure(campaign);
-      try { window.localStorage?.setItem(SAVE_KEY, JSON.stringify({version:1,campaign,state,target:ORDER_TARGET,materials:MAX_PILLS})); } catch (_) {}
+      try { window.AlchemySaves ? window.AlchemySaves.write({version:1,campaign,state,target:ORDER_TARGET,materials:MAX_PILLS}) : window.localStorage?.setItem(SAVE_KEY, JSON.stringify({version:1,campaign,state,target:ORDER_TARGET,materials:MAX_PILLS})); } catch (_) {}
     }
     window.dispatchEvent?.(new Event("alchemy:render"));
   }
