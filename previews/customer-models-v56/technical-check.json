@@ -1,0 +1,55 @@
+{
+  "count": 8,
+  "errors": [],
+  "assets": [
+    {
+      "file": "01-merchant.png",
+      "width": 1024,
+      "height": 1536,
+      "alpha": true
+    },
+    {
+      "file": "02-herbalist.png",
+      "width": 1024,
+      "height": 1536,
+      "alpha": true
+    },
+    {
+      "file": "03-innkeeper.png",
+      "width": 1024,
+      "height": 1536,
+      "alpha": true
+    },
+    {
+      "file": "04-boatman.png",
+      "width": 1024,
+      "height": 1536,
+      "alpha": true
+    },
+    {
+      "file": "05-elder.png",
+      "width": 1024,
+      "height": 1536,
+      "alpha": true
+    },
+    {
+      "file": "06-scholar.png",
+      "width": 1024,
+      "height": 1536,
+      "alpha": true
+    },
+    {
+      "file": "07-guard.png",
+      "width": 1024,
+      "height": 1536,
+      "alpha": true
+    },
+    {
+      "file": "08-courier.png",
+      "width": 1024,
+      "height": 1536,
+      "alpha": true
+    }
+  ],
+  "note": "File/loading checks do not constitute visual acceptance."
+}
