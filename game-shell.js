@@ -24,6 +24,7 @@ function show(view){if(view!=='work'&&!panels[view])return;cleanTransitions();re
   enterTimer=setTimeout(()=>{cleanTransitions();phase='idle';document.body.dataset.viewPhase=phase;window.dispatchEvent(new CustomEvent('alchemy:view-ready',{detail:{view}}));},reduced?0:240);
  },reduced?0:120);
 }
+window.addEventListener('alchemy:opening-view',e=>{if(['work','orders'].includes(e.detail?.view))show(e.detail.view);});
 window.AlchemyViewState={snapshot:()=>({current,requested,phase})};
 nav.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;previous=b;show(b.dataset.view);});close.onclick=()=>show('work');document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(current!=='work'||phase!=='idle'))show('work');});
 function fit(){const w=viewport.clientWidth,h=viewport.clientHeight;const compact=!!forge.dataset.room&&w<1280;const changed=document.body.classList.contains('compact-forge')!==compact;document.body.classList.toggle('compact-forge',compact);if(changed)window.dispatchEvent(new Event('alchemy:layout'));const scale=Math.min(1,w/(forge.dataset.room ? (compact?1100:1600) : 660),h/Math.max(forge.offsetHeight,1));forge.style.transform='translate(-50%,-50%) scale('+scale+')';}

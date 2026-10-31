@@ -7,7 +7,7 @@
   document.body.append(dialog);
   const notice=document.createElement('p');notice.className='save-notice';notice.setAttribute('role','status');notice.hidden=true;document.body.append(notice);
   const buttons=[];let confirmId=null;
-  const busy=()=>api.snapshot().busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy;
+  const busy=()=>window.AlchemyOpening?.active||api.snapshot().busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy;
   function open(){if(busy())return;confirmId=null;render();dialog.showModal();}
   for(const host of [document.querySelector('.opening-launch'),document.querySelector('.engine-nav')]){
     const b=document.createElement('button');b.type='button';b.className='save-open';b.setAttribute('aria-controls','savePicker');b.onclick=open;host.append(b);buttons.push(b);
@@ -38,7 +38,7 @@
     if(reset&&!saves.reset(id)){render();return;}
     if(saves.select(id))location.reload();else render();
   });
-  window.addEventListener('alchemy:render',render);window.addEventListener('alchemy:interaction',render);
+  window.addEventListener('alchemy:opening-finished',render);window.addEventListener('alchemy:render',render);window.addEventListener('alchemy:interaction',render);
   window.addEventListener('alchemy:fanning',()=>{queueMicrotask(render);setTimeout(render,1000);});
   render();
 })();
