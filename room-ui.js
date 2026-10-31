@@ -7,8 +7,9 @@
   const fire = document.getElementById('fireObject');
   fire.insertAdjacentHTML('afterbegin', '<img class="room-tool" src="assets/runtime-v10/alchemy-fan-v1.webp" alt="" draggable="false">');
   document.querySelector('.tray-object b').textContent = '收丹盘';
-  stage.insertAdjacentHTML('beforeend', '<section id="roomChoices" class="room-loop-card" hidden aria-label="选择丹纹"><strong>灵性显纹 · 选择一道丹纹</strong><div></div></section><section id="roomSettlement" class="room-loop-card" hidden aria-live="polite"><p></p><button data-destination="orders">回柜台接单／日结</button> <button data-destination="shop">用余药自炼／购料</button></section>');
+  stage.insertAdjacentHTML('beforeend', '<section id="roomChoices" class="room-loop-card" hidden aria-label="选择丹纹"><strong>灵性显纹 · 选择一道丹纹</strong><div></div></section><section id="roomSettlement" class="room-loop-card" hidden aria-live="polite"><p></p><button data-destination="orders">接待下一位客人</button> <button data-destination="shop">看看余药与坊市</button></section>');
   const decision=document.createElement('p');decision.id='roomDecision';document.querySelector('.room-observation').append(decision);
+  const stock=document.createElement('p');stock.id='roomStock';document.querySelector('.room-observation').append(stock);
   document.getElementById('roomChoices').addEventListener('click',e=>{const b=e.target.closest('[data-rune]');if(b){window.AlchemyGame.economyAction('chooseRune',b.dataset.rune);document.getElementById('alchemyScene').focus({preventScroll:true});}});
   document.getElementById('roomSettlement').addEventListener('click',e=>{const b=e.target.closest('[data-destination]');if(b)document.querySelector('.engine-nav [data-view="'+b.dataset.destination+'"]').click();});
   let triggerKey = '', triggerTimer;
@@ -22,7 +23,7 @@
     settlement.hidden=!s.roundEnded||!s.order;
     if(!settlement.hidden){const o=s.order;settlement.querySelector('p').textContent=o.self?(c?.economy?.last||'自炼已结算'):o.status==='completed'?`本单完成 · 工钱 ${E.fee(o)} + 加赏 ${Math.max(0,(o.reward||0)-E.fee(o))} 铜钱 · 赠留余药 ${o.gifted||0} 包`:`本单未完成 · 失败免赔 · 退回余药 ${o.returned||0} 包，已有成丹归客`;}
     decision.textContent=live?(s.order?.self?`现在收丹实收 ${E.saleValue(c,s)} 铜钱`:`收丹后交付 ${Math.round(s.delivered+s.value)} / ${s.target} · ${s.delivered+s.value>=s.target?'可完成本单':'尚差 '+Math.ceil(s.target-s.delivered-s.value)}`):'';
-    if(live)decision.textContent+=` · 未投药材 ${s.remaining} 包`;
+    stock.textContent=live?`已交 ${Math.round(s.delivered)} / ${s.target} · 未投药材 ${s.remaining} 包`:'';
     stage.dataset.live = String(live);
     stage.dataset.loading = String(!!s.busy);
     document.querySelector('.room-observation').hidden = !live;
@@ -35,7 +36,7 @@
     document.getElementById('deliverySeals').hidden = true;
     const facts = document.getElementById('roomFacts');
     facts.replaceChildren();
-    if (live) for (const [label, value] of [['转数', `${s.turn}转`], ['品质', document.getElementById('qualityValue').textContent], ['价值', String(Math.round(s.value))], ['炸丹概率', document.getElementById('riskResultValue').textContent]]) {
+    if (live) for (const [label, value] of [['转数', `${s.turn}转`], ['品质', document.getElementById('qualityValue').textContent], ['当前丹值', String(Math.round(s.value))], ['炸丹概率', document.getElementById('riskResultValue').textContent]]) {
       const row = document.createElement('div'), name = document.createElement('span'), number = document.createElement('strong');
       name.textContent = label; number.textContent = value; row.append(name, number); facts.append(row);
     }
@@ -45,7 +46,7 @@
     if (live && !s.busy && !window.AlchemyInteractionBusy && !stage.dataset.held) document.getElementById('workInstruction').textContent = '点击火门扇风 · 从炉口取丹放入收丹盘';
     document.getElementById('trayHint').textContent = s.order?.self ? '收丹即出售 · 按实际售价结算' : '收丹计入本单';
     document.querySelector('.herb-object b').textContent = s.order?.self ? '自有药包' : '本单药包';
-    document.querySelector('.commission-slip').hidden = !s.order || s.roundEnded;
+    document.querySelector('.commission-slip').hidden = live || !s.order || s.roundEnded;
     const triggers = document.getElementById('runeTriggerStatus');
     triggers.hidden = !live || !triggers.textContent.trim();
     if (!live) triggers.textContent = '';

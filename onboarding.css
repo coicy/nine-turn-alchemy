@@ -1,18 +1,40 @@
-/* First commission: keep the next action and its consequences in view. */
-.guided-opening .engine-nav button[data-view]:not([data-view="work"]),
-.guided-opening .scene-loadout,
-.guided-opening .equipped-tool-status,
-.guided-opening #roomFacts > div:nth-child(2),
-.guided-opening #roomFacts > div:nth-child(3),
-.guided-opening .room-observation > small { display:none!important }
-.onboarding-expand { margin-left:auto; font-size:13px!important }
-.onboarding-expand[hidden], .observation-details[hidden] { display:none!important }
-.guided-opening #engineWallet { display:none }
-.guided-opening #roomDecision { font-weight:700; font-size:18px; line-height:1.6; border-top:1px solid #b79b77; padding-top:12px }
-.guided-opening #roomFacts { min-height:0 }
-.observation-details { font-size:14px; line-height:1.6; margin-top:10px }
-.observation-details summary, .market-help summary { cursor:pointer }
-.observation-details > p { margin:8px 0 }
-.market-help { margin:12px 0; padding:12px; border:1px solid #b79b77; border-radius:6px }
+/* V54: story first, then one current goal; advanced features remain reachable. */
+.opening-content{grid-template-columns:1fr;max-width:650px;gap:24px;text-align:center}
+.opening-launch{grid-column:1;grid-row:2;max-width:480px;justify-self:center}
+.opening-help{text-align:left}
+.guided-journey .engine-nav button[data-view]:not([data-view="work"]),
+.guided-journey .scene-loadout,.guided-journey .equipped-tool-status{display:none!important}
+.guided-journey.journey-orders .engine-nav button[data-view="orders"],
+.guided-journey.journey-shop .engine-nav button[data-view="shop"],
+.guided-journey.journey-tools .engine-nav button[data-view="equipment"]{display:block!important}
+.guided-journey #engineWallet{font-size:12px}
+.guided-opening #engineWallet{display:none}
+.onboarding-expand{margin-left:auto;font-size:13px!important}
+.onboarding-expand[hidden]{display:none!important}
+.canvas-room #roomFacts>div:nth-child(2),.canvas-room .room-observation>small{display:none!important}
+.canvas-room #roomFacts>div:nth-child(1){font-size:14px;color:#685139}
+.canvas-room #roomFacts>div:nth-child(3),.canvas-room #roomFacts>div:nth-child(4){font-size:19px}
+.canvas-room #roomFacts{min-height:140px}
+.canvas-room #roomDecision{font-size:18px;line-height:1.5}
+#roomStock{font-size:14px;color:#685139;margin:8px 0}
+.observation-details{font-size:14px;line-height:1.5;margin-top:8px}
+.observation-details summary,.market-help summary{cursor:pointer}
+.observation-details>p{margin:6px 0}
+.canvas-room .refine-feedback{top:580px}
+.canvas-room .room-observation:has(.observation-details[open]){z-index:26;max-height:480px;overflow:auto}
+#roomSettlement [data-destination="orders"]{background:#934d35;color:#fff1d7;border-color:#7c402d}
+#roomSettlement [data-destination="shop"]{font-size:14px}
+.market-help{margin:12px 0;padding:12px;border:1px solid #b79b77;border-radius:6px}
+.counter-board .browse-customers{background:#f5ead4;color:#493624;border-color:#ae9068}
+.browse-customers{position:absolute;top:120px;right:20px;z-index:7}
+.counter-focused #dailyOrders{display:none!important}
+.counter-board:not(.counter-focused) .browse-customers{top:120px}
+@media(max-width:800px){.opening-launch{grid-row:2}.browse-customers,.counter-board:not(.counter-focused) .browse-customers{top:180px;right:12px}}
 
-.guided-opening.canvas-room .refine-feedback { top:550px }
+@media(max-width:800px){
+ .counter-focused .browse-customers{top:110px}
+ .counter-board:not(.counter-focused) .browse-customers{top:206px}
+ .counter-focused .counter-letter{width:62%;max-height:57%;font-size:14px;padding:14px}
+ .counter-focused .counter-letter dl{gap:12px}
+ .counter-focused .counter-letter .accept-stamp{font-size:16px;padding:8px 14px}
+}

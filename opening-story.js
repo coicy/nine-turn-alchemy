@@ -8,7 +8,9 @@
   intro.before(scene); scene.hidden = true;
   const start = document.getElementById('startButton');
   const shots = [
-    ['先试这一炉','客人已留下三包药材，炼坏免赔。先取一包投入炉口，再试着催炼。']
+    ['一张新招牌','你带着一只旧丹炉，在坊市租下临街的小屋。今日，你的丹坊开张了。'],
+    ['第一位客人','一位行商将三包药材放上案台：‘请你替我代炼。成丹归我，若未炼成，不必赔药。’'],
+    ['点起第一炉火','你接下来笺，走到炉前。先取一包药材投入炉口，这笔生意就从亲手开炉开始。']
   ];
   let index = 0, timer = null, closed = false;
   function finish() {
@@ -21,7 +23,7 @@
     document.getElementById('prologueTitle').textContent = shots[index][0];
     document.getElementById('prologueText').textContent = shots[index][1];
     document.getElementById('prologueStep').textContent = `${index+1} / ${shots.length}`;
-    document.getElementById('prologueNext').textContent = index === shots.length - 1 ? '进入丹坊 →' : '下一幕 →';
+    document.getElementById('prologueNext').textContent = index === shots.length - 1 ? '取药开炉 →' : '下一幕 →';
     // Manual advance keeps reading time in the player's hands; scenery animates independently.
   }
   document.getElementById('prologueNext').addEventListener('click',()=>{if(index<shots.length - 1){index++;show();}else finish();});
