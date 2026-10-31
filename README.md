@@ -11,6 +11,10 @@
 
 [打开行商骨骼与蒙皮预览](https://coicy.github.io/nine-turn-alchemy/previews/customer-rig-v55/preview.html)：单一完整母稿、连续网格、骨骼权重，以及静候/招呼/小幅点头。可查看原图复原和权重，不包含递药或游戏接入。[固定流程](previews/customer-rig-v55/workflow.md)与[本轮审查](previews/customer-rig-v55/ACCEPTANCE.md)分别保存，V52/V53 原拼接方案已撤回视觉通过结论。
 
+## 角色画风规范 V57
+
+角色风格固定为「国风淡彩勾线、适度夸张的市井人物」，见[正式规范](character-style/CharacterArtStyleV57.md)。V55/V56 保留为设计与技术参考，不是最终画风母版；后续先校准行商、客栈掌柜和婆婆，再统一扩产。
+
 ## 历史版本说明
 
 以下保留早期经营版本的说明，旧参数和素材归属文字不代表当前规则。
