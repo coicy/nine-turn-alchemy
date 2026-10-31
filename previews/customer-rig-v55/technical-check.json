@@ -1,0 +1,19 @@
+{
+  "weightError": 2.220446049250313e-16,
+  "zeroError": 2.5421149729252077e-13,
+  "minArea": 746.0433765898152,
+  "maxStretch": 0.145108220004869,
+  "maxDisplacement": 14.470754403238749,
+  "opaqueVertexCount": 817,
+  "browserErrors": [],
+  "checks": [
+    "normalized weights",
+    "rest reconstruction",
+    "positive triangle area across three clips",
+    "strain bound",
+    "play/pause",
+    "mobile overflow",
+    "reduced motion"
+  ],
+  "note": "Technical constraints only. Does not establish visual quality."
+}

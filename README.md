@@ -7,6 +7,10 @@
 
 阶段详情见 [当前制作阶段](PROJECT_STAGE.md)。[打开线上版本](https://coicy.github.io/nine-turn-alchemy/?v=interface-46)。
 
+## 角色制作样例 V55
+
+[打开行商骨骼与蒙皮预览](https://coicy.github.io/nine-turn-alchemy/previews/customer-rig-v55/preview.html)：单一完整母稿、连续网格、骨骼权重，以及静候/招呼/小幅点头。可查看原图复原和权重，不包含递药或游戏接入。[固定流程](previews/customer-rig-v55/workflow.md)与[本轮审查](previews/customer-rig-v55/ACCEPTANCE.md)分别保存，V52/V53 原拼接方案已撤回视觉通过结论。
+
 ## 历史版本说明
 
 以下保留早期经营版本的说明，旧参数和素材归属文字不代表当前规则。
