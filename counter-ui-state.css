@@ -29,3 +29,10 @@
 /* V66: the visible note is generated raster artwork; button only supplies hit/focus semantics. */
 .counter-board .counter-note{background:transparent;border:0;border-radius:0;box-shadow:none;padding:0;display:block;gap:0;min-height:0;height:auto;width:clamp(150px,calc(215 * var(--counter-scale,1px)),215px);transform:translateX(-50%) rotate(-3deg)}
 .counter-note img{display:block;width:100%;height:auto;pointer-events:none}.counter-note:hover{outline:none;filter:brightness(1.06)}.counter-note:focus-visible{outline:2px solid #945438;outline-offset:3px}
+/* V68: two packets form the base; the third rests across them. */
+.counter-board .counter-parcels{display:block;left:clamp(12px,calc(var(--counter-origin-x,0px) + 650 * var(--counter-scale,1px)),calc(100% - 160px));top:calc(var(--counter-origin-y,0px) + 570 * var(--counter-scale,1px));bottom:auto;width:calc(190 * var(--counter-scale,1px));height:calc(165 * var(--counter-scale,1px));max-width:none;pointer-events:none}
+.counter-board .counter-parcels img{position:absolute;width:calc(130 * var(--counter-scale,1px));height:calc(130 * var(--counter-scale,1px));max-height:none;object-fit:contain;bottom:0;left:0;transform:rotate(-8deg);z-index:1}
+.counter-board .counter-parcels img:nth-child(2){left:calc(50 * var(--counter-scale,1px));transform:rotate(9deg);z-index:2}
+.counter-board .counter-parcels img:nth-child(3){left:calc(25 * var(--counter-scale,1px));bottom:calc(45 * var(--counter-scale,1px));transform:rotate(-3deg);z-index:3}
+@media(max-width:520px){.counter-board .counter-parcels{left:4%}}
+.counter-board #counterParcelHint{left:clamp(100px,calc(var(--counter-origin-x,0px) + 745 * var(--counter-scale,1px)),calc(100% - 100px));transform:translateX(-50%)}
