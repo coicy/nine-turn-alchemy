@@ -1,0 +1,27 @@
+{
+  "tool": "built-in imagegen",
+  "reference": "../CharacterStyleV59/merchant.png",
+  "common": "Use attached merchant as APPROVED STYLE reference only, NOT identity/face/pose. Create ONE different complete coherent adult character for same Chinese watercolor shop game. Exact same simplified painting density: refined dark brown contour, thinner sparse interior lines, large muted color shapes, one broad soft watercolor shadow per major surface, few structural folds, matte clean skin with simple soft shadow. No pores, fabric weave, realistic stippling, hatching, glossy or polygonal skin highlights, anime eyes, chibi, or dense texture. Credible simplified adult anatomy, mildly large adult head, correct continuous shoulders/neck/wrists/hands, front slight three quarter view, upper-left warm soft light. PORTRAIT framing top of head/hat to MID THIGH; both elbows and hands completely visible with margins. Absolutely transparent alpha outside silhouette, NO haze, glow, vignette, cast shadow, background, black corners or text. ONE SINGLE FIGURE, no modular parts or multiple views. Character: ",
+  "characters": [
+    {
+      "id": "herbalist",
+      "prompt": "24-year-old short lean female herb gatherer. Sun-warmed tan skin, broad cheekbones, curious alert eyes, dark hair in low braid and sage cloth headband. Sage green short jacket, cream underlayer, charcoal apron skirt, small woven herb basket on back with modest fern peeking over shoulder. One hand holding basket shoulder rope at chest, other relaxed. Compact triangular silhouette, not glamorous."
+    },
+    {
+      "id": "boatman",
+      "prompt": "54-year-old broad stocky male boatman, square weathered face and thick neck, short salt and pepper hair, short plain stubble indicated as simple shapes not tiny hairs. Faded indigo short work jacket and grey linen shirt, worn cream shoulder towel. Arms down relaxed, hands loosely open near hips, no holding strap or towel. Thick forearms, heavy grounded posture, calm tired eyes. No full legs or shoes."
+    },
+    {
+      "id": "scholar",
+      "prompt": "28-year-old tall slender male travelling scholar. Narrow clean shaven long face, thoughtful serious eyes, straight brows. Simple dark cloth scholar hat, ivory robe with ink-blue collar and narrow belt, small closed book tucked at belt. One hand slightly raised at upper abdomen in polite conversational gesture with relaxed fingers, other down at side. Long vertical narrow silhouette. Frame TOP HAT TO MID THIGH ONLY, NO KNEES OR SHOES."
+    },
+    {
+      "id": "guard",
+      "prompt": "34-year-old tall athletic broad-shouldered female caravan guard. Strong angular jaw, straight thick eyebrows, watchful composed expression, medium tan skin, dark hair in compact high ponytail. Muted burgundy short outer coat, charcoal modest leather lamellar vest, wrist guards, dark belt. Upright grounded stance, hands relaxed at sides, no weapons. Shoulder width clearly greater than scholar, narrow waist, no cleavage or glamorous features."
+    },
+    {
+      "id": "courier",
+      "prompt": "19-year-old short wiry male courier, youthful angular adult face, prominent ears, lively eyes, no facial hair. Small rust-red soft cloth cap, dark teal short tunic, cream underlayer, small high hip satchel. One hand lightly on hip beside bag, other relaxed with slight outward open palm at waist level, no strap-gripping. Eager slight forward posture, compact narrow silhouette. MID THIGH crop, adult not child."
+    }
+  ]
+}
