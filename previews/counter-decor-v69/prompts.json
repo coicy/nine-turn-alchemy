@@ -1,0 +1,15 @@
+{
+  "tool": "built-in imagegen",
+  "reference": "../../Evidence/ParcelStackV68/stack.png",
+  "common": "Production transparent game prop cluster for a Chinese alchemy shop counter. Use attached scene as STYLE, SCALE AND PERSPECTIVE reference only. Render ONLY the requested group of tabletop objects, no room, no wooden table, no background rectangle. Warm hand-painted Chinese watercolor storybook game art, thin dark brown outlines, muted large color shapes, soft single main shadows and very restrained texture. Fixed shop camera looking slightly down onto the counter; see elliptical tops of jars and top surfaces of books consistent with reference. Soft warm upper-left daylight, small contact shadows tightly under each object only, absolutely alpha-transparent outside props, no haze, glow, black corners or backdrop. Full silhouettes and generous small margins, no cropped objects, no UI text or buttons. Practical lived-in modest workshop belongings, not ornate fantasy objects. Make a compact composed group, not separately labelled asset grid. Landscape about1.5:1. Requested cluster: ",
+  "clusters": [
+    {
+      "id": "jars",
+      "prompt": "Two SMALL matte ceramic medicine jars: one taller grey-teal lidded jar and one squat ochre-brown lidded jar, tiny worn cream labels with only 2-3 abstract ink dashes not readable writing, and a low grey stone mortar with short wooden pestle resting diagonally INSIDE it. Arrange taller jar at rear left, squat jar at right rear, mortar at front center. A few tiny dried root slices in a shallow little wooden dish beside mortar. Keep restrained count and simplified detail, no floating herb bundles, no huge pot, no loose clutter field."
+    },
+    {
+      "id": "tools",
+      "prompt": "A small old bronze tabletop BALANCE SCALE on a low dark wooden base, physically plausible horizontal crossbeam, two small hanging shallow pans at equal height with visible two cords each, simple center upright support. Beside it a closed thin stitched cream bookkeeping ledger atop a slightly larger dark teal ledger, and a small low rectangular inkstone with one short brush resting in its groove. Arrange scale to rear right and book stack at front left, leave visible air between silhouettes. Minimal ornament, NO giant ornamental weighing machine, no readable book titles, no candles, no incense, no actual glowing substances."
+    }
+  ]
+}

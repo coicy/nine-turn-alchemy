@@ -36,3 +36,8 @@
 .counter-board .counter-parcels img:nth-child(3){left:calc(25 * var(--counter-scale,1px));bottom:calc(45 * var(--counter-scale,1px));transform:rotate(-3deg);z-index:3}
 @media(max-width:520px){.counter-board .counter-parcels{left:4%}}
 .counter-board #counterParcelHint{left:clamp(100px,calc(var(--counter-origin-x,0px) + 745 * var(--counter-scale,1px)),calc(100% - 100px));transform:translateX(-50%)}
+/* V69: decorative generated props sit at the sides; never catch gameplay input. */
+.counter-board .counter-decor{position:absolute;z-index:2;object-fit:contain;pointer-events:none;user-select:none;top:calc(var(--counter-origin-y,0px) + 550 * var(--counter-scale,1px));width:calc(340 * var(--counter-scale,1px));height:calc(255 * var(--counter-scale,1px))}
+.counter-board .counter-decor-jars{left:calc(var(--counter-origin-x,0px) + 70 * var(--counter-scale,1px))}
+.counter-board .counter-decor-tools{left:calc(var(--counter-origin-x,0px) + 1250 * var(--counter-scale,1px))}
+@media(max-width:800px){.counter-board .counter-decor{display:none}}
