@@ -1,0 +1,95 @@
+{
+  "tool": "built-in imagegen",
+  "reference": "../CharacterStyleV59/merchant.png",
+  "common": "Use attached merchant as APPROVED PAINTING STYLE reference ONLY. Create one completely DIFFERENT adult person, NOT a merchant face with changed clothing. Chinese watercolor storybook shop game: refined brown contour, sparse thin inner lines, matte muted large color shapes, one broad soft main shadow per surface, very few structural folds, subtle color wash INSIDE shapes. No realistic skin or fabric microtexture, hatching, glossy or polygonal skin patches, anime eyes, childlike chibi. Credible simplified adult proportions, continuous shoulders/neck/elbows/wrists and correct hands. Front slight three-quarter view, upper-left soft light, portrait TOP HEAD TO MID THIGH ONLY, both elbows and hands fully visible, margins. Single coherent complete person, not a component sheet, no full legs or shoes. True empty transparent alpha outside silhouette, no black corner pixels, glow, halo, background color wash, cast shadow, floor, text or border. Distinct character specification: ",
+  "characters": [
+    {
+      "id": "clothier",
+      "name": "陆绣 · 布庄行商",
+      "age": 31,
+      "sex": "女",
+      "shape": "中等身材",
+      "height": 666,
+      "prompt": "31-year-old female cloth trader, average build, broad rectangular face with small eyes and straight thin eyebrows, composed shrewd expression. Dark hair in smooth SIDE bun on viewer right with a plain wooden pin, no hat. Dusty purple short wrap outer jacket, cream collar, muted ochre narrow sash. Forearms loosely crossed at low waist, both hands visible naturally resting over opposite sleeves, no held object. Shoulder line level, upright restrained posture. Adult mature practical face, no glamour.",
+      "features": "矩形脸、侧髻、短外衫与交臂",
+      "binding": "领口与交臂遮挡"
+    },
+    {
+      "id": "apprentice",
+      "name": "程安 · 炉坊学徒",
+      "age": 21,
+      "sex": "男",
+      "shape": "矮瘦紧凑",
+      "height": 620,
+      "prompt": "21-year-old male furnace workshop apprentice, SHORT lean adult, round face with broad nose and large ears, uncertain raised eyebrows, tight closed mouth. Black hair in a SMALL high topknot with loose forelock, no hat. Muted brick short work vest over grey cream shirt, dark apron tied HIGH on chest with wide shoulder straps, sleeves rolled. One hand rubbing the opposite wrist at waist, hands empty. Shy slightly hunched shoulders, head upright. No soot texture, no bruises, no bare torso.",
+      "features": "圆脸大耳、高髻、胸前围裙和拘谨站姿",
+      "binding": "双手与腕部接触"
+    },
+    {
+      "id": "cook",
+      "name": "冯叔 · 食摊掌勺",
+      "age": 57,
+      "sex": "男",
+      "shape": "丰腴宽圆",
+      "height": 640,
+      "prompt": "57-year-old plump male street cook, wide pear-shaped torso, short neck, round jowled face, half-lidded amused eyes, thin short downturned moustache. Faded blue soft skullcap, warm grey short wrap coat, dark moss-green broad apron, sleeves to elbows. Both arms relaxed down at sides, fleshy hands visible, empty. Rounded shoulders with relaxed side lean. No ladle or bowl, no patterns. Clearly mature broad plump man not muscular boatman.",
+      "features": "圆腮短颈、软帽、宽围裙、半眯眼",
+      "binding": "宽腹结构与围裙"
+    },
+    {
+      "id": "quarry",
+      "name": "鲁青 · 采石工",
+      "age": 46,
+      "sex": "女",
+      "shape": "宽壮厚实",
+      "height": 665,
+      "prompt": "46-year-old broad stocky strong female quarry worker, thick forearms and neck, wide square face, broad flat nose, heavy straight brows, tired firm expression. Short dark hair cut to jaw and tucked behind ears, simple faded indigo headband, NOT long braid or bun. Muted olive work jacket, cream collar, charcoal vest and dark waist sash. One hand resting on waist sash at center, other loosely down, empty. Broad level shoulders, grounded upright stance. No weapon/tool, no exposed midriff, no glamour.",
+      "features": "方脸短发、厚颈宽肩、短背心与沉稳站姿",
+      "binding": "厚肩手臂与腰前手"
+    },
+    {
+      "id": "elderman",
+      "name": "葛伯 · 山居散修",
+      "age": 73,
+      "sex": "男",
+      "shape": "瘦小弯背",
+      "height": 585,
+      "prompt": "73-year-old SHORT thin elderly male recluse with visibly stooped upper back, long angular face, sparse grey eyebrows, receding bald crown with long grey side hair tied low, thin LONG grey beard as ONE simple tapered shape. Muted dark slate-blue patched-looking robe but no texture, cream scarf loosely around shoulders. Hands folded loosely inside opposing sleeve openings at lower abdomen, fingers visible naturally. Wary inward gaze and pursed mouth, no smile. Few structural wrinkles only. No cap, cane or magical glow.",
+      "features": "秃顶灰须、弯肩、围巾、谨慎神态",
+      "binding": "弯背骨架与袖口交叠"
+    },
+    {
+      "id": "teacher",
+      "name": "沈宜 · 私塾先生",
+      "age": 36,
+      "sex": "女",
+      "shape": "高瘦修长",
+      "height": 710,
+      "prompt": "36-year-old TALL SLENDER female teacher, very long narrow face, straight small lips, fine arched eyebrows, serious attentive eyes. Hair in a narrow tall upright bun secured with black ribbon, no cap or glasses. Ivory long robe, dusty grey-purple narrow collar and long scarf-like lapels, thin charcoal belt. One hand slightly raised with loosely curved fingers in a patient explaining gesture at upper abdomen, other relaxed beside hip, no book held. Long vertical silhouette, modest adult practical clothing, no glamour.",
+      "features": "长脸高髻、细长肩线、长领襟与讲解手势",
+      "binding": "窄肩、大袖和交谈手掌"
+    },
+    {
+      "id": "escort",
+      "name": "方成 · 行脚护送",
+      "age": 39,
+      "sex": "男",
+      "shape": "高挑结实",
+      "height": 690,
+      "prompt": "39-year-old TALL athletic male travelling escort, trapezoid torso and sturdy shoulders, angular broad jaw, prominent cheekbones, short narrow dark beard only at chin, wary squint. Black hair in a short high ponytail with grey wrap at base, no hat or headband. Faded blue-grey sleeveless outer travel vest over muted ochre long sleeve tunic, dark leather belt, plain cloth wrist wraps. Both hands resting open at sides, no weapon. Weight shifted to one side, one shoulder slightly forward, guarded posture, not symmetric soldier.",
+      "features": "宽颌短须、短马尾、无袖外褂和偏重心",
+      "binding": "肩部扭转与腕带"
+    },
+    {
+      "id": "runner",
+      "name": "吴小春 · 山路跑腿",
+      "age": 22,
+      "sex": "女",
+      "shape": "轻瘦灵活",
+      "height": 620,
+      "prompt": "22-year-old SHORT wiry adult female mountain messenger, triangular face with broad forehead and narrow chin, freckles represented by at most THREE small dots, alert raised eyebrows and determined closed mouth. Short dark hair to chin, two small half-up tied tufts behind ears, NO cap or long ponytail. Muted dark teal fitted short jacket, cream inner collar, a dusty brick short shoulder cape ending at upper arms and fastening at neck, diagonal narrow bag strap. One hand gently gripping cape neck fastening near upper chest, other relaxed open at side. Slight eager forward lean, narrow compact silhouette. Not a child, no glamorous eyes.",
+      "features": "三角脸短发、短肩披、颈扣与前倾",
+      "binding": "披肩覆盖与扣带手"
+    }
+  ]
+}
