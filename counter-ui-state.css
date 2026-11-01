@@ -23,3 +23,6 @@
 @media(max-width:800px){.counter-board .counter-note{left:7%;top:73%;width:145px;min-height:80px;padding:9px 12px}.counter-note span{font-size:17px}.counter-board .counter-letter{width:min(430px,94%);left:3%;bottom:8%;max-height:75%;font-size:14px;overflow:auto}}
 @media(prefers-reduced-motion:no-preference){.counter-note:not([hidden]){animation:note-place .18s ease-out}@keyframes note-place{from{opacity:0;translate:0 -8px}to{opacity:1;translate:0 0}}}
 .counter-board .letter-close{float:none;display:block;margin:12px 0 0 auto}
+/* V65: register the desk note to the current visitor's painted-room anchor. */
+.counter-board .counter-note{left:clamp(86px,calc(var(--counter-origin-x,0px) + 950 * var(--counter-scale,1px)),calc(100% - 86px));top:calc(var(--counter-origin-y,0px) + 580 * var(--counter-scale,1px));width:clamp(145px,calc(190 * var(--counter-scale,1px)),190px);min-height:80px;transform:translateX(-50%) rotate(-4deg) skewX(-5deg)}
+.counter-board .counter-parcels{left:29%;width:22%;max-width:320px}.counter-board #counterParcelHint{left:29%}
