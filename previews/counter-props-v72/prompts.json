@@ -1,0 +1,41 @@
+{
+  "tool": "built-in imagegen",
+  "reference": "Evidence/CounterSceneV71/counter.png",
+  "parcel": {
+    "prompt": "Use case: stylized-concept. Create ONE small traditional herbal medicine parcel transparent game sprite, using the reference actual counter screenshot ONLY for color, painterly softness, light, camera perspective and scale. A squat folded warm brown kraft/mulberry paper medicine packet tied with simple muted olive hemp cord, tiny dry herb tip barely peeking out (NO decorative big green leaves, NO gift bow). Broad quiet painted folds, subdued ochre reflected wooden counter light, thin soft warm-brown irregular edges, same softly painted brush texture as reference background. Do NOT produce a crisp outlined cartoon icon or photoreal noisy texture. Camera moderately looking down, resting on horizontal tabletop, upper-left warm light, front lower face visible, grounded shape. Entire single parcel centered with tight even transparent margins, square canvas. Actual transparent background, no table or room, no opaque rectangle or glow. Subtle short warm contact shadow attached only at base, no wide halo. No text, label, interface, extra parcels. A practical small shop herb packet, not a green leaf-wrapped dumpling, not a shiny gift.",
+    "output": "Generated images are saved to C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb as C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb\\exec-d019bf77-34fe-46aa-9a69-196d54dae447.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+  },
+  "common": "Use case: stylized-concept. ONE transparent production sprite of small Chinese commission paper lying FLAT on a wooden counter. Actual game screenshot reference for material, SOFT PAINTERLY EDGES, camera perspective, muted warm lighting and color ONLY; generate paper alone, no desk or background. Match soft painted account book paper in right side of reference, NOT crisp white cutout pasted on wood. Warm beige opaque modest paper, muted brown ink, very restrained contrast and detail. Broad soft watercolor brushwork, no individual fibers or dense photo texture, no harsh black outline or bright white edge. Light upper-left, subtle warm brown reflection and narrow attached contact shadow only. Landscape shallow tabletop trapezoid: rear edge narrower, moderately viewed from above, original aspect width:height about2:1, sheet takes 90% width and 65% height of landscape canvas, quiet consistent shape across variants. Whole paper visible, small transparent margins. Writing is ONLY a few short soft brush dashes in 2-3 vertical groups, not legible Chinese, not typed text, no big heading. No UI, border panel, magic, extra objects, opaque background, wide shadow halo. Identity: ",
+  "notes": [
+    {
+      "id": "merchant",
+      "detail": "Merchant: subdued warm tan accounting slip, faint red margin rule and tiny faded red square seal, orderly short ink dashes, a soft fold.",
+      "output": "Generated images are saved to C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb as C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb\\exec-5ea403d8-e722-48ae-8ff0-35fc266379b8.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "id": "herbal",
+      "detail": "Herb gatherer: muted grey-ochre rough but intact simple paper, irregular soft edges, small diluted uneven ink dashes, tiny faint pressed green stain in corner, no red seal.",
+      "output": "Generated images are saved to C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb as C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb\\exec-108f4226-435d-44ec-911e-fe23ada66590.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "id": "scholar",
+      "detail": "Scholar: warm ivory smooth paper still tinted by counter light, neat spare grey-brown thin brush dashes, generous space, tiny grey signature mark, no red seal.",
+      "output": "Generated images are saved to C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb as C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb\\exec-98b3a882-fd38-4510-8418-fc816e38b516.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "id": "courier",
+      "detail": "Courier: buff folded travel message, subtle cross fold, one lightly curled corner, slanted short brown ink dashes and tiny rust-red checkmark.",
+      "output": "Generated images are saved to C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb as C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb\\exec-a873f350-f183-4083-8217-94455ca0657b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "id": "guard",
+      "detail": "Guard: grey-tan sturdy square-cut paper, reinforced subtle top edge, bold but soft short dark-brown ink dashes, faded rectangular red seal lower left.",
+      "output": "Generated images are saved to C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb as C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb\\exec-07c1b474-07d1-4901-8fb4-b9f0778d93d1.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "id": "recluse",
+      "detail": "Recluse: warm grey-beige lightly aged paper with very faint mauve undertone, intact uneven corners, widely spaced diluted brown dashes and faded circular ink mark.",
+      "output": "Generated images are saved to C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb as C:\\Users\\23214\\.codex\\generated_images\\01a18188-bbdf-7f33-9048-b9cb12354ecb\\exec-59a5de72-6d7c-4f00-8d4c-3672c5643201.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    }
+  ]
+}

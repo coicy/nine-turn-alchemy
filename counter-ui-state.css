@@ -37,3 +37,8 @@
 @media(max-width:520px){.counter-board .counter-parcels{left:4%}}
 .counter-board #counterParcelHint{left:clamp(100px,calc(var(--counter-origin-x,0px) + 745 * var(--counter-scale,1px)),calc(100% - 100px));transform:translateX(-50%)}
 
+/* V72: generated counter-specific paper props; match the painted room's soft edges. */
+.counter-board .counter-note img{filter:brightness(.86) saturate(.78) blur(.25px) drop-shadow(1px 2px 1.5px rgba(58,33,15,.24))}
+.counter-board .counter-parcels img{width:calc(180 * var(--counter-scale,1px));height:calc(180 * var(--counter-scale,1px));left:calc(-25 * var(--counter-scale,1px));bottom:calc(-24 * var(--counter-scale,1px));filter:brightness(.9) saturate(.72) blur(.25px)}
+.counter-board .counter-parcels img:nth-child(2){left:calc(25 * var(--counter-scale,1px))}
+.counter-board .counter-parcels img:nth-child(3){left:0;bottom:calc(21 * var(--counter-scale,1px))}
