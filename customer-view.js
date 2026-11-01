@@ -6,6 +6,7 @@
   const a=waiting?customers.appearance(customers.profile(order),'waiting'):v.appearance;
   function missing(){el.style.backgroundImage='none';el.classList.add('customer-art-missing');el.textContent='客人';el.dataset.artState='missing';}
   if(!a){missing();return el;}const f=a.frame;el.dataset.appearanceId=a.id;el.dataset.artState=a.actualState;el.style.backgroundImage=`url("${f.src}")`;el.style.backgroundSize=`${f.columns*100}% ${f.rows*100}%`;el.style.backgroundPosition=`${f.columns===1?0:f.column/(f.columns-1)*100}% ${f.rows===1?0:f.row/(f.rows-1)*100}%`;
+  if(customers.catalog.assets.find(asset=>asset.id===a.id)?.layout==='native-v61'){el.dataset.artLayout='native-v61';el.style.backgroundRepeat='no-repeat';}
   check(f.src).then(ok=>{if(!ok)missing();});return el;
  }
  window.AlchemyCustomerView={portrait};

@@ -1,4 +1,8 @@
 /* Character cells are 400 × 675. Scale both axes together with the painted room. */
+/* Native complete portrait: keep its 2:3 ratio and let the painted desk occlude it. */
+.counter-board .counter-visitor:has([data-art-layout="native-v61"]){left:calc(var(--counter-origin-x,0px) + 950 * var(--counter-scale,1px));top:calc(var(--counter-origin-y,0px) + 110 * var(--counter-scale,1px));width:calc(400 * var(--counter-scale,1px));height:calc(600 * var(--counter-scale,1px))}
+.counter-board .visitor-portrait[data-art-layout="native-v61"]{background-size:contain!important;background-position:center top!important;clip-path:inset(0 0 calc(183 * var(--counter-scale,1px)) 0)}
+.counter-board .waiting-person[data-art-layout="native-v61"]{background-size:contain!important;background-position:center bottom!important}
 .counter-board .counter-visitor{left:calc(var(--counter-origin-x,0px) + 950 * var(--counter-scale,1px));top:calc(var(--counter-origin-y,0px) + 145 * var(--counter-scale,1px));bottom:auto;width:calc(385 * 400 / 675 * var(--counter-scale,1px));height:calc(385 * var(--counter-scale,1px));transform:translateX(-50%);max-width:none;flex-basis:auto;overflow:visible}
 .counter-board .visitor-portrait{width:100%;height:100%;max-width:none;aspect-ratio:400/675;background-size:300% 100%;margin:0;flex:none}
 .counter-board .visitor-dialogue{left:calc(100% - 10px);top:5%;width:clamp(180px,16vw,230px);box-sizing:border-box}

@@ -7,8 +7,11 @@
   states:{neutral:{src:sheet,columns:3,rows:1,column,row:0}},
   source:'customers-v12',notes:'现有三人图集；其他状态暂用默认立绘'
  }));
+ assets.push({id:'clothier-v61',canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-v61/clothier.png',columns:1,rows:1,column:0,row:0}},source:'CustomerBatchV61',notes:'陆绣完整同源母稿；静态柜台接入'});
+ for(const [id,file] of [['merchant','merchant'],['traveller','scholar'],['herbalist','herbalist']]){const a=assets.find(a=>a.id===id);a.layout='native-v61';a.states.neutral={src:'assets/customers-v61/'+file+'.png',columns:1,rows:1,column:0,row:0};a.source='V59/V60';a.notes='统一已校准画风，原有身份保持兼容；静态状态共用母稿';}
  // Several profiles currently share a placeholder appearance. Identity never depends on image index.
  const profiles=[
+  ['clothier-lu','陆绣','坊市行商','clothier-v61','布庄近日要进些远货，替赶路的伙计备些丹药。'],
   ['merchant-zhou','周掌柜','坊市行商','merchant','这趟行商要备些丹药，烦请掌柜代炼。'],
   ['courier-shen','沈七','驿路信使','merchant','驿路上的备用丹，就托付掌柜了。'],
   ['boat-luo','罗船客','渡口船客','merchant','过江之前来备些丹药，求个稳妥。'],
