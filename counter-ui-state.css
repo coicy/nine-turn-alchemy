@@ -15,3 +15,11 @@
 .counter-board .counter-tickets[hidden]{display:none!important}
 .counter-board .counter-tickets{background:#f3e5cc}.counter-board[data-counter-state="settled"] #counterVisitor,.counter-board[data-counter-state="finished"] #counterVisitor,.counter-board[data-counter-state="settled"] #dailyHint,.counter-board[data-counter-state="finished"] #dailyHint{display:none}.counter-board[data-counter-state="settled"] #dailySummary,.counter-board[data-counter-state="finished"] #dailySummary{top:20%;right:10%;max-width:80%;padding:20px;font-size:16px;line-height:1.8;border:1px solid #ad9067}
 .counter-book-open .visitor-dialogue{visibility:hidden}
+/* V64: only the arrived customer's desk note opens the detailed letter. */
+.counter-board .counter-note{position:absolute;left:12%;top:72%;z-index:4;width:190px;min-height:96px;padding:12px 18px;background:#f3e5c8;color:#503b28;border:1px solid #baa17c;border-radius:0;box-shadow:2px 5px 7px #422a1838;transform:rotate(-5deg) skewX(-5deg);text-align:left;cursor:pointer;display:grid;gap:3px;font:15px KaiTi,serif}
+.counter-note strong{font-weight:400;border-bottom:1px solid #bca27b;padding-bottom:4px}.counter-note span{font-size:20px}.counter-note small{font:11px system-ui;color:#8b6648}.counter-note:hover{filter:brightness(1.04);outline:1px solid #9e7651}.counter-note:focus-visible{outline:3px solid #945438;outline-offset:4px}
+.counter-board .letter-close{float:right;font:13px system-ui;padding:4px 10px;margin:-5px -6px 6px 8px;position:relative;z-index:2;color:#75442f;background:#eee0c3;border:1px solid #ad9067;cursor:pointer}
+.counter-board .counter-letter{z-index:10}.counter-letter-open .counter-note{visibility:hidden}
+@media(max-width:800px){.counter-board .counter-note{left:7%;top:73%;width:145px;min-height:80px;padding:9px 12px}.counter-note span{font-size:17px}.counter-board .counter-letter{width:min(430px,94%);left:3%;bottom:8%;max-height:75%;font-size:14px;overflow:auto}}
+@media(prefers-reduced-motion:no-preference){.counter-note:not([hidden]){animation:note-place .18s ease-out}@keyframes note-place{from{opacity:0;translate:0 -8px}to{opacity:1;translate:0 0}}}
+.counter-board .letter-close{float:none;display:block;margin:12px 0 0 auto}

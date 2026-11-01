@@ -11,6 +11,16 @@ let abandonConfirm=false,restartConfirm=false,selectedId=null;
 const $=id=>document.getElementById(id);
 const customers=window.AlchemyCustomers;
 const labels={pending:'待接单',active:'炼制中',completed:'已完成',failed:'未完成',skipped:'未接' };
+const note=document.createElement('button');note.type='button';note.id='counterNote';note.className='counter-note';note.hidden=true;note.setAttribute('aria-controls','counterLetter');board.querySelector('.counter-desk').append(note);
+let noteId=null,noteStatus=null,noteReady=false,letterOpen=false,noteTimer=0,noteOrder=null,notePhase=null;
+function syncNote(){const available=!!noteOrder&&notePhase==='open',visible=board.dataset.shellActive==='true';note.hidden=!available||!visible||!noteReady;note.setAttribute('aria-expanded',String(letterOpen));$('counterLetter').hidden=!available||!visible||!noteReady||!letterOpen;board.classList.toggle('counter-letter-open',letterOpen&&noteReady&&visible);}
+function updateNote(order,phase){noteOrder=order;notePhase=phase;if(order?.id!==noteId){clearTimeout(noteTimer);noteTimer=0;noteId=order?.id;noteStatus=order?.status;noteReady=false;letterOpen=false;}else if(order?.status!==noteStatus){noteStatus=order?.status;letterOpen=false;}
+ note.replaceChildren();if(order){const title=document.createElement('strong'),name=document.createElement('span'),hint=document.createElement('small');title.textContent=order.status==='pending'?'委托来笺':order.status==='active'?'本单来笺':'留档来笺';name.textContent=customers.profile(order).name;hint.textContent='点击展开';note.append(title,name,hint);note.setAttribute('aria-label',`查看${customers.profile(order).name}的委托详情`);}
+ if(order&&phase==='open'&&board.dataset.shellActive==='true'&&!noteReady&&!noteTimer){const id=order.id;noteTimer=setTimeout(()=>{noteTimer=0;if(noteId===id&&board.dataset.shellActive==='true'){noteReady=true;syncNote();}},matchMedia('(prefers-reduced-motion: reduce)').matches?0:420);}syncNote();}
+note.onclick=()=>{letterOpen=!letterOpen;syncNote();if(letterOpen)$('counterLetter').querySelector('button')?.focus();};
+board.addEventListener('click',e=>{if(e.target.closest('[data-close-letter]')){letterOpen=false;syncNote();note.focus();}});
+board.addEventListener('keydown',e=>{if(e.key==='Escape'&&letterOpen&&!browseAll){e.stopPropagation();e.preventDefault();letterOpen=false;syncNote();note.focus();}});
+window.addEventListener('alchemy:view-ready',e=>{if(e.detail.view==='orders'){updateNote(noteOrder,notePhase);}else{clearTimeout(noteTimer);noteTimer=0;noteReady=false;letterOpen=false;syncNote();}});
 function render(){const c=api.campaign();if(!c)return;const s=api.snapshot(),completed=c.orders.filter(o=>o.status==='completed').length,resolved=c.orders.filter(o=>['completed','failed'].includes(o.status)).length,active=!!(c.selfOrder?.status==='active'||c.orders.some(o=>o.status==='active'));
  $('dayTitle').textContent=`第 ${c.day} 天`;
  $('careerTotal').textContent=`今日完成 ${completed} / ${c.orders.length} 单`;
@@ -37,6 +47,8 @@ function render(){const c=api.campaign();if(!c)return;const s=api.snapshot(),com
  $('settleDay').textContent=dayConfirm?'确认收工，进入日结':'敲铃 · 结束今日';
  $('nextDay').hidden=c.phase!=='settled';$('nextDay').textContent=`迎接第 ${c.day+1} 天`;
  const total=c.history.reduce((n,d)=>n+d.completed,0); const totalOrders=c.history.reduce((n,d)=>n+d.completed+d.failed,0);
+ if(!$('counterLetter').querySelector('[data-close-letter]')){const close=document.createElement('button');close.type='button';close.className='letter-close';close.dataset.closeLetter='';close.textContent='收起';close.setAttribute('aria-label','收起委托详情');$('counterLetter').prepend(close);}
+ updateNote(selected,c.phase);
  $('dailySummary').textContent=c.phase==='finished'?`三十日总评：完成 ${total} / ${totalOrders} 单，未完成 ${totalOrders-total} 单。累计收入 ${c.economy?.earned||0} 铜钱，余额 ${c.economy?.coins||0} 铜钱。经营结束。`:c.phase==='settled'?`今日结算：完成 ${completed} 单，未完成 ${c.orders.length-completed} 单；成丹归客；成功余药已赠留，失败余药已退回。`:active&&!s.pillEnded?'日结或终止委托前，请先处理炉内丹药。':'';
 }
 board.addEventListener('click',e=>{const letter=e.target.closest('[data-letter]');if(letter){selectedId=letter.dataset.letter;browseAll=false;render();browse.focus();return;}if(e.target.closest('[data-return-forge]')){window.dispatchEvent(new Event('alchemy:work'));return;}const target=e.target.closest('[data-order]');if(target&&!target.disabled){abandonConfirm=false;api.chooseOrder(target.dataset.order);}});
