@@ -1,0 +1,17 @@
+{
+  "styles": [
+    "herbal",
+    "merchant",
+    "courier",
+    "guard",
+    "scholar",
+    "recluse"
+  ],
+  "checks": [
+    "actual generated orders",
+    "identity-based asset",
+    "decoded image",
+    "open/close details",
+    "six style scene screenshots"
+  ]
+}

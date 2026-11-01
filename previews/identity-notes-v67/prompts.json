@@ -1,0 +1,37 @@
+{
+  "tool": "built-in imagegen",
+  "reference": "../CounterNoteV66/note-generic.png",
+  "common": "Create ONE transparent production game prop sprite of a small Chinese commission paper slip lying FLAT on a shop counter, but ONLY paper visible, no counter/background. Match reference painting style, modest cream rice paper, refined warm brown edge, simplified watercolor blocks, upper-left soft light. Same landscape shallow tabletop trapezoid perspective, upper edge slightly narrower than front edge, no severe skew, entire paper centered with small transparent margins. INK WRITING MUST BE ABSTRACT: sparse short uneven brush dashes/strokes arranged in 2-3 vertical columns suggesting handwriting, NOT readable Chinese characters, NOT fake alphabet words, no heading, no typed lines, no UI panels or interaction text. Few restrained material details, no dense photoreal texture or glow. Outside silhouette actual zero-alpha transparent including corners, no black corner, haze, red fringe or background rectangle. One small object, no alternate views. Identity variant: ",
+  "variants": [
+    {
+      "id": "merchant",
+      "label": "商贾账笺",
+      "prompt": "Warm pale ochre neatly cut thick accounting paper, a VERY faint narrow red vertical margin guideline at right, tidy small ink strokes in balanced columns, tiny square faded cinnabar business seal at lower right, one shallow folding line. Practical modest merchant note, no ornate decoration."
+    },
+    {
+      "id": "herbal",
+      "label": "采药草纸",
+      "prompt": "Warm grey-beige rough handmade mulberry paper with slightly irregular fibrous edge, small uneven casual short ink dashes, a tiny faded green leaf-shaped pressed stain near one corner (not an actual loose leaf), no red seal, humble rustic material. NOT a torn destroyed scroll."
+    },
+    {
+      "id": "scholar",
+      "label": "书生素笺",
+      "prompt": "Pale ivory clean smooth modest thin paper, even crisp edges, elegantly spaced small dark grey brush strokes in slender vertical columns, large quiet blank area, small restrained muted grey signature mark. No gold, no ornaments, no red guideline. Faint single center fold."
+    },
+    {
+      "id": "courier",
+      "label": "驿路折笺",
+      "prompt": "Small buff travel message sheet visibly unfolded from four panels, two soft crease lines, slightly curled lower right corner, hurried slanted short ink dashes in compact vertical groups, tiny dark rust-red delivery check mark near upper corner, no string or seal wax, no additional objects."
+    },
+    {
+      "id": "guard",
+      "label": "护卫公笺",
+      "prompt": "Sturdy grey-tan squared paper with a subtly reinforced darker upper edge, bold sparse short black-brown brush dashes in disciplined columns, a small solid faded rectangular cinnabar seal at lower left, less blank space than scholar. No full-page UI border, no gold, no weapon symbols."
+    },
+    {
+      "id": "recluse",
+      "label": "散修旧笺",
+      "prompt": "Muted pale grey-lilac lightly aged paper with uneven but intact corners, quiet loose short diluted ink strokes in two widely spaced vertical groups, one small faded circular ink mark in lower corner and a faint old fold. Low saturation, humble contemplative personal letter, no magical glow, no talisman diagram."
+    }
+  ]
+}
