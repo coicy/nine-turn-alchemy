@@ -11,7 +11,7 @@
     const narrow=innerWidth<=650,host=narrow?document.body:stage;
     if(panel.parentElement!==host){host.append(panel,toggle);}
     for(const el of [panel,toggle])el.classList.toggle('mobile-odds',narrow);
-    if(narrow){const top=document.querySelector('.engine-nav').getBoundingClientRect().bottom+8,canvas=document.getElementById('alchemyScene'),r=canvas.getBoundingClientRect(),mouth=window.AlchemyScene2D.mouth;panel.style.top=toggle.style.top=top+'px';panel.style.maxHeight=Math.max(120,Math.min(430,r.top+mouth.y*r.width/canvas.width-top-10))+'px';}
+    if(narrow){const top=document.querySelector('.engine-nav').getBoundingClientRect().bottom+8,canvas=document.getElementById('alchemyScene'),r=canvas.getBoundingClientRect(),mouth=window.AlchemyScene2D.mouth,preview=document.querySelector('.observation-pill').getBoundingClientRect();panel.style.top=toggle.style.top=top+'px';panel.style.maxHeight=Math.max(120,Math.min(430,Math.min(r.top+mouth.y*r.width/canvas.width,preview.top)-top-10))+'px';}
     else {panel.style.top=toggle.style.top='';panel.style.maxHeight='';}
   }
   function update(){
