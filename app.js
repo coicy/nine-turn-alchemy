@@ -51,6 +51,19 @@
   function uses(id){return state.pill.toolUses?.[id]||0;}
   function useTool(id){state.pill.toolUses ||= {};state.pill.toolUses[id]=uses(id)+1;state.pill.toolUsed=true;}
   function hasRune(...names){return names.some(n=>state.pill.runes.includes(n));}
+  function explosionProtection(){
+    if(state.pill.shield)return {source:'shield',outcome:'hold',name:'丹纹护丹'};
+    if(hasTool('burn')&&uses('burn')<2&&state.pill.runes.some(r=>BASIC_RUNES.includes(r)))return {source:'burn',outcome:'hold',name:'燃纹盏（消耗一道基础纹）'};
+    if(hasTool('seal')&&!uses('seal'))return {source:'seal',outcome:'damage',name:'镇炉印'};
+    if(hasTool('phoenix')&&!uses('phoenix'))return {source:'phoenix',outcome:'hold',name:'返生鼎符（丹值持续折损40%）'};
+    return null;
+  }
+  function refinementProbabilities(){
+    const w=window.AlchemyEconomy?.outcomeWeights(campaign?.economy?.equipped)||{big:2,success:12,hold:5,damage:2},total=w.big+w.success+w.hold+w.damage,p=state.riskResult.explode;
+    const outcomes={big:(1-p)*w.big/total,success:(1-p)*w.success/total,hold:(1-p)*w.hold/total,damage:(1-p)*w.damage/total,explode:p},protection=explosionProtection();
+    if(protection){outcomes[protection.outcome]+=p;outcomes.explode=0;}
+    return {outcomes,protection,baseExplosion:p,available:state.started&&!state.pillEnded&&!state.roundEnded&&state.pill.turn<100};
+  }
   function turnBonus(outcome){return (state.pill.toolTurnBonus||0)+(['success','big'].includes(outcome)?(state.pill.moonCharge||0):0)+(outcome==='big'&&hasRune('雷纹','星痕')?1:0);}
   function triggerLog(message,tone='good'){state.pill.triggers ||= [];state.pill.triggers.push(message);addLog(message,tone);}
   function consumeBasicRune(){
@@ -114,7 +127,7 @@
   function playtestSnapshot() {
     return { attempt: state.attempt, turn: state.pill.turn, quality: state.pill.quality,
       value: state.pill.value, runes: [...state.pill.runes], maxRunes: MAX_RUNES, shield: state.pill.shield,
-      risk: state.pill.shield ? 0 : state.riskResult.explode, delivered: state.delivered,
+      risk: refinementProbabilities().outcomes.explode, delivered: state.delivered,
       day: campaign?.day || 1, orderId: state.orderId || null };
   }
 
@@ -159,9 +172,8 @@
   }
 
   function render() { window.AlchemyCustomers?.bind(campaign);
-    const profile = state.riskResult;
     const turnProgress = Math.min(100, (state.delivered / ORDER_TARGET) * 100);
-    const explosionChance = state.pill.shield ? 0 : profile.explode;
+    const explosionChance = refinementProbabilities().outcomes.explode;
     dom.attemptText.textContent = `${state.attempt} / ${MAX_PILLS}`;
     dom.compactOrderValue.textContent = `${formatNumber(state.delivered)} / ${ORDER_TARGET}`;
     dom.compactStockValue.textContent = `${MAX_PILLS - state.attempt} 包`;
@@ -348,16 +360,17 @@
     const tool=campaign?.economy?.equipped;
     const w=window.AlchemyEconomy?.outcomeWeights(tool)||{big:2,success:12,hold:5,damage:2};const total=w.big+w.success+w.hold+w.damage;
     let outcome=explode?'explode':roll<w.big/total?'big':roll<(w.big+w.success)/total?'success':roll<(w.big+w.success+w.hold)/total?'hold':'damage';
-    let usedShield = false;
-    if (state.pill.shield) {
-      state.pill.shield = false;
-      if (outcome === "explode") { outcome = "hold"; usedShield = true; }
-    }
+    const protection=explosionProtection();
+    const usedShield=explode&&protection?.source==='shield';
+    state.pill.shield=false;
     const naturalHold=outcome==='hold'&&!explode;
-    let protectedByTool=false;
-    if(outcome==='explode'&&hasTool('burn')&&uses('burn')<2&&consumeBasicRune()){outcome='hold';protectedByTool=true;}
-    if(outcome==='explode'&&hasTool('seal')&&!uses('seal')){useTool('seal');outcome='damage';protectedByTool=true;triggerLog('镇炉印挡下炸炉，改为丹体受损。','good');}
-    if(outcome==='explode'&&hasTool('phoenix')&&!uses('phoenix')){useTool('phoenix');state.pill.valueFactor=(state.pill.valueFactor??1)*.6;state.pill.value=Math.max(1,Math.round(state.pill.value*.6));outcome='hold';protectedByTool=true;triggerLog('返生鼎符挡下炸炉：本炉丹值持续折损40%。','good');}
+    const protectedByTool=explode&&!!protection&&!usedShield;
+    if(explode&&protection){
+      outcome=protection.outcome;
+      if(protection.source==='burn')consumeBasicRune();
+      if(protection.source==='seal'){useTool('seal');triggerLog('镇炉印挡下炸炉，改为丹体受损。','good');}
+      if(protection.source==='phoenix'){useTool('phoenix');state.pill.valueFactor=(state.pill.valueFactor??1)*.6;state.pill.value=Math.max(1,Math.round(state.pill.value*.6));triggerLog('返生鼎符挡下炸炉：本炉丹值持续折损40%。','good');}
+    }
     if(hasTool('chain')){state.pill.successChain=['big','success'].includes(outcome)?(state.pill.successChain||0)+1:0;if(state.pill.successChain>0&&state.pill.successChain%2===0){state.pill.toolTurnBonus=1;triggerLog('双仪环：连续两次成丹，额外提升一转。','good');}}
     if(hasTool('repair')&&outcome==='damage'&&!protectedByTool){state.pill.scars=Math.min(4,(state.pill.scars||0)+1);triggerLog('淬火盏：本炉炸炉率相对降低'+(state.pill.scars*15)+'%。','good');}
     if(outcome!=='explode'){const nextTurn=['big','success'].includes(outcome)?Math.min(100,state.pill.turn+(outcome==='big'?2:1)+turnBonus(outcome)):outcome==='damage'?Math.max(1,state.pill.turn-1):state.pill.turn;state.pill.quality=Math.max(state.pill.qualityFloor||0,qualityAtTurn(nextTurn));}
@@ -579,7 +592,7 @@
     else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded))ok=window.AlchemyEconomy.buy(campaign,kind,id);
     if(ok){state.riskResult=randomRisk();render();}return ok;
   }
-  window.AlchemyGame = { RUNE_CHANCE, RUNE_DEFS, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
+  window.AlchemyGame = { RUNE_CHANCE, RUNE_DEFS, refinementProbabilities, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
     snapshot: () => ({ ...playtestSnapshot(), started: state.started,
     busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,

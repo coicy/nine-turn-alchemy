@@ -10,8 +10,11 @@
   stage.insertAdjacentHTML('beforeend', '<section id="roomChoices" class="room-loop-card" hidden aria-label="选择丹纹"><strong>灵性显纹 · 选择一道丹纹</strong><div></div></section><section id="roomSettlement" class="room-loop-card" hidden aria-live="polite"><p></p><button data-destination="orders">接待下一位客人</button> <button data-destination="shop">看看余药与坊市</button></section>');
   const decision=document.createElement('p');decision.id='roomDecision';document.querySelector('.room-observation').append(decision);
   const stock=document.createElement('p');stock.id='roomStock';document.querySelector('.room-observation').append(stock);
+  const selfStart=document.createElement('button');selfStart.type='button';selfStart.id='settlementSelfStart';
+  document.getElementById('roomSettlement').querySelector('[data-destination="shop"]').before(selfStart);
+  selfStart.onclick=()=>window.dispatchEvent(new Event('alchemy:self-select'));
   document.getElementById('roomChoices').addEventListener('click',e=>{const b=e.target.closest('[data-rune]');if(b){window.AlchemyGame.economyAction('chooseRune',b.dataset.rune);document.getElementById('alchemyScene').focus({preventScroll:true});}});
-  document.getElementById('roomSettlement').addEventListener('click',e=>{const b=e.target.closest('[data-destination]');if(b)document.querySelector('.engine-nav [data-view="'+b.dataset.destination+'"]').click();});
+  document.getElementById('roomSettlement').addEventListener('click',e=>{const b=e.target.closest('[data-destination]');if(b){if(b.dataset.destination==='orders')window.dispatchEvent(new Event('alchemy:next-customer'));document.querySelector('.engine-nav [data-view="'+b.dataset.destination+'"]').click();}});
   let triggerKey = '', triggerTimer;
   function update() {
     const s = window.AlchemyGame.snapshot();
@@ -21,7 +24,9 @@
     choices.hidden=!s.runeChoices?.length;
     choices.querySelector('div').replaceChildren(...(s.runeChoices||[]).map(name=>{const b=document.createElement('button');b.dataset.rune=name;b.textContent='凝成'+name;return b;}));
     settlement.hidden=!s.roundEnded||!s.order;
-    if(!settlement.hidden){const o=s.order;settlement.querySelector('p').textContent=o.self?(c?.economy?.last||'自炼已结算'):o.status==='completed'?`本单完成 · 工钱 ${E.fee(o)} + 加赏 ${Math.max(0,(o.reward||0)-E.fee(o))} 铜钱 · 赠留余药 ${o.gifted||0} 包`:`本单未完成 · 失败免赔 · 退回余药 ${o.returned||0} 包，已有成丹归客`;}
+    if(!settlement.hidden){const o=s.order;settlement.querySelector('p').textContent=o.self?(c?.economy?.last||'自炼已结算'):window.AlchemyCustomers.settlement(o);}
+    selfStart.hidden=!Object.values(c?.economy?.herbs||{}).some(n=>n>0)&&!(c?.economy?.stock||[]).some(n=>n>0);
+    selfStart.textContent=s.order?.gifted?'用赠留药材自炼 · 收丹即出售':'选自有药材自炼 · 收丹即出售';
     decision.textContent=live?(s.order?.self?`现在收丹实收 ${E.saleValue(c,s)} 铜钱`:`收丹后交付 ${Math.round(s.delivered+s.value)} / ${s.target} · ${s.delivered+s.value>=s.target?'可完成本单':'尚差 '+Math.ceil(s.target-s.delivered-s.value)}`):'';
     stock.textContent=live?`已交 ${Math.round(s.delivered)} / ${s.target} · 未投药材 ${s.remaining} 包`:'';
     stage.dataset.live = String(live);

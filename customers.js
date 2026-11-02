@@ -14,11 +14,12 @@
  }}
  function waiting(orders,selectedId,limit=2){const selected=orders.find(o=>o.id===selectedId),used=new Set();if(selected&&!visit(selected).away)used.add(profile(selected).appearanceId);const result=[];for(const o of orders){const id=profile(o).appearanceId;if(o.id===selectedId||o.status!=='pending'||!id||used.has(id))continue;used.add(id);result.push(o);if(result.length>=limit)break;}return result;}
  function bind(campaign){for(const o of campaign?.orders||[]){const p=profile(o);if(p.id!=='unknown')o.customerId=p.id;}return campaign;}
+ function settlement(order){const done=order.status==='completed',fee=root.AlchemyEconomy.fee(order);return [done?'本单完成 · '+profile(order).name:order.status==='failed'?'本单未完成 · 失败免赔':'本单已终止 · 失败免赔',done?`工钱 ${fee} + 加赏 ${Math.max(0,(order.reward||0)-fee)} 铜钱 · 赠留余药 ${order.gifted||0} 包`:`退回余药 ${order.returned||0} 包 · 已有成丹归客`,'客户留言：'+line(order)].join('\n');}
  function sources(){return [...new Set(C.assets.flatMap(a=>Object.values(a.states).map(f=>f.src)))];}
  function validate(){const errors=[],ids=new Set();for(const a of C.assets){if(ids.has(a.id))errors.push('重复素材 '+a.id);ids.add(a.id);if(a.anchor!=='bottom-center'||a.canvas?.width!==400||a.canvas?.height!==675)errors.push('素材画布或锚点不合规范 '+a.id);if(!a.states?.neutral)errors.push('缺默认图 '+a.id);for(const f of Object.values(a.states||{})){if(!/^assets\/[\w./-]+\.(png|webp)$/.test(f.src)||f.src.includes('..')||![f.columns,f.rows].every(n=>Number.isInteger(n)&&n>0)||![f.column,f.row].every(Number.isInteger)||f.column<0||f.column>=f.columns||f.row<0||f.row>=f.rows)errors.push('无效图帧 '+a.id);}}
   const people=new Set();for(const p of C.profiles){if(people.has(p.id)||!ids.has(p.appearanceId)||!p.name||!p.role)errors.push('无效客人 '+p.id);people.add(p.id);}return errors;
  }
  function note(order){const p=profile(order),id=p.noteStyle||C.noteRoles?.[p.role]||'recluse';return C.notes?.[id]||{id:'generic',src:'assets/counter-props-v72/merchant.webp'};}
- const api={catalog:C,profile,appearance,visit,line,waiting,sources,bind,validate,note};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.AlchemyCustomers=api;
+ const api={catalog:C,profile,appearance,visit,line,waiting,sources,bind,validate,note,settlement};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.AlchemyCustomers=api;
 })(typeof window!=='undefined'?window:globalThis);
 

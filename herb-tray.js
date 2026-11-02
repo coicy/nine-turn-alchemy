@@ -15,5 +15,6 @@
   panel.addEventListener('pointerup',e=>{if(!drag)return;const moved=drag.moved;drag=null;if(moved)window.AlchemyScene2D.dropHerbs(e);render();});
   panel.addEventListener('pointercancel',()=>{drag=null;window.AlchemyScene2D.cancel();render();});
   panel.addEventListener('keydown',e=>{if(!['Enter',' '].includes(e.key))return;const el=e.target.closest('[data-slot]');if(!el)return;e.preventDefault();const r=el.getBoundingClientRect();take(Number(el.dataset.slot),{clientX:r.x+r.width/2,clientY:r.y+r.height/2});});
-  window.addEventListener('alchemy:render',render);window.addEventListener('alchemy:order',render);render();
+  window.addEventListener('alchemy:self-select',()=>{render();const index=rows.findIndex(r=>r.kind==='herbself'),fallback=rows.findIndex(r=>r.kind==='self');const target=panel.querySelector('[data-slot="'+(index>=0?index:fallback)+'"]');if(!target)return;panel.dataset.selectSelf='true';document.getElementById('herbTrayHint').textContent='选一包自有药材投入炉口，自炼收丹即出售。赠留余药已归你所有。';target.focus({preventScroll:true});});
+  window.addEventListener('alchemy:render',render);window.addEventListener('alchemy:order',()=>{delete panel.dataset.selectSelf;render();});render();
 })();

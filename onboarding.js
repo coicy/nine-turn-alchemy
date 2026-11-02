@@ -27,10 +27,10 @@
     quality.textContent='品质：'+document.getElementById('qualityValue').textContent+' · 药性：'+document.getElementById('natureValue').textContent;
     effects.textContent=(s.runes||[]).map(name=>`${name}：${api.RUNE_DEFS[name]||''}`).join('；');
     const secondary=document.querySelector('#roomSettlement [data-destination="shop"]');
-    secondary.hidden=journey&&!Object.values(e?.herbs||{}).some(n=>n>0);
+    secondary.hidden=false;
+    secondary.textContent='去坊市购料';
     if(s.roundEnded&&s.order&&!s.order.self){
       document.querySelector('#roomSettlement [data-destination="orders"]').textContent=c?.phase==='open'&&c.orders.some(o=>o.status==='pending')?'接待下一位客人':'回柜台收工';
-      if(s.order.gifted)secondary.textContent='赠留余药可自炼 · 去看看';
     }
     const text=instruction(s);if(text)document.getElementById('workInstruction').textContent=text;
   }
