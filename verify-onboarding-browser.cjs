@@ -7,7 +7,8 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
   const url=pathToFileURL(path.join(__dirname,'index.html')).href;
   await p.goto(url);await p.locator('#startButton').click();
   assert.match(await p.locator('#prologueStep').innerText(),/1 \/ 3/);
-  await p.locator('#prologueNext').click();assert.match(await p.locator('#prologueTitle').innerText(),/第一位客人/);await p.locator('#prologueNext').click();assert.match(await p.locator('#prologueTitle').innerText(),/第一炉火/);await p.locator('#prologueNext').click();
+  await p.locator('#prologueNext').click();await p.waitForFunction(()=>AlchemyViewState.snapshot().phase==='idle');assert.match(await p.locator('#prologueTitle').innerText(),/第一位客人/);
+  await p.locator('#counterNote').waitFor({state:'visible'});await p.locator('#counterNote').click();await p.locator('#prologueNext').click();await p.waitForFunction(()=>AlchemyViewState.snapshot().phase==='idle');assert.match(await p.locator('#prologueTitle').innerText(),/第一炉火/);await p.locator('#prologueNext').click();await p.waitForFunction(()=>!AlchemyOpening.active);
   assert.equal(await p.locator('[data-view="shop"]').isVisible(),false);
   assert.equal(await p.locator('.scene-loadout').isVisible(),false);
   assert.match(await p.locator('#workInstruction').innerText(),/先点药包/);
@@ -21,7 +22,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
   await p.waitForFunction(()=>AlchemyGame.snapshot().turn>1&&!AlchemyGame.snapshot().busy);
   assert.equal(await p.locator('#roomFacts > div:nth-child(2)').isVisible(),false);
   assert.equal(await p.locator('#roomFacts > div:nth-child(3)').isVisible(),true);
-  assert.equal(await p.locator('#roomFacts > div:nth-child(4)').isVisible(),true);
+  assert.equal(await p.locator('#roomFacts > div:nth-child(4)').isVisible(),false);assert.equal(await p.locator('#refineOdds').isVisible(),true);
   await p.waitForTimeout(2600);
   const out=path.resolve(__dirname,'../../Evidence/OnboardingV54');fs.mkdirSync(out,{recursive:true});
   for(const width of [1440,390]){await p.setViewportSize({width,height:900});await p.screenshot({path:path.join(out,'first-furnace-'+width+'.png')});assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);}
@@ -32,6 +33,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
   await p.locator('#roomSettlement [data-destination="orders"]').click();
   await p.waitForFunction(()=>AlchemyViewState.snapshot().phase==='idle');
   assert.equal(await p.locator('#dailyOrders').isVisible(),false);
+  await p.locator('#counterNote').waitFor({state:'visible'});await p.locator('#counterNote').click();
   assert.match(await p.locator('#counterLetter .letter-kicker').innerText(),/待接单/);
   await p.locator('.browse-customers').click();assert.equal(await p.locator('#dailyOrders').isVisible(),true);
   await p.locator('.browse-customers').click();
@@ -56,7 +58,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
   assert.equal(await p.evaluate(()=>AlchemyGame.snapshot().order.status),'completed');
   assert.equal(await p.locator('[data-view="shop"]').isVisible(),true);
   assert.equal(await p.locator('[data-view="manual"]').isVisible(),false);
-  await p.locator('#roomSettlement [data-destination="shop"]').click();
+  assert.equal(await p.locator('#roomSettlement [data-destination="shop"]').isVisible(),false);await p.locator('[data-view="shop"]').click();
   await p.waitForFunction(()=>AlchemyViewState.snapshot().phase==='idle');
   assert.match(await p.locator('.market-heading').innerText(),/余药/);
   assert.equal(await p.locator('[data-inspect="phoenix"]').count(),0);

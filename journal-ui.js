@@ -34,7 +34,7 @@
   const h=document.createElement('h3');h.textContent='每日委托结算';totals.append(h);
   if(!c.history.length){const p=document.createElement('p');p.textContent='尚未日结。返回柜台处理委托后，可在此查阅每日结果。';totals.append(p);}
   for(const day of c.history.slice().reverse()){const p=document.createElement('p');p.className='ledger-day';p.textContent=`第 ${day.day} 天　完成 ${day.completed} 单 · 失败 ${day.failed} 单 · 交付丹值 ${day.delivered}`;totals.append(p);}
-  const equipped=E.equippedIds(e.equipped),locked=!api.snapshot().pillEnded;const key=equipped.join('|')+locked;
+  rack.hidden=!e.tools.length;const equipped=E.equippedIds(e.equipped),locked=!api.snapshot().pillEnded;const key=equipped.join('|')+locked;
   if(key===lastRack)return;lastRack=key;rack.replaceChildren();const label=document.createElement('span');label.textContent='炉边法器匣 · '+(locked?'本炉已锁定':'点击配装');rack.append(label);
   const row=document.createElement('div');row.className='scene-loadout-slots';rack.append(row);
   for(let n=0;n<3;n++){const id=equipped[n],tool=E.TOOL_DEFS.find(t=>t.id===id),slot=document.createElement('span');slot.className='scene-loadout-slot';

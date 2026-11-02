@@ -27,7 +27,7 @@
     quality.textContent='品质：'+document.getElementById('qualityValue').textContent+' · 药性：'+document.getElementById('natureValue').textContent;
     effects.textContent=(s.runes||[]).map(name=>`${name}：${api.RUNE_DEFS[name]||''}`).join('；');
     const secondary=document.querySelector('#roomSettlement [data-destination="shop"]');
-    secondary.hidden=false;
+    secondary.hidden=!document.getElementById('settlementSelfStart').hidden;
     secondary.textContent='去坊市购料';
     if(s.roundEnded&&s.order&&!s.order.self){
       document.querySelector('#roomSettlement [data-destination="orders"]').textContent=c?.phase==='open'&&c.orders.some(o=>o.status==='pending')?'接待下一位客人':'回柜台收工';
@@ -36,12 +36,12 @@
   }
   function instruction(s){
     if(!document.body.classList.contains('guided-journey')||window.AlchemyInteractionBusy||s.busy||stage.dataset.held||window.AlchemyScene2D?.held||s.runeChoices?.length)return '';
-    if(s.roundEnded)return s.order?.self?'本炉已结束。成丹可在背包中保留或手动出售。':'本单已结清。接待下一位客人，继续经营丹坊。';
+    if(s.roundEnded)return '';
     if(!s.order)return '到接待柜台，选一份委托。';
     if(s.pillEnded)return s.endReason==='explode'?`这一包药没了，客人不要求赔偿。还剩 ${s.remaining} 包，可以再试。`:s.attempt>0?'这颗丹已交付。取下一包药，继续完成本单。':'先点药包，再点炉口，投入一包药材。';
     if(s.turn>=100)return '百转已成。点丹药拿起，再点收丹盘交付。';
-    if(s.turn===1)return '点击火门，炼化一次。';
-    return s.delivered+s.value>=s.target?'现在收丹即可完成本单。点丹药拿起，再点收丹盘交付；也可继续冒险。':'看看丹值与炸丹概率：继续炼化，或取丹放入收丹盘。';
+    if(s.turn===1&&s.orderId==='D1-1'&&s.attempt===1)return '点击火门，炼化一次。';
+    return s.orderId==='D1-1'&&s.attempt===1&&s.turn===2?'取丹放入收丹盘，或继续炼化。':'';
   }
   window.AlchemyOnboarding={instruction};
   window.addEventListener('alchemy:render',update);window.addEventListener('alchemy:interaction',update);

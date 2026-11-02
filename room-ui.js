@@ -26,11 +26,14 @@
     choices.querySelector('div').replaceChildren(...(s.runeChoices||[]).map(name=>{const b=document.createElement('button');b.dataset.rune=name;b.textContent='凝成'+name;return b;}));
     settlement.hidden=!s.roundEnded||!s.order;
     if(!settlement.hidden){const o=s.order;settlement.querySelector('p').textContent=o.self?(s.endReason==='explode'?'自炼炸丹 · 本炉没有成丹入库':'自炼完成 · 成丹已收入丹药背包，可保留或手动出售'):window.AlchemyCustomers.settlement(o);}
-    bagButton.hidden=!c?.economy?.pills?.length;
-    selfStart.hidden=!Object.values(c?.economy?.herbs||{}).some(n=>n>0)&&!(c?.economy?.stock||[]).some(n=>n>0);
+    bagButton.hidden=!s.order?.self||s.endReason!=='collect'||!c?.economy?.pills?.length;
+    selfStart.hidden=c?.phase!=='open'||(!Object.values(c?.economy?.herbs||{}).some(n=>n>0)&&!(c?.economy?.stock||[]).some(n=>n>0));
+    const purchase=settlement.querySelector('[data-destination="shop"]');purchase.hidden=!selfStart.hidden;purchase.textContent='去坊市购料';
     selfStart.textContent=s.order?.gifted?'用赠留药材自炼 · 成丹存入背包':'选自有药材自炼 · 成丹存入背包';
     decision.textContent=live?(s.order?.self?`收丹存入背包 · 当前可售估价 ${E.saleValue(c,s)} 铜钱`:`收丹后交付 ${Math.round(s.delivered+s.value)} / ${s.target} · ${s.delivered+s.value>=s.target?'可完成本单':'尚差 '+Math.ceil(s.target-s.delivered-s.value)}`):'';
-    stock.textContent=live?(s.order?.self?'自炼成丹归你 · 保留或手动出售':`已交 ${Math.round(s.delivered)} / ${s.target} · 未投药材 ${s.remaining} 包`):'';
+    stock.textContent=live?(s.order?.self?'':`已交 ${Math.round(s.delivered)} / ${s.target} · 未投药材 ${s.remaining} 包`):'';
+    stock.hidden=!stock.textContent;
+    document.body.classList.toggle('info-live',live);document.body.classList.toggle('info-ended',s.roundEnded);
     stage.dataset.live = String(live);
     stage.dataset.loading = String(!!s.busy);
     document.querySelector('.room-observation').hidden = !live;
@@ -45,7 +48,7 @@
     facts.replaceChildren();
     if (live) for (const [label, value] of [['转数', `${s.turn}转`], ['品质', document.getElementById('qualityValue').textContent], ['当前丹值', String(Math.round(s.value))], ['炸丹概率', document.getElementById('riskResultValue').textContent]]) {
       const row = document.createElement('div'), name = document.createElement('span'), number = document.createElement('strong');
-      name.textContent = label; number.textContent = value; row.append(name, number); facts.append(row);
+      name.textContent = label; number.textContent = value; row.dataset.fact=label;row.append(name, number); facts.append(row);
     }
     document.getElementById('roomRunes').textContent = live ? document.getElementById('runeSummary').textContent : '';
     document.getElementById('fireLabel').textContent = s.busy ? '炼化中' : '炼化';

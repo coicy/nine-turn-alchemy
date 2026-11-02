@@ -19,11 +19,10 @@ const surface=view=>view==='work'?viewport:panels[view];
 function cleanTransitions(){clearTimeout(exitTimer);clearTimeout(enterTimer);for(const el of [viewport,...Object.values(panels)].filter(Boolean)){el.classList.remove('view-entering','view-leaving');el.inert=false;}viewport.inert=!['work','equipment'].includes(current);}
 function show(view){if(view!=='work'&&!panels[view])return;cleanTransitions();requested=view;
  if(view===current){phase='idle';document.body.dataset.viewPhase=phase;return;}
- const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
- phase='leaving';document.body.dataset.viewPhase=phase;const leaving=surface(current);leaving.dataset.motionView=current;leaving.classList.add('view-leaving');leaving.inert=true;viewport.inert=true;
- exitTimer=setTimeout(()=>{cleanTransitions();commitShow(view);phase='entering';document.body.dataset.viewPhase=phase;const entering=surface(view);entering.dataset.motionView=view;entering.classList.add('view-entering');entering.inert=true;viewport.inert=true;
-  enterTimer=setTimeout(()=>{cleanTransitions();phase='idle';document.body.dataset.viewPhase=phase;window.dispatchEvent(new CustomEvent('alchemy:view-ready',{detail:{view}}));},reduced?0:240);
- },reduced?0:120);
+ phase='leaving';document.body.dataset.viewPhase=phase;const leaving=surface(current);leaving.dataset.motionView=current;leaving.inert=true;viewport.inert=true;
+ exitTimer=setTimeout(()=>{cleanTransitions();commitShow(view);phase='entering';document.body.dataset.viewPhase=phase;const entering=surface(view);entering.dataset.motionView=view;entering.inert=true;viewport.inert=true;
+  enterTimer=setTimeout(()=>{cleanTransitions();phase='idle';document.body.dataset.viewPhase=phase;window.dispatchEvent(new CustomEvent('alchemy:view-ready',{detail:{view}}));},0);
+ },0);
 }
 window.addEventListener('alchemy:opening-view',e=>{if(['work','orders'].includes(e.detail?.view))show(e.detail.view);});
 window.AlchemyViewState={snapshot:()=>({current,requested,phase})};

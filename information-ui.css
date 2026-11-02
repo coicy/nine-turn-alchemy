@@ -1,0 +1,51 @@
+/* V84: reuse the established paper/wood palette and existing type sizes. */
+.guided-opening #engineWallet{display:block}.engine-nav #engineWallet{font-size:12px}
+.refine-odds-toggle[hidden],#roomStock[hidden],#refineOddsResult[hidden],#refineOddsProtection[hidden]{display:none!important}
+.refine-odds dl>[data-outcome]{min-height:52px}.refine-odds h2{font-size:18px}.refine-odds dd{font-size:18px}.refine-odds details{font-size:12px}
+.odds-expanded #roomFacts>[data-fact="炸丹概率"]{display:none}
+.room-observation .observation-pill{pointer-events:auto;touch-action:none}.canvas-room .room-observation{z-index:11}
+.room-observation .observation-details{pointer-events:auto}.observation-pill:focus-visible{outline:2px solid #9b4e35}
+.equipment-open #roomSettlement,.equipment-open #roomChoices{display:none!important}
+.canvas-room .scene-loadout[hidden],.equipped-tool-status[hidden]{display:none!important}
+.equipment-slot span:empty{display:none}.equipment-slot small,.equipment-slot span{font-size:12px}
+.opening-content{gap:18px}.opening-screen{background:#eee2ca}.opening-prose{margin-bottom:0}
+.opening-screen::before,.opening-screen::after{display:none}
+.refine-odds p:empty,.market-heading p:empty,#pillBagStatus:empty,.work-instruction:empty{display:none}
+.engine-panel .hint-box:has(#trialHint:empty){display:none}
+.engine-panel .panel-kicker{font-size:12px}.engine-panel .resource-card span,.engine-panel .order-number{font-size:12px}
+.engine-panel .target-card[hidden]{display:none!important}
+.engine-shell .pill-bag-panel{border-radius:5px}.pill-bag-card{border-radius:3px}
+.engine-shell .equipment-drawer small,.engine-shell .equipment-drawer span{font-size:12px}
+.engine-nav button,.room-loop-card button,.equipment-card button{transition:none}
+@media(max-width:650px){
+ .engine-nav{flex:0 0 auto;min-height:64px;gap:4px;padding:6px;box-sizing:border-box}.engine-nav button{font-size:12px!important;min-height:32px;padding:5px 8px}.engine-nav #engineWallet{font-size:12px!important;display:block;margin-left:auto}
+ .engine-viewport{top:var(--work-reserve,0px)}
+ .mobile-info{position:fixed!important;left:8px!important;right:8px!important;top:var(--info-top)!important;bottom:auto!important;width:auto!important;box-sizing:border-box;z-index:44!important;transform:none!important}
+ body:not(.info-at-work) .mobile-info,.opening-in-scene .mobile-info{display:none!important}
+ .info-choosing .room-observation.mobile-info,.info-choosing .refine-odds.mobile-odds,.info-choosing .refine-odds-toggle.mobile-odds{display:none!important}
+ .canvas-room .room-observation.mobile-info{padding:10px;min-height:0;max-height:210px;overflow:auto;background:#f7ecd4;border-radius:5px}
+ .canvas-room .room-observation.mobile-info h2{display:none}
+ .canvas-room .room-observation.mobile-info .observation-pill{left:10px;top:10px;width:48px;height:48px}
+ .canvas-room .room-observation.mobile-info #roomFacts{padding-left:60px;min-height:0;display:flex;justify-content:space-between;gap:10px}
+ .canvas-room .room-observation.mobile-info #roomFacts>div{font-size:12px!important;line-height:1.3;flex-direction:column;margin:0 0 4px;gap:3px}
+ .canvas-room .room-observation.mobile-info #roomFacts strong{font-size:18px}
+ .canvas-room .room-observation.mobile-info #roomDecision{font-size:14px;line-height:1.4;padding-top:6px;margin-top:6px}
+ .room-observation.mobile-info #roomStock,.room-observation.mobile-info .observation-details{font-size:12px;margin:4px 0 0;line-height:1.4}
+ .refine-odds.mobile-odds{left:8px;right:8px;padding:10px;max-height:min(230px,30dvh)!important;z-index:44}
+ .refine-odds.mobile-odds dl{margin:7px 0}.refine-odds.mobile-odds dl>[data-outcome]{min-height:42px;gap:6px;padding:7px 1px}.refine-odds.mobile-odds dt{font-size:12px}.refine-odds.mobile-odds dd{font-size:14px}
+ .refine-odds.mobile-odds p{font-size:12px;line-height:1.4;margin:4px 0}.refine-odds.mobile-odds details{font-size:12px;margin:4px 0}.refine-odds.mobile-odds header button{font-size:12px}
+ .refine-odds-toggle.mobile-odds{left:8px;right:8px;font-size:14px}
+ .canvas-room .room-loop-card.mobile-info{padding:14px;max-height:42dvh;overflow:auto;font-size:14px;line-height:1.5;border-radius:5px}
+ .room-loop-card.mobile-info>p{margin:0 0 8px;font-size:14px;line-height:1.6}.room-loop-card.mobile-info button{font-size:14px!important;min-height:40px;padding:8px;margin:4px 4px 0 0}
+ .selecting-own #roomSettlement.mobile-info{display:none!important}
+ .canvas-room .herb-tray.mobile-info{padding:10px;max-height:240px;overflow:auto;background:#f3e6cf}
+ .canvas-room .herb-tray.mobile-info h2{font-size:18px;margin:0}.canvas-room .herb-tray.mobile-info>p{font-size:12px;margin:4px 0}
+ .canvas-room .herb-tray.mobile-info .herb-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-height:150px;gap:6px;overflow:auto}
+ .canvas-room .herb-tray.mobile-info .herb-slot{width:auto;height:auto;min-height:52px;display:flex;padding:5px;margin:0;gap:4px;box-sizing:border-box;position:relative}
+ .canvas-room .herb-tray.mobile-info .herb-slot span{display:block!important;position:static}.canvas-room .herb-tray.mobile-info .herb-slot img{width:32px;height:32px;position:static;transform:none}.canvas-room .herb-tray.mobile-info .herb-slot b,.canvas-room .herb-tray.mobile-info .herb-slot small{font-size:12px}.canvas-room .herb-tray.mobile-info .herb-slot strong{font-size:14px;position:static}
+ .canvas-room.info-live .herb-tray.mobile-info,.canvas-room.info-ended:not(.selecting-own) .herb-tray.mobile-info{display:none!important}
+ .canvas-room #workInstruction.mobile-info,.canvas-room #refineFeedback.mobile-info{top:auto!important;bottom:8px!important;padding:10px;font-size:14px;max-height:100px;overflow:auto;background:#f7ecd4;line-height:1.4}
+ .canvas-room #refineFeedback.mobile-info strong{font-size:18px}.canvas-room #refineFeedback.mobile-info p,.canvas-room #refineFeedback.mobile-info small{font-size:14px}
+ body:has(#refineFeedback:not([hidden])) #workInstruction.mobile-info{display:none}
+ .canvas-room .scene-loadout,.canvas-room .equipped-tool-status{display:none!important}
+}
