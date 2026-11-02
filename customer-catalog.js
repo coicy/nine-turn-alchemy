@@ -7,7 +7,7 @@
   states:{neutral:{src:sheet,columns:3,rows:1,column,row:0}},
   source:'customers-v12',notes:'现有三人图集；其他状态暂用默认立绘'
  }));
- assets.push({id:'clothier-v61',canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-v61/clothier.png',columns:1,rows:1,column:0,row:0}},source:'CustomerBatchV61',notes:'陆绣完整同源母稿；静态柜台接入'});
+ assets.push({id:'clothier-v61',canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-v61/clothier.webp',columns:1,rows:1,column:0,row:0}},source:'CustomerBatchV61',notes:'陆绣完整同源母稿；静态柜台接入'});
  for(const [id,file] of [['merchant','merchant'],['traveller','scholar'],['herbalist','herbalist']]){const a=assets.find(a=>a.id===id);a.layout='native-v61';a.states.neutral={src:'assets/customers-v61/'+file+'.png',columns:1,rows:1,column:0,row:0};a.source='V59/V60';a.notes='统一已校准画风，原有身份保持兼容；静态状态共用母稿';}
  // Several profiles currently share a placeholder appearance. Identity never depends on image index.
  const profiles=[

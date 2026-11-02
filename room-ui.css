@@ -5,7 +5,7 @@
 .painted-room .engine-nav span{color:#493a2e}
 .painted-room .engine-viewport{background:#c8b69a}
 .painted-room .engine-viewport>.forge-panel{width:1600px!important;height:900px!important;padding:0;border:0;border-radius:0;background:none;overflow:hidden;box-shadow:none}
-.painted-room .pill-stage{position:absolute;inset:0;width:1600px;height:900px;min-height:0;margin:0;border:0;background:url('assets/room-v25/room.png') center/100% 100% no-repeat;overflow:hidden}
+.painted-room .pill-stage{position:absolute;inset:0;width:1600px;height:900px;min-height:0;margin:0;border:0;background:url('assets/room-v25/room.webp') center/100% 100% no-repeat;overflow:hidden}
 .painted-room .pill-stage::after,.painted-room .forge-header,.painted-room .order-strip,.painted-room .pill-summary,.painted-room .risk-panel,.painted-room .stage-caption,.painted-room .scene-mountains,.painted-room .scene-inscription,.painted-room .stage-ring,.painted-room .pill-aura,.painted-room .rune-orbit,.painted-room .furnace-glow,.painted-room .furnace-lid,.painted-room .hand-fan,.painted-room .event-banner{display:none!important}
 .painted-room .furnace{position:absolute;left:27%;top:31%;width:24%;height:22%;opacity:0;background:none!important;z-index:2;cursor:pointer}
 .painted-room .dragging-herbs .furnace{opacity:1;outline:5px dashed #fff0bb;background:#ffdc7133!important;border-radius:50%}

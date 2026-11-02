@@ -18,7 +18,7 @@
  function validate(){const errors=[],ids=new Set();for(const a of C.assets){if(ids.has(a.id))errors.push('重复素材 '+a.id);ids.add(a.id);if(a.anchor!=='bottom-center'||a.canvas?.width!==400||a.canvas?.height!==675)errors.push('素材画布或锚点不合规范 '+a.id);if(!a.states?.neutral)errors.push('缺默认图 '+a.id);for(const f of Object.values(a.states||{})){if(!/^assets\/[\w./-]+\.(png|webp)$/.test(f.src)||f.src.includes('..')||![f.columns,f.rows].every(n=>Number.isInteger(n)&&n>0)||![f.column,f.row].every(Number.isInteger)||f.column<0||f.column>=f.columns||f.row<0||f.row>=f.rows)errors.push('无效图帧 '+a.id);}}
   const people=new Set();for(const p of C.profiles){if(people.has(p.id)||!ids.has(p.appearanceId)||!p.name||!p.role)errors.push('无效客人 '+p.id);people.add(p.id);}return errors;
  }
- function note(order){const p=profile(order),id=p.noteStyle||C.noteRoles?.[p.role]||'recluse';return C.notes?.[id]||{id:'generic',src:'assets/counter-props-v72/merchant.png'};}
+ function note(order){const p=profile(order),id=p.noteStyle||C.noteRoles?.[p.role]||'recluse';return C.notes?.[id]||{id:'generic',src:'assets/counter-props-v72/merchant.webp'};}
  const api={catalog:C,profile,appearance,visit,line,waiting,sources,bind,validate,note};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.AlchemyCustomers=api;
 })(typeof window!=='undefined'?window:globalThis);
 
