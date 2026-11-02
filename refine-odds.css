@@ -14,3 +14,20 @@ body:not(:has(.engine-nav [data-view=work][aria-pressed=true])) .mobile-odds{dis
 .herb-tray[data-select-self=true]{outline:4px solid #cf9b4d;outline-offset:3px}.herb-tray[data-select-self=true] .herb-slot[aria-disabled=false]{box-shadow:inset 0 0 0 2px #e5c06b}
 @media(max-width:800px){.counter-board .counter-receipt{max-width:70%;max-height:42%;overflow:auto;font-size:12px}}
 @media(forced-colors:active){.refine-odds,.refine-odds-toggle{border-color:ButtonText}}
+
+/* ForgeTax reference: five ordered color tiles and a proportional segmented strip. */
+.refine-odds [data-outcome=explode]{--chance-color:#eb1f1a;--chance-ink:#9c302a}
+.refine-odds [data-outcome=damage]{--chance-color:#ff6106;--chance-ink:#955019}
+.refine-odds [data-outcome=hold]{--chance-color:#40ff6e;--chance-ink:#2d663c}
+.refine-odds [data-outcome=success]{--chance-color:#42abff;--chance-ink:#285f94}
+.refine-odds [data-outcome=big]{--chance-color:#d661ff;--chance-ink:#795098}
+.refine-odds dl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:12px 0 9px}
+.refine-odds dl>[data-outcome]{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:68px;padding:9px 2px;border:1px solid #bca887;border-top:4px solid var(--chance-color);border-radius:3px;background:#fff7e8;color:var(--chance-ink);text-align:center}
+.refine-odds dt{font-size:14px;white-space:nowrap}.refine-odds dd{font-size:16px;line-height:1;font-variant-numeric:tabular-nums}
+.refine-odds dl>div[data-hit=true]{outline:2px solid var(--chance-ink);outline-offset:1px;background:color-mix(in srgb,var(--chance-color) 17%,#fff7e8);animation:chance-hit .45s ease-out}
+.chance-bar{display:flex;height:9px;width:100%;overflow:hidden;background:#cabda8;border-radius:2px}.chance-segment{display:block;flex:none;height:100%;background:var(--chance-color)}
+#refineOddsResult{font-size:13px;font-weight:600;min-height:20px}
+.compact-forge .refine-odds dl{gap:3px}.compact-forge .refine-odds dt{font-size:12px}.compact-forge .refine-odds dd{font-size:13px}
+.refine-odds.mobile-odds dt{font-size:14px}.refine-odds.mobile-odds dd{font-size:16px}
+@keyframes chance-hit{from{box-shadow:0 0 0 4px var(--chance-color)}to{box-shadow:0 0 0 0 transparent}}
+@media(prefers-reduced-motion:reduce){.refine-odds dl>div[data-hit=true]{animation:none}}

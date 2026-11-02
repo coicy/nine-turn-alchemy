@@ -442,6 +442,7 @@
     const visualOutcome = state.pill.turn >= 100 && !state.pillEnded ? "complete" : fused ? "fusion" : usedShield ? "shield" : outcome;
     setFeedback(feedback, feedbackTone, visualOutcome, outcome === "explode" ? -before.value : state.pill.value - before.value);
     render();
+    if(typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:refine-result',{detail:{outcome}}));
   }
 
   function refine() {
