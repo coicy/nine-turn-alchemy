@@ -112,7 +112,7 @@
       const ready=kind==='herbs'?(inside(furnace,e)||inside(fire,e)):inside(tray,e);
       const selling=!!snapshot().order?.self;
       dropHint.hidden=false;dropHint.dataset.ready=String(ready);
-      dropHint.textContent=kind==='herbs'?(ready?'松手投入药材 · 开始炼制':'拖到高亮炉口 · 松手投药'):(ready?(selling?'松手出售丹药 · 获得铜钱':'松手交付丹药 · 计入委托'):(selling?'拖到高亮交付盘 · 松手出售':'拖到高亮交付盘 · 松手提交'));
+      dropHint.textContent=kind==='herbs'?(ready?'松手投入药材 · 开始炼制':'拖到高亮炉口 · 松手投药'):(ready?(selling?'松手收丹 · 存入背包':'松手交付丹药 · 计入委托'):(selling?'拖到高亮收丹盘 · 松手入库':'拖到高亮交付盘 · 松手提交'));
       furnace.classList.toggle('drop-target-ready',kind==='herbs'&&ready);tray.classList.toggle('drop-target-ready',kind==='pill'&&ready);
       stage.classList.toggle('drop-ready',ready);
     });
@@ -139,7 +139,7 @@
     $('herbHint').textContent = held === 'herbs' ? '已拆包 · 点炉口投入' : `剩余 ${s.remaining} 包 · 取药`;
     $('fireLabel').textContent = locked ? '操作中' : held === 'herbs' ? '整包投入' : !s.pillEnded && s.turn >= 100 ? '百转已成' : '挥扇催炼';
     $('fireHint').textContent = s.pillEnded ? '等待投药起炉' : '点炉膛 · 每次一炼';
-    $('trayHint').textContent = s.order?.self ? '自炼成丹 · 点盘出售' : held === 'pill' ? '点此落盘，交还委托' : `已交 ${delivered.length} 颗 · 点盘收丹交付`;
+    $('trayHint').textContent = s.order?.self ? '自炼成丹 · 点盘存入背包' : held === 'pill' ? '点此落盘，交还委托' : `已交 ${delivered.length} 颗 · 点盘收丹交付`;
     const target = s.target || 300;
     $('slipValue').textContent = `已交 ${Math.round(s.delivered)} / ${target}`;
     const heading = document.querySelector('.commission-slip b');
@@ -154,7 +154,7 @@
       document.getElementById('workInstruction').textContent = '今日尚未接单 · 在上方委托簿选择一份订单';
       document.getElementById('slipValue').textContent = '等待接单';
       document.querySelector('.commission-slip b').textContent = '今日待接单';
-    } else if(s.order.self){document.getElementById('workInstruction').textContent=s.roundEnded?'自炼结束 · 可继续购料或接委托':s.runeChoices?.length?'灵性药包：请在炉旁选择一道丹纹':'自购药包 · 投料、催炼，点交付盘出售成丹';
+    } else if(s.order.self){document.getElementById('workInstruction').textContent=s.roundEnded?'自炼结束 · 可继续购料或接委托':s.runeChoices?.length?'灵性药包：请在炉旁选择一道丹纹':'自有药材 · 投料、催炼，收丹存入背包';
     } else if (s.roundEnded) {
       document.getElementById('workInstruction').textContent = '本单已结清 · 请接下一单，也可在柜台结束今日，未接委托会跳过';
     }

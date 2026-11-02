@@ -525,7 +525,7 @@
     if (!state.started || state.busy || state.pillEnded || state.roundEnded || state.pill.runeChoices?.length) return;
     const before = playtestSnapshot();
     const isSelf=!!campaignRules?.active(campaign)?.self;
-    if(isSelf)window.AlchemyEconomy.sale(campaign,state.pill);
+    if(isSelf&&!window.AlchemyEconomy.storePill(campaign,state.pill,campaignRules.active(campaign))){setFeedback('丹药背包记录异常，未覆盖原数据，炉内成丹已保留。','bad');render();return;}
     state.delivered += state.pill.value;
     state.collected.push({value:state.pill.value,quality:state.pill.quality,turn:state.pill.turn,runes:[...state.pill.runes],nature:campaignRules?.active(campaign)?.nature || 'neutral'});
     state.pillEnded = true;
@@ -534,7 +534,7 @@
     telemetry?.record("collect", playtestSnapshot(), { before, decisionMs: Date.now() - decisionSince });
     if (state.roundEnded) { settleOrder(); telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss"); }
     else void telemetry?.flush();
-    addLog(`<strong>${isSelf?"自炼出售":"收丹交付"}</strong>：获得 ${formatNumber(state.pill.value)}，订单累计 ${formatNumber(state.delivered)} / ${ORDER_TARGET}。`, "good");
+    addLog(isSelf?`<strong>自炼收丹</strong>：丹值 ${formatNumber(state.pill.value)}，已收入丹药背包。`:`<strong>收丹交付</strong>：获得 ${formatNumber(state.pill.value)}，订单累计 ${formatNumber(state.delivered)} / ${ORDER_TARGET}。`, "good");
     if (state.roundEnded && !isSelf) addLog(state.delivered >= ORDER_TARGET ? "<strong>订单完成</strong>：客人已收下丹药！" : "<strong>订单未完成</strong>：原料已用尽。", state.delivered >= ORDER_TARGET ? "good" : "bad");
     const won = state.delivered >= ORDER_TARGET;
     if(isSelf)setFeedback(campaign.economy.last,"good","collect");
@@ -585,8 +585,9 @@
     setFeedback("本单已终止。已有成丹及未用药材交还客人，免赔。", "", "loss"); render(); return true;
   }
   function economyAction(kind,id,nature='neutral'){if(!campaign||state.busy||window.AlchemyInteractionBusy)return false;window.AlchemyEconomy.ensure(campaign);let ok=false;
-    if(kind==='equip'){const e=campaign.economy;if(!state.pillEnded||(!e.tools.includes(id)&&id!==null))return false;const ids=window.AlchemyEconomy.equippedIds(e.equipped);if(id===null)e.equipped=[];else if(ids.includes(id))e.equipped=ids.filter(t=>t!==id);else{if(ids.length>=window.AlchemyEconomy.EQUIP_SLOTS)return false;const def=window.AlchemyEconomy.TOOL_DEFS.find(t=>t.id===id);if(def?.runeTarget&&window.AlchemyEconomy.runeTarget(ids))return false;e.equipped=[...ids,id];}ok=true;}
-    else if(kind==='self'||kind==='herbself'){if(campaign.phase!=='open'||campaignRules.active(campaign)||!state.pillEnded||!state.roundEnded)return false;const e=campaign.economy;if(!['warm','cool','neutral'].includes(nature))return false;if(kind==='herbself'){nature=id;if(!['warm','cool','neutral'].includes(nature)||!e.herbs[nature])return false;e.herbs[nature]--;id=0;}else{if(!Number.isInteger(id)||id<0||id>2||!e.stock[id])return false;e.stock[id]--;}e.selfCount++;const o={id:'S'+e.selfCount,self:true,tier:id,status:'active',client:'自炼自售',name:['普通药包自炼','精选药包自炼','灵性药包自炼'][id],nature,materials:1,target:1};campaign.selfOrder=o;ORDER_TARGET=1;MAX_PILLS=1;state=createState();state.started=true;state.pillEnded=true;state.pillEndReason='waiting';state.orderId=o.id;window.dispatchEvent?.(new Event('alchemy:order'));ok=true;}
+    if(kind==='sell')ok=window.AlchemyEconomy.sale(campaign,id)!==false;
+    else if(kind==='equip'){const e=campaign.economy;if(!state.pillEnded||(!e.tools.includes(id)&&id!==null))return false;const ids=window.AlchemyEconomy.equippedIds(e.equipped);if(id===null)e.equipped=[];else if(ids.includes(id))e.equipped=ids.filter(t=>t!==id);else{if(ids.length>=window.AlchemyEconomy.EQUIP_SLOTS)return false;const def=window.AlchemyEconomy.TOOL_DEFS.find(t=>t.id===id);if(def?.runeTarget&&window.AlchemyEconomy.runeTarget(ids))return false;e.equipped=[...ids,id];}ok=true;}
+    else if(kind==='self'||kind==='herbself'){if(campaign.phase!=='open'||campaignRules.active(campaign)||!state.pillEnded||!state.roundEnded)return false;const e=campaign.economy;if(!['warm','cool','neutral'].includes(nature))return false;if(kind==='herbself'){nature=id;if(!['warm','cool','neutral'].includes(nature)||!e.herbs[nature])return false;e.herbs[nature]--;id=0;}else{if(!Number.isInteger(id)||id<0||id>2||!e.stock[id])return false;e.stock[id]--;}e.selfCount++;const o={id:'S'+e.selfCount,self:true,tier:id,status:'active',client:'自有药材自炼',name:['普通药包自炼','精选药包自炼','灵性药包自炼'][id],nature,materials:1,target:1};campaign.selfOrder=o;ORDER_TARGET=1;MAX_PILLS=1;state=createState();state.started=true;state.pillEnded=true;state.pillEndReason='waiting';state.orderId=o.id;window.dispatchEvent?.(new Event('alchemy:order'));ok=true;}
     else if(kind==='chooseRune'){if(state.pillEnded||state.pill.runes.length>=MAX_RUNES||state.pill.runes.includes(id)||!state.pill.runeChoices?.includes(id))return false;state.pill.runeChoices=[];grantRune(id,'灵性药包');updateRecord();ok=true;}
     else if(kind==='reroll')return false; // 生纹针现为自动生效，不保留额外炉内操作。
     else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded))ok=window.AlchemyEconomy.buy(campaign,kind,id);

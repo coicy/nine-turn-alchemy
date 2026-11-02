@@ -13,6 +13,7 @@
   const selfStart=document.createElement('button');selfStart.type='button';selfStart.id='settlementSelfStart';
   document.getElementById('roomSettlement').querySelector('[data-destination="shop"]').before(selfStart);
   selfStart.onclick=()=>window.dispatchEvent(new Event('alchemy:self-select'));
+  const bagButton=document.createElement('button');bagButton.type='button';bagButton.dataset.destination='bag';bagButton.textContent='查看丹药背包';document.getElementById('roomSettlement').append(bagButton);
   document.getElementById('roomChoices').addEventListener('click',e=>{const b=e.target.closest('[data-rune]');if(b){window.AlchemyGame.economyAction('chooseRune',b.dataset.rune);document.getElementById('alchemyScene').focus({preventScroll:true});}});
   document.getElementById('roomSettlement').addEventListener('click',e=>{const b=e.target.closest('[data-destination]');if(b){if(b.dataset.destination==='orders')window.dispatchEvent(new Event('alchemy:next-customer'));document.querySelector('.engine-nav [data-view="'+b.dataset.destination+'"]').click();}});
   let triggerKey = '', triggerTimer;
@@ -24,11 +25,12 @@
     choices.hidden=!s.runeChoices?.length;
     choices.querySelector('div').replaceChildren(...(s.runeChoices||[]).map(name=>{const b=document.createElement('button');b.dataset.rune=name;b.textContent='凝成'+name;return b;}));
     settlement.hidden=!s.roundEnded||!s.order;
-    if(!settlement.hidden){const o=s.order;settlement.querySelector('p').textContent=o.self?(c?.economy?.last||'自炼已结算'):window.AlchemyCustomers.settlement(o);}
+    if(!settlement.hidden){const o=s.order;settlement.querySelector('p').textContent=o.self?(s.endReason==='explode'?'自炼炸丹 · 本炉没有成丹入库':'自炼完成 · 成丹已收入丹药背包，可保留或手动出售'):window.AlchemyCustomers.settlement(o);}
+    bagButton.hidden=!c?.economy?.pills?.length;
     selfStart.hidden=!Object.values(c?.economy?.herbs||{}).some(n=>n>0)&&!(c?.economy?.stock||[]).some(n=>n>0);
-    selfStart.textContent=s.order?.gifted?'用赠留药材自炼 · 收丹即出售':'选自有药材自炼 · 收丹即出售';
-    decision.textContent=live?(s.order?.self?`现在收丹实收 ${E.saleValue(c,s)} 铜钱`:`收丹后交付 ${Math.round(s.delivered+s.value)} / ${s.target} · ${s.delivered+s.value>=s.target?'可完成本单':'尚差 '+Math.ceil(s.target-s.delivered-s.value)}`):'';
-    stock.textContent=live?`已交 ${Math.round(s.delivered)} / ${s.target} · 未投药材 ${s.remaining} 包`:'';
+    selfStart.textContent=s.order?.gifted?'用赠留药材自炼 · 成丹存入背包':'选自有药材自炼 · 成丹存入背包';
+    decision.textContent=live?(s.order?.self?`收丹存入背包 · 当前可售估价 ${E.saleValue(c,s)} 铜钱`:`收丹后交付 ${Math.round(s.delivered+s.value)} / ${s.target} · ${s.delivered+s.value>=s.target?'可完成本单':'尚差 '+Math.ceil(s.target-s.delivered-s.value)}`):'';
+    stock.textContent=live?(s.order?.self?'自炼成丹归你 · 保留或手动出售':`已交 ${Math.round(s.delivered)} / ${s.target} · 未投药材 ${s.remaining} 包`):'';
     stage.dataset.live = String(live);
     stage.dataset.loading = String(!!s.busy);
     document.querySelector('.room-observation').hidden = !live;
@@ -49,7 +51,7 @@
     document.getElementById('fireLabel').textContent = s.busy ? '炼化中' : '炼化';
     document.getElementById('fireHint').textContent = '点器具或炉口继续炼化';
     if (live && !s.busy && !window.AlchemyInteractionBusy && !stage.dataset.held) document.getElementById('workInstruction').textContent = '点击火门扇风 · 从炉口取丹放入收丹盘';
-    document.getElementById('trayHint').textContent = s.order?.self ? '收丹即出售 · 按实际售价结算' : '收丹计入本单';
+    document.getElementById('trayHint').textContent = s.order?.self ? '收丹存入背包 · 不自动出售' : '收丹计入本单';
     document.querySelector('.herb-object b').textContent = s.order?.self ? '自有药包' : '本单药包';
     document.querySelector('.commission-slip').hidden = live || !s.order || s.roundEnded;
     const triggers = document.getElementById('runeTriggerStatus');
