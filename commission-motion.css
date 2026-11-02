@@ -1,0 +1,10 @@
+/* Motion belongs to presentation; original transforms and gameplay hit areas remain intact. */
+.commission-motion-cue{position:fixed;z-index:61;pointer-events:none;padding:7px 14px;color:#713e29;background:#f5e8cc;border:1px solid #b58d58;border-radius:3px;font:14px 'Microsoft YaHei',sans-serif;box-shadow:0 3px 10px #52382025}
+.commission-motion-cue[hidden]{display:none!important}
+/* The motion module replaces the older CSS entrance so two animations never compete. */
+.counter-board .counter-note:not([hidden]){animation:none!important}
+.opening-in-scene .counter-board .visitor-portrait{animation:commission-arrive .55s cubic-bezier(.2,.7,.3,1) both}
+.opening-in-scene .counter-board .counter-parcels{animation:commission-parcels .32s cubic-bezier(.2,.7,.3,1) both}
+@keyframes commission-arrive{from{opacity:0;translate:18px 0}to{opacity:1;translate:0 0}}
+@keyframes commission-parcels{0%{opacity:0;translate:0 -8px}80%{opacity:1;translate:0 1px}100%{opacity:1;translate:0 0}}
+@media(prefers-reduced-motion:reduce){.opening-in-scene .counter-board .visitor-portrait,.opening-in-scene .counter-board .counter-parcels{animation:none!important}}
