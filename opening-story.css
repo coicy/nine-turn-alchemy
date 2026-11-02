@@ -19,3 +19,10 @@
 @keyframes opening-parcels{from{opacity:0;translate:0 -12px}to{opacity:1;translate:0 0}}
 @media(max-width:650px){.prologue-dialogue{left:12px;bottom:12px;width:calc(100% - 24px);padding:14px 16px}.prologue-copy h2{font-size:23px}.prologue-copy p{font-size:14px;line-height:1.8}.prologue-location{left:12px;top:8px;font-size:13px;padding:8px 12px}.prologue-actions{gap:8px}.prologue-actions button{font-size:14px;padding:8px 12px}.opening-in-scene .counter-board .counter-letter{display:none!important}.opening-in-scene .counter-board .counter-parcels{left:12%;width:60%;bottom:34%}.opening-in-scene .counter-board .counter-visitor{left:26%;width:55%;bottom:46%}}
 @media(prefers-reduced-motion:reduce){.opening-in-scene *{animation:none!important;transition:none!important}}
+/* V78: the actual desk note is the second beat's interaction target. */
+.opening-in-scene[data-opening-step="1"] #counterNote{outline:2px solid #ad6a34;outline-offset:5px}
+.opening-in-scene[data-opening-step="1"] #counterLetter{display:block!important;bottom:29%;max-height:53%;z-index:65}
+.opening-in-scene[data-opening-step="1"] #counterLetter[hidden]{display:none!important}
+.opening-in-scene[data-opening-step="1"] #counterLetter [data-close-letter],.opening-in-scene[data-opening-step="1"] #counterLetter [data-return-forge]{display:block!important}
+@media(max-width:650px){.opening-in-scene[data-opening-step="1"] #counterLetter{left:3%;width:94%;bottom:36%;max-height:48%;font-size:14px;padding:14px}.opening-in-scene[data-opening-step="1"] .prologue-dialogue{max-height:32%;overflow:auto}.opening-in-scene[data-opening-step="1"] #counterNote{z-index:4}}
+.prologue-actions #prologueNext:disabled{background:#e2d2b6;color:#705b42;border-color:#b79b77;cursor:default}
