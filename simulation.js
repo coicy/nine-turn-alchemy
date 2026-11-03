@@ -169,6 +169,7 @@
     if (snapshot().order || !snapshot().campaignEnabled) herbs.focus({preventScroll:true});
   }
   document.addEventListener('keydown', e => {
+    if(window.AlchemyScene2D)return; // The painted scene owns its keyboard input.
     if (e.key === 'Escape') { held = null; if (drag) endDrag({type:'pointercancel'}); sync(); return; }
     if (e.target.id === 'alchemyScene') return;
     if (!['Enter',' '].includes(e.key) || !active()) return;

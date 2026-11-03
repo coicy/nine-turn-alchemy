@@ -37,10 +37,13 @@ let created=0;e.document.createElement=()=>{const n=e.el('shop-created-'+(++crea
 s.pillEnded=true;c.economy.tools=['needle','burn','return','ash'];c.economy.equipped=['needle','burn','return'];
 vm.runInContext(fs.readFileSync(__dirname+'/economy-ui.js','utf8'),e.context);
 vm.runInContext(fs.readFileSync(__dirname+'/equipment-ui.js','utf8'),e.context);
-const shop=e.el('shop-created-1'),badge=e.el('shop-created-2'),drawer=e.el('shop-created-3');assert.match(shop.innerHTML,/法器购置/);assert.ok(!shop.innerHTML.includes('data-kind="equip"'));assert.ok(!shop.innerHTML.includes('data-kind="reroll"'));assert.match(badge.textContent,/3\/3/);assert.match(drawer.innerHTML,/当前三件法器/);
-function equipClick(id){drawer.emit('click',{target:{closest:selector=>selector==='[data-equipment]'?{disabled:false,dataset:{equipment:id}}:null}});}
-equipClick('return');assert.equal(c.economy.equipped.length,2);equipClick('ash');assert.ok(c.economy.equipped.includes('ash'));assert.match(badge.textContent,/烬金印/);
-console.log('PASS: market purchases separated from three-slot drawer; equipment toggles update workbench');
+const shop=e.el('shop-created-1'),drawer=e.el('shop-created-3');assert.match(shop.innerHTML,/法器购置/);assert.ok(!shop.innerHTML.includes('data-kind="equip"'));assert.ok(!shop.innerHTML.includes('data-kind="reroll"'));assert.match(drawer.innerHTML,/选择已购法器/);
+assert.ok(w.AlchemyGame.replaceEquipment('return','ash'));assert.equal(c.economy.equipped.length,3);assert.equal(c.economy.equipped[2],'ash');
+const beforeLoadout=JSON.stringify(c.economy.equipped);assert.equal(w.AlchemyGame.replaceEquipment('ash','needle'),false);assert.equal(JSON.stringify(c.economy.equipped),beforeLoadout);
+assert.equal(w.AlchemyGame.replaceEquipment(null,'return'),false,'full slots must reject append');assert.equal(JSON.stringify(c.economy.equipped),beforeLoadout);
+s.pillEnded=false;assert.equal(w.AlchemyGame.replaceEquipment('ash','return'),false,'live pill locks replacement');s.pillEnded=true;
+assert.ok(w.AlchemyGame.replaceEquipment('ash',null));assert.equal(c.economy.equipped.length,2);assert.ok(w.AlchemyGame.replaceEquipment(null,'return'));
+console.log('PASS: purchase UI separated from object inspection; atomic replacement, full/duplicate rejection, live lock and removal');
 const allRunes=['赤纹','青纹','月纹','雷纹'];
 for(const t of E.TOOL_DEFS.filter(t=>t.runeTarget)){
  let hits=0;for(let i=0;i<1000;i++){let seq=[i/1000,.5];if(E.pickRune(allRunes,[t.id],()=>seq.shift())===t.runeTarget)hits++;}assert.equal(hits,750,'direction has exactly 75% conditional weight');

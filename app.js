@@ -551,8 +551,9 @@
   dom.newPillButton.addEventListener("click", startNewPill);
   document.addEventListener("keydown", (event) => {
     if (event.target.id === "alchemyScene") return;
+    if(window.AlchemyViewState&&window.AlchemyViewState.snapshot().current!=='work')return;
     if (event.key === "Enter" || event.key === " ") {
-      if (document.activeElement && ["BUTTON", "INPUT"].includes(document.activeElement.tagName)) return;
+      if (document.activeElement && ["BUTTON", "INPUT", "A", "SUMMARY", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
       event.preventDefault();
       refine();
     }
@@ -599,7 +600,19 @@
     else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded))ok=window.AlchemyEconomy.buy(campaign,kind,id);
     if(ok){state.riskResult=randomRisk();render();if(['material','tool','furnace'].includes(kind)&&typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:purchase',{detail:{kind}}));}return ok;
   }
-  window.AlchemyGame = { RUNE_CHANCE, RUNE_DEFS, refinementProbabilities, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
+  function replaceEquipment(oldId,newId){
+    if(!campaign||campaign.phase!=='open'||state.busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy||!!window.AlchemyScene2D?.held||!state.pillEnded)return false;
+    const E=window.AlchemyEconomy,e=E.ensure(campaign),ids=E.equippedIds(e.equipped);
+    if(oldId!==null&&!ids.includes(oldId))return false;
+    if(newId!==null&&(!e.tools.includes(newId)||!E.TOOL_DEFS.some(t=>t.id===newId)))return false;
+    if(oldId===newId)return true;
+    const next=[...ids],index=oldId===null?next.length:next.indexOf(oldId);
+    if(newId!==null&&next.includes(newId))return false;
+    if(newId===null){if(oldId===null)return false;next.splice(index,1);}else next[index]=newId;
+    if(next.length>E.EQUIP_SLOTS||next.filter(id=>E.TOOL_DEFS.find(t=>t.id===id)?.runeTarget).length>1)return false;
+    e.equipped=next;if(typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:equipment-replaced',{detail:{oldId,newId}}));state.riskResult=randomRisk();render();return true;
+  }
+  window.AlchemyGame = { replaceEquipment, RUNE_CHANCE, RUNE_DEFS, refinementProbabilities, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
     snapshot: () => ({ ...playtestSnapshot(), started: state.started,
     busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,

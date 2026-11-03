@@ -12,6 +12,7 @@
   preview.addEventListener('keydown',e=>{if(!['Enter',' '].includes(e.key))return;e.preventDefault();e.stopPropagation();const r=preview.getBoundingClientRect();if(window.AlchemyScene2D.takePill({clientX:r.x+r.width/2,clientY:r.y+r.height/2}))document.getElementById('alchemyScene').focus();});
   function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;fit();});}
   function fit(){
+    if(window.AlchemyWorldUI){window.AlchemyWorldUI.fitReading();return;}
     const mobile=innerWidth<=650,s=window.AlchemyGame.snapshot(),atWork=window.AlchemyViewState.snapshot().current==='work';
     document.body.classList.toggle('info-at-work',atWork);
     document.body.classList.toggle('info-choosing',!!s.runeChoices?.length);

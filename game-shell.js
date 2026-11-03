@@ -1,39 +1,43 @@
 (() => {
 'use strict';
-const forge=document.querySelector('.forge-panel'),layout=document.querySelector('.game-layout');if(!forge||!layout)return;
-document.body.classList.add('engine-shell');
-const viewport=document.createElement('div');viewport.className='engine-viewport';layout.append(viewport);viewport.append(forge);
-const board=document.querySelector('.daily-board:not(.economy-board)'),shop=document.querySelector('.economy-board'),record=document.querySelector('.order-panel'),manual=document.querySelector('.side-panel');
-const equipment=document.querySelector('.equipment-drawer');
-const panels={orders:board,shop,equipment,record,manual,bag:document.querySelector('.pill-bag-panel')};
-const nav=document.createElement('nav');nav.className='engine-nav';nav.setAttribute('aria-label','丹坊功能');nav.innerHTML='<button data-view="work" aria-pressed="true">炼丹台</button><button data-view="orders" aria-pressed="false">接待柜台</button><button data-view="shop" aria-pressed="false">坊市</button><button data-view="equipment" aria-pressed="false" aria-controls="equipmentDrawer" aria-expanded="false">法器匣</button><button data-view="record" aria-pressed="false">经营簿</button><button data-view="manual" aria-pressed="false">丹纹炉谱</button><span id="engineWallet"></span>';document.querySelector('.topbar').after(nav);
-const close=document.createElement('button');close.className='engine-close';close.textContent='返回炼丹台 ×';close.hidden=true;document.body.append(close);
-const bagButton=document.createElement('button');bagButton.dataset.view='bag';bagButton.textContent='丹药背包';bagButton.setAttribute('aria-pressed','false');nav.insertBefore(bagButton,nav.querySelector('#engineWallet'));
-let current='work',previous=null;
-function commitShow(view){if(view!=='work'&&!panels[view])return;current=view;for(const [key,p] of Object.entries(panels)){if(!p)continue;p.classList.add('engine-panel');p.hidden=key!==view;p.dataset.shellActive=String(key===view);if(p.tagName==='DETAILS')p.open=true;}
- close.hidden=['work','equipment'].includes(view);document.body.classList.toggle('equipment-open',view==='equipment');document.querySelector('.equipped-tool-status')?.setAttribute('aria-expanded',String(view==='equipment'));document.body.classList.toggle('shop-docked',false);viewport.inert=!['work','equipment'].includes(view);viewport.style.visibility=['work','equipment'].includes(view)?'visible':'hidden';requestAnimationFrame(fit);nav.querySelectorAll('button').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.view===view));if(b.dataset.view==='equipment')b.setAttribute('aria-expanded',String(view==='equipment'));});if(view!=='work'){panels[view].setAttribute('tabindex','-1');panels[view].focus({preventScroll:true});}else if(previous){previous.focus?.({preventScroll:true});previous=null;}}
-// A requested view exits the current surface, enters the destination, then restores input.
-// New requests cancel both timers and always win over an earlier destination.
-let exitTimer=null,enterTimer=null,requested='work',phase='idle';
-const surface=view=>view==='work'?viewport:panels[view];
-function cleanTransitions(){clearTimeout(exitTimer);clearTimeout(enterTimer);for(const el of [viewport,...Object.values(panels)].filter(Boolean)){el.classList.remove('view-entering','view-leaving');el.inert=false;}viewport.inert=!['work','equipment'].includes(current);}
-function show(view){if(view!=='work'&&!panels[view])return;cleanTransitions();requested=view;
- if(view===current){phase='idle';document.body.dataset.viewPhase=phase;return;}
- phase='leaving';document.body.dataset.viewPhase=phase;const leaving=surface(current);leaving.dataset.motionView=current;leaving.inert=true;viewport.inert=true;
- exitTimer=setTimeout(()=>{cleanTransitions();commitShow(view);phase='entering';document.body.dataset.viewPhase=phase;const entering=surface(view);entering.dataset.motionView=view;entering.inert=true;viewport.inert=true;
-  enterTimer=setTimeout(()=>{cleanTransitions();phase='idle';document.body.dataset.viewPhase=phase;window.dispatchEvent(new CustomEvent('alchemy:view-ready',{detail:{view}}));},0);
- },0);
+const forge=document.querySelector('.forge-panel'),layout=document.querySelector('.game-layout');
+const viewport=document.createElement('div');viewport.className='engine-viewport';layout.append(viewport);viewport.append(forge);document.body.classList.add('engine-shell','object-world');
+const panels={orders:document.querySelector('.counter-board'),shop:document.querySelector('.economy-board'),equipment:document.querySelector('.equipment-drawer'),record:document.querySelector('.order-panel'),manual:document.querySelector('.side-panel'),bag:document.querySelector('.pill-bag-panel')};
+const places=['work','orders','shop'],labels={work:'炼丹房',orders:'接待柜台',shop:'坊市',equipment:'炉旁法器',record:'经营簿',manual:'丹纹炉谱',bag:'丹药背包'};
+const nav=document.createElement('nav');nav.className='engine-nav';nav.setAttribute('aria-label','丹坊功能');
+nav.innerHTML='<button class="world-location-toggle" aria-expanded="false" aria-controls="worldLocationMenu">炼丹房 ▾</button><div id="worldLocationMenu" hidden>'+Object.entries(labels).map(([id,name])=>`<button data-view="${id}" aria-pressed="false">${name}</button>`).join('')+'</div><span id="engineWallet"></span><button class="world-settings-toggle" aria-expanded="false" aria-controls="worldSettings">设置</button><div id="worldSettings" hidden></div>';
+document.querySelector('.topbar').after(nav);
+const menu=nav.querySelector('#worldLocationMenu'),settings=nav.querySelector('#worldSettings');
+const close=document.createElement('button');close.className='engine-close';close.textContent='合上 ×';close.hidden=true;document.body.append(close);
+let current='work',location='work',requested='work',phase='idle',returnFocus=null,returnSlot=null,serial=0;
+function fit(){window.AlchemyWorldLayout.fit();}
+function movable(){return !window.AlchemyGame.snapshot().busy&&!window.AlchemyGame.snapshot().runeChoices?.length&&!window.AlchemyScene2D?.busy&&!window.AlchemyScene2D?.held&&!window.AlchemyInteractionBusy;}
+function setMenu(open){menu.hidden=!open;nav.querySelector('.world-location-toggle').setAttribute('aria-expanded',String(open));}
+function closeReading(){if(places.includes(current))return;const focus=returnFocus;show(location,true);requestAnimationFrame(()=>{const anchor=focus?.isConnected?focus:returnSlot!==null?document.querySelector('.world-tool-row')?.children[returnSlot]:document.querySelector('.world-location-toggle');if(anchor?.checkVisibility())anchor.focus({preventScroll:true});});}
+function show(view,internal=false){
+ if(view!=='work'&&!panels[view])return false;
+ if(!internal&&!movable()){const hint=document.getElementById('workInstruction');if(hint)hint.textContent='请先完成本次操作，或按 Esc 放回手中物件';return false;}
+ const reading=!places.includes(view);if(view==='equipment')location='work';if(!reading)location=view;else if(places.includes(current)){returnFocus=document.activeElement;returnSlot=returnFocus?.dataset?.worldTool?Array.from(returnFocus.parentElement.children).indexOf(returnFocus):null;}
+ requested=view;phase='leaving';document.body.dataset.viewPhase=phase;const ticket=++serial;
+ current=view;document.body.dataset.worldLocation=location;document.body.dataset.worldSurface=reading?view:'';
+ for(const [key,p] of Object.entries(panels)){if(!p)continue;const active=key===view||key===location;p.classList.add('engine-panel');p.hidden=!active;p.dataset.shellActive=String(active);p.inert=reading&&key===location;if(p.tagName==='DETAILS')p.open=true;}
+ viewport.style.visibility=location==='work'?'visible':'hidden';viewport.inert=reading;
+ document.body.classList.toggle('equipment-open',view==='equipment');close.hidden=!reading||['equipment','bag'].includes(view);
+ nav.querySelector('.world-location-toggle').textContent=labels[location]+' ▾';nav.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));setMenu(false);settings.hidden=true;nav.querySelector('.world-settings-toggle').setAttribute('aria-expanded','false');
+ fit();phase='entering';document.body.dataset.viewPhase=phase;
+ queueMicrotask(()=>{if(ticket!==serial)return;phase='idle';document.body.dataset.viewPhase=phase;window.dispatchEvent(new CustomEvent('alchemy:view-ready',{detail:{view,location}}));if(reading){const p=panels[view];p.setAttribute('tabindex','-1');p.focus({preventScroll:true});}});return true;
 }
-window.addEventListener('alchemy:opening-view',e=>{if(['work','orders'].includes(e.detail?.view))show(e.detail.view);});
-window.AlchemyViewState={snapshot:()=>({current,requested,phase})};
-nav.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;previous=b;show(b.dataset.view);});close.onclick=()=>show('work');document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(current!=='work'||phase!=='idle'))show('work');});
-function fit(){const w=viewport.clientWidth,h=viewport.clientHeight;const compact=!!forge.dataset.room&&w<1280;const changed=document.body.classList.contains('compact-forge')!==compact;document.body.classList.toggle('compact-forge',compact);if(changed)window.dispatchEvent(new Event('alchemy:layout'));const scale=Math.min(1,w/(forge.dataset.room ? (compact?1100:1600) : 660),h/Math.max(forge.offsetHeight,1));forge.style.transform='translate(-50%,-50%) scale('+scale+')';}
-window.addEventListener('resize',fit);if(typeof ResizeObserver!=='undefined')new ResizeObserver(fit).observe(forge);
-window.addEventListener('alchemy:order',()=>show('work'));
-window.addEventListener('alchemy:equipment',()=>{previous=document.activeElement;show(current==='equipment'?'work':'equipment');});
+window.AlchemyViewState={snapshot:()=>({current,requested,phase,location}),navigate:view=>show(view),close:closeReading};
+nav.querySelector('.world-location-toggle').onclick=()=>{setMenu(menu.hidden);if(!menu.hidden)menu.querySelector('button').focus();};
+nav.querySelector('.world-settings-toggle').onclick=()=>{settings.hidden=!settings.hidden;nav.querySelector('.world-settings-toggle').setAttribute('aria-expanded',String(!settings.hidden));};
+nav.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)show(b.dataset.view);});close.onclick=closeReading;
+document.addEventListener('keydown',e=>{if(e.key!=='Escape'||e.defaultPrevented)return;if(!menu.hidden){setMenu(false);nav.querySelector('.world-location-toggle').focus();return;}if(!settings.hidden){settings.hidden=true;nav.querySelector('.world-settings-toggle').focus();return;}if(!places.includes(current)){e.preventDefault();closeReading();}});
+window.addEventListener('alchemy:opening-view',e=>{if(places.includes(e.detail?.view))show(e.detail.view,true);});
+window.addEventListener('alchemy:order',()=>show('work',true));
+window.addEventListener('alchemy:equipment',()=>current==='equipment'?closeReading():show('equipment'));
 window.addEventListener('alchemy:work',()=>show('work'));
+window.addEventListener('alchemy:close-reading',closeReading);
 window.addEventListener('alchemy:market',()=>show('shop'));
-window.addEventListener('alchemy:render',()=>{const c=window.AlchemyGame.campaign(),s=window.AlchemyGame.snapshot();document.getElementById('engineWallet').textContent=c?'第 '+c.day+' 天 · '+(c.economy?.coins||0)+' 铜钱':'';if(s.runeChoices?.length&&current!=='work')commitShow('work');requestAnimationFrame(fit);});
-commitShow('work');requestAnimationFrame(fit);
+window.addEventListener('alchemy:render',()=>{const c=window.AlchemyGame.campaign();document.getElementById('engineWallet').textContent=c?'第 '+c.day+' 天 · '+(c.economy?.coins||0)+' 铜钱':'';fit();});
+window.addEventListener('resize',fit);show('work',true);
 })();
-
