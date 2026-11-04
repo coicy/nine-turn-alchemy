@@ -1,0 +1,28 @@
+/* V92: one painted perspective, controls do not redraw the objects. */
+body.object-world #pillStage{background-image:url('assets/workbench-v92/room-desktop.png')}
+body.object-world #pillStage>.world-books:before,body.object-world #pillStage>.world-book-rest,body.object-world #pillStage>.world-casket>img,body.object-world .world-placed-tool:before,body.object-world .world-empty-rest{display:none!important}
+body.object-world #pillStage>.world-tool-row{justify-content:space-between;gap:0}
+body.object-world #pillStage>.world-tool-row .tool-art{translate:0 10px}
+body.object-world #pillStage>.world-books{align-items:center;gap:0}
+body.object-world #pillStage>.world-books button{background:transparent;border:0;box-shadow:none;transform:none;color:transparent;width:90px;height:64px;padding:0;font-size:14px}
+body.object-world #pillStage>.world-books button:is(:hover,:focus-visible){color:#49382a;background:#f7ecd4c9}
+body.object-world #pillStage>.world-casket{background:none;transform:none}
+body.object-world #pillStage>.world-casket>span{top:auto;bottom:-5px;font-size:12px;white-space:nowrap}
+.world-book-stack{display:none}.world-book-picker{position:absolute;display:flex;gap:4px;padding:4px;background:#f5e8cf;border:1px solid #8a623e;z-index:36}.world-book-picker button{flex:1;min-width:60px;min-height:44px;font-size:14px}
+body.object-world #roomSettlement{max-height:340px;background:#f4e5c5 url('assets/workbench-v92/folio.png') center/100% 100% no-repeat;border:0;padding:28px 30px 25px;box-shadow:0 5px 16px #38261955;box-sizing:border-box;overflow:auto}
+.receipt-heading{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px;border-bottom:1px solid #b19a78;padding-bottom:5px}.receipt-heading h2{font:22px KaiTi,serif;margin:0;color:#663f29}.receipt-heading>span{border:2px solid #9e4933;color:#9e4933;padding:1px 5px;transform:rotate(-7deg);font:18px KaiTi,serif}
+body.object-world #roomSettlement .receipt-details p{white-space:pre-line;font-size:14px;line-height:1.65;margin:0 0 12px;color:#49382a}
+body.object-world :is(.equipment-drawer,.pill-detail-panel,.ux-confirm,#worldLocationMenu,#worldSettings){background:#f3e6ca url('assets/workbench-v92/folio.png') center/100% 100% no-repeat;border:0;padding:24px;box-shadow:0 5px 16px #38261944}
+@media(min-width:651px){body.object-world #roomSettlement .receipt-details p{font-size:calc(14px / var(--scene-scale,1))}.receipt-heading h2{font-size:calc(20px / var(--scene-scale,1))}}
+@media(max-width:650px){
+ body.world-mobile.object-world #pillStage{background-image:url('assets/workbench-v92/room-mobile.png')}
+ body.world-mobile.object-world #pillStage>.world-books{display:none!important}
+ body.world-mobile.object-world #pillStage>.world-casket,body.world-mobile.object-world #pillStage[data-camera-cropped=true]>.world-casket{visibility:visible}
+ body.world-mobile.object-world #pillStage>.world-casket>span{bottom:-10px;top:auto;font-size:12px}
+ body.world-mobile.object-world .world-book-stack{display:block;position:absolute;min-height:44px;min-width:44px;border:0;background:none;color:transparent;z-index:18;padding:0}
+ body.world-mobile.object-world .world-book-stack:is(:hover,:focus-visible){color:#49382a;background:#f7ecd4ba}
+ body.object-world #roomSettlement{max-height:44dvh;padding:24px 22px 22px}
+ body.object-world #roomSettlement .receipt-details p{font-size:14px}
+ body.object-world .receipt-heading h2{font-size:20px}
+ body.object-world .engine-viewport[inert] .world-book-stack{visibility:hidden}
+}

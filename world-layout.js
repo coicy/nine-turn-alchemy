@@ -8,10 +8,10 @@
   const reading=window.AlchemyViewState?.snapshot(),top=mobile?Math.max(visibleHeight('.world-readout'),visibleHeight('.world-empty-readout')):0;
   let reserve=mobile?Math.max(visibleHeight('#refineOdds'),visibleHeight('.refine-odds-toggle'),visibleHeight('#roomChoices'),visibleHeight('#roomSettlement')):0;
   if(mobile&&reading?.short)reserve=Math.max(reserve,visibleHeight(reading.current==='pill'?'.pill-detail-panel':'.equipment-drawer'));
-  const width=mobile?w:compact?1100:1600,height=mobile?Math.max(330,Math.floor(h-top-reserve-20)):900;
+  const width=mobile?w:1600,height=mobile?Math.max(330,Math.floor(h-top-reserve-20)):900;
   // The room is a fixed physical plane. Reading changes the camera window, never its aspect.
   const s=window.AlchemyGame.snapshot(),near=mobile&&s.started&&s.pillEnded&&!s.roundEnded&&!window.AlchemyOpening?.active;
-  const cameraScale=near?1.3:1,roomWidth=mobile?width*cameraScale:width,roomHeight=mobile?roomWidth*1448/1086:900,cameraLeft=mobile?(width-roomWidth)/2:0;
+  const cameraScale=1,roomWidth=mobile?width*cameraScale:width,roomHeight=mobile?roomWidth*1448/1086:900,cameraLeft=mobile?(width-roomWidth)/2:0;
   const project=o=>({x:o.x*cameraScale+cameraLeft,y:o.y*cameraScale,w:o.w*cameraScale,h:o.h*cameraScale});
   const baseHeight=width*1448/1086;
   const next=[mobile,width,height,w,h,top,reserve,cameraScale].join(':');lastViewport=vkey;
@@ -23,7 +23,7 @@
   Object.assign(toolRest,{x:width*.59,y:roomHeight*.535-48,w:width*.4,h:53,baseline:roomHeight*.535});
   Object.assign(mouth,mobile?project({x:width*.22,y:baseHeight*.15,w:width*.42,h:baseHeight*.23}):{x:470,y:285,w:310,h:150});
   Object.assign(firebox,mobile?project({x:width*.26,y:baseHeight*.59,w:width*.24,h:baseHeight*.20}):{x:455,y:600,w:210,h:145});
-  Object.assign(objects.tray,mobile?project({x:width*.66,y:baseHeight*.54,w:width*.20,h:width*.20*341/512}):{x:compact?900:1330,y:470,w:compact?170:195,h:100});
+  Object.assign(objects.tray,mobile?{x:width*.907-Math.max(44,width*.12)/2,y:baseHeight*.567,w:Math.max(44,width*.12),h:44}:{x:1370,y:523,w:180,h:78});
   Object.assign(objects.tool,mobile?project({x:width*.52,y:baseHeight*.66,w:58,h:74}):{x:710,y:590,w:110,h:145});Object.assign(objects.herbs,mobile?{x:8,y:roomHeight*.47,w:64,h:65}:{x:80,y:470,w:115,h:100});
   stage.style.setProperty('--scene-scale',mobile?'1':String(Math.min(1,w/width,h/height)));
   for(const el of [stage,forge]){el.style.setProperty('--world-width',width+'px');el.style.setProperty('--world-height',height+'px');el.style.setProperty('--room-base-height',roomHeight+'px');el.style.setProperty('--room-base-width',roomWidth+'px');el.style.setProperty('--room-camera-left',cameraLeft+'px');}
