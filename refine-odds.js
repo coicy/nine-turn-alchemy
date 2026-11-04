@@ -7,7 +7,7 @@
   const atWork=window.AlchemyViewState.snapshot().current==='work',live=s.started&&!s.pillEnded&&!s.roundEnded,visible=(live||lastOutcome==='explode')&&atWork&&!s.runeChoices?.length;
   toggle.hidden=!visible||open;panel.hidden=!visible||!open;toggle.setAttribute('aria-expanded',String(open));document.body.classList.toggle('odds-expanded',visible&&open);
   panel.querySelector('#refineOddsState').textContent=s.endReason==='explode'?'本炉炸丹':s.busy?'本次结算中…':'';
-  rows.forEach(({id,row,value,segment})=>{value.textContent=p.available?(p.outcomes[id]*100).toFixed(1)+'%':'—';segment.style.width=(p.available?p.outcomes[id]*100:0)+'%';row.dataset.hit=String(lastOutcome===id);});
+  rows.forEach(({id,row,value,segment})=>{value.textContent=p.available?(p.outcomes[id]*100).toFixed(1)+'%':'—';segment.style.width=(p.available?p.outcomes[id]*100:0)+'%';row.removeAttribute('data-hit');});
   const protection=panel.querySelector('#refineOddsProtection');protection.textContent=p.available&&p.protection?p.protection.name+'已生效，保护后的概率见上表。':'';protection.hidden=!protection.textContent;
   const narrow=innerWidth<=650,host=narrow?document.body:stage;for(const el of [panel,toggle]){if(el.parentElement!==host)host.append(el);el.classList.toggle('mobile-odds',narrow);}window.dispatchEvent(new Event('alchemy:ux-layout'));
  }
