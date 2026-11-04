@@ -1,46 +1,17 @@
 (() => {
- 'use strict';
- const api=window.AlchemyGame, E=window.AlchemyEconomy;
- const record=document.querySelector('.order-panel'),manual=document.querySelector('.side-panel');
- function book(panel,title,labels){
-  panel.classList.add('journal-book');
-  const original=Array.from(panel.children).filter(n=>n.tagName!=='SUMMARY');
-  const header=document.createElement('header');header.className='journal-heading';
-  const h=document.createElement('h2');h.textContent=title;header.append(h);
-  const tabs=document.createElement('nav');tabs.className='journal-tabs';tabs.setAttribute('aria-label',title+'书页');
-  const pages=labels.map((label,i)=>{
-   const page=document.createElement('section');page.className='journal-page';page.id=title==='经营簿'?'ledger-page-'+i:'manual-page-'+i;page.hidden=i!==0;
-   const b=document.createElement('button');b.type='button';b.textContent=label;b.setAttribute('aria-controls',page.id);b.setAttribute('aria-pressed',String(i===0));
-   b.onclick=()=>{pages.forEach((p,j)=>p.hidden=j!==i);Array.from(tabs.children).forEach((t,j)=>t.setAttribute('aria-pressed',String(j===i)));};
-   tabs.append(b);return page;
-  });
-  header.append(tabs);panel.append(header,...pages);return {original,pages};
+ const api=window.AlchemyGame,E=window.AlchemyEconomy,UX=window.AlchemyUX,record=document.querySelector('.order-panel'),manual=document.querySelector('.side-panel');
+ function book(panel,title,labels){panel.classList.add('journal-book');const original=[...panel.children].filter(n=>n.tagName!=='SUMMARY');panel.replaceChildren();if(panel.tagName==='DETAILS'){const summary=document.createElement('summary');summary.hidden=true;summary.textContent=title;panel.append(summary);}const header=document.createElement('header');header.className='journal-heading';header.innerHTML='<h2>'+title+'</h2>';const nav=document.createElement('nav');nav.className='journal-tabs';nav.setAttribute('aria-label',title+'书页');const pages=labels.map((label,i)=>{const page=document.createElement('section');page.className='journal-page';page.hidden=i!==0;const b=document.createElement('button');b.type='button';b.textContent=label;b.dataset.focusKey=title+'-tab-'+i;b.onclick=()=>select(i);nav.append(b);return page;});function select(i){pages.forEach((p,j)=>p.hidden=i!==j);[...nav.children].forEach((b,j)=>b.setAttribute('aria-pressed',String(i===j)));}header.append(nav);panel.append(header,...pages);select(0);return {original,pages,select};}
+ const ledger=book(record,'经营簿',['本次记录','经营概览']);ledger.pages[0].append(...ledger.original);ledger.pages[0].querySelectorAll('.deferred-note').forEach(n=>n.remove());
+ const scope=document.createElement('p');scope.className='record-scope';ledger.pages[0].prepend(scope);const totals=document.createElement('div');totals.className='ledger-totals';ledger.pages[1].append(totals);
+ const handbook=book(manual,'丹纹炉谱',['丹纹图录','炼丹规则','本次炉讯']);const nodes=handbook.original;
+ const runeList=nodes.find(n=>n.id==='runeList'),logs=nodes.find(n=>n.id==='logList');
+ const dataSource=document.createElement('section');dataSource.id='uxDataSettingsSource';dataSource.hidden=true;let data=false;for(const n of nodes){if(n.textContent==='试玩记录'){data=true;continue;}if(data)dataSource.append(n);}document.body.append(dataSource);
+ const atlas=document.createElement('div');atlas.className='rune-atlas';atlas.innerHTML=Object.entries(api.RUNE_DEFS).map(([name,effect])=>'<article>'+UX.runeArt(name)+'<div><h3>'+name+'</h3><p>'+UX.esc(effect)+'</p></div></article>').join('');handbook.pages[0].append(atlas);const found=document.createElement('details');found.className='rune-discoveries';found.innerHTML='<summary>本次发现</summary>';if(runeList)found.append(runeList);handbook.pages[0].append(found);
+ handbook.pages[1].innerHTML='<h3>操作与归属</h3><p>点药包拿起，再点炉口投入；也可拖入。点火门扇火炼化。点丹药拿起，再点收丹盘落盘；按 Esc 放回。</p><p>投入成功才扣料。委托材料与成丹归客，收丹计入本单目标；自炼成丹入丹匣，明确出售才换钱。百转后必须收丹。</p><h3 data-rules-section="probability">五类炼化结果</h3><dl class="rules-outcomes"><dt>炸丹</dt><dd>损失当前炉内丹药。</dd><dt>受损</dt><dd>回落一转，并按当前保护效果扣减丹值。</dd><dt>维持</dt><dd>保留转数；自然维持可触发相应丹纹。</dd><dt>成功</dt><dd>升转并提升丹值。</dd><dt>大成功</dt><dd>升转并提升丹值，可触发雷纹等效果。</dd></dl><p>五类互斥，合计100%。数字四舍五入，色带使用真实比例；保护后的实际概率以炉前窗口为准。</p><h3>成功后的生纹</h3><p>普通成功25%、大成功50%自然生纹。生纹是成功后的附加效果，不与五类结果相加。</p><p>定向法器对尚未持有的目标纹提供75%生成倾向，以本次已生纹为前提；灵性药包首次成功显纹提供二选一。</p><h3>丹纹与组合</h3><p>同名不重复，每丹最多六道。赤纹与青纹自动融合为金纹，月纹与雷纹自动融合为星痕；融合后占一道。满六道不再新增，仍可炼化与收丹。</p><p>自然维持才蓄护丹和月力；护丹或法器转成维持不会再次蓄能。法器效果与次数见各件说明。</p>';
+ const logScope=document.createElement('p');logScope.className='log-scope';handbook.pages[2].append(logScope);if(logs)handbook.pages[2].append(logs);
+ function render(){const c=api.campaign();if(!c)return;const s=api.snapshot(),e=E.ensure(c);record.dataset.recordSource=s.order?.self?'self':'commission';scope.textContent=s.order?(s.order.self?'本次自炼统计':'当前委托统计'):'尚未接单';logScope.textContent=s.order?(s.order.self?'当前自炼 · 最近8条':'当前委托 · 最近8条'):'暂无本次炉讯';
+  UX.html(totals,'<h3>累计经营概览</h3><dl><dt>累计收入</dt><dd>'+e.earned+' 铜钱</dd><dt>累计支出</dt><dd>'+e.spent+' 铜钱</dd><dt>累计净变化</dt><dd>'+(e.earned-e.spent)+' 铜钱</dd></dl><h3>每日经营结果</h3>'+(c.history.length?c.history.slice().reverse().map(d=>'<article class="ledger-day"><strong>第 '+d.day+' 天</strong><p>完成 '+d.completed+' · 炼制失败 '+d.failed+' · 未接跳过 '+(d.skipped??'未记录')+'</p><p>委托收入 '+(d.commissionIncome===undefined?'未记录':d.commissionIncome+' 铜钱')+' · 赠药 '+(d.gifted===undefined?'未记录':d.gifted+' 包')+'</p></article>').join(''):'<p>尚未日结</p><button data-ledger-counter>回柜台</button>'));
  }
- const ledger=book(record,'经营簿',['本单记录','经营收支']);ledger.pages[0].append(...ledger.original);
- ledger.pages[0].querySelector('.deferred-note')?.remove();
- const totals=document.createElement('div');totals.className='ledger-totals';ledger.pages[1].append(totals);
- const handbook=book(manual,'丹纹炉谱',['丹纹图录','最近炉讯','试玩记录']);let chapter=0;
- for(const n of handbook.original){if(n.classList.contains('divider')){n.remove();continue;}if(n.textContent==='最近炉讯')chapter=1;if(n.textContent==='试玩记录')chapter=2;handbook.pages[chapter].append(n);}
- const entries=handbook.pages[0].querySelectorAll('.fusion-entry');
- Object.entries(api.RUNE_DEFS).forEach(([name,effect],i)=>{if(entries[i]){entries[i].firstElementChild.textContent=name;entries[i].lastElementChild.textContent=effect;}});
- const rack=document.createElement('button');rack.type='button';rack.className='scene-loadout';rack.setAttribute('aria-label','打开炉边法器匣');
- rack.onclick=()=>window.dispatchEvent(new Event('alchemy:equipment'));document.getElementById('pillStage').append(rack);
- const ids=E.TOOL_DEFS.map(t=>t.id); // Atlas follows the shared catalogue order.
- let lastRack='';
- function render(){const c=api.campaign();if(!c)return;const e=E.ensure(c);
-  totals.replaceChildren();const title=document.createElement('h3');title.textContent='第 '+c.day+' 天 · 经营收支';totals.append(title);
-  const dl=document.createElement('dl');for(const [label,value] of [['现有铜钱',e.coins],['累计收入',e.earned],['累计支出',e.spent]]){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value+' 铜钱';dl.append(dt,dd);}totals.append(dl);
-  const note=document.createElement('p');note.textContent='收入包含委托工钱、加赏与自炼售丹；支出包含购药、法器与炉具升级。';totals.append(note);
-  const h=document.createElement('h3');h.textContent='每日委托结算';totals.append(h);
-  if(!c.history.length){const p=document.createElement('p');p.textContent='尚未日结。返回柜台处理委托后，可在此查阅每日结果。';totals.append(p);}
-  for(const day of c.history.slice().reverse()){const p=document.createElement('p');p.className='ledger-day';p.textContent=`第 ${day.day} 天　完成 ${day.completed} 单 · 失败 ${day.failed} 单 · 交付丹值 ${day.delivered}`;totals.append(p);}
-  rack.hidden=!e.tools.length;const equipped=E.equippedIds(e.equipped),locked=!api.snapshot().pillEnded;const key=equipped.join('|')+locked;
-  if(key===lastRack)return;lastRack=key;rack.replaceChildren();const label=document.createElement('span');label.textContent='炉边法器匣 · '+(locked?'本炉已锁定':'点击配装');rack.append(label);
-  const row=document.createElement('div');row.className='scene-loadout-slots';rack.append(row);
-  for(let n=0;n<3;n++){const id=equipped[n],tool=E.TOOL_DEFS.find(t=>t.id===id),slot=document.createElement('span');slot.className='scene-loadout-slot';
-   if(tool){const i=ids.indexOf(id),art=document.createElement('i');art.className='tool-art';art.style.backgroundPosition=`${(i%6)*20}% ${Math.floor(i/6)*50}%`;art.setAttribute('aria-hidden','true');slot.append(art);}
-   const name=document.createElement('small');name.textContent=tool?.name||'空位';slot.append(name);row.append(slot);
-  }
- }
- window.addEventListener('alchemy:render',render);render();
+ totals.addEventListener('click',e=>{if(e.target.closest('[data-ledger-counter]'))window.AlchemyViewState.navigate('orders');});
+ window.addEventListener('alchemy:view-ready',e=>{if(e.detail.view==='manual'){handbook.select(e.detail.context?.chapter==='probability'?1:0);if(e.detail.context?.chapter==='probability')requestAnimationFrame(()=>handbook.pages[1].querySelector('[data-rules-section=probability]')?.scrollIntoView({block:'start'}));}});window.addEventListener('alchemy:render',render);render();
 })();

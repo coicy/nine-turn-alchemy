@@ -1,0 +1,239 @@
+/* V89: current objects first, measured reading space, explicit presentation lifetime. */
+body.object-world [hidden]{display:none!important}
+body.object-world button,body.object-world summary,body.object-world .policy-link{min-height:44px;box-sizing:border-box}
+body.object-world button{font-size:14px}
+body.object-world summary{display:flex;align-items:center;cursor:pointer}
+body.object-world summary:before{content:'▸';margin-right:6px}
+body.object-world details[open]>summary:before{content:'▾'}
+body.object-world .engine-nav{flex:0 0 auto;min-height:52px}
+body.object-world .engine-nav>button{min-height:44px;font-size:14px!important}
+body.object-world #worldLocationMenu small{margin:4px 0;font-size:12px;color:#715439}
+body.object-world #worldLocationMenu button,body.object-world #worldSettings button{min-height:44px}
+body.object-world .world-section-caption{display:none!important}
+body.object-world .room-observation{overflow:visible!important;max-height:none!important}
+body.object-world .room-observation .observation-details{width:auto;min-width:140px;padding:0 8px}
+body.object-world .room-observation .observation-details summary{font-size:12px;min-height:44px}
+body.object-world[data-reading-mode=short] .world-readout{visibility:visible!important}
+body.object-world[data-reading-mode=long] .engine-viewport{filter:brightness(.68)}
+body.object-world .engine-viewport[inert] :is(.world-passage,.world-books,.world-casket,.world-tool-row),body.object-world .engine-panel[inert] :is(.world-passage,.world-books){visibility:hidden!important}
+body.object-world .work-instruction{font-size:14px;max-height:none;min-height:0}
+body.object-world .work-instruction[hidden]{display:none!important}
+body.object-world .refine-feedback{width:220px}
+body.object-world .refine-feedback p:empty,body.object-world .refine-feedback small:empty{display:none}
+body.object-world .refine-odds{height:auto;max-height:none!important}
+body.object-world .refine-odds header button{min-height:44px}
+body.object-world .refine-odds .odds-rules{min-height:44px;font-size:12px;background:transparent;border:0;text-align:left;padding:4px 0}
+body.object-world .refine-odds dl{margin:4px 0}
+body.object-world .refine-odds #refineOddsState:empty{display:none}
+body.object-world #refineOddsProtection{font-size:12px;margin:4px 0}
+.ux-pill-art{position:relative;display:inline-block;width:80px;height:80px;flex:none;vertical-align:middle}
+.ux-pill-art>img,.ux-pill-art>i{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.ux-pill-art>i{mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center}
+body.object-world .pill-detail-panel.engine-panel,body.object-world .equipment-drawer.engine-panel{position:fixed!important;inset:var(--note-top,80px) auto auto var(--note-left,calc(100vw - 352px))!important;width:320px!important;max-width:calc(100vw - 24px)!important;height:auto;max-height:var(--note-max-height,55dvh);overflow:auto;padding:14px!important;border:1px solid #a7885d;border-radius:3px;background:#f7ecd4!important;color:#49382a;z-index:80;box-shadow:0 5px 12px #46302633}
+body.object-world .pill-detail-panel header{display:flex;justify-content:space-between;align-items:center}
+body.object-world .pill-detail-panel h2{font-size:18px;margin:0}
+.pill-rune-details article{display:flex;align-items:center;gap:8px;border-top:1px solid #b9a17a;padding:6px 0}
+.pill-rune-details .ux-pill-art{width:56px;height:56px}.pill-rune-details p{font-size:14px;line-height:1.5;margin:3px 0}
+body.object-world .equipment-drawer p{margin:6px 0;font-size:14px;line-height:1.5}
+body.object-world .equipment-library{max-height:none!important;overflow:visible}
+.equipment-targets button{margin:4px}
+body.object-world .equipment-card{color:#49382a!important;background:#f5e7c9!important;border-color:#bba27c!important}
+body.object-world .equipment-card:disabled{opacity:.7}
+body.object-world .equipment-card small{font-size:12px}
+body.object-world #roomSettlement{left:805px;top:auto;bottom:24px;width:490px;max-height:260px;background:#f7ecd4ed;padding:12px;z-index:28}
+body.object-world #roomSettlement>p{margin:0 0 6px;font-size:14px}
+.receipt-actions{display:flex;gap:6px;flex-wrap:wrap}.receipt-actions button[data-primary]{background:#914e35;color:#fff0d4;order:-1}.receipt-details{margin:0 0 6px}.receipt-details p{white-space:pre-line;font-size:14px;line-height:1.6}
+body.object-world #roomChoices{left:800px;top:120px;width:500px;max-height:65%;padding:12px;z-index:40;overflow:auto}
+body.object-world #roomChoices [data-rune]{display:flex;align-items:center;gap:8px;width:100%;text-align:left;margin:6px 0;padding:6px 10px;background:#f5e7c9;color:#49382a}
+#roomChoices [data-rune]>.ux-pill-art{width:56px;height:56px}#roomChoices [data-rune]>span:last-child{display:grid;gap:3px;font-size:14px;line-height:1.4}#roomChoices [data-rune] em{font-size:12px;font-style:normal;color:#80452f}
+body.object-world .herb-tray>p{display:none!important}
+body.object-world .herb-slot .parcel-seal{position:absolute;left:5px;top:8px;font-size:12px;font-style:normal;line-height:18px;padding:1px 3px;z-index:1}
+.herb-slot.tier-1 .parcel-seal{background:#476650}.herb-slot.tier-2 .parcel-seal{background:#77577a}
+body.object-world .counter-board .daily-heading{pointer-events:none}
+body.object-world .counter-board .daily-heading small,body.object-world #dayTitle,body.object-world #dailyHint,.counter-board .counter-sign{display:none!important}
+body.object-world .counter-board #careerTotal{font-size:14px}
+body.object-world .counter-board .browse-customers{top:18px!important;right:18px!important;font-size:14px;min-height:44px}
+body.object-world .counter-board .counter-note:after{display:none!important}
+body.object-world .counter-board .counter-receipt{font-size:14px;max-width:380px}
+body.object-world .counter-board .counter-receipt:empty,body.object-world .visitor-departed:empty{display:none!important}
+body.object-world .counter-board .counter-letter{z-index:35;box-sizing:border-box;max-height:72%;overflow:auto;padding:18px!important}
+body.object-world .counter-letter .letter-close{min-width:44px;min-height:44px;float:right}
+body.object-world .counter-letter .accept-stamp{display:block;min-height:48px;margin-top:14px}
+body.object-world .counter-board.counter-letter-open>.world-books,body.object-world .counter-board.counter-letter-open>.world-passage,body.object-world .counter-board.counter-letter-open>.daily-actions{visibility:hidden}
+body.object-world .counter-board .world-passage{top:auto!important;bottom:18px;min-height:44px}
+body.object-world .counter-board .passage-forge{left:18px}.object-world .counter-board .passage-market{right:18px}
+body.object-world .counter-board .world-books{left:18px;bottom:88px;top:auto!important}
+body.object-world .counter-board #dailySummary{left:50%;right:auto;top:auto;bottom:120px;transform:translateX(-50%);width:min(600px,80%);max-width:none;padding:18px;box-sizing:border-box;white-space:pre-line;background:#f7ecd4;border:1px solid #ad9067;z-index:12;font-size:16px;line-height:1.8}
+body.object-world .counter-board #dailySummary:empty{display:none!important}
+body.object-world .counter-board[data-counter-state=settled] #counterReceipt,body.object-world .counter-board[data-counter-state=finished] #counterReceipt{display:none!important}
+body.object-world .counter-board[data-counter-state=active] .counter-note:before{content:'已接';position:absolute;right:0;top:0;color:#914e35;border:2px solid;padding:4px;z-index:1;font-size:14px}
+body.object-world .world-market .market-heading{top:10px;left:24px;right:200px;min-height:0;z-index:30}
+body.object-world .world-market .market-heading p{margin:0;padding:6px;font-size:14px}
+body.object-world .world-market-tabs{top:22px;left:24px;right:auto}
+body.object-world .market-stalls{top:30%;height:30%;align-items:end}
+body.object-world .world-price-tag{left:25%;bottom:82px;max-height:28%;padding:12px 16px}
+body.object-world .world-price-tag button{min-height:44px}
+body.object-world .world-price-tag strong{margin-right:12px}
+body.object-world .world-market .market-stalls>section:has([aria-pressed=true]){border-bottom-color:#914e35}
+body.object-world .pill-bag-panel.engine-panel{padding:18px!important}
+body.object-world #pillBagList{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));max-width:58%;max-height:72%;min-height:150px;align-content:start}
+body.object-world .pill-bag-card .ux-pill-art{width:80px;height:80px}
+body.object-world .pill-bag-card small{font-size:12px}.empty-pill-place{border-style:dashed!important;color:#f5e7c9;opacity:.7}
+body.object-world #pillBagSelected{left:62%;right:24px;top:110px;background:transparent;padding:12px}
+body.object-world #pillBagSelected>.ux-pill-art{width:140px;height:140px}
+body.object-world #pillBagSelected p{font-size:14px;line-height:1.6}
+body.object-world .pill-bag-empty{font-size:14px;grid-column:1/-1}
+body.object-world .journal-book .record-scope{font-size:14px;margin:0 0 10px}
+body.object-world .journal-book #trialFlavor,body.object-world .journal-book #trialRule,body.object-world .journal-book .hint-box{display:none!important}
+body.object-world .journal-book[data-record-source=self] .target-card{display:none!important}
+body.object-world .journal-book .resource-grid{margin-top:18px}
+.rune-atlas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.rune-atlas article{display:flex;align-items:center;gap:12px;border-bottom:1px solid #bba27c;padding:10px 0}.rune-atlas .ux-pill-art{width:80px;height:80px}.rune-atlas h3{font-size:18px;margin:0 0 6px}.rune-atlas p{font-size:14px;line-height:1.6;margin:0}.rune-discoveries{margin-top:20px}.rules-outcomes{display:grid;grid-template-columns:70px 1fr;gap:12px}.rules-outcomes dt,.rules-outcomes dd{margin:0}.log-scope,.log-entry small{font-size:12px}.log-entry small{display:block;color:#72583f;margin:0 0 5px}
+body.object-world .journal-book .journal-heading{padding-right:80px}.journal-tabs button{min-height:44px}
+body.object-world .ledger-day{font-size:14px;line-height:1.6;border-top:1px solid #bba27c;padding:12px 0}.ledger-day p{margin:4px 0}
+body.object-world dialog{box-sizing:border-box;max-width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 32px);overflow:auto;background:#f7ecd4;color:#49382a;border:1px solid #9f794f;padding:20px;border-radius:4px}
+body.object-world dialog::backdrop{background:#382b1c80}body.object-world dialog h2{font-size:24px;margin:0}body.object-world dialog header{display:flex;align-items:center;justify-content:space-between;gap:16px}body.object-world dialog p{font-size:14px;line-height:1.6}body.object-world dialog button{min-height:44px;font-size:14px}body.object-world .ux-confirm{width:420px}.ux-confirm>div{display:flex;gap:12px;margin-top:16px}.ux-data-settings .telemetry-option{display:flex;align-items:center;min-height:44px}.ux-data-settings .policy-link{display:flex;align-items:center}.ux-data-settings .deferred-note{font-size:14px}.ux-data-settings #uxDataSettingsSource{display:block}
+body.object-world .save-picker{width:520px}.save-slot-list{display:grid;gap:10px}.save-slot{padding:12px}.save-slot h3{font-size:18px;margin:0 0 6px}.save-slot p{margin:4px 0}.save-slot small{font-size:12px}.save-actions,.save-reset-confirm{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.save-reset-confirm>p{width:100%}.save-reset-confirm button:first-of-type{background:#914e35;color:#fff0d4}
+body.object-world .opening-screen{background:#e9dcc0 url('assets/object-world-v86/room-desktop.webp') center/cover no-repeat;padding:24px;box-sizing:border-box}
+body.object-world .opening-content{background:#f7ecd4ed;padding:28px;width:min(510px,100%);gap:12px;border:1px solid #b8a07a;border-radius:3px;box-sizing:border-box;margin:auto}
+body.object-world .opening-launch{width:100%;max-width:none;display:grid;gap:8px}
+body.object-world .opening-story h1{font-size:44px;margin:0}.opening-tagline{font-size:14px}
+body.object-world .opening-help summary,body.object-world .opening-launch>.ux-data-open,body.object-world .opening-launch>.save-open{min-height:44px;font-size:14px;margin:0}
+body.object-world .opening-launch>.ux-data-open,body.object-world .opening-launch>.save-open{background:transparent;text-align:left;color:#715439;border:0}
+@media(max-width:650px){
+ body.object-world .engine-nav{min-height:52px;padding:4px 8px;gap:4px}body.object-world #engineWallet{font-size:12px!important}
+ body.world-mobile.object-world .engine-viewport>.forge-panel{top:var(--work-top,0px)!important;transform:none!important}
+ body.world-mobile.object-world .world-readout{position:absolute;left:0;right:0;top:0;height:auto;min-height:0;display:grid;grid-template-columns:130px 1fr;gap:4px 8px;padding:8px 10px;box-sizing:border-box}
+ body.world-mobile.object-world #roomFacts{grid-row:1/3;min-height:0;font-size:12px!important;display:flex;flex-wrap:wrap;align-content:start;gap:4px 10px}
+ body.world-mobile.object-world #roomFacts strong{font-size:18px}
+ body.world-mobile.object-world #roomFacts>[data-fact="炸丹概率"]{flex:0 0 100%;font-size:12px!important}
+ body.world-mobile.object-world #roomFacts>[data-fact="炸丹概率"] strong{font-size:14px}
+ body.world-mobile.object-world #roomDecision{font-size:14px;line-height:1.4;grid-column:2;margin:0;padding:0}
+ body.world-mobile.object-world #roomStock{font-size:12px;grid-column:2;margin:0;line-height:1.4}
+ body.world-mobile.object-world .refine-odds{position:fixed;left:8px!important;right:8px!important;top:auto!important;bottom:max(8px,env(safe-area-inset-bottom))!important;width:auto!important;height:auto;max-height:240px!important;padding:8px 10px;overflow:auto;z-index:45}
+ body.world-mobile.object-world .refine-odds h2{font-size:14px}.world-mobile.object-world .refine-odds dl>[data-outcome]{min-height:44px;padding:4px 0}
+ body.world-mobile.object-world .refine-odds header button{min-height:44px;font-size:12px}.world-mobile.object-world .refine-odds .odds-rules{min-height:44px;font-size:12px}
+ body.world-mobile.object-world .refine-odds-toggle{bottom:8px;left:8px;right:8px;min-height:44px}
+ body.object-world .pill-detail-panel.engine-panel,body.object-world .equipment-drawer.engine-panel{inset:auto 8px max(8px,env(safe-area-inset-bottom))!important;width:auto!important;max-width:none!important;max-height:36dvh;padding:12px!important;z-index:80}
+ body.object-world #roomChoices,body.object-world #roomSettlement{position:fixed!important;inset:auto 8px max(8px,env(safe-area-inset-bottom))!important;width:auto!important;max-height:38dvh;box-sizing:border-box;margin:0;padding:10px;overflow:auto;z-index:40}
+ body.object-world #roomChoices>strong{font-size:14px}body.object-world #roomChoices [data-rune]{padding:5px 8px;margin:5px 0}#roomChoices [data-rune]>.ux-pill-art{width:44px;height:44px}#roomChoices [data-rune]>span:last-child{font-size:12px}#roomChoices [data-rune] strong{font-size:14px}
+ body.object-world #roomSettlement>p{font-size:14px}.receipt-actions button{font-size:14px;padding:6px 10px}.receipt-details summary{font-size:12px}
+ body.world-mobile.object-world .work-instruction{font-size:12px;left:20%;right:8px;bottom:3%;max-height:none;background:#f7ecd4ee}
+ body.world-mobile.object-world .world-books{top:84%;right:95px}.world-mobile.object-world .world-casket{top:82%}
+ body.world-mobile.object-world .herb-tray{top:43%;max-height:39%}.world-mobile.object-world .herb-slot .parcel-seal{left:4px;top:4px;font-size:12px}
+ body.object-world .counter-board .daily-heading{top:16px;left:12px;right:auto;padding:0;max-width:60%}body.object-world .counter-board #careerTotal{font-size:12px}
+ body.object-world .counter-board .browse-customers{top:14px!important;right:12px!important;font-size:12px}
+ body.object-world .counter-board .counter-letter{left:10px!important;right:10px!important;bottom:100px!important;top:auto!important;width:auto!important;max-height:calc(100% - 170px);padding:14px!important;font-size:14px}
+ body.object-world .counter-board .counter-receipt{left:12px;right:12px;bottom:150px;top:auto;width:auto;max-width:none;max-height:26%;overflow:auto;box-sizing:border-box}
+ body.object-world .counter-board .world-books{bottom:95px!important;left:12px;right:auto;top:auto!important}body.object-world .counter-board .world-passage{bottom:16px;font-size:12px}body.object-world .counter-board .passage-forge{left:12px}body.object-world .counter-board .passage-market{right:12px}
+ body.object-world .counter-board .daily-actions{bottom:75px;right:12px;left:auto}
+ body.object-world .counter-board #dailySummary{bottom:180px;left:12px;right:12px;top:auto;transform:none;width:auto;max-width:none;font-size:14px;padding:14px}
+ body.object-world .counter-board .world-day-bell{min-width:90px;font-size:12px}
+ body.object-world .world-market-tabs{position:absolute;top:16px;left:12px;right:12px;gap:6px}.world-market-tabs button{font-size:14px}
+ body.object-world .world-market .market-heading{top:70px;left:12px;right:12px}
+ body.object-world .world-market .market-stalls{position:absolute;left:12px;right:12px;top:31%;height:28%;display:block;overflow:auto}
+ body.object-world .world-market .world-price-tag{position:absolute;left:12px;right:12px;top:61%;bottom:80px;max-height:none;overflow:auto;padding:10px 12px}
+ body.object-world .world-price-tag h3{font-size:18px}.world-price-tag p{font-size:14px}
+ body.object-world .world-market .passage-home{top:auto!important;bottom:16px;right:12px;font-size:12px;min-height:44px}.object-world .world-market .world-books{bottom:16px!important;left:12px;top:auto!important}
+ body.object-world .market-merchant{top:100px!important;height:125px!important;width:auto!important}
+ body.object-world #pillBagList{max-width:none;max-height:45%;grid-template-columns:repeat(3,minmax(0,1fr));min-height:120px;padding:8px}
+ body.object-world .pill-bag-card{min-height:100px;padding:5px}.pill-bag-card .ux-pill-art{width:64px!important;height:64px!important}body.object-world .pill-bag-card span{font-size:12px}
+ body.object-world #pillBagSelected{position:static;margin-top:12px;padding:12px;background:#f7ecd4bb}body.object-world #pillBagSelected>.ux-pill-art{width:90px;height:90px;float:left;margin-right:12px}
+ body.object-world .rune-atlas{grid-template-columns:1fr;gap:0}.rune-atlas .ux-pill-art{width:64px;height:64px}.rune-atlas article{gap:10px;padding:8px 0}.rune-atlas h3{font-size:18px}.rune-atlas p{font-size:14px}
+ body.object-world .journal-heading{padding:12px 76px 10px 12px}.journal-tabs{gap:5px}.journal-tabs button{font-size:14px;padding:6px 9px}
+ body.object-world .opening-screen{background-image:url('assets/object-world-v86/room-mobile.webp');padding:16px;display:flex;align-items:center}body.object-world .opening-content{padding:24px;gap:8px}body.object-world .opening-story h1{font-size:40px}
+ body.object-world .engine-close{min-height:44px;top:59px;right:10px}
+}
+@media(prefers-reduced-motion:reduce){body.object-world *,body.object-world *:before,body.object-world *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+body.object-world .journal-book .panel-kicker{display:none!important}
+body.compact-forge.object-world #roomSettlement{left:680px;width:380px}
+body.compact-forge.object-world #roomChoices{left:680px;width:380px}
+
+body.object-world .opening-screen.hidden{display:none!important}
+body.object-world .herb-slot[data-empty=true] .parcel-seal{display:none}
+
+body.object-world[data-world-surface][data-reading-mode=short] .world-readout{visibility:visible!important}
+body.object-world .room-observation .observation-details{min-width:0;width:110px!important;padding:0 6px!important;background:#f7ecd4df}
+body.world-mobile.object-world .room-observation .observation-details{left:12px;top:calc(100% + 8px)}
+
+body.object-world .counter-board .daily-actions{bottom:18px;right:18px;left:auto}
+body.object-world .counter-board .passage-market{bottom:122px}
+@media(max-width:650px){body.object-world .counter-board .daily-actions{bottom:75px;right:12px}body.object-world .counter-board .passage-market{bottom:16px}}
+
+body.object-world .counter-board .daily-heading{position:absolute!important;display:block!important;left:18px!important;right:auto!important;top:18px!important;width:auto!important;max-width:none!important;padding:0!important}
+body.object-world .counter-board .daily-heading>div{display:none!important}
+body.object-world .counter-board #careerTotal{display:inline-block!important;position:static!important;max-width:none!important;width:max-content!important;margin:0!important;padding:8px!important;white-space:nowrap;line-height:20px}
+body.object-world.engine-shell .pill-bag-panel.engine-panel{inset:72px max(12px,calc((100vw - 1000px)/2)) auto!important;height:auto!important;max-height:calc(100dvh - 90px);display:grid;grid-template-columns:58% 1fr;gap:12px;align-items:start}
+.pill-bag-heading,#pillBagStatus{grid-column:1/-1}
+body.object-world #pillBagList{max-width:none;max-height:55dvh;min-height:240px;margin:0}
+body.object-world #pillBagSelected{position:static;padding:12px;margin:0}
+.pill-bag-place{min-height:110px;border:1px solid #b2ac8144;border-radius:5px;background:radial-gradient(ellipse,#373e2e33,transparent)}
+body.object-world .pill-bag-card{justify-content:center}.empty-pill-place{cursor:default}
+@media(min-width:651px){
+ body.object-world .world-price-tag{top:64%;bottom:auto;max-height:26%;width:32%;left:5%;right:auto}
+ body.object-world [data-market-tab=tool] .world-price-tag{left:42%;width:34%}
+ body.object-world [data-market-tab=furnace] .world-price-tag{left:72%;width:26%}
+}
+@media(max-width:650px){
+ body.world-mobile.object-world .work-instruction{position:fixed!important;left:8px;right:8px;bottom:calc(var(--work-reserve,0px) + 16px);font-size:12px;padding:5px;z-index:35;margin:0;min-height:24px;line-height:20px}
+ body.object-world .counter-board .daily-heading{left:12px!important;top:14px!important}
+ body.object-world .counter-board #careerTotal{font-size:12px;padding:8px 6px!important}
+ body.object-world.engine-shell .pill-bag-panel.engine-panel{inset:60px 8px auto!important;display:block;max-height:calc(100dvh - 76px);padding:14px!important}
+ body.object-world #pillBagList{max-height:35dvh;min-height:200px;grid-template-columns:repeat(3,minmax(0,1fr));margin:10px 0 0}
+ .pill-bag-place{min-height:90px}body.object-world #pillBagSelected{margin-top:12px;background:#f7ecd4bb}
+ body.object-world .world-market .world-price-tag{bottom:auto;max-height:calc(39% - 80px)}
+}
+
+body.object-world .pill-detail-panel button,body.object-world dialog button{background:#efe0bd;color:#60432d;border:1px solid #aa875a;border-radius:3px;padding:6px 12px}
+body.object-world dialog [data-confirm],body.object-world dialog [data-confirm-reset]{background:#914e35;color:#fff0d4}
+
+body.object-world .world-market-tabs [aria-pressed=true]{background:#f4e5c5;color:#60432d;border:2px solid #914e35}
+body.object-world [data-market-tab=material] .market-goods,body.object-world [data-market-tab=tool] .market-artifacts,body.object-world [data-market-tab=furnace] .market-upgrade{border-bottom-color:#914e35}
+@media(min-width:651px){
+ body.object-world .world-books button,body.object-world .world-passage,body.object-world .observation-details summary{font-size:calc(14px / var(--scene-scale,1))!important;min-height:calc(44px / var(--scene-scale,1))!important}
+ body.object-world .world-casket>span,body.object-world .world-casket>small,body.object-world .world-herb-source,body.object-world .herb-slot .parcel-seal{font-size:calc(12px / var(--scene-scale,1))}
+body.object-world .herb-slot strong,body.object-world .work-instruction{font-size:calc(14px / var(--scene-scale,1))}
+body.object-world .refine-odds-toggle,body.object-world #roomChoices [data-read-runes]{min-height:calc(44px / var(--scene-scale,1));font-size:calc(14px / var(--scene-scale,1))}
+ body.object-world .refine-odds{width:calc(355px / var(--scene-scale,1));font-size:calc(14px / var(--scene-scale,1))}
+ body.object-world .refine-odds h2,body.object-world .refine-odds dd{font-size:calc(18px / var(--scene-scale,1))}
+ body.object-world .refine-odds dt,body.object-world .refine-odds button,body.object-world .refine-odds #refineOddsProtection{font-size:calc(12px / var(--scene-scale,1))}
+ body.object-world .refine-odds button{min-height:calc(44px / var(--scene-scale,1))}
+ body.object-world #roomSettlement{width:calc(460px / var(--scene-scale,1))}
+ body.object-world #roomSettlement>p,body.object-world #roomSettlement button,body.object-world #roomSettlement summary,body.object-world #roomSettlement details p{font-size:calc(14px / var(--scene-scale,1))}
+ body.object-world #roomSettlement button,body.object-world #roomSettlement summary{min-height:calc(44px / var(--scene-scale,1))}
+ body.object-world #roomChoices{width:calc(460px / var(--scene-scale,1))}
+ body.object-world #roomChoices button,body.object-world #roomChoices [data-rune]>span:last-child,body.object-world #roomChoices>strong{font-size:calc(14px / var(--scene-scale,1))}
+ body.object-world #roomChoices [data-rune] em{font-size:calc(12px / var(--scene-scale,1))}
+}
+
+.rules-outcomes,[data-rules-section]{scroll-margin-top:120px}
+
+/* Align the actual tool sprite foot to its rest, rather than to the button bottom. */
+body.object-world .world-placed-tool .tool-art{position:absolute;left:50%;bottom:30px;transform:translateX(-50%)}
+body.object-world .world-placed-tool.tool-needle .tool-art{bottom:37px}
+body.object-world .world-placed-tool.tool-stand .tool-art{bottom:43px}
+body.object-world .world-casket>span{position:absolute;left:50%;top:auto!important;bottom:5px;transform:translateX(-50%);white-space:nowrap}
+body.object-world .world-casket>small{display:none}
+@media(min-width:651px){
+ body.object-world #refineOdds header button,body.object-world #refineOdds .odds-rules{min-height:calc(44px / var(--scene-scale,1));font-size:calc(12px / var(--scene-scale,1))}
+ body.object-world .world-placed-tool small{font-size:calc(12px / var(--scene-scale,1))}
+}
+@media(max-width:650px){
+ body.world-mobile.object-world .world-placed-tool .tool-art,body.world-mobile.object-world .world-placed-tool.tool-needle .tool-art,body.world-mobile.object-world .world-placed-tool.tool-stand .tool-art{bottom:14px}
+ body.object-world .world-casket>span{bottom:4px}
+}
+
+/* A fixed scene cannot be scrolled by focus on an off-camera prop. Reading panes scroll themselves. */
+body.object-world .counter-board.engine-panel,body.object-world .counter-board .counter-scene{overflow:clip!important}
+
+body.object-world #refineAnimation{width:100%!important;height:100%!important}
+body.object-world .world-market.engine-panel{overflow:clip!important}
+body.object-world .counter-board #nextDay{min-height:44px}
+/* A physical side ledge ties the mobile books and casket to the workbench. */
+@media(max-width:650px){
+ body.world-mobile.object-world #pillStage>.world-books{left:calc(100% - 172px);right:76px;top:calc(85% - 52px);bottom:auto;height:52px;gap:6px;overflow:visible;align-items:end}
+ body.world-mobile.object-world #pillStage>.world-books button{box-sizing:border-box;flex:0 0 44px;width:44px;min-width:44px;height:52px;min-height:52px;padding:5px 4px;font-size:12px;line-height:14px;writing-mode:vertical-rl;transform:none;box-shadow:2px 2px 0 #65482d}
+ body.world-mobile.object-world #pillStage>.world-books:before{content:'';position:absolute;left:-8px;right:-76px;bottom:-10px;height:9px;background:linear-gradient(#a77c4e,#815831);border-bottom:5px solid #543a28;box-shadow:1px 5px 5px #36281c55;z-index:-1}
+ body.world-mobile.object-world #pillStage>.world-casket{top:calc(85% - 44px);bottom:auto;width:60px;height:44px;right:8px}
+ body.world-mobile.object-world #pillStage[data-carry]:not([data-carry=''])>.world-delivery-seals{visibility:hidden}
+}

@@ -26,9 +26,8 @@ function create(){return{day:1,phase:'open',activeId:null,orders:ordersFor(1),hi
 function active(c){return c.selfOrder?.status==='active'?c.selfOrder:c.orders.find(o=>o.id===c.activeId)||null;}
 function accept(c,id){if(c.phase!=='open'||active(c))return false;const o=c.orders.find(o=>o.id===id&&o.status==='pending');if(!o)return false;o.status='active';c.activeId=id;return true;}
 function resolve(c,delivered,used,abandon=false){const o=active(c);if(!o||o.status!=='active')return false;o.delivered=delivered;o.used=used;o.returned=o.materials-used;o.status=!abandon&&delivered>=o.target?'completed':'failed';c.activeId=null;return true;}
-function settle(c){if(c.phase!=='open'||active(c)||false)return false;c.orders.filter(o=>o.status==='pending').forEach(o=>o.status='skipped');c.history.push({income:c.economy?.earned||0,day:c.day,completed:c.orders.filter(o=>o.status==='completed').length,failed:c.orders.filter(o=>o.status==='failed').length,delivered:c.orders.reduce((n,o)=>n+o.delivered,0)});c.phase=c.day===DAYS?'finished':'settled';return true;}
+function settle(c){if(c.phase!=='open'||active(c)||false)return false;c.orders.filter(o=>o.status==='pending').forEach(o=>o.status='skipped');c.history.push({skipped:c.orders.filter(o=>o.status==='skipped').length,commissionIncome:c.orders.reduce((n,o)=>n+(o.reward||0),0),gifted:c.orders.reduce((n,o)=>n+(o.gifted||0),0),income:c.economy?.earned||0,day:c.day,completed:c.orders.filter(o=>o.status==='completed').length,failed:c.orders.filter(o=>o.status==='failed').length,delivered:c.orders.reduce((n,o)=>n+o.delivered,0)});c.phase=c.day===DAYS?'finished':'settled';return true;}
 function next(c){if(c.phase!=='settled'||c.day>=DAYS)return false;c.day++;c.orders=ordersFor(c.day);c.phase='open';c.activeId=null;return true;}
 const api={DAYS,ordersFor,create,active,accept,resolve,settle,next};
 if(typeof module!=='undefined')module.exports=api;else root.AlchemyCampaign=api;
 })(typeof window!=='undefined'?window:globalThis);
-

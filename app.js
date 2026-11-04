@@ -167,7 +167,7 @@
   }
 
   function addLog(message, tone = "") {
-    state.logs.unshift({ message, tone });
+    state.logs.unshift({ message, tone, day:campaign?.day||1, orderId:state.orderId||null, source:campaignRules?.active(campaign)?.self?"self":"commission", attempt:state.attempt });
     state.logs = state.logs.slice(0, 8);
   }
 
@@ -256,7 +256,7 @@
 
   function renderRunes() {
     if (!state.discoveredRunes.length) {
-      dom.runeList.innerHTML = '<div class="rune-entry empty">本轮还没有发现丹纹。炼丹时有机会显现。</div>';
+      dom.runeList.innerHTML = '<div class="rune-entry empty">本次尚未显纹。</div>';
       return;
     }
     dom.runeList.innerHTML = state.discoveredRunes.map((rune) => `
@@ -269,9 +269,9 @@
   }
 
   function renderLogs() {
-    dom.logList.innerHTML = state.logs.length
-      ? state.logs.map((entry) => `<div class="log-entry ${entry.tone}">${entry.message}</div>`).join("")
-      : '<div class="log-entry">炉火等待第一道指令。</div>';
+    const groups=[];
+    for(const entry of state.logs){const key=entry.day===undefined?'legacy':[entry.day,entry.orderId,entry.attempt].join(':');let group=groups[groups.length-1];if(!group||group.key!==key){group={key,entry,messages:[]};groups.push(group);}group.messages.push(entry);}
+    dom.logList.innerHTML=groups.length?groups.map(({entry,messages})=>'<div class="log-entry"><small>'+(entry.day===undefined?'旧炉讯 · 炉次未记录':`第${entry.day}天 · ${entry.source==='self'?'自炼':'委托'} · ${entry.attempt?'第'+entry.attempt+'炉':'备料'}`)+'</small>'+messages.map(e=>'<p class="'+e.tone+'">'+e.message+'</p>').join('')+'</div>').join(''):'<p>暂无本次炉讯</p>';
   }
 
   function setFeedback(message, tone = "", event = "start", value = null) {
@@ -473,8 +473,8 @@
     state.pillEndReason = "";
     decisionSince = Date.now();
     telemetry?.record("pill_start", playtestSnapshot());
-    addLog(`<strong>再开一炉</strong>：第 ${state.attempt} 颗丹药开始炼化。下一次风险按转数更新。`, "good");
-    setFeedback("炉火重新点燃。下一次风险按转数更新。", "good");
+    addLog(`<strong>再开一炉</strong>：第 ${state.attempt} 颗丹药开始炼化。`, "good");
+    setFeedback("炉火重新点燃。", "good");
     render();
   }
 
@@ -515,7 +515,7 @@
       telemetry.setEnabled(toggle.checked);
     }
     telemetry?.begin(playtestSnapshot());
-    addLog("委托已接下，三包药材放在案上。取一包投入炉口，开始第一炉。", "good");
+    addLog("委托已接下，三包客料已领至药匣。", "good");
     document.body.dataset.screen = "playing";
     dom.introModal.classList.add("hidden");
     setFeedback("委托药材已备齐，等待投药。", "good", "start");
@@ -600,19 +600,30 @@
     else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded))ok=window.AlchemyEconomy.buy(campaign,kind,id);
     if(ok){state.riskResult=randomRisk();render();if(['material','tool','furnace'].includes(kind)&&typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:purchase',{detail:{kind}}));}return ok;
   }
-  function replaceEquipment(oldId,newId){
-    if(!campaign||campaign.phase!=='open'||state.busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy||!!window.AlchemyScene2D?.held||!state.pillEnded)return false;
+  function canReplaceEquipment(oldId,newId){
+    const fail=reason=>({ok:false,reason});
+    if(!campaign||campaign.phase!=='open')return fail('今日已收工，次日再布置。');
+    if(state.busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy)return fail('正在炼化，请待结果落定。');
+    if(window.AlchemyScene2D?.held)return fail('先放回手中物件。');
+    if(!state.pillEnded)return fail('炉内有丹，收丹后可调整。');
     const E=window.AlchemyEconomy,e=E.ensure(campaign),ids=E.equippedIds(e.equipped);
-    if(oldId!==null&&!ids.includes(oldId))return false;
-    if(newId!==null&&(!e.tools.includes(newId)||!E.TOOL_DEFS.some(t=>t.id===newId)))return false;
-    if(oldId===newId)return true;
+    if(oldId!==null&&!ids.includes(oldId))return fail('原法器已不在此处，请重新选择。');
+    if(newId!==null&&(!e.tools.includes(newId)||!E.TOOL_DEFS.some(t=>t.id===newId)))return fail('尚未持有这件法器。');
+    if(oldId===newId)return {ok:true,reason:''};
     const next=[...ids],index=oldId===null?next.length:next.indexOf(oldId);
-    if(newId!==null&&next.includes(newId))return false;
-    if(newId===null){if(oldId===null)return false;next.splice(index,1);}else next[index]=newId;
-    if(next.length>E.EQUIP_SLOTS||next.filter(id=>E.TOOL_DEFS.find(t=>t.id===id)?.runeTarget).length>1)return false;
-    e.equipped=next;if(typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:equipment-replaced',{detail:{oldId,newId}}));state.riskResult=randomRisk();render();return true;
+    if(newId!==null&&next.includes(newId))return fail('这件法器已在案上。');
+    if(newId===null){if(oldId===null)return fail('请选择要撤下的法器。');next.splice(index,1);}else next[index]=newId;
+    if(next.length>E.EQUIP_SLOTS)return fail('三个位置已满，请先点选要更换的法器。');
+    if(next.filter(id=>E.TOOL_DEFS.find(t=>t.id===id)?.runeTarget).length>1)return fail('同炉只能布置一件定向法器。');
+    return {ok:true,reason:'',next};
   }
-  window.AlchemyGame = { replaceEquipment, RUNE_CHANCE, RUNE_DEFS, refinementProbabilities, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
+  function replaceEquipment(oldId,newId){
+    const result=canReplaceEquipment(oldId,newId);if(!result.ok)return false;if(oldId===newId)return true;
+    campaign.economy.equipped=result.next;
+    if(typeof CustomEvent!=='undefined')window.dispatchEvent(new CustomEvent('alchemy:equipment-replaced',{detail:{oldId,newId}}));
+    state.riskResult=randomRisk();render();return true;
+  }
+  window.AlchemyGame = { canReplaceEquipment, replaceEquipment, RUNE_CHANCE, RUNE_DEFS, refinementProbabilities, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
     snapshot: () => ({ ...playtestSnapshot(), started: state.started,
     busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
@@ -635,8 +646,3 @@
   }
   render();
 })();
-
-
-
-
-

@@ -7,7 +7,7 @@
   let lastNote=false,lastLetter=false,lastStep='',lastCopy='',frame=0,disposed=false;
   function motion(el,frames,duration){
     running.get(el)?.cancel();running.delete(el);
-    if(reduced.matches||document.hidden||!el.animate)return;
+    if(!window.AlchemyOpening?.active||reduced.matches||document.hidden||!el.animate)return;
     const a=el.animate(frames,{duration,easing:'cubic-bezier(.18,.75,.25,1)',fill:'none'});running.set(el,a);
     a.finished.then(()=>{if(running.get(el)===a)running.delete(el);}).catch(()=>{});
   }

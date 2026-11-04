@@ -1,43 +1,31 @@
 (() => {
-'use strict';
-const forge=document.querySelector('.forge-panel'),layout=document.querySelector('.game-layout');
-const viewport=document.createElement('div');viewport.className='engine-viewport';layout.append(viewport);viewport.append(forge);document.body.classList.add('engine-shell','object-world');
-const panels={orders:document.querySelector('.counter-board'),shop:document.querySelector('.economy-board'),equipment:document.querySelector('.equipment-drawer'),record:document.querySelector('.order-panel'),manual:document.querySelector('.side-panel'),bag:document.querySelector('.pill-bag-panel')};
-const places=['work','orders','shop'],labels={work:'炼丹房',orders:'接待柜台',shop:'坊市',equipment:'炉旁法器',record:'经营簿',manual:'丹纹炉谱',bag:'丹药背包'};
-const nav=document.createElement('nav');nav.className='engine-nav';nav.setAttribute('aria-label','丹坊功能');
-nav.innerHTML='<button class="world-location-toggle" aria-expanded="false" aria-controls="worldLocationMenu">炼丹房 ▾</button><div id="worldLocationMenu" hidden>'+Object.entries(labels).map(([id,name])=>`<button data-view="${id}" aria-pressed="false">${name}</button>`).join('')+'</div><span id="engineWallet"></span><button class="world-settings-toggle" aria-expanded="false" aria-controls="worldSettings">设置</button><div id="worldSettings" hidden></div>';
-document.querySelector('.topbar').after(nav);
-const menu=nav.querySelector('#worldLocationMenu'),settings=nav.querySelector('#worldSettings');
-const close=document.createElement('button');close.className='engine-close';close.textContent='合上 ×';close.hidden=true;document.body.append(close);
-let current='work',location='work',requested='work',phase='idle',returnFocus=null,returnSlot=null,serial=0;
-function fit(){window.AlchemyWorldLayout.fit();}
-function movable(){return !window.AlchemyGame.snapshot().busy&&!window.AlchemyGame.snapshot().runeChoices?.length&&!window.AlchemyScene2D?.busy&&!window.AlchemyScene2D?.held&&!window.AlchemyInteractionBusy;}
-function setMenu(open){menu.hidden=!open;nav.querySelector('.world-location-toggle').setAttribute('aria-expanded',String(open));}
-function closeReading(){if(places.includes(current))return;const focus=returnFocus;show(location,true);requestAnimationFrame(()=>{const anchor=focus?.isConnected?focus:returnSlot!==null?document.querySelector('.world-tool-row')?.children[returnSlot]:document.querySelector('.world-location-toggle');if(anchor?.checkVisibility())anchor.focus({preventScroll:true});});}
-function show(view,internal=false){
- if(view!=='work'&&!panels[view])return false;
- if(!internal&&!movable()){const hint=document.getElementById('workInstruction');if(hint)hint.textContent='请先完成本次操作，或按 Esc 放回手中物件';return false;}
- const reading=!places.includes(view);if(view==='equipment')location='work';if(!reading)location=view;else if(places.includes(current)){returnFocus=document.activeElement;returnSlot=returnFocus?.dataset?.worldTool?Array.from(returnFocus.parentElement.children).indexOf(returnFocus):null;}
- requested=view;phase='leaving';document.body.dataset.viewPhase=phase;const ticket=++serial;
- current=view;document.body.dataset.worldLocation=location;document.body.dataset.worldSurface=reading?view:'';
- for(const [key,p] of Object.entries(panels)){if(!p)continue;const active=key===view||key===location;p.classList.add('engine-panel');p.hidden=!active;p.dataset.shellActive=String(active);p.inert=reading&&key===location;if(p.tagName==='DETAILS')p.open=true;}
- viewport.style.visibility=location==='work'?'visible':'hidden';viewport.inert=reading;
- document.body.classList.toggle('equipment-open',view==='equipment');close.hidden=!reading||['equipment','bag'].includes(view);
- nav.querySelector('.world-location-toggle').textContent=labels[location]+' ▾';nav.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));setMenu(false);settings.hidden=true;nav.querySelector('.world-settings-toggle').setAttribute('aria-expanded','false');
- fit();phase='entering';document.body.dataset.viewPhase=phase;
- queueMicrotask(()=>{if(ticket!==serial)return;phase='idle';document.body.dataset.viewPhase=phase;window.dispatchEvent(new CustomEvent('alchemy:view-ready',{detail:{view,location}}));if(reading){const p=panels[view];p.setAttribute('tabindex','-1');p.focus({preventScroll:true});}});return true;
-}
-window.AlchemyViewState={snapshot:()=>({current,requested,phase,location}),navigate:view=>show(view),close:closeReading};
-nav.querySelector('.world-location-toggle').onclick=()=>{setMenu(menu.hidden);if(!menu.hidden)menu.querySelector('button').focus();};
-nav.querySelector('.world-settings-toggle').onclick=()=>{settings.hidden=!settings.hidden;nav.querySelector('.world-settings-toggle').setAttribute('aria-expanded',String(!settings.hidden));};
-nav.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)show(b.dataset.view);});close.onclick=closeReading;
-document.addEventListener('keydown',e=>{if(e.key!=='Escape'||e.defaultPrevented)return;if(!menu.hidden){setMenu(false);nav.querySelector('.world-location-toggle').focus();return;}if(!settings.hidden){settings.hidden=true;nav.querySelector('.world-settings-toggle').focus();return;}if(!places.includes(current)){e.preventDefault();closeReading();}});
-window.addEventListener('alchemy:opening-view',e=>{if(places.includes(e.detail?.view))show(e.detail.view,true);});
-window.addEventListener('alchemy:order',()=>show('work',true));
-window.addEventListener('alchemy:equipment',()=>current==='equipment'?closeReading():show('equipment'));
-window.addEventListener('alchemy:work',()=>show('work'));
-window.addEventListener('alchemy:close-reading',closeReading);
-window.addEventListener('alchemy:market',()=>show('shop'));
-window.addEventListener('alchemy:render',()=>{const c=window.AlchemyGame.campaign();document.getElementById('engineWallet').textContent=c?'第 '+c.day+' 天 · '+(c.economy?.coins||0)+' 铜钱':'';fit();});
-window.addEventListener('resize',fit);show('work',true);
+ 'use strict';
+ const forge=document.querySelector('.forge-panel'),layout=document.querySelector('.game-layout');
+ const viewport=document.createElement('div');viewport.className='engine-viewport';layout.append(viewport);viewport.append(forge);document.body.classList.add('engine-shell','object-world');
+ const panels={orders:document.querySelector('.counter-board'),shop:document.querySelector('.economy-board'),equipment:document.querySelector('.equipment-drawer'),record:document.querySelector('.order-panel'),manual:document.querySelector('.side-panel'),bag:document.querySelector('.pill-bag-panel')};
+ const short=new Set(['equipment']),places=['work','orders','shop'],labels={work:'炼丹房',orders:'接待柜台',shop:'坊市',equipment:'炉旁法器',record:'经营簿',manual:'丹纹炉谱',bag:'丹匣'};
+ const nav=document.createElement('nav');nav.className='engine-nav';nav.setAttribute('aria-label','丹坊功能');
+ nav.innerHTML='<button class="world-location-toggle" aria-expanded="false" aria-controls="worldLocationMenu">炼丹房 ▾</button><div id="worldLocationMenu" hidden><small>工作地点</small>'+places.map(id=>'<button data-view="'+id+'">'+labels[id]+'</button>').join('')+'<small>器物与书册</small>'+['equipment','bag','record','manual'].map(id=>'<button data-view="'+id+'">'+labels[id]+'</button>').join('')+'</div><span id="engineWallet"></span><button class="world-settings-toggle" aria-expanded="false" aria-controls="worldSettings">设置</button><div id="worldSettings" hidden></div>';
+ document.querySelector('.topbar').after(nav);
+ const menu=nav.querySelector('#worldLocationMenu'),settings=nav.querySelector('#worldSettings');
+ const close=document.createElement('button');close.className='engine-close';close.textContent='合上 ×';close.hidden=true;document.body.append(close);
+ let current='work',location='work',phase='idle',stack=[],context={},serial=0;
+ function setMenu(open){menu.hidden=!open;nav.querySelector('.world-location-toggle').setAttribute('aria-expanded',String(open));}
+ function setSettings(open){settings.hidden=!open;nav.querySelector('.world-settings-toggle').setAttribute('aria-expanded',String(open));}
+ function blockedReason(view){const s=window.AlchemyGame.snapshot(),held=window.AlchemyScene2D?.held;if(s.busy||window.AlchemyScene2D?.busy||window.AlchemyInteractionBusy)return '正在炼化，请待本次结果落定。';if(held)return held==='pill'?'先将丹药落盘，或按 Esc 放回。':'先投入药包，或按 Esc 放回。';if(s.runeChoices?.length&&!['manual','pill'].includes(view))return '请先选择一道丹纹；可查看候选详情或炉谱。';return '';}
+ function positionShort(){if(innerWidth<=650||!short.has(current))return;const p=panels[current],anchor=context.anchor?.isConnected?context.anchor:context.objectId?document.querySelector('[data-world-tool="'+CSS.escape(context.objectId)+'"]'):null;if(!p||!anchor)return;const r=anchor.getBoundingClientRect();p.style.setProperty('--note-max-height',Math.max(160,r.top-nav.getBoundingClientRect().bottom-24)+'px');const h=p.getBoundingClientRect().height,w=p.getBoundingClientRect().width;const x=Math.max(12,Math.min(innerWidth-w-12,r.left));const y=Math.max(nav.getBoundingClientRect().bottom+8,Math.min(innerHeight-h-12,r.top-h-12));p.style.setProperty('--note-left',x+'px');p.style.setProperty('--note-top',y+'px');}
+ function fit(){window.AlchemyWorldLayout.fit();positionShort();}
+ function paint(){const reading=!places.includes(current),isShort=short.has(current);document.body.dataset.worldLocation=location;document.body.dataset.worldSurface=reading?current:'';document.body.dataset.readingMode=reading?(isShort?'short':'long'):'';
+  for(const [key,p]of Object.entries(panels)){if(!p)continue;const active=key===current||key===location;p.classList.add('engine-panel');p.hidden=!active;p.dataset.shellActive=String(active);p.inert=reading&&key===location&&!isShort;if(p.tagName==='DETAILS')p.open=true;}
+  viewport.style.visibility=location==='work'?'visible':'hidden';viewport.inert=reading&&!isShort;document.body.classList.toggle('equipment-open',current==='equipment');close.hidden=!reading||['equipment','bag','pill'].includes(current);nav.querySelector('.world-location-toggle').textContent=labels[location]+' ▾';nav.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===current)));setMenu(false);setSettings(false);fit();
+ }
+ function show(view,options={}){if(view!=='work'&&!panels[view])return false;const reason=!options.internal&&blockedReason(view);if(reason){window.AlchemyUX.tell(reason);return false;}const reading=!places.includes(view);if(reading&&view!==current)stack.push({view:current,location,context,focus:window.AlchemyUX.focusKey(document.activeElement)});if(!reading){stack=[];location=view;}current=view;context=options;phase='leaving';document.body.dataset.viewPhase=phase;const ticket=++serial;paint();phase='entering';document.body.dataset.viewPhase=phase;queueMicrotask(()=>{if(ticket!==serial)return;phase='idle';document.body.dataset.viewPhase=phase;window.dispatchEvent(new CustomEvent('alchemy:view-ready',{detail:{view:current,location,context}}));if(reading){const p=panels[current];p.setAttribute('tabindex','-1');if(!options.preserveFocus)p.focus({preventScroll:true});}positionShort();});return true;}
+ function closeReading(){if(places.includes(current))return;const entry=stack.pop()||{view:location,location,context:{},focus:null};current=entry.view;location=entry.location;context=entry.context;phase='idle';paint();window.dispatchEvent(new CustomEvent('alchemy:view-ready',{detail:{view:current,location,context}}));requestAnimationFrame(()=>window.AlchemyUX.restore(entry.focus,document.querySelector('.world-location-toggle')));}
+ window.AlchemyViewState={snapshot:()=>({current,requested:current,phase,location,reading:!places.includes(current),short:short.has(current),context:{objectId:context.objectId,chapter:context.chapter},stack:stack.map(e=>e.view)}),navigate:show,close:closeReading,register(view,panel,options={}){panels[view]=panel;if(options.short)short.add(view);panel.hidden=true;panel.dataset.shellActive='false';},fit};
+ nav.querySelector('.world-location-toggle').onclick=()=>{const open=menu.hidden;setSettings(false);setMenu(open);if(open)menu.querySelector('button').focus();};nav.querySelector('.world-settings-toggle').onclick=()=>{const open=settings.hidden;setMenu(false);setSettings(open);};
+ nav.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b&&!show(b.dataset.view,{anchor:b})){setMenu(false);nav.querySelector('.world-location-toggle').focus({preventScroll:true});}});close.onclick=closeReading;
+ document.addEventListener('pointerdown',e=>{if(!menu.contains(e.target)&&!e.target.closest('.world-location-toggle'))setMenu(false);if(!settings.contains(e.target)&&!e.target.closest('.world-settings-toggle'))setSettings(false);});
+ document.addEventListener('keydown',e=>{if(e.key!=='Escape'||e.defaultPrevented||e.target.closest('dialog'))return;if(!menu.hidden){e.preventDefault();setMenu(false);nav.querySelector('.world-location-toggle').focus();return;}if(!settings.hidden){e.preventDefault();setSettings(false);nav.querySelector('.world-settings-toggle').focus();return;}if(!places.includes(current)){e.preventDefault();closeReading();}});
+ window.addEventListener('alchemy:opening-view',e=>{if(places.includes(e.detail?.view))show(e.detail.view,{internal:true});});window.addEventListener('alchemy:order',()=>show('work',{internal:true}));window.addEventListener('alchemy:equipment',()=>show('equipment'));window.addEventListener('alchemy:work',()=>show('work'));window.addEventListener('alchemy:close-reading',closeReading);window.addEventListener('alchemy:market',()=>show('shop'));
+ window.addEventListener('alchemy:render',()=>{const c=window.AlchemyGame.campaign();document.getElementById('engineWallet').textContent=c?'第 '+c.day+' 天 · '+(c.economy?.coins||0)+' 铜钱':'';fit();});window.addEventListener('alchemy:equipment-replaced',e=>{if(current!=='equipment')return;const row=document.querySelector('.world-tool-row'),old=document.querySelector('[data-world-tool="'+CSS.escape(e.detail.oldId||'')+'"]'),index=old?[...row.children].indexOf(old):0;queueMicrotask(()=>{const anchor=e.detail.newId?document.querySelector('[data-world-tool="'+CSS.escape(e.detail.newId)+'"]'):row?.children[index];context={...context,objectId:e.detail.newId,anchor};if(stack.length)stack[stack.length-1].focus=window.AlchemyUX.focusKey(anchor);fit();});});window.addEventListener('alchemy:ux-layout',()=>requestAnimationFrame(fit));window.addEventListener('resize',fit);show('work',{internal:true});
 })();
