@@ -11,7 +11,7 @@
  let blocked='',blockScope='',noticeTimer;
  function scope(){const s=api.snapshot(),c=api.campaign();return [c?.day,c?.phase,s.orderId,s.attempt,s.turn,s.pillEnded,s.roundEnded,s.busy,c?.economy?.coins].join('|');}
  function tell(message){blocked=message;blockScope=scope();const el=document.getElementById('workInstruction');if(el){el.hidden=false;el.textContent=message;}window.dispatchEvent(new Event('alchemy:ux-layout'));}
- function instruction(s,held){if(blocked&&blockScope===scope())return blocked;blocked='';if(held)return held==='pill'?'放入收丹盘，或按 Esc 放回。':held==='herbs'?'投入炉口，或按 Esc 放回。':'对火门使用扇子。';if(s.runeChoices?.length||s.busy||s.roundEnded)return '';return window.AlchemyOnboarding?.instruction(s)||'';}
+ function instruction(s,held){if(blocked&&blockScope===scope())return blocked;blocked='';if(held)return held==='pill'?'放入收丹盘，或按 Esc 放回。':held==='herbs'?'投入炉口，或按 Esc 放回。':'对火门使用扇子。';if(s.runeChoices?.length||s.busy||s.roundEnded||window.AlchemyScene2D?.busy)return '';if(!s.pillEnded&&window.AlchemyViewState?.snapshot().workMode==='room')return '';return window.AlchemyOnboarding?.instruction(s)||'';}
  function notify(el,message){clearTimeout(noticeTimer);el.textContent=message;noticeTimer=setTimeout(()=>{el.textContent='';},1800);}
  const dialog=document.createElement('dialog');dialog.className='ux-confirm';dialog.innerHTML='<h2 id="uxConfirmTitle"></h2><p></p><div><button data-confirm>确认</button><button data-cancel>取消</button></div>';dialog.setAttribute('aria-labelledby','uxConfirmTitle');document.body.append(dialog);
  let confirmation=null;

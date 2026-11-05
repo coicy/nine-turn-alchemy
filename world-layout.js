@@ -2,6 +2,7 @@
 (() => {
  const objects={herbs:{},tool:{src:'alchemy-fan-v1',flat:true},tray:{src:'delivery-tray-v1',flat:true},pill:{}},mouth={},firebox={},cutaway={},bookRest={},toolRest={};let key='',lastViewport='';
  function fit(){const viewport=document.querySelector('.engine-viewport'),forge=document.querySelector('.forge-panel'),stage=document.getElementById('pillStage');if(!viewport)return;
+  if(window.AlchemyViewState?.snapshot().workMode==='furnace'&&window.AlchemyFurnaceView)return window.AlchemyFurnaceView.fit();
   const mobile=innerWidth<=650,w=viewport.clientWidth,h=viewport.clientHeight,compact=!mobile&&w<1280,vkey=w+':'+h;
   if(window.AlchemyScene2D?.held&&lastViewport===vkey)return true;
   const visibleHeight=selector=>{const el=document.querySelector(selector);return el&&!el.hidden&&el.checkVisibility()?el.getBoundingClientRect().height:0;};

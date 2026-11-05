@@ -459,7 +459,7 @@
       dom.pillVisual.classList.remove("resolving");
       state.busy = false;
       resolveRefine();
-    }, document.body.classList?.contains("canvas-room") ? 100 : 280);
+    }, typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : document.body.classList?.contains("canvas-room") ? 100 : 280);
   }
 
   function startNewPill() {
@@ -555,6 +555,10 @@
     if (event.key === "Enter" || event.key === " ") {
       if (document.activeElement && ["BUTTON", "INPUT", "A", "SUMMARY", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
       event.preventDefault();
+      if (window.AlchemyFurnaceView) {
+        if (window.AlchemyViewState.snapshot().workMode === 'furnace') window.AlchemyScene2D.refine();
+        return;
+      }
       refine();
     }
   });

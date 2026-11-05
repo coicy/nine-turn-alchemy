@@ -1,0 +1,116 @@
+/* Dedicated furnace layout. All hit regions come from the active world geometry. */
+.furnace-controls { position:absolute; inset:0; pointer-events:none; z-index:16; }
+.furnace-controls button { pointer-events:auto; font:14px "Microsoft YaHei",sans-serif; color:#4b3526; }
+.furnace-controls .furnace-resume { position:absolute; border:1px solid #b39b78; background:#f5e9cfeb; font-size:16px; min-width:44px; min-height:44px; }
+.furnace-heading, .furnace-cover, .furnace-pill, .furnace-fire, .furnace-tray, .furnace-skip { display:none; }
+body[data-work-mode=room] .room-observation { display:none!important; }
+body[data-work-mode=room].info-live .world-readout { display:none!important; }
+body[data-work-mode=furnace] .furnace-heading { display:flex; align-items:center; gap:14px; flex:1; min-width:0; }
+.furnace-heading>strong { font:24px KaiTi,serif; white-space:nowrap; }
+.furnace-facts { display:flex; flex:1; flex-wrap:wrap; gap:4px 18px; align-items:center; min-width:0; }
+.furnace-facts b { font-size:18px; }
+.engine-nav .furnace-facts span { margin:0; font-size:14px; color:#4b3526; }
+.furnace-facts small { font-size:12px; color:#6b503b; }
+body[data-work-mode=furnace] .world-location-toggle,
+body[data-work-mode=furnace] #engineWallet,
+body[data-work-mode=furnace] .scene-sound,
+body[data-work-mode=furnace] .room-observation,
+body[data-work-mode=furnace] .world-readout,
+body[data-work-mode=furnace] .world-empty-readout,
+body[data-work-mode=furnace] .herb-tray,
+body[data-work-mode=furnace] .world-books,
+body[data-work-mode=furnace] .world-book-stack,
+body[data-work-mode=furnace] .world-book-picker,
+body[data-work-mode=furnace] .world-book-rest,
+body[data-work-mode=furnace] .world-casket,
+body[data-work-mode=furnace] .world-delivery-seals,
+body[data-work-mode=furnace] .passage-counter,
+body[data-work-mode=furnace] #roomSettlement { display:none!important; }
+body[data-work-mode=furnace] .engine-nav { min-height:70px; flex:0 0 auto; }
+body[data-work-mode=furnace] .world-settings-toggle { min-height:44px; }
+body[data-work-mode=furnace] .engine-viewport>.forge-panel,
+body[data-work-mode=furnace] #pillStage {
+  width:var(--world-width)!important; height:var(--world-height)!important;
+  max-width:none!important; min-height:0!important;
+}
+body[data-work-mode=furnace] #pillStage {
+  background-image:var(--furnace-image)!important;
+  background-size:var(--room-base-width) var(--room-base-height)!important;
+  background-position:var(--room-camera-left) 0!important;
+  background-repeat:no-repeat; background-color:#7b634b;
+}
+body[data-work-mode=furnace] #alchemyScene,
+body[data-work-mode=furnace] #refineAnimation { width:100%!important; height:100%!important; }
+body[data-work-mode=furnace] .furnace-cover { display:block; position:absolute; pointer-events:none; z-index:0; filter:drop-shadow(1px 4px 2px #291a0d55); }
+body[data-work-mode=furnace] .furnace-pill,
+body[data-work-mode=furnace] .furnace-fire,
+body[data-work-mode=furnace] .furnace-tray { display:block; position:absolute; background:transparent; border:0; min-height:44px; min-width:44px; touch-action:none; padding:0; }
+.furnace-controls button:focus-visible { outline:3px solid #ba802f; outline-offset:1px; }
+body[data-work-mode=furnace] .furnace-pill { cursor:grab; }
+body[data-work-mode=furnace] .furnace-pill:disabled { opacity:1; pointer-events:none; }
+body[data-work-mode=furnace] .furnace-fire,
+body[data-work-mode=furnace] .furnace-tray { color:transparent; }
+body[data-work-mode=furnace] .furnace-fire:after,
+body[data-work-mode=furnace] .furnace-tray:after {
+  content:'催炼'; position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+  background:#58412dde; color:#fff0d3; border:1px solid #bfa27c;
+  padding:2px 9px; white-space:nowrap;
+  font:calc(14px / var(--scene-scale,1)) KaiTi,serif;
+}
+body[data-work-mode=furnace] .furnace-tray:after { content:'收丹盘'; }
+body[data-work-mode=furnace] .furnace-tray:disabled { opacity:1; cursor:default; }
+body[data-work-mode=furnace] .furnace-controls[data-held=true] .furnace-tray { outline:3px solid #d1b46d; border-radius:50%; background:#fff0b615; }
+body[data-work-mode=furnace] .furnace-skip:not([hidden]) { display:block; position:absolute; left:65%; top:68%; min-height:44px; padding:8px 16px; background:#f5e8ce; border:1px solid #9a744d; }
+body[data-work-mode=furnace] .refine-odds {
+  left:auto!important; right:2%!important; top:auto!important; bottom:2%!important;
+  width:calc(370px / var(--scene-scale,1))!important; max-width:34%;
+}
+body[data-work-mode=furnace] .refine-odds-toggle { left:auto!important; right:2%!important; top:auto!important; bottom:2%!important; }
+body[data-work-mode=furnace] .world-tool-row { display:flex!important; gap:0; align-items:flex-end; justify-content:space-around; pointer-events:auto; z-index:25; }
+body[data-work-mode=furnace] .world-placed-tool { width:var(--tool-size)!important; height:var(--tool-size)!important; min-width:44px; min-height:44px; border:0; padding:0; flex:none; background:none!important; transform:none; }
+body[data-work-mode=furnace] .world-placed-tool:before { display:none; }
+body[data-work-mode=furnace] .world-placed-tool:not(:has([data-tool-art])) { visibility:hidden; pointer-events:none; }
+body[data-work-mode=furnace] .world-placed-tool [data-tool-art] { display:block; width:100%; height:100%; }
+body[data-work-mode=furnace] .world-placed-tool small { opacity:0; }
+body[data-work-mode=furnace] .world-placed-tool:focus-visible small,
+body[data-work-mode=furnace] .world-placed-tool:hover small { opacity:1; position:absolute; bottom:100%; left:0; white-space:nowrap; background:#f6e7c9; color:#4b3526; padding:3px; font-size:calc(12px / var(--scene-scale,1)); }
+body[data-work-mode=furnace] #workInstruction { left:auto!important; right:2%!important; bottom:5%!important; width:30%; font-size:calc(14px / var(--scene-scale,1)); background:#f7ebd3eb; }
+body[data-work-mode=furnace] #roomChoices { top:24%!important; left:auto!important; right:2%!important; bottom:auto!important; max-height:66%; overflow:auto; width:calc(390px / var(--scene-scale,1))!important; max-width:35%; }
+body[data-work-mode=furnace] .refine-feedback { left:auto!important; top:54%!important; right:2%!important; max-width:30%; }
+body[data-work-mode=furnace] .equipment-actions,
+body[data-work-mode=furnace] .equipment-library { display:none!important; }
+@media(max-width:650px) {
+  body[data-work-mode=furnace] .engine-nav { padding:6px 8px; }
+  body[data-work-mode=furnace] .furnace-heading { flex-wrap:wrap; gap:5px 8px; }
+  .furnace-heading>strong { font-size:20px; }
+  .furnace-heading .furnace-facts { flex-basis:100%; order:2; gap:2px 9px; }
+  .furnace-heading .furnace-facts b { font-size:18px; }
+  .furnace-heading button { min-height:44px; padding:6px 9px; font-size:14px; }
+  .furnace-heading .furnace-inspect { margin-left:auto; }
+  body[data-work-mode=furnace] .world-settings-toggle { align-self:flex-start; padding:6px; font-size:12px; }
+  body[data-work-mode=furnace] #refineOdds,
+  body[data-work-mode=furnace] .refine-odds-toggle { position:fixed!important; left:8px!important; right:8px!important; bottom:max(8px,env(safe-area-inset-bottom))!important; top:auto!important; width:auto!important; max-width:none; font-size:14px; padding:8px 10px; }
+  body[data-work-mode=furnace] .refine-odds h2,
+  body[data-work-mode=furnace] .refine-odds dd { font-size:18px; }
+  body[data-work-mode=furnace] .refine-odds dt,
+  body[data-work-mode=furnace] .refine-odds button,
+  body[data-work-mode=furnace] .refine-odds #refineOddsProtection { font-size:12px; }
+  body[data-work-mode=furnace] .refine-odds button { min-height:44px; }
+  body[data-work-mode=furnace] #roomChoices { position:fixed!important; left:8px!important; right:8px!important; top:auto!important; bottom:8px!important; max-height:35dvh; max-width:none; width:auto!important; font-size:14px; }
+  body[data-work-mode=furnace] .world-tool-row { overflow:visible; }
+  body[data-work-mode=furnace] .world-placed-tool [data-tool-art] { width:44px; height:44px; }
+  body[data-work-mode=furnace] #workInstruction { position:fixed; left:8px!important; right:8px!important; top:auto!important; bottom:calc(var(--work-reserve) + 4px)!important; width:auto; max-height:48px; font-size:12px; }
+  body[data-work-mode=furnace] .refine-feedback { position:fixed!important; left:8px!important; right:8px!important; top:auto!important; bottom:calc(var(--work-reserve) + 4px)!important; width:auto; max-width:none; font-size:14px; }
+  body[data-work-mode=furnace] .equipment-drawer.engine-panel,
+  body[data-work-mode=furnace] .pill-detail-panel { max-height:36dvh!important; }
+  body[data-work-mode=furnace] .furnace-skip:not([hidden]) { left:66%; top:60%; }
+}
+@media(prefers-reduced-motion:reduce) { .furnace-cover { transition:none; } }
+
+
+body[data-work-mode=furnace] .furnace-controls button.furnace-tray,body[data-work-mode=furnace] .furnace-controls button.furnace-fire,body[data-work-mode=furnace] .furnace-controls button.furnace-pill { background:none!important; box-shadow:none!important; color:transparent!important; font-size:0!important; }
+body[data-work-mode=furnace] #workInstruction { left:25%!important; right:auto!important; bottom:0!important; width:27%; }
+@media(max-width:650px){body[data-work-mode=furnace] #workInstruction { left:8px!important; right:8px!important; bottom:calc(var(--work-reserve) + 4px)!important; width:auto; }}
+
+body .furnace-controls button.furnace-resume { background:none!important; box-shadow:none!important; border:0; font-size:0; color:transparent; }
+.furnace-resume:after { content:"回到本炉"; position:absolute; bottom:0; left:50%; transform:translateX(-50%); padding:5px 10px; background:#f5e8cedf; border:1px solid #ae885b; color:#493424; font:14px KaiTi,serif; white-space:nowrap; }
