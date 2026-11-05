@@ -11,20 +11,18 @@
   const root = 'assets/furnace-view-v102/';
   const controls = document.createElement('div');
   controls.className = 'furnace-controls';
-  controls.innerHTML = '<img class="furnace-cover" alt="" draggable="false"><button class="furnace-pill" aria-label="拿起炉内丹药，放到收丹盘" data-focus-key="furnace-pill"></button><button class="furnace-fire" data-focus-key="furnace-fire">催炼</button><button class="furnace-tray" data-focus-key="furnace-tray">收丹盘</button><button class="furnace-resume" data-focus-key="furnace-resume">回到本炉</button><button class="furnace-skip" hidden>返回丹房</button>';
+  controls.innerHTML = '<img class="furnace-cover" alt="" draggable="false"><button class="furnace-pill" aria-label="拿起炉内丹药，放到收丹盘" data-focus-key="furnace-pill"></button><button class="furnace-fire" data-focus-key="furnace-fire">催炼</button><button class="furnace-tray" data-focus-key="furnace-tray">收丹盘</button><button class="furnace-resume" data-focus-key="furnace-resume">回到本炉</button>';
   stage.append(controls);
   const pill = controls.querySelector('.furnace-pill');
   const fire = controls.querySelector('.furnace-fire');
   const tray = controls.querySelector('.furnace-tray');
   const resume = controls.querySelector('.furnace-resume');
   const lid = controls.querySelector('.furnace-cover');
-  const skip = controls.querySelector('.furnace-skip');
   const heading = document.createElement('div');
   heading.className = 'furnace-heading';
   heading.innerHTML = '<button class="furnace-back" data-focus-key="furnace-back">‹ 丹房</button><strong>炉前</strong><div class="furnace-facts"><b></b><span></span><small></small></div><button class="furnace-inspect" data-focus-key="furnace-inspect">看丹</button><button class="furnace-manual" data-focus-key="furnace-manual">炉谱</button>';
   nav.prepend(heading);
   let lastLiveKey = '';
-  let endingTimer = null;
   let endingKey = '';
   let fanning = false;
   let drag = null;
@@ -34,16 +32,14 @@
 
   const live = s => s.started && !s.pillEnded && !s.roundEnded;
   const active = () => route.snapshot().workMode === 'furnace';
-  const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const rect = (element, r) => {
     for (const name of ['x', 'y', 'w', 'h']) {
       element.style.setProperty({x:'left',y:'top',w:'width',h:'height'}[name], r[name] + 'px', 'important');
     }
   };
   function returnToRoom() {
-    clearTimeout(endingTimer);
-    endingTimer = null;
-    route.navigate('work', {workMode:'room', internal:true});
+    if (!route.navigate('work', {workMode:'room'})) return;
+    window.dispatchEvent(new Event('alchemy:furnace-leave'));
     requestAnimationFrame(() => {
       const receipt = document.querySelector('#roomSettlement [data-primary]');
       const material = [...document.querySelectorAll('.herb-slot:not([aria-disabled="true"])')].find(el => el.checkVisibility());
@@ -53,15 +49,18 @@
       target?.focus({preventScroll:true});
     });
   }
-  heading.querySelector('.furnace-back').onclick = () => route.navigate('work', {workMode:'room'});
+  heading.querySelector('.furnace-back').onclick = returnToRoom;
   heading.querySelector('.furnace-inspect').onclick = () => route.navigate('pill', {anchor:heading.querySelector('.furnace-inspect')});
   heading.querySelector('.furnace-manual').onclick = () => route.navigate('manual', {chapter:'runes', anchor:heading.querySelector('.furnace-manual')});
   resume.onclick = () => {
     if (route.navigate('work', {workMode:'furnace'})) requestAnimationFrame(() => pill.focus({preventScroll:true}));
   };
-  skip.onclick = returnToRoom;
   fire.onclick = () => window.AlchemyScene2D.refine();
-  tray.onclick = () => window.AlchemyScene2D.collectHeld();
+  tray.onclick = () => {
+    const s = game.snapshot();
+    if (s.pillEnded && s.endReason === 'collect') route.navigate('pill', {anchor:tray});
+    else window.AlchemyScene2D.collectHeld();
+  };
   function center(element) {
     const r = element.getBoundingClientRect();
     return {clientX:r.x + r.width / 2, clientY:r.y + r.height / 2};
@@ -112,7 +111,7 @@
         return el && !el.hidden && el.checkVisibility() ? el.getBoundingClientRect().height : 0;
       };
       const view = route.snapshot();
-      let reserve = mobile ? Math.max(heightOf('#refineOdds'), heightOf('.refine-odds-toggle'), heightOf('#roomChoices')) + 12 : 0;
+      let reserve = mobile ? Math.max(heightOf('#refineOdds'), heightOf('.refine-odds-toggle'), heightOf('#roomChoices'), heightOf('#roomSettlement')) + 12 : 0;
       if (mobile && view.reading && view.short) {
         reserve = Math.max(reserve, heightOf(view.current === 'pill' ? '.pill-detail-panel' : '.equipment-drawer') + 12);
       }
@@ -193,21 +192,26 @@
     const v = route.snapshot();
     const key = s.orderId + ':' + s.attempt;
     if (live(s)) {
-      clearTimeout(endingTimer); endingTimer = null; endingKey = '';
+      endingKey = '';
       if (!window.AlchemyOpening?.active && lastLiveKey !== key) {
         lastLiveKey = key;
         route.navigate('work', {workMode:'furnace', internal:true});
         requestAnimationFrame(() => {if (!game.snapshot().runeChoices.length) pill.focus({preventScroll:true});});
         return;
       }
-    } else if (active() && s.started && !window.AlchemyOpening?.active && endingKey !== key) {
+    } else if (active() && s.started && s.pillEnded && ['collect','explode'].includes(s.endReason) && !window.AlchemyOpening?.active && endingKey !== key) {
       endingKey = key;
-      skip.hidden = false;
-      endingTimer = setTimeout(returnToRoom, reduced()?0:650);
+      requestAnimationFrame(() => {
+        if (route.snapshot().current === 'work' && active())
+          document.querySelector('#roomSettlement [data-primary]')?.focus({preventScroll:true});
+      });
     }
     const near = active();
     const held = !!window.AlchemyScene2D?.held;
     const choosing = !!s.runeChoices?.length;
+    const collected = s.pillEnded && s.endReason === 'collect';
+    const ended = s.pillEnded && ['collect','explode'].includes(s.endReason);
+    const locked = s.busy || fanning || choosing;
     const blocked = s.busy || fanning || choosing || !live(s);
     if (s.busy || fanning || choosing) {
       const instruction = document.getElementById('workInstruction');
@@ -218,18 +222,21 @@
     pill.disabled = blocked;
     pill.setAttribute('aria-disabled', String(blocked || held));
     fire.disabled = blocked || held || s.turn >= 100;
-    tray.disabled = !held || blocked;
-    heading.querySelector('.furnace-back').disabled = blocked || held;
-    heading.querySelector('.furnace-inspect').disabled = s.busy || fanning || held || !live(s);
-    heading.querySelector('.furnace-manual').disabled = s.busy || fanning || held || !live(s);
+    tray.disabled = locked || (!collected && (!held || blocked));
+    tray.setAttribute('aria-label', collected ? '查看收丹盘中的本炉丹药' : '收丹盘');
+    controls.dataset.settled = collected ? (s.order?.self ? 'self' : 'commission') : '';
+    heading.querySelector('.furnace-back').disabled = locked || held;
+    heading.querySelector('.furnace-inspect').disabled = locked || held || (!live(s) && !collected);
+    heading.querySelector('.furnace-manual').disabled = s.busy || fanning || held;
     resume.hidden = near || !live(s) || v.location !== 'work';
     if (!near) {
       rect(resume, layout.mouth);
-      skip.hidden = true;
     }
     const campaign = game.campaign();
-    heading.querySelector('b').textContent = s.turn+'转 · 丹值 '+Math.round(s.value);
-    heading.querySelector('.furnace-facts span').textContent = s.order?.self
+    heading.querySelector('b').textContent = s.endReason === 'explode' ? '本炉炸丹' : s.turn+'转 · 丹值 '+Math.round(s.value);
+    heading.querySelector('.furnace-facts span').textContent = ended
+      ? collected ? (s.order?.self ? '已入丹匣' : '已计入本单交付') : '未成丹'
+      : s.order?.self
       ? '收丹入匣 · 售价估计 '+window.AlchemyEconomy.saleValue(campaign,s)+' 铜钱'
       : '收丹可交 '+Math.round(s.delivered+s.value)+' / '+s.target;
     heading.querySelector('.furnace-facts small').textContent = s.order?.self
@@ -238,14 +245,14 @@
     if (near) fit();
   }
 
-  window.AlchemyFurnaceView = {fit, get ending(){return !!endingTimer;}};
+  window.AlchemyFurnaceView = {fit, returnToRoom, get ending(){return false;}};
   window.addEventListener('alchemy:render', () => {fanning = !!window.AlchemyScene2D?.busy; update();});
   window.addEventListener('alchemy:fanning', () => {fanning = true; update();});
   window.addEventListener('alchemy:carry', update);
   window.addEventListener('alchemy:view-ready', update);
   window.addEventListener('alchemy:opening-finished', () => {lastLiveKey='';update();});
   window.addEventListener('alchemy:order', () => {
-    clearTimeout(endingTimer); endingTimer = null; endingKey = ''; lastLiveKey = '';
+    endingKey = ''; lastLiveKey = '';
     if (!live(game.snapshot())) route.navigate('work', {workMode:'room', internal:true});
   });
   window.addEventListener('alchemy:world-layout', () => {

@@ -5,7 +5,7 @@
  details.querySelector('summary').onclick=e=>{e.preventDefault();window.AlchemyViewState.navigate('pill',{anchor:document.querySelector('.observation-pill')});};
  panel.addEventListener('click',e=>{if(e.target.closest('[data-close-pill]'))window.AlchemyViewState.close();});
  let flags=window.AlchemySaves?.preference('tutorial-v89')||{},last='';
- function instruction(s){if(!s.order||s.roundEnded||s.busy||s.runeChoices?.length)return '';if(s.pillEnded&&!flags.load)return '取一包药，投入炉口。';if(!s.pillEnded&&!flags.refine)return '点火门，扇火炼化。';if(!s.pillEnded&&s.turn>1&&!flags.collect)return '可继续炼化，或取丹放入收丹盘。';return '';}
+ function instruction(s){if(s.pillEnded&&window.AlchemyViewState.snapshot().workMode==='furnace')return '';if(!s.order||s.roundEnded||s.busy||s.runeChoices?.length)return '';if(s.pillEnded&&!flags.load)return '取一包药，投入炉口。';if(!s.pillEnded&&!flags.refine)return '点火门，扇火炼化。';if(!s.pillEnded&&s.turn>1&&!flags.collect)return '可继续炼化，或取丹放入收丹盘。';return '';}
  function update(){const s=api.snapshot(),c=api.campaign();if(c){if(c.day>1||c.history.length||c.economy?.earned>0)flags={load:true,refine:true,collect:true};if(s.attempt>0)flags.load=true;if(s.turn>1)flags.refine=true;if(s.collected.length)flags.collect=true;const next=JSON.stringify(flags);if(next!==last){last=next;window.AlchemySaves?.setPreference('tutorial-v89',flags);}}
   document.body.classList.remove('guided-journey','guided-opening','journey-orders','journey-shop','journey-tools');
   const nature={warm:'温性',cool:'寒性',neutral:'平性'}[s.order?.nature]||'平性';

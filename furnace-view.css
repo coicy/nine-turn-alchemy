@@ -24,8 +24,7 @@ body[data-work-mode=furnace] .world-book-picker,
 body[data-work-mode=furnace] .world-book-rest,
 body[data-work-mode=furnace] .world-casket,
 body[data-work-mode=furnace] .world-delivery-seals,
-body[data-work-mode=furnace] .passage-counter,
-body[data-work-mode=furnace] #roomSettlement { display:none!important; }
+body[data-work-mode=furnace] .passage-counter { display:none!important; }
 body[data-work-mode=furnace] .engine-nav { min-height:70px; flex:0 0 auto; }
 body[data-work-mode=furnace] .world-settings-toggle { min-height:44px; }
 body[data-work-mode=furnace] .engine-viewport>.forge-panel,
@@ -114,3 +113,23 @@ body[data-work-mode=furnace] #workInstruction { left:25%!important; right:auto!i
 
 body .furnace-controls button.furnace-resume { background:none!important; box-shadow:none!important; border:0; font-size:0; color:transparent; }
 .furnace-resume:after { content:"回到本炉"; position:absolute; bottom:0; left:50%; transform:translateX(-50%); padding:5px 10px; background:#f5e8cedf; border:1px solid #ae885b; color:#493424; font:14px KaiTi,serif; white-space:nowrap; }
+
+/* The completed furnace remains a working place until the player chooses to leave. */
+body.object-world[data-work-mode=furnace] #roomSettlement {
+  left:auto!important; right:2%!important; top:auto!important; bottom:2%!important;
+  width:calc(390px / var(--scene-scale,1))!important; max-width:35%;
+  max-height:calc(290px / var(--scene-scale,1));
+  padding:calc(20px / var(--scene-scale,1));
+}
+body.object-world[data-work-mode=furnace] #roomSettlement button { min-height:calc(45px / var(--scene-scale,1)); }
+body[data-work-mode=furnace] .furnace-controls[data-settled=self] .furnace-tray:after { content:'已入丹匣 · 看丹'; }
+body[data-work-mode=furnace] .furnace-controls[data-settled=commission] .furnace-tray:after { content:'已交丹 · 看丹'; }
+body[data-work-mode=furnace] #pillStage[data-live=false] .furnace-fire:after { display:none; }
+@media(max-width:650px) {
+  body[data-work-mode=furnace] .furnace-controls[data-settled=self] .furnace-tray:after { content:'已入丹匣'; }
+  body[data-work-mode=furnace] .furnace-controls[data-settled=commission] .furnace-tray:after { content:'已交丹'; }
+  body.object-world[data-work-mode=furnace] #roomSettlement {
+    position:fixed!important; inset:auto 8px max(8px,env(safe-area-inset-bottom))!important;
+    width:auto!important; max-width:none; max-height:38dvh; padding:18px;
+  }
+}
