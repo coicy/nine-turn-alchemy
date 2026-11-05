@@ -146,7 +146,7 @@
         element.style.setProperty('--room-camera-left', left+'px');
       }
       stage.style.setProperty('--scene-scale', String(scale));
-      stage.style.setProperty('--furnace-image', 'url("'+root+(mobile?'mobile':'desktop')+'.webp")');
+      stage.style.setProperty('--furnace-image', 'url("'+root+(mobile?'mobile-v2':'desktop')+'.webp")');
       forge.style.left = mobile ? '0' : '50%';
       forge.style.top = mobile ? '0' : '50%';
       forge.style.transform = mobile ? 'none' : 'translate(-50%,-50%) scale('+scale+')';
@@ -161,6 +161,19 @@
       const row = document.querySelector('.world-tool-row');
       rect(row, layout.toolRest);
       row.style.setProperty('--tool-size', (mobile?Math.max(44,imageWidth*.09):imageWidth*.072)+'px');
+      layout.toolRest.slots = mobile ? [[.765,.31],[.916,.31],[.84,.36]].map(([x,y]) => {
+        const center = pointRect(x,y,0,0);
+        return {x:Math.min(width-48,center.x-22),y:center.y-44,w:44,h:44};
+      }) : null;
+      [...row.children].forEach((tool, index) => {
+        tool.style.setProperty('position', mobile?'absolute':'relative', 'important');
+        if (mobile) {
+          const slot = layout.toolRest.slots[index];
+          rect(tool, {...slot,x:slot.x-layout.toolRest.x,y:slot.y-layout.toolRest.y});
+        } else {
+          for (const name of ['left','top','width','height']) tool.style.removeProperty(name);
+        }
+      });
       document.body.style.setProperty('--work-reserve', reserve+'px');
       if (geometryKey !== key) {
         geometryKey = key;
