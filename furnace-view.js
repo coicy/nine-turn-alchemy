@@ -239,8 +239,9 @@
       : s.order?.self
       ? '收丹入匣 · 售价估计 '+window.AlchemyEconomy.saleValue(campaign,s)+' 铜钱'
       : '收丹可交 '+Math.round(s.delivered+s.value)+' / '+s.target;
-    heading.querySelector('.furnace-facts small').textContent = s.order?.self
+    heading.querySelector('.furnace-facts small').textContent = ended && s.roundEnded ? '' : s.order?.self
       ? '自有药材' : '已交 '+Math.round(s.delivered)+' · 余客料 '+s.remaining+' 包';
+    heading.querySelector('.furnace-facts small').hidden = !heading.querySelector('.furnace-facts small').textContent;
     controls.dataset.closed = fanning || s.busy ? 'true' : 'false';
     if (near) fit();
   }
