@@ -45,10 +45,11 @@
     endingTimer = null;
     route.navigate('work', {workMode:'room', internal:true});
     requestAnimationFrame(() => {
+      const receipt = document.querySelector('#roomSettlement [data-primary]');
+      const material = [...document.querySelectorAll('.herb-slot:not([aria-disabled="true"])')].find(el => el.checkVisibility());
       const target = live(game.snapshot()) ? resume
-        : document.querySelector('#roomSettlement [data-primary]')
-          || document.querySelector('.herb-slot:not([aria-disabled="true"])')
-          || document.querySelector('.world-location-toggle');
+        : receipt?.checkVisibility() ? receipt
+          : material || document.querySelector('.world-location-toggle');
       target?.focus({preventScroll:true});
     });
   }
