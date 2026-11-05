@@ -51,6 +51,28 @@
   function uses(id){return state.pill.toolUses?.[id]||0;}
   function useTool(id){state.pill.toolUses ||= {};state.pill.toolUses[id]=uses(id)+1;state.pill.toolUsed=true;}
   function hasRune(...names){return names.some(n=>state.pill.runes.includes(n));}
+  // Pricing owns numeric rune growth; visual branches never count as levels.
+  function runeLevelsFor(pill) {
+    const levels = {};
+    for (const rune of pill.runes || []) {
+      const n = pill.runeLevels?.[rune];
+      levels[rune] = Number.isSafeInteger(n) && n > 0 ? n : (rune === '金纹' || rune === '星痕' ? 2 : 1);
+    }
+    return levels;
+  }
+  function runeValueMultiplier(pill) {
+    const levels = runeLevelsFor(pill);
+    return 1 + Object.values(levels).reduce((sum, n) => sum + n, 0) * .12
+      + (levels['金纹'] ? .25 : 0) + (levels['星痕'] ? .35 : 0);
+  }
+  function valueForBase(base, pill) { return Math.round(base * runeValueMultiplier(pill)); }
+  function ensurePricing() {
+    const p = state.pill;
+    p.runeLevels = runeLevelsFor(p);
+    // Old saves keep their saved value; no retroactive rewards or repricing of stock.
+    if (!Number.isFinite(p.baseValue) || p.baseValue < 0) p.baseValue = p.value / runeValueMultiplier(p);
+  }
+  function repricePill() { ensurePricing(); state.pill.value = valueForBase(state.pill.baseValue, state.pill); }
   function explosionProtection(){
     if(state.pill.shield)return {source:'shield',outcome:'hold',name:'丹纹护丹'};
     if(hasTool('burn')&&uses('burn')<2&&state.pill.runes.some(r=>BASIC_RUNES.includes(r)))return {source:'burn',outcome:'hold',name:'燃纹盏（消耗一道基础纹）'};
@@ -67,15 +89,16 @@
   function turnBonus(outcome){return (state.pill.toolTurnBonus||0)+(['success','big'].includes(outcome)?(state.pill.moonCharge||0):0)+(outcome==='big'&&hasRune('雷纹','星痕')?1:0);}
   function triggerLog(message,tone='good'){state.pill.triggers ||= [];state.pill.triggers.push(message);addLog(message,tone);}
   function consumeBasicRune(){
+    ensurePricing();
     const p=state.pill,index=p.runes.findLastIndex(r=>BASIC_RUNES.includes(r));
     if(index<0)return false;
-    const [rune]=p.runes.splice(index,1);useTool('burn');
+    const [rune]=p.runes.splice(index,1),level=p.runeLevels[rune];delete p.runeLevels[rune];useTool('burn');repricePill();
     // Removing a passive also removes its stored charge/shield unless its fusion remains.
     if(!hasRune('月纹','星痕'))p.moonCharge=0;
     if(!hasRune('赤纹','金纹'))p.shield=false;
     triggerLog(`燃纹盏消耗${rune}，挡下炸炉（${uses('burn')}/2）。`,'good');
-    if(hasTool('return')&&!uses('return')&&!p.returnRune){p.returnRune=rune;triggerLog('回纹环：下一次成功补回'+rune+'。','good');}
-    if(hasTool('ash')&&uses('ash')<2){const old=1+.15*uses('ash');useTool('ash');p.value=Math.round(p.value*(1+.15*uses('ash'))/old);triggerLog('烬金印：本炉丹值加成 '+uses('ash')*15+'%。','good');}
+    if(hasTool('return')&&!uses('return')&&!p.returnRune){p.returnRune=rune;p.returnRuneLevel=level;triggerLog('回纹环：下一次成功补回'+rune+'。','good');}
+    if(hasTool('ash')&&uses('ash')<2){const old=1+.15*uses('ash');useTool('ash');p.baseValue*=(1+.15*uses('ash'))/old;repricePill();triggerLog('烬金印：本炉丹值加成 '+uses('ash')*15+'%。','good');}
     return true;
   }
   const TURN_NAMES = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
@@ -126,7 +149,7 @@
 
   function playtestSnapshot() {
     return { attempt: state.attempt, turn: state.pill.turn, quality: state.pill.quality,
-      value: state.pill.value, runes: [...state.pill.runes], maxRunes: MAX_RUNES, shield: state.pill.shield,
+      value: state.pill.value, runes: [...state.pill.runes], runeLevels:runeLevelsFor(state.pill), baseValue:state.pill.baseValue ?? state.pill.value/runeValueMultiplier(state.pill), maxRunes: MAX_RUNES, shield: state.pill.shield,
       risk: refinementProbabilities().outcomes.explode, delivered: state.delivered,
       day: campaign?.day || 1, orderId: state.orderId || null };
   }
@@ -134,7 +157,7 @@
   function randomRisk(turn=state?.pill?.turn||1) {const base=BREAK_CURVE[Math.max(0,Math.min(30,Math.floor(turn)-1))];return {explode:base*(window.AlchemyEconomy?.toolRisk(campaign?.economy?.equipped,state?.pill)||1)};}
 
   function freshPill() {
-    return { turn: 1, quality: 0, value: 24, runes: [], bestTurn: 1, shield: false, toolUsed:false, damageSoftened:false, runeChoices:[] };
+    return { turn: 1, quality: 0, value: 24, runes: [], runeLevels:{}, bestTurn: 1, shield: false, toolUsed:false, damageSoftened:false, runeChoices:[] };
   }
 
   function createState() {
@@ -306,22 +329,24 @@
   function applyAlchemy(outcome) {
     const isBigSuccess = outcome === "big";
     const turnGain = (isBigSuccess ? 2 : 1)+turnBonus(outcome);state.pill.toolTurnBonus=0;state.pill.moonCharge=0;
-    const priceFor = (turn,quality,runes) => {const t=Math.max(0,Math.min(100,turn)-1);return Math.round((24+8*t+2*t*t+.08*t*t*t)*(1+quality*.08+runes.length*.12+(runes.includes('金纹')?.25:0)+(runes.includes('星痕')?.35:0)));};
     state.pill.turn = Math.min(100, state.pill.turn + turnGain);
-    const qualityValueBoost = 1 + state.pill.quality * 0.03;
-    state.pill.value = Math.round(priceFor(state.pill.turn,state.pill.quality,state.pill.runes)*(state.pill.valueFactor??1)*(1+.15*uses('ash')));
+    const t=state.pill.turn-1;
+    state.pill.baseValue=(24+8*t+2*t*t+.08*t*t*t)*(1+state.pill.quality*.08)*(state.pill.valueFactor??1)*(1+.15*uses('ash'));
+    repricePill();
     state.pill.bestTurn = Math.max(state.pill.bestTurn, state.pill.turn);
   }
 
   function applyDamage() {
+    ensurePricing();
     state.pill.turn = Math.max(1, state.pill.turn - 1);
     const protectedValue = state.pill.runes.includes("青纹") || state.pill.runes.includes("金纹");
-    state.pill.value = Math.max(8, Math.round(state.pill.value * (campaign?.economy?.furnace>=1&&!state.pill.damageSoftened?(state.pill.damageSoftened=true,protectedValue ? .95 : .85):(protectedValue ? 0.9 : 0.7))));
+    state.pill.baseValue = Math.max(8/runeValueMultiplier(state.pill), state.pill.baseValue * (campaign?.economy?.furnace>=1&&!state.pill.damageSoftened?(state.pill.damageSoftened=true,protectedValue ? .95 : .85):(protectedValue ? 0.9 : 0.7)));
+    repricePill();
   }
 
-  function grantRune(rune,label){
+  function grantRune(rune,label,level=1){
     if(state.pill.runes.length>=MAX_RUNES||state.pill.runes.includes(rune))return null;
-    state.pill.runes.push(rune);state.pill.value=Math.round(state.pill.value*1.18);
+    ensurePricing();state.pill.runes.push(rune);state.pill.runeLevels[rune]=level;repricePill();
     if(label)triggerLog(label+'：显现'+rune+'。','good');
     return tryFusion()||rune;
   }
@@ -343,9 +368,12 @@
     for (const [key, fusion] of Object.entries(FUSIONS)) {
       const needed = key.split("|");
       if (needed.every((rune) => state.pill.runes.includes(rune)) && !state.pill.runes.includes(fusion.name)) {
+        ensurePricing();
+        const inherited=needed.reduce((sum,rune)=>sum+state.pill.runeLevels[rune],0);
         state.pill.runes = state.pill.runes.filter((rune) => !needed.includes(rune));
+        needed.forEach(rune=>delete state.pill.runeLevels[rune]);
         state.pill.runes.push(fusion.name);
-        state.pill.value = Math.round(state.pill.value * 1.08);
+        state.pill.runeLevels[fusion.name]=inherited;repricePill();
         triggerLog(fusion.message,'good');
         if(hasTool('fusion')&&uses('fusion')<2&&!state.pill.fusionPending){useTool('fusion');state.pill.fusionPending=true;state.pill.fusionReadyAfter=state.pill.refineSerial||0;triggerLog('合璧镜：下一次成功必显基础纹。','good');}
         return fusion.message;
@@ -373,7 +401,7 @@
       outcome=protection.outcome;
       if(protection.source==='burn')consumeBasicRune();
       if(protection.source==='seal'){useTool('seal');triggerLog('镇炉印挡下炸炉，改为丹体受损。','good');}
-      if(protection.source==='phoenix'){useTool('phoenix');state.pill.valueFactor=(state.pill.valueFactor??1)*.6;state.pill.value=Math.max(1,Math.round(state.pill.value*.6));triggerLog('返生鼎符挡下炸炉：本炉丹值持续折损40%。','good');}
+      if(protection.source==='phoenix'){ensurePricing();useTool('phoenix');state.pill.valueFactor=(state.pill.valueFactor??1)*.6;state.pill.baseValue*=.6;repricePill();triggerLog('返生鼎符挡下炸炉：本炉丹值持续折损40%。','good');}
     }
     if(hasTool('chain')){state.pill.successChain=['big','success'].includes(outcome)?(state.pill.successChain||0)+1:0;if(state.pill.successChain>0&&state.pill.successChain%2===0){state.pill.toolTurnBonus=1;triggerLog('双仪环：连续两次成丹，额外提升一转。','good');}}
     if(hasTool('repair')&&outcome==='damage'&&!protectedByTool){state.pill.scars=Math.min(4,(state.pill.scars||0)+1);triggerLog('淬火盏：本炉炸炉率相对降低'+(state.pill.scars*15)+'%。','good');}
@@ -390,8 +418,8 @@
       // Restore before the normal rune roll. Only the next refinement can consume a new fusion charge.
       let restored=null;
       if(hasTool('return')&&state.pill.returnRune&&state.pill.runes.length<MAX_RUNES){
-        const rune=state.pill.returnRune;state.pill.returnRune=null;useTool('return');
-        restored=grantRune(rune,'回纹环');
+        const rune=state.pill.returnRune,level=state.pill.returnRuneLevel||1;state.pill.returnRune=null;delete state.pill.returnRuneLevel;useTool('return');
+        restored=grantRune(rune,'回纹环',level);
       }
       const runeResult = tryAddRune(outcome)||restored;
       fused = !!runeResult && runeResult.includes("！");
@@ -482,6 +510,7 @@
     if (state && state.busy) return;
     if (saved && event?.currentTarget === dom.startButton) {
       campaign = saved.campaign; state = saved.state; state.busy = false;if(state.pill.toolUsed&&!state.pill.toolUses){state.pill.toolUses={};for(const id of window.AlchemyEconomy?.equippedIds(campaign.economy?.equipped)||[])if(['seal','phoenix','needle'].includes(id))state.pill.toolUses[id]=1;}state.riskResult=randomRisk(state.pill.turn);
+      ensurePricing();
       state.pill.qualityFloor=campaignRules.active(campaign)?.tier===1?1:0;state.pill.quality=Math.max(state.pill.qualityFloor,qualityAtTurn(state.pill.turn));
       if (campaign.phase === 'open' && campaign.orders.length === 3) {
         const extra = campaignRules.ordersFor(campaign.day);
@@ -529,11 +558,12 @@
   dom.refineButton.addEventListener("click", refine);
   function collectPill() {
     if (!state.started || state.busy || state.pillEnded || state.roundEnded || state.pill.runeChoices?.length) return;
+    ensurePricing();
     const before = playtestSnapshot();
     const isSelf=!!campaignRules?.active(campaign)?.self;
     if(isSelf&&!window.AlchemyEconomy.storePill(campaign,state.pill,campaignRules.active(campaign))){setFeedback('丹药背包记录异常，未覆盖原数据，炉内成丹已保留。','bad');render();return;}
     state.delivered += state.pill.value;
-    state.collected.push({value:state.pill.value,quality:state.pill.quality,turn:state.pill.turn,runes:[...state.pill.runes],nature:campaignRules?.active(campaign)?.nature || 'neutral'});
+    state.collected.push({value:state.pill.value,baseValue:state.pill.baseValue,runeLevels:{...state.pill.runeLevels},quality:state.pill.quality,turn:state.pill.turn,runes:[...state.pill.runes],nature:campaignRules?.active(campaign)?.nature || 'neutral'});
     state.pillEnded = true;
     state.pillEndReason = "collect";
     state.roundEnded = state.delivered >= ORDER_TARGET || state.attempt >= MAX_PILLS;
@@ -627,7 +657,7 @@
     if(typeof CustomEvent!=='undefined')window.dispatchEvent(new CustomEvent('alchemy:equipment-replaced',{detail:{oldId,newId}}));
     state.riskResult=randomRisk();render();return true;
   }
-  window.AlchemyGame = { canReplaceEquipment, replaceEquipment, RUNE_CHANCE, RUNE_DEFS, refinementProbabilities, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
+  window.AlchemyGame = { canReplaceEquipment, replaceEquipment, RUNE_CHANCE, RUNE_DEFS, refinementProbabilities, runeLevelsFor, runeValueMultiplier, valueForBase, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
     snapshot: () => ({ ...playtestSnapshot(), started: state.started,
     busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
