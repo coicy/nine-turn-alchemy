@@ -129,10 +129,12 @@
       document.body.classList.toggle('compact-forge', !mobile && w<1280);
       viewport.style.setProperty('--work-top', '0px');
       Object.assign(layout.objects.pill, mobile ? pointRect(.275,.28,.19,.1267) : pointRect(.342,.245,.105,.1867));
-      // Keep the visible body and its keyboard/touch target large enough after projection.
+      // Visible body and hit target share an anchor, but use independent screen sizes.
       const p = layout.objects.pill;
-      const size = Math.max(mobile ? 64 : 94, p.w);
+      const visualDiameter = mobile ? 44 : 88/scale;
+      const size = Math.max(48/scale, visualDiameter);
       p.x += (p.w-size)/2; p.y += (p.h-size)/2; p.w = p.h = size;
+      p.visualDiameter = visualDiameter;
       Object.assign(layout.firebox, mobile ? pointRect(.22,.60,.27,.15) : pointRect(.30,.73,.18,.19));
       Object.assign(layout.objects.tray, mobile ? pointRect(.715,.414,.26,.156) : pointRect(.68,.355,.225,.278));
       Object.assign(layout.objects.tool, mobile ? pointRect(.51,.548,.12,.14) : pointRect(.478,.57,.105,.28));

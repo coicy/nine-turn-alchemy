@@ -1,0 +1,5 @@
+/* Canvas and reading layers use the same full-alpha V103 projection. */
+.layered-pill-art>img { left:0!important; top:0!important; width:100%!important; height:100%!important; }
+.pill-observe-art { display:flex; justify-content:center; padding:8px 0; }
+.pill-observe-art .ux-pill-art { width:128px; height:128px; }
+.ux-pill-art>img { filter:none!important; }
