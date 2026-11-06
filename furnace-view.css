@@ -104,12 +104,48 @@ body[data-work-mode=furnace] .equipment-library { display:none!important; }
   body[data-work-mode=furnace] .pill-detail-panel { max-height:36dvh!important; }
   body[data-work-mode=furnace] .furnace-skip:not([hidden]) { left:66%; top:60%; }
 }
+
+/* V105: one unscaled judgment slip attached to the furnace, never to the nav. */
+body[data-work-mode=furnace] .furnace-heading>strong { flex:1; }
+.furnace-judgment { position:absolute; z-index:27; box-sizing:border-box; padding:4px 10px 6px; background:#f3e4c7; border:1px solid #a47c51; border-left:4px solid #95613d; box-shadow:0 3px 8px #3e281c33; border-radius:2px; color:#493424; font:14px/1.5 "Microsoft YaHei",sans-serif; }
+.furnace-judgment[hidden] { display:none!important; }
+.furnace-judgment .furnace-facts { display:block; }
+.furnace-judgment .furnace-facts b { display:block; font-size:18px; line-height:25px; }
+.furnace-judgment .furnace-facts>div { display:flex; gap:3px 10px; flex-wrap:wrap; align-items:baseline; }
+.furnace-judgment .furnace-facts span { font-size:14px; line-height:21px; }
+.furnace-judgment .furnace-facts small { font-size:12px; line-height:21px; white-space:nowrap; }
+body.object-world[data-work-mode=furnace] .furnace-judgment #refineOdds,
+body.object-world[data-work-mode=furnace] .furnace-judgment .refine-odds-toggle {
+  position:relative!important; inset:auto!important; width:100%!important; max-width:none; max-height:none; overflow:visible; padding:0; margin:2px 0 0; box-shadow:none; border:0; border-radius:0; background:transparent; font-size:14px;
+}
+body.object-world .furnace-judgment #refineOdds header { border-top:1px solid #c7ab82; padding-top:2px; }
+body.object-world .furnace-judgment #refineOdds h2 { font:14px/24px "Microsoft YaHei",sans-serif; }
+body.object-world .furnace-judgment #refineOdds header button { padding:0 4px; min-height:24px; min-width:44px; font:12px/24px "Microsoft YaHei",sans-serif; background:transparent; border:0; }
+body.object-world .furnace-judgment #refineOdds dl { margin:0; gap:4px; }
+body.object-world .furnace-judgment #refineOdds dl>div { padding:1px 0 0; min-height:0; gap:0; border:0; background:none; border-radius:0; color:#493424; }
+body.object-world .furnace-judgment #refineOdds dt { font-size:12px; line-height:16px; font-weight:400; }
+body.object-world .furnace-judgment #refineOdds dd { font-size:16px; line-height:21px; }
+body.object-world .furnace-judgment .chance-bar { height:5px; margin-top:4px; border-radius:0; }
+body.object-world .furnace-judgment #refineOddsProtection { font-size:12px; margin:3px 0 0; }
+body.object-world .furnace-judgment #refineOddsState { display:none; }
+body.object-world .furnace-judgment .odds-rules { display:none; }
+body.object-world .furnace-judgment .refine-odds-toggle { text-align:left; min-height:44px; }
+.furnace-judgment .refine-odds-toggle small { display:block; font-size:12px; }
+body[data-work-mode=furnace] #workInstruction { left:auto!important; right:2%!important; top:70%!important; bottom:auto!important; width:35%; }
+.furnace-action-cue { position:absolute; box-sizing:border-box; z-index:19; pointer-events:none; outline:2px solid #ebca83; outline-offset:2px; border-radius:5px; background:#e9ce7420; }
+.furnace-action-cue[hidden] { display:none!important; }
+.furnace-action-cue span { position:absolute; left:50%; bottom:0; transform:translateX(-50%); padding:3px 8px; white-space:nowrap; background:#58412df5; border:1px solid #bfa27c; color:#fff0d3; font:calc(14px / var(--scene-scale,1))/1.5 KaiTi,serif; }
+@media(max-width:650px) {
+  body[data-work-mode=furnace] .furnace-heading { flex-wrap:nowrap; }
+  body.object-world[data-work-mode=furnace] .furnace-judgment { position:fixed; inset:auto 8px max(8px,env(safe-area-inset-bottom))!important; width:auto!important; padding:8px 10px; }
+  body.object-world .furnace-judgment #refineOdds header button { min-height:44px; }
+  body[data-work-mode=furnace] #workInstruction { position:fixed; left:8px!important; right:8px!important; top:auto!important; bottom:calc(var(--work-reserve) + 4px)!important; width:auto; }
+}
+@media(pointer:coarse) { body.object-world .furnace-judgment #refineOdds header button { min-height:44px; } }
 @media(prefers-reduced-motion:reduce) { .furnace-cover { transition:none; } }
 
 
 body[data-work-mode=furnace] .furnace-controls button.furnace-tray,body[data-work-mode=furnace] .furnace-controls button.furnace-fire,body[data-work-mode=furnace] .furnace-controls button.furnace-pill { background:none!important; box-shadow:none!important; color:transparent!important; font-size:0!important; }
-body[data-work-mode=furnace] #workInstruction { left:25%!important; right:auto!important; bottom:0!important; width:27%; }
-@media(max-width:650px){body[data-work-mode=furnace] #workInstruction { left:8px!important; right:8px!important; bottom:calc(var(--work-reserve) + 4px)!important; width:auto; }}
 
 body .furnace-controls button.furnace-resume { background:none!important; box-shadow:none!important; border:0; font-size:0; color:transparent; }
 .furnace-resume:after { content:"回到本炉"; position:absolute; bottom:0; left:50%; transform:translateX(-50%); padding:5px 10px; background:#f5e8cedf; border:1px solid #ae885b; color:#493424; font:14px KaiTi,serif; white-space:nowrap; }

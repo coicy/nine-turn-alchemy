@@ -4,9 +4,9 @@
  const panel=document.createElement('section');panel.className='pill-detail-panel';panel.setAttribute('aria-label','丹药详情');document.querySelector('.game-layout').append(panel);window.AlchemyViewState.register('pill',panel,{short:true});
  details.querySelector('summary').onclick=e=>{e.preventDefault();window.AlchemyViewState.navigate('pill',{anchor:document.querySelector('.observation-pill')});};
  panel.addEventListener('click',e=>{if(e.target.closest('[data-close-pill]'))window.AlchemyViewState.close();});
- let flags=window.AlchemySaves?.preference('tutorial-v89')||{},last='';
- function instruction(s){if(s.pillEnded&&window.AlchemyViewState.snapshot().workMode==='furnace')return '';if(!s.order||s.roundEnded||s.busy||s.runeChoices?.length)return '';if(s.pillEnded&&!flags.load)return '取一包药，投入炉口。';if(!s.pillEnded&&!flags.refine)return '点火门，扇火炼化。';if(!s.pillEnded&&s.turn>1&&!flags.collect)return '可继续炼化，或取丹放入收丹盘。';return '';}
- function update(){const s=api.snapshot(),c=api.campaign();if(c){if(c.day>1||c.history.length||c.economy?.earned>0)flags={load:true,refine:true,collect:true};if(s.attempt>0)flags.load=true;if(s.turn>1)flags.refine=true;if(s.collected.length)flags.collect=true;const next=JSON.stringify(flags);if(next!==last){last=next;window.AlchemySaves?.setPreference('tutorial-v89',flags);}}
+ // Action guidance is attached to the real objects by furnace-guidance.js.
+ function instruction(){return '';}
+ function update(){const s=api.snapshot();
   document.body.classList.remove('guided-journey','guided-opening','journey-orders','journey-shop','journey-tools');
   const nature={warm:'温性',cool:'寒性',neutral:'平性'}[s.order?.nature]||'平性';
   UX.html(panel,'<header><h2>丹药</h2><button data-close-pill data-focus-key="close-pill">合上 ×</button></header><div class="pill-observe-art">'+UX.art(s)+'</div><p>'+s.turn+'转 · '+['凡品','良品','上品','极品','绝品'][s.quality]+' · '+nature+' · 丹值 '+Math.round(s.value)+'</p><div class="pill-rune-details">'+(s.runes.length?s.runes.map(name=>'<article>'+UX.runeArt(name)+'<div><strong>'+name+' · '+s.runeLevels[name]+'阶</strong><p>'+UX.esc(api.RUNE_DEFS[name])+'</p></div></article>').join(''):'<p>尚未显纹</p>')+'</div>');

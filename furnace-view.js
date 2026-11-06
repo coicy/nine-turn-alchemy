@@ -20,8 +20,16 @@
   const lid = controls.querySelector('.furnace-cover');
   const heading = document.createElement('div');
   heading.className = 'furnace-heading';
-  heading.innerHTML = '<button class="furnace-back" data-focus-key="furnace-back">‹ 丹房</button><strong>炉前</strong><div class="furnace-facts"><b></b><span></span><small></small></div><button class="furnace-inspect" data-focus-key="furnace-inspect">看丹</button><button class="furnace-manual" data-focus-key="furnace-manual">炉谱</button>';
+  heading.innerHTML = '<button class="furnace-back" data-focus-key="furnace-back">‹ 丹房</button><strong>炉前</strong><button class="furnace-inspect" data-focus-key="furnace-inspect">看丹</button><button class="furnace-manual" data-focus-key="furnace-manual">炉谱</button>';
   nav.prepend(heading);
+  const judgment = document.createElement('section');
+  judgment.className = 'furnace-judgment';
+  judgment.setAttribute('aria-label', '本炉判断');
+  judgment.hidden = true;
+  judgment.innerHTML = '<div class="furnace-facts"><b></b><div><span></span><small></small></div></div>';
+  viewport.append(judgment);
+  judgment.append(document.getElementById('refineOdds'), document.querySelector('.refine-odds-toggle'));
+  const facts = judgment.querySelector('.furnace-facts');
   let lastLiveKey = '';
   let endingKey = '';
   let fanning = false;
@@ -111,7 +119,9 @@
         return el && !el.hidden && el.checkVisibility() ? el.getBoundingClientRect().height : 0;
       };
       const view = route.snapshot();
-      let reserve = mobile ? Math.max(heightOf('#refineOdds'), heightOf('.refine-odds-toggle'), heightOf('#roomChoices'), heightOf('#roomSettlement')) + 12 : 0;
+      const host = mobile ? document.body : viewport;
+      if (judgment.parentElement !== host) host.append(judgment);
+      let reserve = mobile ? Math.max(heightOf('.furnace-judgment'), heightOf('#roomChoices'), heightOf('#roomSettlement')) + 12 : 0;
       if (mobile && view.reading && view.short) {
         reserve = Math.max(reserve, heightOf(view.current === 'pill' ? '.pill-detail-panel' : '.equipment-drawer') + 12);
       }
@@ -138,6 +148,12 @@
       Object.assign(layout.objects.tray, mobile ? pointRect(.715,.414,.26,.156) : pointRect(.68,.355,.225,.278));
       Object.assign(layout.objects.tool, mobile ? pointRect(.51,.548,.12,.14) : pointRect(.478,.57,.105,.28));
       Object.assign(layout.mouth, mobile ? pointRect(.055,.116,.60,.34) : pointRect(.21,.055,.36,.42));
+      Object.assign(layout.judgment, pointRect(.185,.485,.285,0));
+      if (!mobile) {
+        judgment.style.left = ((w-width*scale)/2+layout.judgment.x*scale)+'px';
+        judgment.style.top = ((h-height*scale)/2+layout.judgment.y*scale)+'px';
+        judgment.style.width = Math.min(420,layout.judgment.w*scale)+'px';
+      }
       layout.cutaway.source = null;
       Object.assign(layout.toolRest, mobile ? pointRect(.71,.278,.28,.048) : pointRect(.70,.08,.27,.105));
       for (const element of [stage, forge]) {
@@ -233,15 +249,18 @@
       rect(resume, layout.mouth);
     }
     const campaign = game.campaign();
-    heading.querySelector('b').textContent = s.endReason === 'explode' ? '本炉炸丹' : s.turn+'转 · 丹值 '+Math.round(s.value);
-    heading.querySelector('.furnace-facts span').textContent = ended
+    facts.querySelector('b').textContent = s.endReason === 'explode' ? '本炉炸丹' : s.turn+'转 · 丹值 '+Math.round(s.value);
+    facts.querySelector('span').textContent = ended
       ? collected ? (s.order?.self ? '已入丹匣' : '已计入本单交付') : '未成丹'
       : s.order?.self
       ? '收丹入匣 · 售价估计 '+window.AlchemyEconomy.saleValue(campaign,s)+' 铜钱'
-      : '收丹可交 '+Math.round(s.delivered+s.value)+' / '+s.target;
-    heading.querySelector('.furnace-facts small').textContent = ended && s.roundEnded ? '' : s.order?.self
-      ? '自有药材' : '已交 '+Math.round(s.delivered)+' · 余客料 '+s.remaining+' 包';
-    heading.querySelector('.furnace-facts small').hidden = !heading.querySelector('.furnace-facts small').textContent;
+      : '收丹后交付 '+Math.round(s.delivered+s.value)+' / '+s.target;
+    facts.querySelector('small').textContent = ended && s.roundEnded ? '' : s.order?.self
+      ? '' : '余客料 '+s.remaining+' 包';
+    facts.querySelector('small').hidden = !facts.querySelector('small').textContent;
+    judgment.hidden = !near || v.current !== 'work' || !live(s) || choosing;
+    if (held && !judgment.style.minHeight) judgment.style.minHeight = judgment.getBoundingClientRect().height+'px';
+    if (!held) judgment.style.minHeight = '';
     controls.dataset.closed = fanning || s.busy ? 'true' : 'false';
     if (near) fit();
   }
@@ -259,5 +278,6 @@
   window.addEventListener('alchemy:world-layout', () => {
     if (!active()) rect(resume, layout.mouth);
   });
+  new ResizeObserver(() => {if (active()) fit();}).observe(judgment);
   update();
 })();

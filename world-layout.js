@@ -1,6 +1,6 @@
 /* Geometry is shared by art, anchors and hit targets. Reserve only visible reading surfaces. */
 (() => {
- const objects={herbs:{},tool:{src:'alchemy-fan-v1',flat:true},tray:{src:'delivery-tray-v1',flat:true},pill:{}},mouth={},firebox={},cutaway={},bookRest={},toolRest={};let key='',lastViewport='';
+ const objects={herbs:{},tool:{src:'alchemy-fan-v1',flat:true},tray:{src:'delivery-tray-v1',flat:true},pill:{}},mouth={},firebox={},cutaway={},bookRest={},toolRest={},judgment={};let key='',lastViewport='';
  function fit(){const viewport=document.querySelector('.engine-viewport'),forge=document.querySelector('.forge-panel'),stage=document.getElementById('pillStage');if(!viewport)return;
   if(window.AlchemyViewState?.snapshot().workMode==='furnace'&&window.AlchemyFurnaceView)return window.AlchemyFurnaceView.fit();
   const mobile=innerWidth<=650,w=viewport.clientWidth,h=viewport.clientHeight,compact=!mobile&&w<1280,vkey=w+':'+h;
@@ -38,5 +38,5 @@
   const observation=document.querySelector('.room-observation');if(observation){observation.style.left=cutaway.x+'px';observation.style.top=cutaway.y+'px';observation.style.setProperty('--inspect-x',8-cutaway.x+'px');observation.style.setProperty('--inspect-y',8-cutaway.y+'px');}
   document.body.style.setProperty('--work-reserve',reserve+'px');if(key!==next){key=next;window.dispatchEvent(new Event('alchemy:world-layout'));}return true;
  }
- window.AlchemyWorldLayout={objects,mouth,firebox,cutaway,bookRest,toolRest,fit,get mobile(){return innerWidth<=650;}};
+ window.AlchemyWorldLayout={objects,mouth,firebox,cutaway,bookRest,toolRest,judgment,fit,get mobile(){return innerWidth<=650;}};
 })();

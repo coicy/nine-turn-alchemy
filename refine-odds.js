@@ -8,8 +8,10 @@
   toggle.hidden=!visible||open;panel.hidden=!visible||!open;toggle.setAttribute('aria-expanded',String(open));document.body.classList.toggle('odds-expanded',visible&&open);
   panel.querySelector('#refineOddsState').textContent=s.endReason==='explode'?'本炉炸丹':s.busy?'本次结算中…':'';
   rows.forEach(({id,row,value,segment})=>{value.textContent=p.available?(p.outcomes[id]*100).toFixed(1)+'%':'—';segment.style.width=(p.available?p.outcomes[id]*100:0)+'%';row.removeAttribute('data-hit');});
-  const protection=panel.querySelector('#refineOddsProtection');protection.textContent=p.available&&p.protection?p.protection.name+'已生效，保护后的概率见上表。':'';protection.hidden=!protection.textContent;
-  const narrow=innerWidth<=650,host=narrow?document.body:stage;for(const el of [panel,toggle]){if(el.parentElement!==host)host.append(el);el.classList.toggle('mobile-odds',narrow);}window.dispatchEvent(new Event('alchemy:ux-layout'));
+  const protection=panel.querySelector('#refineOddsProtection');protection.textContent=p.available&&p.protection?p.protection.name+'护丹生效':'';protection.hidden=!protection.textContent;
+  toggle.textContent='展开五类概率';
+  let risk=toggle.querySelector('small');if(!risk){risk=document.createElement('small');toggle.append(risk);}risk.textContent=p.available?'炸丹 '+(p.outcomes.explode*100).toFixed(1)+'% · '+(p.protection?p.protection.name+'护丹生效':'无护丹效果'):'';
+  const narrow=innerWidth<=650,host=document.querySelector('.furnace-judgment')||(narrow?document.body:stage);for(const el of [panel,toggle]){if(el.parentElement!==host)host.append(el);el.classList.toggle('mobile-odds',narrow);}window.dispatchEvent(new Event('alchemy:ux-layout'));
  }
  toggle.onclick=()=>{open=true;update();panel.querySelector('button').focus({preventScroll:true});};panel.querySelector('header button').onclick=()=>{open=false;update();toggle.focus({preventScroll:true});};
  panel.querySelector('.odds-rules').onclick=()=>window.AlchemyViewState.navigate('manual',{chapter:'probability'});
