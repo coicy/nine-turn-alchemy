@@ -105,6 +105,7 @@
   }, true);
 
   function fit() {
+    if (window.AlchemySceneContinuity) return window.AlchemySceneContinuity.fitFurnace();
     if (fitting) return true;
     fitting = true;
     try {
