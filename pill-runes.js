@@ -1,11 +1,12 @@
-/* V103: one material and one surface renderer in the furnace, hand, tray and books.
+/* V136: approved B painting with mineral oxide palettes, shared across all pill views.
  * Growth is derived from saved turn/quality; it never awards runes or changes a roll. */
 (() => {
   'use strict';
-  const BODY = 'assets/pill-runes-v103/body.webp';
+  const BODIES = Object.freeze({warm:'assets/pill-mineral-v136/warm.webp',neutral:'assets/pill-mineral-v136/neutral.webp',cool:'assets/pill-mineral-v136/cool.webp'});
+  const BODY = BODIES.neutral;
   const SIZE = 256;
   const cache = new Map();
-  let bounds = null;
+  let bounds = new WeakMap();
   const definitions = {
     '赤纹': {color:'#c64e32', light:'#ffc087', kind:'fire'},
     '青纹': {color:'#4e9a8f', light:'#c0e6ce', kind:'water'},
@@ -66,13 +67,13 @@
       stageName:['初显','凝实','分枝','贯通'][stage]};
   }
   function bodyBounds(im) {
-    if(bounds)return bounds;
+    if(bounds.has(im))return bounds.get(im);
     const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;
     const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(im,0,0);
     const data=ctx.getImageData(0,0,c.width,c.height).data;
     let x0=c.width,y0=c.height,x1=0,y1=0;
     for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++)if(data[(y*c.width+x)*4+3]>200){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}
-    bounds={x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};return bounds;
+    const result={x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};bounds.set(im,result);return result;
   }
   function glyph(ctx,name,x,y,size,angle,d,secondary=false) {
     const def=definitions[name];if(!def)return;
@@ -89,7 +90,8 @@
       const strength=strengths[i];if(strength<.015||(secondary&&i>1))return;
       ctx.save();ctx.globalAlpha=(secondary?.80:1)*(.76+d.quality*.06);
       if(i>0){ctx.translate(36,53);ctx.scale(.45+.55*strength,.45+.55*strength);ctx.translate(-36,-53);ctx.globalAlpha*=strength;}
-      const path=new Path2D(shape);ctx.strokeStyle='#4a2c1c9c';ctx.lineWidth=1.8+g*.6;ctx.stroke(path);
+      const path=new Path2D(shape),redOnRed=d.nature==='warm'&&def.kind==='fire';
+      ctx.strokeStyle=redOnRed?'#46291eee':'#4a2c1c9c';ctx.lineWidth=(redOnRed?4:1.8)+g*.6;ctx.stroke(path);
       ctx.fillStyle=tone;ctx.fill(path);
       const body=window.AlchemyAssets?.getImage(BODY);
       if(body?.naturalWidth){const b=bodyBounds(body);ctx.save();ctx.clip(path);ctx.globalCompositeOperation='multiply';ctx.globalAlpha*=.25;ctx.drawImage(body,b.x,b.y,b.w,b.h,0,0,100,100);ctx.restore();}
@@ -100,13 +102,11 @@
   function make(p) {
     const d=describe(p);if(cache.has(d.key)){const hit=cache.get(d.key);cache.delete(d.key);cache.set(d.key,hit);return hit;}
     const c=document.createElement('canvas');c.width=c.height=SIZE;const ctx=c.getContext('2d');
-    const im=window.AlchemyAssets?.getImage(BODY);if(!im?.naturalWidth)return {canvas:c,url:c.toDataURL(),description:d};
+    const im=window.AlchemyAssets?.getImage(BODIES[d.nature]||BODY);if(!im?.naturalWidth)return {canvas:c,url:c.toDataURL(),description:d};
     const b=bodyBounds(im),cx=128,cy=128,r=124;
     ctx.save();ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.clip();
     ctx.drawImage(im,b.x,b.y,b.w,b.h,4,4,248,248);
-    ctx.globalCompositeOperation='color';ctx.globalAlpha=.28;
-    ctx.fillStyle={warm:'#9f6341',cool:'#547981',neutral:'#79663c'}[d.nature]||'#79663c';ctx.fillRect(0,0,SIZE,SIZE);
-    ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
+    // Colors are painted into the mineral bodies. Do not tint them back to the old blue/olive palette.
     const sheen=ctx.createRadialGradient(82,70,0,88,80,145);sheen.addColorStop(0,'#fff5d8'+Math.round(8+d.quality*4).toString(16).padStart(2,'0'));sheen.addColorStop(1,'#ffffff00');ctx.fillStyle=sheen;ctx.fillRect(0,0,SIZE,SIZE);
     const marks=d.runes,primary=marks[marks.length-1],others=marks.slice(0,-1);
     const slots=others.length<=2?[[.23,.23,-.22],[.77,.77,.18]]:[[.20,.26,-.35],[.50,.15,.08],[.81,.29,.35],[.79,.73,.32],[.27,.79,-.2]];
@@ -131,8 +131,8 @@
   }
   function selection(nature,quality,runes=[]){return {body:image({nature,quality,runes,turn:60}),cracks:[],q:clamp(quality,0,4)};}
   function hydrate(scope=document){scope.querySelectorAll('[data-pill-art-state]').forEach(el=>{const p=JSON.parse(el.dataset.pillArtState);el.querySelector('img').src=image(p);el.dataset.pillArtKey=describe(p).key;});}
-  window.AlchemyPillArt={image,draw,describe,selection,hydrate,definitions,bodySource:BODY,hues:['#D5DEE1','#91B78B','#74A9D4','#B091CC','#DFB87C'],get cacheSize(){return cache.size;},get feedback(){return feedback;}};
-  window.addEventListener('alchemy:assets-ready',()=>{bounds=null;cache.clear();});
+  window.AlchemyPillArt={image,draw,describe,selection,hydrate,definitions,bodySource:BODY,bodySources:BODIES,hues:['#D5DEE1','#91B78B','#74A9D4','#B091CC','#DFB87C'],get cacheSize(){return cache.size;},get feedback(){return feedback;}};
+  window.addEventListener('alchemy:assets-ready',()=>{bounds=new WeakMap();cache.clear();});
   window.addEventListener('alchemy:render',()=>{const d=describe(window.AlchemyGame.snapshot());if(current?.key!==d.key){previous=current;current=d;}});
   window.addEventListener('alchemy:refine-result',e=>{const d=describe(window.AlchemyGame.snapshot());feedback={key:d.key,start:performance.now(),outcome:e.detail.outcome,previous:previous?.key||null};window.dispatchEvent(new Event('alchemy:pill-surface'));});
   window.addEventListener('alchemy:view-ready',()=>{feedback=null;});

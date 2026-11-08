@@ -1,0 +1,24 @@
+{
+  "tool": "Built-in image_gen",
+  "mode": "precise-object-edit recoloring approved B; true alpha; one call per palette",
+  "refs": [
+    "D:/TapTapMaker/游戏调研/九转丹坊/Art/PillCandidatesV135/b-r2-source.png"
+  ],
+  "variants": [
+    {
+      "id": "warm",
+      "name": "铅丹赤",
+      "prompt": "Use case: precise-object-edit, production game sprite. Edit the attached APPROVED B pill body ONLY by changing its painted mineral color. Preserve B's exact round whole-pill shape, center, scale, thin warm-brown drawn contour, sparse dry-brush texture, three quiet painted value masses, upper-left broad matte light plane and diagonal painted shadow organization. Keep the dense fine-powder compact medicine appearance. DO NOT add realism, continuous 3D gradients, white specular glint, veins, grit, chips, facets, cracks, runes, emblems, seams, words, background, frame, extra objects or cast shadow outside the body. The quiet central face receives existing live game rune overlays later. Preserve true alpha transparency outside the pill. The whole image is the same single body on transparent background. Preserve the entire silhouette, no cropping. COLOR TARGET: historical red-lead/minium pigment color, a dense opaque subdued ORANGE-RED mineral pigment inspired by Pb3O4, not metallic lead and not cinnabar. Muted terracotta orange-red body around #B84D32, clay-orange lighter upper-left plane around #D37A50, deep red-brown shadow around #71372C. These hex values are art targets, not measurements. No yellow gold sheen, pink plastic, glass, jade, neon, fiery effects or shiny red lacquer. The original B material and brush structure remain unmistakable."
+    },
+    {
+      "id": "neutral",
+      "name": "代赭褐",
+      "prompt": "Use case: precise-object-edit, production game sprite. Edit the attached APPROVED B pill body ONLY by changing its painted mineral color. Preserve B's exact round whole-pill shape, center, scale, thin warm-brown drawn contour, sparse dry-brush texture, three quiet painted value masses, upper-left broad matte light plane and diagonal painted shadow organization. Keep the dense fine-powder compact medicine appearance. DO NOT add realism, continuous 3D gradients, white specular glint, veins, grit, chips, facets, cracks, runes, emblems, seams, words, background, frame, extra objects or cast shadow outside the body. The quiet central face receives existing live game rune overlays later. Preserve true alpha transparency outside the pill. The whole image is the same single body on transparent background. Preserve the entire silhouette, no cropping. COLOR TARGET: earthy hematite iron-oxide pigment (Fe2O3), RED-BROWN OCHRE. Make it a distinct subdued ferric red-brown, not the old golden/tan color of B: midtone around #95523F, pale earthy red-brown upper-left plane around #BA7C5C, dark umber-red shadow around #633E34. These are artistic targets, not spectral measurements. Mineral color takes inspiration from earthy hematite powder/streak, not a shiny metallic hematite crystal. No orange-red glaze, yellow-gold highlight, marble, stone chips or rust spots; keep the same quiet compacted fine medicine texture and painted B planes."
+    },
+    {
+      "id": "cool",
+      "name": "磁石玄",
+      "prompt": "Use case: precise-object-edit, production game sprite. Edit the attached APPROVED B pill body ONLY by changing its painted mineral color. Preserve B's exact round whole-pill shape, center, scale, thin warm-brown drawn contour, sparse dry-brush texture, three quiet painted value masses, upper-left broad matte light plane and diagonal painted shadow organization. Keep the dense fine-powder compact medicine appearance. DO NOT add realism, continuous 3D gradients, white specular glint, veins, grit, chips, facets, cracks, runes, emblems, seams, words, background, frame, extra objects or cast shadow outside the body. The quiet central face receives existing live game rune overlays later. Preserve true alpha transparency outside the pill. The whole image is the same single body on transparent background. Preserve the entire silhouette, no cropping. COLOR TARGET: magnetite iron-oxide mineral pigment (Fe3O4), opaque WARM CHARCOAL BLACK. Read as black mineral medicine under soft warm room lighting: main charcoal around #56514D, broad matte warm grey upper-left light plane around #82786D, deep warm charcoal shadow around #302D2B. These are art targets, not spectral measurements. Maintain enough lit-grey area to read the round silhouette at 40px on a dark earthen furnace, without adding a rim glow or white outline. No blue/cyan/green tint, black glass, silver metal, metallic shine or polished crystal. Preserve B's sparse brushwork, thin brown contour and flat painted tonal organization."
+    }
+  ]
+}
