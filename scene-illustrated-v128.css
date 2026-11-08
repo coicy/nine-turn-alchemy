@@ -1,0 +1,4 @@
+/* Readouts stay on the painted ground, with ink strong enough for its value range. */
+body.art-repair .furnace-judgment{color:#17130f}
+body.art-repair .scene-value-caption,body.art-repair .furnace-facts span{color:#17130f}
+body.art-repair .furnace-facts b{color:#17130f}
