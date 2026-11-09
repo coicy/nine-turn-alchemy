@@ -1,4 +1,4 @@
-/* V138: approved B painting with seven stable mineral palettes, shared across all pill views.
+/* V145: mineral brush veins on the approved B bodies, shared across all pill views.
  * Growth is derived from saved turn/quality; it never awards runes or changes a roll. */
 (() => {
   'use strict';
@@ -9,51 +9,30 @@
   const cache = new Map();
   let bounds = new WeakMap();
   const definitions = {
-    '赤纹': {color:'#c64e32', light:'#ffc087', kind:'fire'},
-    '青纹': {color:'#4e9a8f', light:'#c0e6ce', kind:'water'},
-    '月纹': {color:'#d9cb9a', light:'#fff0ca', kind:'moon'},
-    '雷纹': {color:'#d9aa44', light:'#ffe5a0', kind:'thunder'},
-    '金纹': {color:'#c59137', light:'#f9dfa1', kind:'gold'},
-    '星痕': {color:'#a99ac5', light:'#e4d9f0', kind:'star'}
+    '赤纹': {color:'#b36a48', light:'#ce9870', kind:'fire'},
+    '青纹': {color:'#608477', light:'#91ac95', kind:'water'},
+    '月纹': {color:'#c2b38c', light:'#d2c29b', kind:'moon'},
+    '雷纹': {color:'#b69a60', light:'#ceb17a', kind:'thunder'},
+    '金纹': {color:'#b18b50', light:'#c3a06a', kind:'gold'},
+    '星痕': {color:'#a197ac', light:'#b9acbf', kind:'star'}
   };
-  const paths = {
-    fire: [
-      'M29 79C12 79 12 58 30 49C47 41 60 35 66 17C71 35 60 48 42 55C29 60 22 62 24 69C26 76 34 74 32 68C30 64 25 67 28 71C34 68 38 74 33 78Z',
-      'M35 55C52 54 62 55 73 43C78 38 83 37 88 39C75 41 78 61 50 63L31 65Z',
-      'M30 54C33 39 42 35 43 21C50 35 41 46 37 57Z',
-      'M56 46C70 40 73 24 88 18C79 33 88 39 77 47C70 53 62 55 48 59Z'
-    ],
-    water: [
-      'M10 45C28 53 34 47 48 33C64 16 78 20 91 32C75 28 69 33 56 47C40 64 24 65 10 55Z',
-      'M13 66C31 73 38 66 50 56C67 42 80 44 92 53C76 51 71 58 59 69C44 82 26 82 13 74Z',
-      'M27 33C39 32 43 20 51 13C52 24 45 35 33 40Z',
-      'M67 69C81 64 86 68 91 74C78 72 74 86 58 87L49 83Z'
-    ],
-    moon: [
-      'M69 12C39 15 20 37 26 62C32 88 63 94 85 72C57 84 31 56 44 31C49 22 58 16 69 12Z',
-      'M72 21C84 23 91 33 88 46C86 34 80 28 69 29Z',
-      'M18 39C11 58 19 83 39 91C23 89 9 69 13 49Z',
-      'M51 92C72 97 87 85 94 72C92 89 77 101 57 99Z'
-    ],
-    thunder: [
-      'M63 9L23 54L46 52L34 91L80 39L55 42Z',
-      'M48 44L22 31L29 45L10 49L34 58L30 49Z',
-      'M57 59L76 62L68 75L91 78L78 67L86 56L66 51Z',
-      'M67 21L83 9L77 25L90 22L74 39L78 27L65 31Z'
-    ],
-    gold: [
-      'M10 46C25 27 42 29 54 34C68 41 76 33 79 17C91 37 76 54 58 48C40 42 27 38 10 46Z',
-      'M10 65C26 47 44 49 59 57C72 64 85 60 93 45C94 68 76 80 59 72C40 62 26 58 10 65Z',
-      'M25 35C17 25 24 14 37 18C28 18 25 24 31 28C37 32 42 25 39 20C47 31 38 40 29 38Z',
-      'M72 70C84 77 85 87 71 94C79 84 71 79 63 81L52 78Z'
-    ],
-    star: [
-      'M49 15C22 25 16 56 35 74C48 88 68 86 81 72C58 81 33 63 35 42C36 29 41 22 49 15Z',
-      'M64 21C62 42 59 45 42 48C59 50 62 54 64 76C67 54 70 50 88 48C70 45 67 42 64 21Z',
-      'M24 42C16 57 24 77 42 86C23 83 12 65 18 48Z',
-      'M64 27C77 20 83 24 93 16C88 29 78 35 65 35Z'
-    ]
+  // Open, slightly uneven brush spines preserve the six motifs without flat logo fills.
+  const veins = {
+    fire:['M29 76C19 68 27 56 43 49C57 43 65 31 66 19','M29 70C39 61 55 64 66 56C75 50 75 44 85 41','M37 55C37 42 45 38 44 26','M56 48C70 43 73 28 83 24'],
+    water:['M14 48C31 60 39 47 52 37C68 24 78 27 86 32','M17 68C36 79 47 62 59 55C72 48 81 51 87 55','M30 36C39 35 44 24 48 20','M62 76C73 74 79 69 88 74'],
+    moon:['M66 17C36 21 23 43 30 63C37 83 61 87 78 76','M58 23C43 38 39 49 48 62C54 71 63 76 75 76','M20 45C16 61 23 76 33 81','M54 90C70 92 83 81 88 73'],
+    thunder:['M63 15L31 49L50 47L39 83L74 43L56 45','M42 46L25 35L31 47L18 50','M55 58L74 61L69 72L84 77','M67 27L80 16L76 30L84 28'],
+    gold:['M15 44C28 33 42 35 54 40C69 47 80 37 80 25','M15 63C29 52 43 56 56 63C70 70 82 64 88 55','M32 35C22 31 25 20 33 22C40 25 36 30 32 28','M66 75C78 76 82 83 74 89'],
+    star:['M48 20C27 30 23 53 37 68C48 80 64 83 77 75','M64 25C64 44 58 47 46 48C60 49 64 57 64 71M64 48C71 46 77 49 83 48','M24 45C20 59 27 75 39 80','M69 30C78 27 83 29 89 23']
   };
+  const brushPaths = new Map();
+  function brush(shape) {
+    if(brushPaths.has(shape))return brushPaths.get(shape);
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',shape);
+    const length=path.getTotalLength(),points=[];
+    for(let n=0;n<=Math.ceil(length/1.2);n++){const t=n/Math.ceil(length/1.2),p=path.getPointAtLength(t*length);points.push({x:p.x,y:p.y,t});}
+    brushPaths.set(shape,points);return points;
+  }
   const clamp = (n,a,b) => Math.max(a,Math.min(b,Number(n)||0));
   const smooth = (a,b,n) => {const t=clamp((n-a)/(b-a),0,1);return t*t*(3-2*t);};
   function describe(p={}) {
@@ -80,10 +59,9 @@
   function glyph(ctx,name,x,y,size,angle,d,secondary=false) {
     const def=definitions[name];if(!def)return;
     const g=d.growth,e=Math.sqrt(g),scale=.64+.36*e;
-    const stages=paths[def.kind];
+    const stages=veins[def.kind];
     ctx.save();ctx.translate(x+size/2,y+size/2);ctx.rotate(angle);ctx.scale(size/100*(secondary?.77:.96),size/100);ctx.translate(-50,-50);
     ctx.translate(28,73);ctx.scale(scale,scale);ctx.translate(-28,-73);
-    const tone=ctx.createLinearGradient(20,10,80,90);tone.addColorStop(0,def.light);tone.addColorStop(.24,def.color);tone.addColorStop(.72,def.color);tone.addColorStop(1,def.light);
     ctx.lineJoin='round';ctx.lineCap='round';
     const strengths=[1,smooth(.04,.28,g),smooth(.22,.58,g),smooth(.55,1,g)];
     // A crescent/star or double wave is one semantic mark, including its initial companion stroke.
@@ -92,12 +70,17 @@
       const strength=strengths[i];if(strength<.015||(secondary&&i>1))return;
       ctx.save();ctx.globalAlpha=(secondary?.80:1)*(.76+d.quality*.06);
       if(i>0){ctx.translate(36,53);ctx.scale(.45+.55*strength,.45+.55*strength);ctx.translate(-36,-53);ctx.globalAlpha*=strength;}
-      const path=new Path2D(shape),redOnRed=['lead-red','copper-red'].includes(d.appearance)&&def.kind==='fire';
-      ctx.strokeStyle=redOnRed?'#30201cf2':'#4a2c1c9c';ctx.lineWidth=(redOnRed?(d.appearance==='copper-red'?6:4):1.8)+g*.6;ctx.stroke(path);
-      ctx.fillStyle=tone;ctx.fill(path);
-      const body=window.AlchemyAssets?.getImage(BODY);
-      if(body?.naturalWidth){const b=bodyBounds(body);ctx.save();ctx.clip(path);ctx.globalCompositeOperation='multiply';ctx.globalAlpha*=.25;ctx.drawImage(body,b.x,b.y,b.w,b.h,0,0,100,100);ctx.restore();}
-      ctx.strokeStyle=def.light;ctx.lineWidth=.35+d.quality*.08;ctx.stroke(path);ctx.restore();
+      const points=brush(shape),redOnRed=['lead-red','copper-red'].includes(d.appearance)&&def.kind==='fire';
+      // A thin earth seam under the pigment reads as a vein; no uniform bright outline.
+      ctx.strokeStyle='#46372b';ctx.globalAlpha*=.40;ctx.lineWidth=4.3+g*.7;ctx.stroke(new Path2D(shape));ctx.globalAlpha/=.40;
+      for(let j=1;j<points.length;j++){
+        const a=points[j-1],b=points[j];if(Math.hypot(b.x-a.x,b.y-a.y)>5)continue;
+        const taper=.45+.55*Math.pow(Math.sin(Math.PI*b.t),.45),grain=.90+.10*Math.sin(j*1.73+i*2);
+        const lightBody=['lead-yellow','tin-white'].includes(d.appearance),earth={moon:'#8e7954',thunder:'#94703d',gold:'#8c6434',star:'#76667c'};
+        ctx.lineWidth=(3.6+g*.8)*taper*grain;ctx.strokeStyle=redOnRed?'#ce9870':lightBody?(earth[def.kind]||def.color):def.color;
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+      }
+      ctx.restore();
     });
     ctx.restore();
   }
@@ -111,9 +94,13 @@
     // Colors are painted into the mineral bodies. Do not tint them back to the old blue/olive palette.
     const sheen=ctx.createRadialGradient(82,70,0,88,80,145);sheen.addColorStop(0,'#fff5d8'+Math.round(8+d.quality*4).toString(16).padStart(2,'0'));sheen.addColorStop(1,'#ffffff00');ctx.fillStyle=sheen;ctx.fillRect(0,0,SIZE,SIZE);
     const marks=d.runes,primary=marks[marks.length-1],others=marks.slice(0,-1);
+    const surface=document.createElement('canvas');surface.width=surface.height=SIZE;const ink=surface.getContext('2d');
     const slots=others.length<=2?[[.23,.23,-.22],[.77,.77,.18]]:[[.20,.26,-.35],[.50,.15,.08],[.81,.29,.35],[.79,.73,.32],[.27,.79,-.2]];
-    others.forEach((name,i)=>{const [x,y,a]=slots[i];const size=SIZE*.30;glyph(ctx,name,SIZE*x-size/2,SIZE*y-size/2,size,a,d,true);});
-    if(primary){const size=SIZE*.78;glyph(ctx,primary,128-size/2,130-size/2,size,0,d);}
+    others.forEach((name,i)=>{const [x,y,a]=slots[i];const size=SIZE*.30;glyph(ink,name,SIZE*x-size/2,SIZE*y-size/2,size,a,d,true);});
+    if(primary){const size=SIZE*.78;glyph(ink,primary,128-size/2,130-size/2,size,0,d);}
+    // Borrow the actual painted body's patches and light direction inside the pigment only.
+    ink.globalCompositeOperation='source-atop';ink.globalAlpha=.24;ink.drawImage(im,b.x,b.y,b.w,b.h,4,4,248,248);
+    ink.globalAlpha=1;const shade=ink.createLinearGradient(30,30,210,235);shade.addColorStop(0,'#30231b00');shade.addColorStop(1,'#30231b40');ink.fillStyle=shade;ink.fillRect(0,0,SIZE,SIZE);ctx.drawImage(surface,0,0);
     ctx.restore();
     const entry={canvas:c,url:c.toDataURL('image/png'),description:d};cache.set(d.key,entry);if(cache.size>48)cache.delete(cache.keys().next().value);return entry;
   }
