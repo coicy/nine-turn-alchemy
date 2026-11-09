@@ -1,0 +1,29 @@
+/* Opaque backing for the existing screen-space furnace readout and collect action. */
+body.furnace-solid-surface .furnace-judgment {
+  isolation:isolate;
+  text-shadow:none!important;
+  opacity:1!important;
+}
+body.furnace-solid-surface .furnace-judgment::before {
+  content:"";
+  position:absolute;
+  left:calc(-1 * var(--surface-left,12px));
+  right:calc(-1 * var(--surface-right,0px));
+  top:-12px;
+  bottom:calc(-1 * var(--surface-tail,58px));
+  z-index:-1;
+  pointer-events:none;
+  background:linear-gradient(135deg,#d9cba9 0%,#ceba91 100%);
+  border:1px solid #826947;
+  border-radius:2px;
+  box-shadow:inset 0 0 0 3px #bca57c,0 2px 5px #38271530;
+  opacity:1;
+}
+body.furnace-solid-surface .furnace-judgment,
+body.furnace-solid-surface .furnace-judgment .scene-value-caption,
+body.furnace-solid-surface .furnace-judgment .furnace-facts b,
+body.furnace-solid-surface .furnace-judgment .furnace-facts span,
+body.furnace-solid-surface .furnace-judgment #refineOdds dt,
+body.furnace-solid-surface .furnace-judgment #refineOdds dd {
+  color:#33271d!important;
+}
