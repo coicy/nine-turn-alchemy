@@ -1,0 +1,42 @@
+/* Reuse the painted scene and opaque paper; all stock controls participate in layout. */
+body.loop-v143 .scene-stock[data-scene-visible=true]{display:flex!important;flex-direction:column;gap:2px;overflow:hidden!important}
+body.loop-v143 .herb-materials{flex:none;max-height:86px;overflow:auto}
+body.loop-v143 .herb-materials h2,body.loop-v143 #herbTrayHint{display:none}
+body.loop-v143 .scene-stock-nav{flex:none;min-height:36px}
+body.loop-v143 .scene-pill-stock{flex:none;min-height:0;margin:0;padding-top:2px}
+body.loop-v143 .scene-pill-stock[hidden]{display:none!important}
+body.loop-v143 .scene-pill-caption{margin:0 0 2px;font-size:12px}
+body.loop-v143 .scene-pill-row{display:flex;gap:4px;overflow-x:auto;overflow-y:hidden;max-height:70px}
+body.loop-v143 .scene-pill-row>button{flex:none;min-width:58px;min-height:58px;max-height:66px}
+body.loop-v143 [data-stock-pill][aria-pressed=true]{outline:2px solid #924624;outline-offset:-2px;background:#b08c4d30}
+body.loop-v143 .loop-selection{flex:none;margin:0;padding:4px 0 0;border-top:1px solid #b8a17c;color:#302516}
+body.loop-v143 .loop-selection[hidden],body.loop-v143 .loop-next[hidden]{display:none!important}
+.loop-selected-heading{display:flex;align-items:center;gap:4px;min-height:26px}
+.loop-selected-heading strong{font-size:13px;font-weight:500;margin-right:auto;white-space:nowrap}
+body.loop-v143 .loop-selected-heading button{padding:0 5px;min-height:44px;min-width:44px;background:transparent;border:0;font-size:12px;color:inherit}
+.loop-preview{margin:0 0 3px;font-size:12px;line-height:18px}
+.loop-trades{display:flex;gap:6px}
+body.loop-v143 .loop-trades button,body.loop-v143 .loop-next button,body.loop-v143 .loop-return{min-height:44px;padding:5px 10px;font-size:13px;line-height:20px;border:1px solid #936142;background:#f1e4c7;color:#47301e;box-shadow:none;border-radius:2px}
+body.loop-v143 .loop-trades [data-loop-submit]{background:#934e31;color:#fff6e6}
+.loop-next{display:flex;flex:none;gap:6px;align-items:center;padding-top:3px;flex-wrap:wrap}
+.loop-next>span{font-size:12px;margin-right:auto}
+.loop-notice{margin:0;min-height:44px;display:flex;align-items:center;font-size:13px}
+body.loop-v143 .loop-return{position:absolute;z-index:35;min-width:72px;background:#e8d4a7}
+body.loop-v143 .loop-return[hidden]{display:none!important}
+body.loop-v143 .scene-cancel-carry{display:none!important}
+body.loop-v143[data-world-carry=pill] .furnace-action-cue span{display:none!important}
+body.loop-v143 #roomSettlement,body.loop-v143 #roomChoices{display:none!important}
+body.loop-v143 .furnace-facts b{white-space:nowrap;overflow-wrap:normal;font-variant-numeric:tabular-nums}
+body.loop-v143 .loop-letter{position:fixed;z-index:55;left:50%;top:70px;transform:translateX(-50%);width:min(600px,calc(100vw - 24px));max-height:calc(100dvh - 88px);overflow:hidden;box-sizing:border-box;background:#ead9b5;color:#342719;border:3px solid #8a633d;padding:14px;box-shadow:0 5px 22px #25160c55}
+.loop-letter[hidden]{display:none!important}
+.loop-letter .journal-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;border-bottom:1px solid #b49b70;padding-bottom:8px}
+.loop-letter .journal-heading h2{font-size:21px;margin:0}
+.loop-letter button{min-height:44px;padding:5px 12px}
+.loop-letter-body{overflow-y:auto;max-height:calc(100dvh - 180px);font-size:15px;line-height:1.65}
+.loop-letter dl{display:grid;grid-template-columns:100px 1fr;gap:8px;margin:18px 0}
+.loop-letter dt{color:#6e5534}.loop-letter dd{margin:0;font-variant-numeric:tabular-nums}
+@media(max-width:650px){body.loop-v143 .scene-stock{padding:4px 9px!important}.loop-selection .loop-selected-heading{min-height:28px}.loop-letter dl{grid-template-columns:88px 1fr}.loop-preview{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.loop-v143 *, .loop-v143 *:before,.loop-v143 *:after{scroll-behavior:auto}}
+body.loop-v143 .loop-preview,body.loop-v143 .loop-notice{color:#49321e!important;opacity:1!important}
+@media(max-height:650px){body.loop-v143 .scene-stock-nav{min-height:30px}body.loop-v143 .herb-materials{max-height:52px}body.loop-v143 .scene-stock .herb-slot{min-height:44px;height:44px}body.loop-v143 .scene-stock .herb-slot img{width:24px;height:24px}body.loop-v143 .scene-pill-row>button{height:44px;min-height:44px;max-height:44px}body.loop-v143 .scene-pill-row .ux-pill-art{width:24px;height:24px}.loop-selected-heading{min-height:22px}.loop-preview{margin-bottom:1px;line-height:16px}}
+body.loop-v143 .furnace-facts b{white-space:nowrap!important;overflow-wrap:normal!important;word-break:normal!important}@media(max-height:650px){body.loop-v143 .furnace-judgment #refineOdds dl{gap:1px!important}body.loop-v143 .furnace-judgment #refineOdds dl>div{min-height:18px!important}body.loop-v143 .furnace-judgment #refineOdds dt,body.loop-v143 .furnace-judgment #refineOdds dd{font-size:12px!important;line-height:18px!important}body.loop-v143 .furnace-facts{margin-bottom:3px!important;padding-bottom:3px!important;gap:3px!important}body.loop-v143 .furnace-facts b{font-size:18px!important;line-height:22px!important}body.loop-v143 .furnace-facts span{line-height:18px!important}}

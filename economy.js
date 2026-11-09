@@ -14,11 +14,11 @@ const TOOL_DEFS=[
 {id:'ash',name:'烬金印',price:400,day:3,description:'每次燃纹，本炉丹值系数永久增加15%，最多两层；换炉清零。'},
 {id:'fusion',name:'合璧镜',price:440,day:4,description:'融合后，下一次成功必显基础纹；每炉最多触发两次，不在同次炼化递归。'},
 {id:'six',name:'六合盘',price:520,day:5,description:'持有4–5道纹时炸炉率相对降低15%；6道时降低30%。失去纹路即重算。'},
-{id:'guide_red',name:'赤砂引',price:260,day:2,runeTarget:'赤纹',description:'生纹时若尚无赤纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包候选优先包含赤纹。同炉限一件定向法器。'},
-{id:'guide_blue',name:'青苔引',price:260,day:2,runeTarget:'青纹',description:'生纹时若尚无青纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包候选优先包含青纹。同炉限一件定向法器。'},
-{id:'guide_moon',name:'月华引',price:260,day:2,runeTarget:'月纹',description:'生纹时若尚无月纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包候选优先包含月纹。同炉限一件定向法器。'},
-{id:'guide_thunder',name:'雷砂引',price:260,day:2,runeTarget:'雷纹',description:'生纹时若尚无雷纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包候选优先包含雷纹。同炉限一件定向法器。'}];
-const PRICES=[18,42,70],TOOLS=Object.fromEntries(TOOL_DEFS.map(t=>[t.id,t.price])),UPGRADES=[0,360,900];
+{id:'guide_red',name:'赤砂引',price:260,day:2,runeTarget:'赤纹',description:'生纹时若尚无赤纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包随机显纹同样受此倾向影响：赤纹。同炉限一件定向法器。'},
+{id:'guide_blue',name:'青苔引',price:260,day:2,runeTarget:'青纹',description:'生纹时若尚无青纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包随机显纹同样受此倾向影响：青纹。同炉限一件定向法器。'},
+{id:'guide_moon',name:'月华引',price:260,day:2,runeTarget:'月纹',description:'生纹时若尚无月纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包随机显纹同样受此倾向影响：月纹。同炉限一件定向法器。'},
+{id:'guide_thunder',name:'雷砂引',price:260,day:2,runeTarget:'雷纹',description:'生纹时若尚无雷纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包随机显纹同样受此倾向影响：雷纹。同炉限一件定向法器。'}];
+const PRICES=[18,42,56],TOOLS=Object.fromEntries(TOOL_DEFS.map(t=>[t.id,t.price])),UPGRADES=[0,360,900];
 const EQUIP_SLOTS=3;
 function equippedIds(value){let directed=false;return [...new Set(Array.isArray(value)?value:value?[value]:[])].filter(id=>{const tool=TOOL_DEFS.find(t=>t.id===id);if(!tool)return false;if(tool.runeTarget){if(directed)return false;directed=true;}return true;}).slice(0,EQUIP_SLOTS);}
 function runeTarget(value){return TOOL_DEFS.find(t=>t.runeTarget&&equippedIds(value).includes(t.id))?.runeTarget||null;}
@@ -31,9 +31,10 @@ function ensure(c){if(!c.economy)c.economy={coins:80,earned:0,spent:0,stock:[0,0
 function buy(c,kind,id){const e=ensure(c);let price;if(kind==='material'){if(!Number.isInteger(id)||id<0||id>2)return false;price=PRICES[id];}else if(kind==='tool'){if(!TOOLS[id]||e.tools.includes(id)||(c.day||1)<TOOL_DEFS.find(t=>t.id===id).day)return false;price=TOOLS[id];}else if(kind==='furnace'){if(e.furnace>=2)return false;price=UPGRADES[e.furnace+1];}else return false;if(e.coins<price)return false;e.coins-=price;e.spent+=price;if(kind==='material')e.stock[id]++;else if(kind==='tool')e.tools.push(id);else e.furnace++;return true;}
 function credit(c,n,label){const e=ensure(c);n=Math.max(0,Math.round(n));e.coins+=n;e.earned+=n;e.last=label+' +'+n+' 铜钱';return n;}
 function fee(o){return 30+Math.round(o.target*.15);}
-function commission(c,o,pills){if(o.paid)return 0;o.paid=true;if(o.status!=='completed')return 0;const e=ensure(c);const leftover=Math.max(0,o.returned||0);const nature=['warm','cool'].includes(o.nature)?o.nature:'neutral';e.herbs[nature]+=leftover;o.gifted=leftover;o.returned=0;const bonus=Math.min(fee(o),pills.reduce((n,p)=>n+(p.quality||0)*3+Math.max(0,(p.turn||1)-4)*2+(p.runes?.length||0)*4,0));o.reward=fee(o)+bonus;return credit(c,o.reward,'委托工钱与加赏');}
+function commissionReward(o,pills){const bonus=Math.min(fee(o),pills.reduce((n,p)=>n+(p.quality||0)*3+Math.max(0,(p.turn||1)-4)*2+(p.runes?.length||0)*4,0));return fee(o)+bonus;}
+function commission(c,o,pills){if(o.paid)return 0;o.paid=true;if(o.status!=='completed')return 0;const e=ensure(c);const leftover=Math.max(0,o.returned||0);const nature=['warm','cool'].includes(o.nature)?o.nature:'neutral';e.herbs[nature]+=leftover;o.gifted=leftover;o.returned=0;o.reward=commissionReward(o,pills);return credit(c,o.reward,'委托工钱与加赏');}
 function saleValue(c,p){return Math.round(p.value*(c.economy?.furnace>=2&&p.turn>=6?.65:.55));}
-function storePill(c,p,order){const e=ensure(c);if(!order?.self||order.status!=='active'||typeof order.id!=='string'||!Array.isArray(e.pills)||e.pills.some(x=>x?.id===order.id))return false;e.pills.push({...(typeof p.appearance==='string'?{appearance:p.appearance}:{}),id:order.id,day:c.day,value:p.value,turn:p.turn,quality:p.quality,runes:[...p.runes],...(p.runeLevels?{runeLevels:{...p.runeLevels}}:{}),...(Number.isFinite(p.baseValue)?{baseValue:p.baseValue}:{}),nature:order.nature});e.last='自炼成丹已收入丹药背包，可保留或手动出售';return true;}
+function storePill(c,p,order){const e=ensure(c),id=p.id;if(typeof id!=='string'||!id||!Array.isArray(e.pills)||e.pills.some(x=>x?.id===id)||!Number.isFinite(p.value)||p.value<=0||!Number.isInteger(p.turn)||p.turn<1||p.turn>100||!Array.isArray(p.runes))return false;e.pills.push({...(typeof p.appearance==='string'?{appearance:p.appearance}:{}),id,day:c.day,value:p.value,turn:p.turn,quality:p.quality,runes:[...p.runes],...(p.runeLevels?{runeLevels:{...p.runeLevels}}:{}),...(Number.isFinite(p.baseValue)?{baseValue:p.baseValue}:{}),nature:p.nature||order?.nature||'neutral'});e.last='丹药已入库，可保留、提交或出售';return true;}
 function sale(c,id){const e=ensure(c);if(typeof id!=='string'||!Array.isArray(e.pills))return false;const index=e.pills.findIndex(p=>p?.id===id);if(index<0)return false;const p=e.pills[index];if(!Number.isFinite(p.value)||p.value<=0||!Number.isInteger(p.turn)||p.turn<1||p.turn>100)return false;const n=saleValue(c,p);e.pills.splice(index,1);e.sold++;return credit(c,n,'背包成丹出售');}
-const api={saleValue,storePill,runeTarget,pickRune,runeCandidates,EQUIP_SLOTS,equippedIds,hasTool,TOOL_DEFS,toolRisk,outcomeWeights,PRICES,TOOLS,UPGRADES,ensure,buy,credit,fee,commission,sale};if(typeof module!=='undefined')module.exports=api;else root.AlchemyEconomy=api;
+const api={commissionReward,saleValue,storePill,runeTarget,pickRune,runeCandidates,EQUIP_SLOTS,equippedIds,hasTool,TOOL_DEFS,toolRisk,outcomeWeights,PRICES,TOOLS,UPGRADES,ensure,buy,credit,fee,commission,sale};if(typeof module!=='undefined')module.exports=api;else root.AlchemyEconomy=api;
 })(typeof window!=='undefined'?window:globalThis);

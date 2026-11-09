@@ -26,15 +26,15 @@
     const near=v.workMode==='furnace',live=!s.pillEnded&&!s.roundEnded;
     let target=null,rect=null,text='';
     if(held==='pill'){
-      target=document.querySelector('.furnace-tray');rect=layout.objects.tray;text='放入盘中 · Esc 放回';
+      target=document.querySelector('.furnace-tray');rect=layout.objects.tray;text='收丹入库';
     }else if(held==='herbs'){
-      target=document.getElementById('alchemyScene');rect=layout.mouth;text='投入炉口 · Esc 放回';
+      target=document.getElementById('alchemyScene');rect=layout.mouth;text='投入炉口';
     }else if(!enabled)return;
     else if(s.runeChoices?.length)return;
     else if(near&&live&&!flags.refine&&s.turn<100){
       target=document.querySelector('.furnace-fire');rect=layout.firebox;text='点火门催炼';
     }else if(near&&live&&!flags.collect){
-      target=document.querySelector('.furnace-pill');rect=layout.objects.pill;text='拿起丹药';
+      target=document.querySelector('.furnace-tray');rect=layout.objects.tray;text='收丹入库';
     }else if(near&&s.pillEnded&&['collect','explode'].includes(s.endReason)&&!flags.leave){
       // The receipt already names the next step; highlight its real action only.
       target=document.querySelector('#roomSettlement [data-primary]');text='';

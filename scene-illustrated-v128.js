@@ -6,7 +6,7 @@
  document.body.classList.add('scene-continuity','scene-spatial','art-repair');let fitting=false,queued=false,geometry='',heldViewport='',stockKey='',notice='',noticeTimer,noticeScope='';
  const foreground=document.createElement('div');foreground.className='scene-front-mask';foreground.setAttribute('aria-hidden','true');stage.append(foreground);
  const caption=document.createElement('p');caption.className='scene-value-caption';caption.textContent='丹值';judgment.prepend(caption);
- const demand=document.createElement('button');demand.className='scene-demand';demand.type='button';demand.dataset.focusKey='scene-demand';demand.onclick=()=>route.navigate('orders',{anchor:demand});
+ const demand=document.createElement('button');demand.className='scene-demand';demand.type='button';demand.dataset.focusKey='scene-demand';demand.onclick=()=>window.AlchemyLoop.openDemand(demand);
  const shelfNav=document.createElement('div');shelfNav.className='scene-stock-nav';shelfNav.innerHTML='<strong>丹料</strong><span class="scene-balance" aria-label="铜钱"></span><button type="button" data-focus-key="scene-bag" data-scene-view="bag">丹药</button><button type="button" data-focus-key="scene-equipment" data-scene-view="equipment">法器</button>';
  const pills=document.createElement('section');pills.className='scene-pill-stock';pills.setAttribute('aria-label','丹药库存');
  const stockStatus=document.createElement('p');stockStatus.className='scene-stock-status';stockStatus.setAttribute('role','status');stockStatus.hidden=true;
@@ -35,7 +35,7 @@
   const viewportKey=[near,w,h].join(':');if(window.AlchemyScene2D.held&&heldViewport===viewportKey)return true;heldViewport=viewportKey;
   if(judgment.parentElement!==viewport)viewport.append(judgment);if(herbs.parentElement!==viewport)viewport.append(herbs);
   const items=Math.max(herbs.querySelectorAll('.herb-slot[data-slot]').length,game.campaign()?.economy?.pills?.length||0),dockWidth=mobile?w:Math.min(420,Math.max(248,Math.min(6,items)*68+24));herbs.style.setProperty('width',dockWidth+'px','important');
-  const stockHeight=Math.max(112,Math.min(220,herbs.scrollHeight));
+  const stockHeight=Math.max(112,Math.min(mobile?Math.min(360,Math.max(112,h-245),h*.56):Math.min(360,h*.48),herbs.scrollHeight));
   const sceneH=mobile?Math.max(245,h-stockHeight):h,width=mobile?w:1600,scale=w/width,height=sceneH/scale,imageHeight=width*data.height/data.width,top=(height-imageHeight)/2;
   const next=[near,mobile,w,h,sceneH,width,height].join(':');if(window.AlchemyScene2D.held&&geometry&&geometry!==next)window.AlchemyScene2D.cancel();
   document.body.classList.toggle('world-mobile',mobile);document.body.classList.toggle('compact-forge',!mobile&&w<1280);
@@ -66,7 +66,7 @@
  }finally{fitting=false;}}
  function update(){const s=game.snapshot(),v=route.snapshot(),near=v.workMode==='furnace',heading=document.querySelector('.furnace-heading');stock();
   const host=near?heading:document.querySelector('.engine-nav');if(demand.parentElement!==host)host.append(demand);demand.hidden=v.location!=='work'||!s.order||s.roundEnded;demand.textContent=s.order?.self?'自炼':(s.order?.client||'委托')+' · 还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'丹值';demand.setAttribute('aria-label','查看完整需求，目标'+s.target+'丹值，已交'+Math.round(s.delivered)+'，还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'丹值');
-  const amount=facts.querySelector('b');amount.textContent=Math.round(s.value);amount.style.fontSize=amount.textContent.length>7?'18px':amount.textContent.length>4?'22px':innerWidth<=650?'28px':'32px';amount.style.lineHeight='1.2';facts.querySelector('span').textContent=s.turn+'转';facts.querySelector('small').hidden=true;
+  const amount=facts.querySelector('b');amount.textContent=Math.round(s.value);amount.style.fontSize=amount.textContent.length>7?(innerWidth<=340?'14px':'18px'):amount.textContent.length>4?'22px':innerWidth<=650?'28px':'32px';amount.style.lineHeight='1.2';facts.querySelector('span').textContent=s.turn+'转';facts.querySelector('small').hidden=true;
   judgment.hidden=!near||v.current!=='work'||!live(s)||!!s.runeChoices?.length;
   const back=heading.querySelector('.furnace-back');back.textContent='‹';back.setAttribute('aria-label','返回炼丹房');
   herbs.classList.add('scene-stock');herbs.dataset.sceneVisible=String(v.location==='work'&&v.current==='work'&&document.getElementById('roomSettlement').hidden);
