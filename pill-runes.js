@@ -1,9 +1,10 @@
-/* V136: approved B painting with mineral oxide palettes, shared across all pill views.
+/* V138: approved B painting with seven stable mineral palettes, shared across all pill views.
  * Growth is derived from saved turn/quality; it never awards runes or changes a roll. */
 (() => {
   'use strict';
   const BODIES = Object.freeze({warm:'assets/pill-mineral-v136/warm.webp',neutral:'assets/pill-mineral-v136/neutral.webp',cool:'assets/pill-mineral-v136/cool.webp'});
   const BODY = BODIES.neutral;
+  const palettes = window.AlchemyPillPalette;
   const SIZE = 256;
   const cache = new Map();
   let bounds = new WeakMap();
@@ -62,8 +63,9 @@
     const shield=!!p.shield,moonCharge=!!(p.moonCharge||p.toolProgress?.moonCharge);
     const stage=turn>=60?3:turn>=30?2:turn>=10?1:0;
     const growth=(turn-1)/99;
-    const key=JSON.stringify([nature,turn,quality,runes]);
-    return {nature,turn,quality,runes,shield,moonCharge,stage,growth,key,
+    const appearance=palettes.resolve(nature,p.appearance);
+    const key=JSON.stringify([appearance,nature,turn,quality,runes]);
+    return {appearance,nature,turn,quality,runes,shield,moonCharge,stage,growth,key,
       stageName:['初显','凝实','分枝','贯通'][stage]};
   }
   function bodyBounds(im) {
@@ -90,8 +92,8 @@
       const strength=strengths[i];if(strength<.015||(secondary&&i>1))return;
       ctx.save();ctx.globalAlpha=(secondary?.80:1)*(.76+d.quality*.06);
       if(i>0){ctx.translate(36,53);ctx.scale(.45+.55*strength,.45+.55*strength);ctx.translate(-36,-53);ctx.globalAlpha*=strength;}
-      const path=new Path2D(shape),redOnRed=d.nature==='warm'&&def.kind==='fire';
-      ctx.strokeStyle=redOnRed?'#46291eee':'#4a2c1c9c';ctx.lineWidth=(redOnRed?4:1.8)+g*.6;ctx.stroke(path);
+      const path=new Path2D(shape),redOnRed=['lead-red','copper-red'].includes(d.appearance)&&def.kind==='fire';
+      ctx.strokeStyle=redOnRed?'#30201cf2':'#4a2c1c9c';ctx.lineWidth=(redOnRed?(d.appearance==='copper-red'?6:4):1.8)+g*.6;ctx.stroke(path);
       ctx.fillStyle=tone;ctx.fill(path);
       const body=window.AlchemyAssets?.getImage(BODY);
       if(body?.naturalWidth){const b=bodyBounds(body);ctx.save();ctx.clip(path);ctx.globalCompositeOperation='multiply';ctx.globalAlpha*=.25;ctx.drawImage(body,b.x,b.y,b.w,b.h,0,0,100,100);ctx.restore();}
@@ -102,7 +104,7 @@
   function make(p) {
     const d=describe(p);if(cache.has(d.key)){const hit=cache.get(d.key);cache.delete(d.key);cache.set(d.key,hit);return hit;}
     const c=document.createElement('canvas');c.width=c.height=SIZE;const ctx=c.getContext('2d');
-    const im=window.AlchemyAssets?.getImage(BODIES[d.nature]||BODY);if(!im?.naturalWidth)return {canvas:c,url:c.toDataURL(),description:d};
+    const im=window.AlchemyAssets?.getImage(palettes.sources[d.appearance]);if(!im?.naturalWidth)return {canvas:c,url:c.toDataURL(),description:d};
     const b=bodyBounds(im),cx=128,cy=128,r=124;
     ctx.save();ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.clip();
     ctx.drawImage(im,b.x,b.y,b.w,b.h,4,4,248,248);
@@ -131,7 +133,7 @@
   }
   function selection(nature,quality,runes=[]){return {body:image({nature,quality,runes,turn:60}),cracks:[],q:clamp(quality,0,4)};}
   function hydrate(scope=document){scope.querySelectorAll('[data-pill-art-state]').forEach(el=>{const p=JSON.parse(el.dataset.pillArtState);el.querySelector('img').src=image(p);el.dataset.pillArtKey=describe(p).key;});}
-  window.AlchemyPillArt={image,draw,describe,selection,hydrate,definitions,bodySource:BODY,bodySources:BODIES,hues:['#D5DEE1','#91B78B','#74A9D4','#B091CC','#DFB87C'],get cacheSize(){return cache.size;},get feedback(){return feedback;}};
+  window.AlchemyPillArt={image,draw,describe,selection,hydrate,definitions,bodySource:BODY,bodySources:BODIES,paletteSources:palettes.sources,hues:['#D5DEE1','#91B78B','#74A9D4','#B091CC','#DFB87C'],get cacheSize(){return cache.size;},get feedback(){return feedback;}};
   window.addEventListener('alchemy:assets-ready',()=>{bounds=new WeakMap();cache.clear();});
   window.addEventListener('alchemy:render',()=>{const d=describe(window.AlchemyGame.snapshot());if(current?.key!==d.key){previous=current;current=d;}});
   window.addEventListener('alchemy:refine-result',e=>{const d=describe(window.AlchemyGame.snapshot());feedback={key:d.key,start:performance.now(),outcome:e.detail.outcome,previous:previous?.key||null};window.dispatchEvent(new Event('alchemy:pill-surface'));});

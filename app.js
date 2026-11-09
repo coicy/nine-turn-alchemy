@@ -495,6 +495,7 @@
     state.attempt += 1;
     const own=campaignRules?.active(campaign);if(own?.self&&own.source)window.AlchemySaves?.setPreference(own.source==='gift'?'usedGift':'usedPurchased',true);
     state.pill = freshPill();
+    const palette=window.AlchemyPillPalette;if(palette)state.pill.appearance=palette.pick(own?.nature||'neutral',own?.id||'single',state.attempt);
     state.riskResult = randomRisk(1);
     if(campaignRules?.active(campaign)?.tier===1){state.pill.quality=1;state.pill.qualityFloor=1;}
     state.pillEnded = false;
@@ -563,7 +564,7 @@
     const isSelf=!!campaignRules?.active(campaign)?.self;
     if(isSelf&&!window.AlchemyEconomy.storePill(campaign,state.pill,campaignRules.active(campaign))){setFeedback('丹药背包记录异常，未覆盖原数据，炉内成丹已保留。','bad');render();return;}
     state.delivered += state.pill.value;
-    state.collected.push({value:state.pill.value,baseValue:state.pill.baseValue,runeLevels:{...state.pill.runeLevels},quality:state.pill.quality,turn:state.pill.turn,runes:[...state.pill.runes],nature:campaignRules?.active(campaign)?.nature || 'neutral'});
+    state.collected.push({...(state.pill.appearance?{appearance:state.pill.appearance}:{}),value:state.pill.value,baseValue:state.pill.baseValue,runeLevels:{...state.pill.runeLevels},quality:state.pill.quality,turn:state.pill.turn,runes:[...state.pill.runes],nature:campaignRules?.active(campaign)?.nature || 'neutral'});
     state.pillEnded = true;
     state.pillEndReason = "collect";
     state.roundEnded = state.delivered >= ORDER_TARGET || state.attempt >= MAX_PILLS;
@@ -659,7 +660,7 @@
   }
   window.AlchemyGame = { canReplaceEquipment, replaceEquipment, RUNE_CHANCE, RUNE_DEFS, refinementProbabilities, runeLevelsFor, runeValueMultiplier, valueForBase, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
-    snapshot: () => ({ ...playtestSnapshot(), started: state.started,
+    snapshot: () => ({ ...playtestSnapshot(), ...(state.pill.appearance?{appearance:state.pill.appearance}:{}), started: state.started,
     busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
     endReason: state.pillEndReason, remaining: campaign && !state.orderId ? 0 : MAX_PILLS - state.attempt, target: ORDER_TARGET,
     toolProgress:{uses:{...state.pill.toolUses},moonCharge:state.pill.moonCharge||0,returnRune:state.pill.returnRune||null,fusionPending:!!state.pill.fusionPending,scars:state.pill.scars||0,chain:state.pill.successChain||0,valueFactor:state.pill.valueFactor??1,triggers:[...(state.pill.triggers||[])]},runeChoices:state.pill.runeChoices||[],toolUsed:!!state.pill.toolUsed,campaignEnabled: !!campaign, collected: state.collected,

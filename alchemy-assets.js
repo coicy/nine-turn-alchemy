@@ -12,9 +12,9 @@
       target.classList.add('layered-game-pill','raster-pill');target.dataset.nature=d.nature;
     }
     document.getElementById('pillStage')?.classList.add('surface-runes');
-    const label=document.getElementById('natureValue');if(label)label.textContent=s.pillEnded?'—':({warm:'温性 · 熟褐',cool:'寒性 · 青灰',neutral:'平性 · 草赭'}[d.nature]||'平性 · 草赭');
+    const label=document.getElementById('natureValue');if(label)label.textContent=s.pillEnded?'—':({warm:'温性',cool:'寒性',neutral:'平性'}[d.nature]||'平性');
     document.querySelectorAll('#trayPills i').forEach(node=>{
-      const state={nature:node.dataset.nature,quality:Number(node.dataset.quality),turn:Number(node.dataset.turn)||1,runes:(node.dataset.runes||'').split(',').filter(Boolean)};
+      const state={appearance:node.dataset.appearance,nature:node.dataset.nature,quality:Number(node.dataset.quality),turn:Number(node.dataset.turn)||1,runes:(node.dataset.runes||'').split(',').filter(Boolean)};
       const next=window.AlchemyPillArt.describe(state).key;if(node.dataset.artKey===next)return;node.dataset.artKey=next;node.classList.add('layered-tray-pill');
       const im=document.createElement('img');im.src=window.AlchemyPillArt.image(state);im.alt='';im.style.cssText='width:100%;height:100%';node.replaceChildren(im);
     });
