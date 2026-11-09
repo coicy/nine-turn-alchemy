@@ -9,7 +9,7 @@
   const cache = new Map();
   let bounds = new WeakMap();
   const definitions = {
-    '赤纹': {color:'#b36a48', light:'#ce9870', kind:'fire'},
+    '赤纹': {color:'#cd8d65', light:'#ce9870', kind:'fire'},
     '青纹': {color:'#608477', light:'#91ac95', kind:'water'},
     '月纹': {color:'#c2b38c', light:'#d2c29b', kind:'moon'},
     '雷纹': {color:'#b69a60', light:'#ceb17a', kind:'thunder'},
@@ -76,7 +76,7 @@
       for(let j=1;j<points.length;j++){
         const a=points[j-1],b=points[j];if(Math.hypot(b.x-a.x,b.y-a.y)>5)continue;
         const taper=.45+.55*Math.pow(Math.sin(Math.PI*b.t),.45),grain=.90+.10*Math.sin(j*1.73+i*2);
-        const lightBody=['lead-yellow','tin-white'].includes(d.appearance),earth={moon:'#8e7954',thunder:'#94703d',gold:'#8c6434',star:'#76667c'};
+        const lightBody=['lead-yellow','tin-white'].includes(d.appearance),earth={fire:'#a75b3c',moon:'#8e7954',thunder:'#94703d',gold:'#8c6434',star:'#76667c'};
         ctx.lineWidth=(3.6+g*.8)*taper*grain;ctx.strokeStyle=redOnRed?'#ce9870':lightBody?(earth[def.kind]||def.color):def.color;
         ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
       }
