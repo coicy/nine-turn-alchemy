@@ -35,8 +35,15 @@
   const viewportKey=[near,w,h].join(':');if(window.AlchemyScene2D.held&&heldViewport===viewportKey)return true;heldViewport=viewportKey;
   if(judgment.parentElement!==viewport)viewport.append(judgment);if(herbs.parentElement!==viewport)viewport.append(herbs);
   const items=Math.max(herbs.querySelectorAll('.herb-slot[data-slot]').length,game.campaign()?.economy?.pills?.length||0),dockWidth=mobile?w:Math.min(420,Math.max(248,Math.min(6,items)*68+24));herbs.style.setProperty('width',dockWidth+'px','important');
-  const stockHeight=Math.max(112,Math.min(mobile?Math.min(360,Math.max(112,h-245),h*.56):Math.min(360,h*.48),herbs.scrollHeight));
-  const sceneH=mobile?Math.max(245,h-stockHeight):h,width=mobile?w:1600,scale=w/width,height=sceneH/scale,imageHeight=width*data.height/data.width,top=(height-imageHeight)/2;
+  const width=mobile?w:1600,scale=w/width,height=h/scale,imageHeight=width*data.height/data.width;
+  // Reserve a stable interaction area from the projection, never from changing UI content.
+  // On short screens keep both the mouth and the complete fire hit region above the dock.
+  const fireBottom=(data.fire.y+data.fire.h/2)*imageHeight+Math.max(data.fire.h*imageHeight,44/scale)/2;
+  const minimumScene=Math.ceil(Math.max(imageHeight*(1-2*data.mouth.y),2*fireBottom-imageHeight)*scale+16);
+  const stockLimit=mobile?Math.max(112,Math.min(360,h-minimumScene,h*.56)):Math.min(360,h*.48);
+  const stockBorder=Math.max(0,herbs.offsetHeight-herbs.clientHeight);
+  const stockHeight=Math.max(112,Math.min(stockLimit,herbs.scrollHeight+stockBorder));
+  const sceneH=mobile?Math.max(245,h-stockLimit):h,top=(sceneH/scale-imageHeight)/2;
   const next=[near,mobile,w,h,sceneH,width,height].join(':');if(window.AlchemyScene2D.held&&geometry&&geometry!==next)window.AlchemyScene2D.cancel();
   document.body.classList.toggle('world-mobile',mobile);document.body.classList.toggle('compact-forge',!mobile&&w<1280);
   viewport.style.setProperty('--work-top','0px');document.body.style.setProperty('--work-reserve','0px');
@@ -61,7 +68,7 @@
   Object.assign(L.toolRest,{x:0,y:0,w:width,h:height});Object.assign(L.objects.tool,{x:-300,y:-300,w:100,h:100});
   const book=point(data.book),casket=point(data.casket),door=minimum(project(data.door));rect(document.querySelector('.world-book-stack'),{x:book.x-48/scale,y:book.y-30/scale,w:96/scale,h:48/scale});rect(document.querySelector('.world-books'),{x:book.x-48/scale,y:book.y-30/scale,w:96/scale,h:48/scale});rect(document.querySelector('.world-casket'),{x:casket.x-28/scale,y:casket.y-24/scale,w:56/scale,h:48/scale});rect(document.querySelector('.passage-counter'),door);
   for(const sel of ['.world-book-stack','.world-books','.world-casket','.passage-counter']){const el=document.querySelector(sel);const r=el.getBoundingClientRect();el.style.visibility=near||r.right>w||r.left<0||r.bottom>sceneH||r.width<40?'hidden':'visible';}
-  rect(herbs,{x:mobile?0:w-dockWidth-12,y:mobile?sceneH:Math.max(0,h-stockHeight-12),w:dockWidth,h:stockHeight});herbs.style.removeProperty('height');herbs.style.setProperty('--stock-max-height',(mobile?h-sceneH:stockHeight)+'px');
+  rect(herbs,{x:mobile?0:w-dockWidth-12,y:mobile?h-stockHeight:Math.max(0,h-stockHeight-12),w:dockWidth,h:stockHeight});herbs.style.removeProperty('height');herbs.style.setProperty('--stock-max-height',(mobile?stockLimit:stockHeight)+'px');
   if(geometry!==next){geometry=next;window.dispatchEvent(new Event('alchemy:world-layout'));}return true;
  }finally{fitting=false;}}
  function update(){const s=game.snapshot(),v=route.snapshot(),near=v.workMode==='furnace',heading=document.querySelector('.furnace-heading');stock();

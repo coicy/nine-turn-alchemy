@@ -36,7 +36,8 @@
   function label(text,x,y){ctx.font='19px Microsoft YaHei';ctx.textAlign='center';ctx.fillStyle='#f7ead3';const w=ctx.measureText(text).width+28;ctx.fillRect(x-w/2,y-22,w,32);ctx.fillStyle='#503b29';ctx.fillText(text,x,y);}
   function floorExtension(){
     if(!window.AlchemyWorldLayout.mobile||canvas.width<1)return;
-    const base=parseFloat(stage.style.getPropertyValue('--room-base-height')),roomWidth=parseFloat(stage.style.getPropertyValue('--room-base-width')),left=parseFloat(stage.style.getPropertyValue('--room-camera-left'));
+    const imageHeight=parseFloat(stage.style.getPropertyValue('--room-base-height')),imageTop=window.AlchemySceneContinuity?parseFloat(stage.style.getPropertyValue('--scene-image-top'))||0:0;
+    const base=imageHeight+imageTop,roomWidth=parseFloat(stage.style.getPropertyValue('--room-base-width')),left=parseFloat(stage.style.getPropertyValue('--room-camera-left'));
     if(!Number.isFinite(base)||canvas.height<=base||roomWidth<1)return;
     const near=furnace(),im=window.AlchemyAssets?.getImage(window.AlchemySceneContinuity?.imageFor(near)||(near?'assets/furnace-view-v102/mobile-v2.webp':'assets/workbench-v92/room-mobile.png'));
     if(!im?.naturalWidth)return;
