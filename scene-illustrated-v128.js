@@ -4,6 +4,7 @@
  const stage=document.getElementById('pillStage'),forge=document.querySelector('.forge-panel'),viewport=document.querySelector('.engine-viewport');
  const judgment=document.querySelector('.furnace-judgment'),facts=judgment.querySelector('.furnace-facts'),herbs=document.querySelector('.herb-tray'),collect=document.querySelector('.furnace-tray');viewport.append(collect);
  document.body.classList.add('scene-continuity','scene-spatial','art-repair');let fitting=false,queued=false,geometry='',heldViewport='',stockKey='',notice='',noticeTimer,noticeScope='';
+ const drawLid=window.AlchemySceneLidLayer.mount(stage);
  const foreground=document.createElement('div');foreground.className='scene-front-mask';foreground.setAttribute('aria-hidden','true');stage.append(foreground);
  const caption=document.createElement('p');caption.className='scene-value-caption';caption.textContent='丹值';judgment.prepend(caption);
  const demand=document.createElement('button');demand.className='scene-demand';demand.type='button';demand.dataset.focusKey='scene-demand';demand.onclick=()=>window.AlchemyLoop.openDemand(demand);
@@ -21,7 +22,7 @@
  const lidState=()=>live(game.snapshot())&&!game.snapshot().busy&&!window.AlchemyScene2D.busy?'open':'closed';
  const rect=(el,r)=>{if(!el)return;for(const [k,n]of Object.entries({left:r.x,top:r.y,width:r.w,height:r.h}))el.style.setProperty(k,n+'px','important');el.style.setProperty('right','auto','important');el.style.setProperty('bottom','auto','important');};
  const keyFor=()=> (route.snapshot().workMode==='furnace'?'furnace':'room')+'-'+(innerWidth<=650?'mobile':'desktop');
- const imageFor=()=> 'assets/scene-illustrated-v128/'+keyFor()+'-'+lidState()+'.webp';
+ const imageFor=()=>window.AlchemySceneLidLayer.baseImage(keyFor());
  function stock(){
   if(!herbs.contains(shelfNav))herbs.prepend(shelfNav);if(!herbs.contains(pills))herbs.append(pills);if(!herbs.contains(stockStatus))shelfNav.after(stockStatus);
   const s=game.snapshot(),scope=[s.orderId,s.attempt,s.turn,s.pillEnded].join(':');if(scope!==noticeScope||window.AlchemyScene2D.held)notice='';stockStatus.textContent=notice;stockStatus.hidden=!notice;
@@ -50,11 +51,13 @@
   for(const el of [stage,forge]){for(const [k,n]of Object.entries({'--world-width':width,'--world-height':height,'--room-base-width':width,'--room-base-height':imageHeight,'--room-camera-left':0}))el.style.setProperty(k,n+'px');el.style.setProperty('width',width+'px','important');el.style.setProperty('height',height+'px','important');}
   stage.style.setProperty('--scene-scale',String(scale));stage.style.setProperty('--scene-image-top',top+'px');forge.style.left='0';forge.style.top='0';forge.style.transform='scale('+scale+')';forge.style.transformOrigin='0 0';
   const canvas=document.getElementById('alchemyScene');if(canvas.width!==Math.round(width))canvas.width=Math.round(width);if(canvas.height!==Math.round(height))canvas.height=Math.round(height);
-  const src=imageFor();stage.style.setProperty('--scene-v122-image','url("'+src+'")');stage.style.setProperty('--scene-front-image','url("assets/scene-illustrated-v128/'+keyFor()+'-front.webp")');foreground.hidden=!live(s)||!!window.AlchemyScene2D.held||s.busy||window.AlchemyScene2D.busy;stage.dataset.sceneImage=src;stage.dataset.lidState=lidState();stage.dataset.camera='work';stage.dataset.cameraCropped='false';
+  const lid=lidState(),src=imageFor();drawLid(keyFor(),lid);stage.style.setProperty('--scene-v122-image','url("'+src+'")');stage.style.setProperty('--scene-front-image','url("assets/scene-illustrated-v128/'+keyFor()+'-front.webp")');foreground.hidden=!live(s)||!!window.AlchemyScene2D.held||s.busy||window.AlchemyScene2D.busy;stage.dataset.sceneImage=src;stage.dataset.lidState=lid;stage.dataset.camera='work';stage.dataset.cameraCropped='false';
   const point=p=>({x:p.x*width,y:top+p.y*imageHeight}),project=r=>({x:r.x*width,y:top+r.y*imageHeight,w:r.w*width,h:r.h*imageHeight});
   const minimum=(r,min=44/scale)=>{const nw=Math.max(r.w,min),nh=Math.max(r.h,min);return{x:r.x-(nw-r.w)/2,y:r.y-(nh-r.h)/2,w:nw,h:nh};};
   Object.assign(L.mouth,minimum(project(data.mouth)));Object.assign(L.firebox,minimum(project(data.fire)));
   const center=point(data.pill),diameter=data.pillDiameter*width,size=Math.max(48/scale,diameter);Object.assign(L.objects.pill,{x:center.x-size/2,y:center.y-size/2,w:size,h:size,visualDiameter:diameter});L.cutaway.source=null;
+  // Only the painted lip crossing the pill can occlude it. Leave the furnace body on the shared backdrop.
+  foreground.style.clipPath='circle('+(diameter/2+2)+'px at '+center.x+'px '+center.y+'px)';
   rect(document.querySelector('.furnace-pill'),L.objects.pill);rect(document.querySelector('.furnace-fire'),L.firebox);rect(document.getElementById('fireResponse'),L.firebox);rect(document.querySelector('.furnace-resume'),L.mouth);
   const x=Math.min(w-76,Math.max(mobile?w*.72:w*.54,data.bodyRight*w+(mobile?10:44))),jw=Math.min(mobile?110:190,w-x-(mobile?3:8)),jy=(top+(data.mouth.y+data.mouth.h)*imageHeight)*scale+(mobile?34:16);
   rect(judgment,{x,y:jy,w:jw,h:220});judgment.style.removeProperty('height');
