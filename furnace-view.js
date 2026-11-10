@@ -40,6 +40,7 @@
 
   const live = s => s.started && !s.pillEnded && !s.roundEnded;
   const active = () => route.snapshot().workMode === 'furnace';
+  const availableMaterial = () => [...document.querySelectorAll('.herb-slot[aria-disabled=false]')].find(el => el.checkVisibility());
   const rect = (element, r) => {
     for (const name of ['x', 'y', 'w', 'h']) {
       element.style.setProperty({x:'left',y:'top',w:'width',h:'height'}[name], r[name] + 'px', 'important');
@@ -49,19 +50,18 @@
     if (!route.navigate('work', {workMode:'room'})) return;
     window.dispatchEvent(new Event('alchemy:furnace-leave'));
     requestAnimationFrame(() => {
-      const receipt = document.querySelector('#roomSettlement [data-primary]');
-      const material = [...document.querySelectorAll('.herb-slot:not([aria-disabled="true"])')].find(el => el.checkVisibility());
-      const target = live(game.snapshot()) ? resume
-        : receipt?.checkVisibility() ? receipt
-          : material || document.querySelector('.world-location-toggle');
-      target?.focus({preventScroll:true});
+      (resume.checkVisibility() ? resume : document.querySelector('.world-location-toggle'))?.focus({preventScroll:true});
     });
   }
   heading.querySelector('.furnace-back').onclick = returnToRoom;
   heading.querySelector('.furnace-inspect').onclick = () => route.navigate('pill', {anchor:heading.querySelector('.furnace-inspect')});
   heading.querySelector('.furnace-manual').onclick = () => route.navigate('manual', {chapter:'runes', anchor:heading.querySelector('.furnace-manual')});
   resume.onclick = () => {
-    if (route.navigate('work', {workMode:'furnace'})) requestAnimationFrame(() => pill.focus({preventScroll:true}));
+    if (!route.navigate('work', {workMode:'furnace'})) return;
+    requestAnimationFrame(() => {
+      const target = live(game.snapshot()) ? pill : availableMaterial() || heading.querySelector('.furnace-back');
+      target.focus({preventScroll:true});
+    });
   };
   fire.onclick = () => window.AlchemyScene2D.refine();
   tray.onclick = () => {
@@ -212,9 +212,11 @@
       endingKey = '';
       if (!window.AlchemyOpening?.active && lastLiveKey !== key) {
         lastLiveKey = key;
-        route.navigate('work', {workMode:'furnace', internal:true});
-        requestAnimationFrame(() => {if (!game.snapshot().runeChoices.length) pill.focus({preventScroll:true});});
-        return;
+        if (!active()) {
+          route.navigate('work', {workMode:'furnace', internal:true});
+          requestAnimationFrame(() => {if (!game.snapshot().runeChoices.length) pill.focus({preventScroll:true});});
+          return;
+        }
       }
     } else if (active() && s.started && s.pillEnded && ['collect','explode'].includes(s.endReason) && !window.AlchemyOpening?.active && endingKey !== key) {
       endingKey = key;
@@ -245,10 +247,9 @@
     heading.querySelector('.furnace-back').disabled = locked || held;
     heading.querySelector('.furnace-inspect').disabled = locked || held || (!live(s) && !collected);
     heading.querySelector('.furnace-manual').disabled = s.busy || fanning || held;
-    resume.hidden = near || !live(s) || v.location !== 'work';
-    if (!near) {
-      rect(resume, layout.mouth);
-    }
+    resume.hidden = near || !s.started || v.current !== 'work' || !!window.AlchemyOpening?.active;
+    resume.dataset.entryLabel = live(s) ? '回炉前 ›' : '进炉前 ›';
+    resume.setAttribute('aria-label', live(s) ? '返回炉前' : '点击丹炉，进入炉前');
     const campaign = game.campaign();
     facts.querySelector('b').textContent = s.endReason === 'explode' ? '本炉炸丹' : s.turn+'转 · 丹值 '+Math.round(s.value);
     facts.querySelector('span').textContent = ended
@@ -274,10 +275,10 @@
   window.addEventListener('alchemy:opening-finished', () => {lastLiveKey='';update();});
   window.addEventListener('alchemy:order', () => {
     endingKey = ''; lastLiveKey = '';
-    if (!live(game.snapshot())) route.navigate('work', {workMode:'room', internal:true});
+    if (!live(game.snapshot()) && !active()) route.navigate('work', {workMode:'room', internal:true});
   });
   window.addEventListener('alchemy:world-layout', () => {
-    if (!active()) rect(resume, layout.mouth);
+    if (!active() && !window.AlchemySceneContinuity) rect(resume, layout.mouth);
   });
   new ResizeObserver(() => {if (active()) fit();}).observe(judgment);
   update();

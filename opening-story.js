@@ -14,7 +14,7 @@
   const shots=[
     ['一张新招牌','你带着一只旧丹炉，在坊市租下临街的小屋。今日，你的丹坊开张了。','丹房 · 开张第一日','去柜台迎客 →','work'],
     ['第一位客人','','接待柜台 · 第一笔生意','请先点击桌上的委托纸笺','orders'],
-    ['点起第一炉火','三包委托药材已放进备药匣。先取一包投入炉口，这笔生意就从亲手开炉开始。','丹房 · 药材已备齐','亲手开炉 →','work']
+    ['点起第一炉火','三包委托药材已经备好。点丹炉进入炉前，再取一包投入炉口。','丹房 · 药材已备齐','亲手开炉 →','work']
   ];
   function request(view,ready){
     restoreTargets();cleanup();next.disabled=true;
@@ -45,7 +45,8 @@
       document.body.classList.remove('opening-in-scene');delete document.body.dataset.openingStep;
       layout.inert=false;nav.inert=false;if(close)close.inert=false;
       window.dispatchEvent(new Event('alchemy:opening-finished'));
-      (document.querySelector('.herb-slot[data-slot="0"]')||document.getElementById('alchemyScene')).focus({preventScroll:true});
+      const furnace=document.querySelector('.furnace-resume');
+      (furnace?.checkVisibility()?furnace:document.getElementById('alchemyScene')).focus({preventScroll:true});
     });
   }
   function begin(step){

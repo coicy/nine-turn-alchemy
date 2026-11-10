@@ -113,7 +113,7 @@ body.scene-spatial .world-placed-tool small,body.scene-spatial .world-empty-rest
 body.scene-spatial .world-placed-tool:before{left:22.5%!important;right:auto!important;bottom:-2px!important;top:auto!important;width:55%!important;height:4px!important;border:0!important;border-radius:50%!important;transform:none!important;box-shadow:none!important;background:#35271944!important}
 body.scene-spatial .world-placed-tool .tool-art{position:absolute!important;left:var(--tool-art-left,0px)!important;top:var(--tool-art-top,0px)!important;right:auto!important;bottom:auto!important;width:var(--tool-art-size,100%)!important;height:var(--tool-art-size,100%)!important;transform:none!important;filter:drop-shadow(0 1px 1px #3d2b1b66)}
 body.scene-spatial .furnace-resume{background:transparent!important;border:0!important;font-size:0;box-shadow:none!important}
-body.scene-spatial .furnace-resume:after{content:'炉前 ›';position:absolute;left:0;right:0;top:100%;font-size:13px;line-height:22px;color:#3c2a1b;background:transparent}
+body.scene-spatial .furnace-resume:after{content:attr(data-entry-label);position:absolute;left:0;right:0;top:100%;font-size:13px;line-height:22px;color:#3c2a1b;background:transparent}
 body.scene-spatial .pill-detail-panel.engine-panel,body.scene-spatial .equipment-drawer.engine-panel{inset:auto 16px 16px auto!important;width:340px!important;max-height:min(440px,55dvh)!important;background:#e8dbc1!important;border:0!important;box-shadow:0 4px 12px #32201433}
 body.scene-spatial .pill-detail-panel .pill-observe-art{float:left;width:112px;height:112px;margin:8px 12px 6px 0}
 body.scene-spatial .pill-detail-panel .pill-observe-art .ux-pill-art{width:112px!important;height:112px!important;margin:0}
@@ -194,7 +194,7 @@ body.art-repair .world-placed-tool .tool-art{filter:drop-shadow(0 1px 1px #49392
 body.art-repair .world-book-stack:after{background:#ece0c2d9;color:#4d4233;border-bottom:1px solid #9c825b;width:52px;left:50%;right:auto;transform:translateX(-50%);font-size:12px;line-height:20px;opacity:0;transition:opacity .12s}
 body.art-repair .world-book-stack:hover:after,body.art-repair .world-book-stack:focus-within:after{opacity:1}
 body.art-repair .passage-counter:after{left:50%;right:auto;width:68px;transform:translateX(-50%);font-size:13px;background:#e7dac0d9;border-bottom:2px solid #9e8260;color:#554735}
-body.art-repair .furnace-resume:after{font:14px/24px KaiTi,'Microsoft YaHei',serif;color:#615440;text-align:center;transform:none!important;bottom:auto!important;top:100%!important;padding:0!important;border:0!important;height:24px}
+body.art-repair .furnace-resume:after{left:50%;right:auto;top:54%!important;bottom:auto!important;transform:translateX(-50%)!important;padding:1px 8px!important;border:1px solid #a98258!important;border-radius:2px;background:#f4e6c9;color:#493021;font:14px/21px 'Microsoft YaHei',sans-serif;white-space:nowrap}
 body.art-repair .pill-detail-panel.engine-panel,body.art-repair .equipment-drawer.engine-panel{background:#eee4cddd!important;border:1px solid #ac9672!important;border-top:3px solid #8e7552!important;border-radius:3px;box-shadow:0 5px 14px #352c2233!important;color:#443c30}
 @media(max-width:650px){
  body.art-repair .engine-nav{padding:3px 7px!important;gap:3px}

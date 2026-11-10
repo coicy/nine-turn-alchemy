@@ -31,7 +31,8 @@
   // A material repaint may not remove these independent controls.
   if(!stock.contains(selection))stock.append(selection);if(!stock.contains(next))stock.append(next);
   document.getElementById('roomSettlement').hidden=true;document.getElementById('roomChoices').hidden=true;
-  stock.dataset.sceneVisible=String(atWork);const stockTitle=stock.querySelector('.scene-stock-nav strong');if(stockTitle){stockTitle.textContent=notice&&performance.now()<noticeUntil?notice:'丹料';stockTitle.setAttribute('role','status');}const demand=document.querySelector('.scene-demand');demand.hidden=!s.commission||v.location!=='work';
+  stock.dataset.sceneVisible=String(atWork);const stockTitle=stock.querySelector('.scene-stock-nav strong');if(stockTitle){const readyToLoad=v.workMode==='furnace'&&s.pillEnded&&stock.querySelector('.herb-slot[aria-disabled=false]');
+    stockTitle.textContent=notice&&performance.now()<noticeUntil?notice:readyToLoad?'取药投炉':'丹料';stockTitle.setAttribute('role','status');}const demand=document.querySelector('.scene-demand');demand.hidden=!s.commission||v.location!=='work';
   stock.querySelectorAll('[data-stock-pill]').forEach(el=>{el.setAttribute('aria-pressed',String(el.dataset.stockPill===selected));el.setAttribute('aria-label','选中丹药，丹值'+(pills.find(p=>p.id===el.dataset.stockPill)?.value||''));});
   const locked=busy(s),disabled=locked?' disabled':'',q=p&&game.previewSubmission(p.id);
   selection.hidden=!p;

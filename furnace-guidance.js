@@ -39,7 +39,7 @@
       // The receipt already names the next step; highlight its real action only.
       target=document.querySelector('#roomSettlement [data-primary]');text='';
       if(target?.checkVisibility())rect=screenRect(target);
-    }else if(!near&&s.pillEnded&&!flags.take){
+    }else if(near&&s.pillEnded&&!flags.take){
       target=[...document.querySelectorAll('.herb-slot[aria-disabled=false]')].find(el=>el.checkVisibility());
       if(target){rect=screenRect(target);text='取一包药';}
     }

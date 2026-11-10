@@ -14,7 +14,7 @@
  let unavailableAttempt=false;const originalTell=window.AlchemyUX.tell;
  function markUnavailable(e){unavailableAttempt=!!e.target.closest('.herb-slot[aria-disabled=true][data-slot]');setTimeout(()=>{unavailableAttempt=false;},0);}
  herbs.addEventListener('pointerdown',markUnavailable,true);herbs.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')markUnavailable(e);},true);
- window.AlchemyUX.tell=message=>{if(unavailableAttempt){notice=String(message);const s=game.snapshot();noticeScope=[s.orderId,s.attempt,s.turn,s.pillEnded].join(':');clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{notice='';schedule();},2800);schedule();}return originalTell(message);};
+ window.AlchemyUX.tell=message=>{if(unavailableAttempt){notice=String(message);const s=game.snapshot();noticeScope=[route.snapshot().workMode,s.orderId,s.attempt,s.turn,s.pillEnded].join(':');clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{notice='';schedule();},2800);schedule();}return originalTell(message);};
  herbs.addEventListener('click',e=>{const b=e.target.closest('[data-scene-view]');if(b)route.navigate(b.dataset.sceneView,{anchor:b});const pick=e.target.closest('[data-stock-pill]');if(pick){const id=pick.dataset.stockPill;if(route.navigate('bag',{anchor:pick}))requestAnimationFrame(()=>document.querySelector('.pill-bag-panel [data-pill-id="'+CSS.escape(id)+'"]')?.click());}});
  collect.onclick=()=>{if(window.AlchemyScene2D.held==='pill')window.AlchemyScene2D.collectHeld();else if(!window.AlchemyScene2D.held)game.collect();};
  document.getElementById('roomSettlement').addEventListener('click',e=>{if(e.target.closest('[data-furnace-room]')&&route.snapshot().workMode==='furnace'){e.preventDefault();e.stopImmediatePropagation();document.getElementById('roomSettlement').hidden=true;update();herbs.querySelector('.herb-slot[aria-disabled=false]')?.focus({preventScroll:true});}},true);
@@ -25,7 +25,7 @@
  const imageFor=()=>window.AlchemySceneLidLayer.baseImage(keyFor());
  function stock(){
   if(!herbs.contains(shelfNav))herbs.prepend(shelfNav);if(!herbs.contains(pills))herbs.append(pills);if(!herbs.contains(stockStatus))shelfNav.after(stockStatus);
-  const s=game.snapshot(),scope=[s.orderId,s.attempt,s.turn,s.pillEnded].join(':');if(scope!==noticeScope||window.AlchemyScene2D.held)notice='';stockStatus.textContent=notice;stockStatus.hidden=!notice;
+  const s=game.snapshot(),scope=[route.snapshot().workMode,s.orderId,s.attempt,s.turn,s.pillEnded].join(':');if(scope!==noticeScope||window.AlchemyScene2D.held)notice='';stockStatus.textContent=notice;stockStatus.hidden=!notice;
   const e=game.campaign()?.economy;if(!e)return;shelfNav.querySelector('.scene-balance').textContent=String(e.coins);
   const list=Array.isArray(e.pills)?e.pills:[];pills.hidden=!list.length;const next=list.map(p=>p.id+':'+p.value+':'+p.turn+':'+(p.runes||[]).join()).join('|');
   if(next!==stockKey||!pills.childElementCount){stockKey=next;window.AlchemyUX.html(pills,'<div class="scene-pill-caption">丹药 <span>'+list.length+'</span></div>'+(list.length?'<div class="scene-pill-row">'+list.map(p=>'<button type="button" data-stock-pill="'+p.id+'" data-focus-key="stock-pill-'+p.id+'" aria-label="查看'+p.turn+'转丹药，丹值'+Math.round(p.value)+'">'+window.AlchemyUX.art(p)+'<span>'+Math.round(p.value)+'</span></button>').join('')+'</div>':''));}
@@ -58,7 +58,11 @@
   const center=point(data.pill),diameter=data.pillDiameter*width,size=Math.max(48/scale,diameter);Object.assign(L.objects.pill,{x:center.x-size/2,y:center.y-size/2,w:size,h:size,visualDiameter:diameter});L.cutaway.source=null;
   // Only the painted lip crossing the pill can occlude it. Leave the furnace body on the shared backdrop.
   foreground.style.clipPath='circle('+(diameter/2+2)+'px at '+center.x+'px '+center.y+'px)';
-  rect(document.querySelector('.furnace-pill'),L.objects.pill);rect(document.querySelector('.furnace-fire'),L.firebox);rect(document.getElementById('fireResponse'),L.firebox);rect(document.querySelector('.furnace-resume'),L.mouth);
+  rect(document.querySelector('.furnace-pill'),L.objects.pill);rect(document.querySelector('.furnace-fire'),L.firebox);rect(document.getElementById('fireResponse'),L.firebox);if(!near){
+    const height=L.firebox.y+L.firebox.h-L.mouth.y;
+    const lidClearance=Math.max(18/scale,height*.2);
+    rect(document.querySelector('.furnace-resume'),{x:L.mouth.x,y:L.mouth.y-lidClearance,w:L.mouth.w,h:height+lidClearance});
+  }
   const x=Math.min(w-76,Math.max(mobile?w*.72:w*.54,data.bodyRight*w+(mobile?10:44))),jw=Math.min(mobile?110:190,w-x-(mobile?3:8)),jy=(top+(data.mouth.y+data.mouth.h)*imageHeight)*scale+(mobile?34:16);
   rect(judgment,{x,y:jy,w:jw,h:220});judgment.style.removeProperty('height');
   const jh=judgment.getBoundingClientRect().height,cy=Math.min(sceneH-52,Math.max(jy+jh+10,0)),adjustedY=Math.min(jy,cy-jh-10);
