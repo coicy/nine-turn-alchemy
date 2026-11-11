@@ -1,0 +1,16 @@
+/* V152 game feel: brief visual response layered over existing feedback events. */
+body.art-repair.object-world button,
+body.art-repair.object-world summary { transition: transform .12s ease-out, background-color .12s ease-out, border-color .12s ease-out; }
+body.art-repair.object-world button:active:not(:disabled),
+body.art-repair.object-world summary:active { transform: translateY(1px) scale(.975); }
+body.art-repair.object-world .furnace-fire:active:not(:disabled),
+body.art-repair.object-world .furnace-tray:active:not(:disabled) { filter:brightness(1.12); }
+.refine-feedback:not([hidden]) { animation: feel-feedback-pop .18s cubic-bezier(.2,.9,.3,1.15); }
+@keyframes feel-feedback-pop { 0% { opacity:0; transform:translateY(5px) scale(.96); } 100% { opacity:1; transform:translateY(0) scale(1); } }
+@media(prefers-reduced-motion:reduce) {
+  body.art-repair.object-world button,
+  body.art-repair.object-world summary { transition:none; }
+  body.art-repair.object-world button:active:not(:disabled),
+  body.art-repair.object-world summary:active { transform:none; }
+  .refine-feedback:not([hidden]) { animation:none; }
+}
