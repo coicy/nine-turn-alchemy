@@ -326,12 +326,38 @@
     });
   }
 
+  function alchemyBaseValue(turn, quality, factor=1, ashUses=0) {
+    const t=turn-1;
+    return (24+8*t+2*t*t+.08*t*t*t)*(1+quality*.08)*factor*(1+.15*ashUses);
+  }
+  // Read-only ordinary-success projection. Random new runes are extra, never promised.
+  function successValuePreview() {
+    if(!refinementProbabilities().available || state.busy || state.pill.runeChoices?.length)return null;
+    const p=state.pill, next={...p,runes:[...p.runes],runeLevels:runeLevelsFor(p)};
+    const chain=hasTool('chain')&&((p.successChain||0)+1)%2===0?1:(p.toolTurnBonus||0);
+    next.turn=Math.min(100,p.turn+1+chain+(p.moonCharge||0));
+    next.quality=Math.max(p.qualityFloor||0,qualityAtTurn(next.turn));
+    if(hasTool('return')&&p.returnRune&&next.runes.length<MAX_RUNES&&!next.runes.includes(p.returnRune)){
+      next.runes.push(p.returnRune);next.runeLevels[p.returnRune]=p.returnRuneLevel||1;
+      for(const [key,fusion] of Object.entries(FUSIONS)){
+        const needed=key.split('|');
+        if(needed.every(r=>next.runes.includes(r))&&!next.runes.includes(fusion.name)){
+          const level=needed.reduce((n,r)=>n+next.runeLevels[r],0);
+          next.runes=next.runes.filter(r=>!needed.includes(r));needed.forEach(r=>delete next.runeLevels[r]);
+          next.runes.push(fusion.name);next.runeLevels[fusion.name]=level;break;
+        }
+      }
+    }
+    next.value=valueForBase(alchemyBaseValue(next.turn,next.quality,p.valueFactor??1,uses('ash')),next);
+    const E=window.AlchemyEconomy,currentSale=E.saleValue(campaign,p),sale=E.saleValue(campaign,next);
+    return {turn:next.turn,value:next.value,increase:next.value-p.value,currentSale,sale,saleIncrease:sale-currentSale};
+  }
+
   function applyAlchemy(outcome) {
     const isBigSuccess = outcome === "big";
     const turnGain = (isBigSuccess ? 2 : 1)+turnBonus(outcome);state.pill.toolTurnBonus=0;state.pill.moonCharge=0;
     state.pill.turn = Math.min(100, state.pill.turn + turnGain);
-    const t=state.pill.turn-1;
-    state.pill.baseValue=(24+8*t+2*t*t+.08*t*t*t)*(1+state.pill.quality*.08)*(state.pill.valueFactor??1)*(1+.15*uses('ash'));
+    state.pill.baseValue=alchemyBaseValue(state.pill.turn,state.pill.quality,state.pill.valueFactor??1,uses('ash'));
     repricePill();
     state.pill.bestTurn = Math.max(state.pill.bestTurn, state.pill.turn);
   }
@@ -655,7 +681,7 @@
     if(typeof CustomEvent!=='undefined')window.dispatchEvent(new CustomEvent('alchemy:equipment-replaced',{detail:{oldId,newId}}));
     state.riskResult=randomRisk();render();return true;
   }
-  window.AlchemyGame = { submit:submitPill,previewSubmission,canReplaceEquipment, replaceEquipment, RUNE_CHANCE, RUNE_DEFS, refinementProbabilities, runeLevelsFor, runeValueMultiplier, valueForBase, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
+  window.AlchemyGame = { successValuePreview, submit:submitPill,previewSubmission,canReplaceEquipment, replaceEquipment, RUNE_CHANCE, RUNE_DEFS, refinementProbabilities, runeLevelsFor, runeValueMultiplier, valueForBase, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
     snapshot: () => ({ ...playtestSnapshot(), nature:state.pill.nature||(campaign?campaignRules.active(campaign)?.nature:null)||'neutral',tier:state.pill.tier||0,pillId:state.pill.id||null,commission:activeCommission(), ...(state.pill.appearance?{appearance:state.pill.appearance}:{}), started: state.started,
     busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,

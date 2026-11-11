@@ -1,0 +1,5 @@
+.success-value-preview{margin:4px 0 6px;max-width:100%;font:12px/1.5 "Microsoft YaHei",sans-serif;color:#33271d;overflow-wrap:anywhere}
+.success-value-preview[hidden]{display:none!important}
+.success-value-main{font-weight:700;color:#34502c;white-space:pre-line}
+.success-value-sale{color:#54412d}
+.success-value-preview[aria-busy=true]{opacity:.6}
