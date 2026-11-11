@@ -1,11 +1,42 @@
 /* Two independent menus, using the same paper-and-ink treatment as the existing navigation. */
 body.art-repair .engine-nav :is(.world-catalog-toggle,.world-books-toggle) { order:1; font-size:14px; white-space:nowrap; }
 .world-catalog-toggle .nav-compact { display:none; }
-:is(#worldCatalogMenu,#worldBooksMenu) { position:absolute; left:95px; top:100%; padding:24px; display:grid; gap:6px; background:#f3e6ca url('assets/workbench-v92/folio.png') center/100% 100% no-repeat; box-shadow:0 5px 16px #38261944; max-height:70dvh; overflow:auto; min-width:165px; z-index:95; }
+:is(#worldCatalogMenu,#worldBooksMenu) { position:absolute; left:95px; top:100%; display:grid; gap:6px; max-height:70dvh; overflow:auto; min-width:165px; z-index:95; }
 #worldBooksMenu { left:240px; }
 :is(#worldCatalogMenu,#worldBooksMenu)[hidden] { display:none!important; }
 body.object-world :is(#worldCatalogMenu,#worldBooksMenu) small { margin:4px 0; font-size:12px; color:#715439; }
 body.object-world :is(#worldCatalogMenu,#worldBooksMenu) button { display:block!important; min-height:44px; text-align:left; }
+/* A flexible paper surface: decorative painted borders are not stretched behind text. */
+body.object-world :is(#worldLocationMenu,#worldCatalogMenu,#worldBooksMenu,#worldSettings) {
+  padding:14px!important; gap:6px; background:linear-gradient(135deg,#f8efd9,#e8d6b5)!important;
+  border:2px solid #94724d!important; outline:1px solid #e8d6b5; outline-offset:-5px;
+  border-radius:3px; box-shadow:0 5px 16px #38261944;
+}
+body.object-world :is(#worldLocationMenu,#worldCatalogMenu,#worldBooksMenu,#worldSettings) small {
+  display:block; margin:1px 2px 4px; color:#6d4c35; font-size:13px;
+}
+body.art-repair.object-world .engine-nav :is(#worldLocationMenu,#worldCatalogMenu,#worldBooksMenu,#worldSettings) button {
+  display:block; min-height:44px; padding:8px 10px; font-size:14px; line-height:1.35; text-align:left;
+  color:#493528; background:#f9f0df; border:1px solid #b99a71; border-radius:3px;
+}
+body.art-repair.object-world .engine-nav :is(#worldLocationMenu,#worldCatalogMenu,#worldBooksMenu,#worldSettings) button:hover,
+body.art-repair.object-world .engine-nav :is(#worldLocationMenu,#worldCatalogMenu,#worldBooksMenu,#worldSettings) button:focus-visible {
+  background:#eedbb8; border-color:#8d5d3b;
+}
+body.art-repair.object-world .engine-nav :is(#worldLocationMenu,#worldCatalogMenu,#worldBooksMenu,#worldSettings) button[aria-pressed=true] {
+  color:#fff5e3; background:#884b36; border-color:#6e3828;
+}
+body.object-world :is(.equipment-drawer,.pill-detail-panel,.ux-confirm,#roomSettlement) {
+  background-image:linear-gradient(135deg,#f8efd9,#ead9ba)!important;
+  border:1px solid #a88761!important;
+}
+body.object-world :is(.equipment-drawer,.pill-detail-panel,.ux-confirm,#roomSettlement) button:not(:disabled) {
+  border:1px solid #9b7754;
+  border-radius:3px;
+}
+body.object-world :is(.equipment-drawer,.pill-detail-panel,.ux-confirm,#roomSettlement) button:focus-visible {
+  outline:2px solid #974e35; outline-offset:2px;
+}
 body[data-work-mode=furnace] :is(.world-catalog-toggle,.world-books-toggle) { display:none!important; }
 @media(max-width:650px) {
   body.art-repair .engine-nav { gap:2px; }
