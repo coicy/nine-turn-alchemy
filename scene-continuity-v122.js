@@ -6,7 +6,7 @@
  const collectButton=document.querySelector('.furnace-tray');viewport.append(collectButton);
  const assetRoot='assets/scene-continuity-v122/';let fitting=false,queued=false,lastGeometry='',currentImage='',heldViewport='';
  document.body.classList.add('scene-continuity');
- const caption=document.createElement('p');caption.className='scene-value-caption';caption.textContent='炉中丹值';judgment.prepend(caption);
+ const caption=document.createElement('p');caption.className='scene-value-caption';caption.textContent='炉中药力';judgment.prepend(caption);
  const demand=document.createElement('button');demand.className='scene-demand';demand.type='button';demand.onclick=()=>route.navigate('orders',{anchor:demand});
  const shelfNav=document.createElement('div');shelfNav.className='scene-stock-nav';shelfNav.innerHTML='<strong>丹料</strong><span class="scene-balance" aria-label="铜钱"></span><button type="button" data-scene-view="bag">丹匣</button><button type="button" data-scene-view="equipment">法器</button>';
  herbs.prepend(shelfNav);shelfNav.onclick=e=>{const b=e.target.closest('[data-scene-view]');if(b)route.navigate(b.dataset.sceneView,{anchor:b});};
@@ -73,7 +73,7 @@
   const host=near?heading:document.querySelector('.engine-nav');if(demand.parentElement!==host)host.append(demand);
   demand.hidden=v.location!=='work'||!s.order||s.roundEnded;
   demand.textContent=s.order?.self?'自炼':(s.order?.client||s.order?.name||'委托')+' · 还需'+Math.max(0,Math.ceil(s.target-s.delivered));
-  demand.setAttribute('aria-label',s.order?.self?'自炼备料':'查看完整需求，目标'+s.target+'丹值，已交'+Math.round(s.delivered)+'，还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'丹值');
+  demand.setAttribute('aria-label',s.order?.self?'自炼备料':'查看完整需求，目标'+s.target+'药力，已交'+Math.round(s.delivered)+'，还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'药力');
   const amount=facts.querySelector('b');amount.textContent=Math.round(s.value);const digits=amount.textContent.length,available=Math.max(78,judgment.clientWidth||innerWidth*.25),font=Math.min(innerWidth<=650?28:34,Math.max(16,(available-4)/(Math.max(1,digits)*.62)));amount.style.fontSize=font+'px';amount.style.lineHeight=(font+4)+'px';facts.querySelector('span').textContent=s.turn+'转';facts.querySelector('small').hidden=true;
   judgment.hidden=!near||v.current!=='work'||!live(s)||!!s.runeChoices?.length;
   const back=heading.querySelector('.furnace-back');back.textContent='‹';back.setAttribute('aria-label','返回炼丹房');

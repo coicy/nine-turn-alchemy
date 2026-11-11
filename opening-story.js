@@ -32,7 +32,7 @@
     scene.querySelector('#prologueLocation').textContent=shot[2];
     scene.querySelector('#prologueTitle').textContent=shot[0];
     scene.querySelector('#prologueStep').textContent=`${index+1} / 3`;
-    scene.querySelector('#prologueText').textContent=index===1?`${window.AlchemyCustomers?.profile(order)?.name||order?.client||'客人'}将三包药材放上柜台：“请替我代炼。条件写在这张纸笺上，请掌柜先看看。” 点击客人身前的委托纸笺，展开所求丹值、工钱与约定。`:shot[1];
+    scene.querySelector('#prologueText').textContent=index===1?`${window.AlchemyCustomers?.profile(order)?.name||order?.client||'客人'}将三包药材放上柜台：“请替我代炼。条件写在这张纸笺上，请掌柜先看看。” 点击客人身前的委托纸笺，展开所求药力、工钱与约定。`:shot[1];
     next.textContent=shot[3];
     window.AlchemySaves?.setPreference('openingStep',index);
     request(shot[4],()=>{if(index===1){allowNote();skip.focus({preventScroll:true});}else next.focus({preventScroll:true});});
@@ -63,7 +63,7 @@
   start.addEventListener('click',()=>{if(pending!==null&&window.AlchemyGame.snapshot().started){const step=pending;pending=null;begin(step);}});
   next.addEventListener('click',()=>{if(finishing||next.disabled)return;if(index<2){index++;show();}else finish();});
   skip.addEventListener('click',finish);
-  document.addEventListener('click',e=>{if(!active||index!==1||finishing)return;const note=e.target.closest?.('#counterNote');if(note){readNote=true;next.disabled=false;next.textContent='看清委托，携药回炉 →';scene.querySelector('#prologueText').textContent='委托纸笺可以随时点开查看。所求丹值、约定工钱和药材归属都在这里；看清后，带着客人的药材回炉。';}},false);
+  document.addEventListener('click',e=>{if(!active||index!==1||finishing)return;const note=e.target.closest?.('#counterNote');if(note){readNote=true;next.disabled=false;next.textContent='看清委托，携药回炉 →';scene.querySelector('#prologueText').textContent='委托纸笺可以随时点开查看。所求药力、约定工钱和药材归属都在这里；看清后，带着客人的药材回炉。';}},false);
   document.addEventListener('click',e=>{if(!active||index!==1||finishing)return;if(e.target.closest?.('#counterLetter [data-return-forge]')){e.preventDefault();e.stopImmediatePropagation();if(readNote){index=2;show();}}},true);
   document.addEventListener('keydown',e=>{
     if(!active)return;

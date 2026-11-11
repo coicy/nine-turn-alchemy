@@ -8,10 +8,10 @@ const TOOL_DEFS=[
 {id:'lucky',name:'鸣金铃',price:320,day:3,description:'非炸炉大成功权重2→4，不直接降低炸炉率。'},
 {id:'chain',name:'双仪环',price:420,day:4,description:'每连续两次成功或大成功，额外升一转；维持与受损打断连续。'},
 {id:'repair',name:'淬火盏',price:480,day:5,description:'每次真实受损使本炉炸炉概率相对降低15%，最多降低60%；换炉清零。'},
-{id:'phoenix',name:'返生鼎符',price:650,day:6,description:'每炉抵挡一次炸炉，维持转数但丹值损失40%；此损值系数持续到收丹。'},
+{id:'phoenix',name:'返生鼎符',price:650,day:6,description:'每炉抵挡一次炸炉，维持转数但药力损失40%；此损值系数持续到收丹。'},
 {id:'burn',name:'燃纹盏',price:360,day:2,description:'炸炉时自动消耗末道基础纹，改为维持；每炉最多两次。融合纹不消耗。'},
 {id:'return',name:'回纹环',price:380,day:3,description:'每炉首次燃纹后，下一次成功自动补回所消耗的纹；满纹则顺延。'},
-{id:'ash',name:'烬金印',price:400,day:3,description:'每次燃纹，本炉丹值系数永久增加15%，最多两层；换炉清零。'},
+{id:'ash',name:'烬金印',price:400,day:3,description:'每次燃纹，本炉药力系数永久增加15%，最多两层；换炉清零。'},
 {id:'fusion',name:'合璧镜',price:440,day:4,description:'融合后，下一次成功必显基础纹；每炉最多触发两次，不在同次炼化递归。'},
 {id:'six',name:'六合盘',price:520,day:5,description:'持有4–5道纹时炸炉率相对降低15%；6道时降低30%。失去纹路即重算。'},
 {id:'guide_red',name:'赤砂引',price:260,day:2,runeTarget:'赤纹',description:'生纹时若尚无赤纹，有75%概率定向生成；已持有则生成其他缺纹。灵性药包随机显纹同样受此倾向影响：赤纹。同炉限一件定向法器。'},
@@ -31,10 +31,11 @@ function ensure(c){if(!c.economy)c.economy={coins:80,earned:0,spent:0,stock:[0,0
 function buy(c,kind,id){const e=ensure(c);let price;if(kind==='material'){if(!Number.isInteger(id)||id<0||id>2)return false;price=PRICES[id];}else if(kind==='tool'){if(!TOOLS[id]||e.tools.includes(id)||(c.day||1)<TOOL_DEFS.find(t=>t.id===id).day)return false;price=TOOLS[id];}else if(kind==='furnace'){if(e.furnace>=2)return false;price=UPGRADES[e.furnace+1];}else return false;if(e.coins<price)return false;e.coins-=price;e.spent+=price;if(kind==='material')e.stock[id]++;else if(kind==='tool')e.tools.push(id);else e.furnace++;return true;}
 function credit(c,n,label){const e=ensure(c);n=Math.max(0,Math.round(n));e.coins+=n;e.earned+=n;e.last=label+' +'+n+' 铜钱';return n;}
 function fee(o){return 30+Math.round(o.target*.15);}
-function commissionReward(o,pills){const bonus=Math.min(fee(o),pills.reduce((n,p)=>n+(p.quality||0)*3+Math.max(0,(p.turn||1)-4)*2+(p.runes?.length||0)*4,0));return fee(o)+bonus;}
-function commission(c,o,pills){if(o.paid)return 0;o.paid=true;if(o.status!=='completed')return 0;const e=ensure(c);const leftover=Math.max(0,o.returned||0);const nature=['warm','cool'].includes(o.nature)?o.nature:'neutral';e.herbs[nature]+=leftover;o.gifted=leftover;o.returned=0;o.reward=commissionReward(o,pills);return credit(c,o.reward,'委托工钱与加赏');}
-function saleValue(c,p){return Math.round(p.value*(c.economy?.furnace>=2&&p.turn>=6?.65:.55));}
+function excessValue(o,pills){return Math.max(0,Math.round(pills.reduce((n,p)=>n+p.value,0)-o.target));}
+function commissionReward(o,pills){return fee(o)+excessValue(o,pills);}
+function commission(c,o,pills){if(o.paid)return 0;o.paid=true;if(o.status!=='completed')return 0;const e=ensure(c);const leftover=Math.max(0,o.returned||0);const nature=['warm','cool'].includes(o.nature)?o.nature:'neutral';e.herbs[nature]+=leftover;o.gifted=leftover;o.returned=0;o.excess=excessValue(o,pills);o.reward=commissionReward(o,pills);return credit(c,o.reward,'委托工钱与超额补价');}
+function saleValue(c,p){return Math.round(p.value);}
 function storePill(c,p,order){const e=ensure(c),id=p.id;if(typeof id!=='string'||!id||!Array.isArray(e.pills)||e.pills.some(x=>x?.id===id)||!Number.isFinite(p.value)||p.value<=0||!Number.isInteger(p.turn)||p.turn<1||p.turn>100||!Array.isArray(p.runes))return false;e.pills.push({...(typeof p.appearance==='string'?{appearance:p.appearance}:{}),id,day:c.day,value:p.value,turn:p.turn,quality:p.quality,runes:[...p.runes],...(p.runeLevels?{runeLevels:{...p.runeLevels}}:{}),...(Number.isFinite(p.baseValue)?{baseValue:p.baseValue}:{}),nature:p.nature||order?.nature||'neutral'});e.last='丹药已入库，可保留、提交或出售';return true;}
 function sale(c,id){const e=ensure(c);if(typeof id!=='string'||!Array.isArray(e.pills))return false;const index=e.pills.findIndex(p=>p?.id===id);if(index<0)return false;const p=e.pills[index];if(!Number.isFinite(p.value)||p.value<=0||!Number.isInteger(p.turn)||p.turn<1||p.turn>100)return false;const n=saleValue(c,p);e.pills.splice(index,1);e.sold++;return credit(c,n,'背包成丹出售');}
-const api={commissionReward,saleValue,storePill,runeTarget,pickRune,runeCandidates,EQUIP_SLOTS,equippedIds,hasTool,TOOL_DEFS,toolRisk,outcomeWeights,PRICES,TOOLS,UPGRADES,ensure,buy,credit,fee,commission,sale};if(typeof module!=='undefined')module.exports=api;else root.AlchemyEconomy=api;
+const api={excessValue,commissionReward,saleValue,storePill,runeTarget,pickRune,runeCandidates,EQUIP_SLOTS,equippedIds,hasTool,TOOL_DEFS,toolRisk,outcomeWeights,PRICES,TOOLS,UPGRADES,ensure,buy,credit,fee,commission,sale};if(typeof module!=='undefined')module.exports=api;else root.AlchemyEconomy=api;
 })(typeof window!=='undefined'?window:globalThis);

@@ -251,7 +251,7 @@
     resume.dataset.entryLabel = live(s) ? '回炉前 ›' : '进炉前 ›';
     resume.setAttribute('aria-label', live(s) ? '返回炉前' : '点击丹炉，进入炉前');
     const campaign = game.campaign();
-    facts.querySelector('b').textContent = s.endReason === 'explode' ? '本炉炸丹' : s.turn+'转 · 丹值 '+Math.round(s.value);
+    facts.querySelector('b').textContent = s.endReason === 'explode' ? '本炉炸丹' : s.turn+'转 · 药力 '+Math.round(s.value);
     facts.querySelector('span').textContent = ended
       ? collected ? (s.order?.self ? '已入丹匣' : '已计入本单交付') : '未成丹'
       : s.order?.self
