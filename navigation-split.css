@@ -1,0 +1,16 @@
+/* Two independent menus, using the same paper-and-ink treatment as the existing navigation. */
+body.art-repair .engine-nav .world-catalog-toggle { order:1; font-size:14px; white-space:nowrap; }
+#worldCatalogMenu { position:absolute; left:135px; top:100%; padding:24px; display:grid; gap:6px; background:#f3e6ca url('assets/workbench-v92/folio.png') center/100% 100% no-repeat; box-shadow:0 5px 16px #38261944; max-height:70dvh; overflow:auto; min-width:165px; z-index:95; }
+#worldCatalogMenu[hidden] { display:none!important; }
+body.object-world #worldCatalogMenu small { margin:4px 0; font-size:12px; color:#715439; }
+body.object-world #worldCatalogMenu button { display:block!important; min-height:44px; text-align:left; }
+body[data-work-mode=furnace] .world-catalog-toggle { display:none!important; }
+@media(max-width:650px) {
+  body.art-repair .engine-nav { gap:2px; }
+  body.art-repair .engine-nav .world-location-toggle,
+  body.art-repair .engine-nav .world-catalog-toggle,
+  body.art-repair .engine-nav .world-settings-toggle { font-size:12px; padding:4px 3px; white-space:nowrap; }
+  body.art-repair .engine-nav .world-location-toggle:before { display:none; }
+  body.art-repair .engine-nav .scene-demand { font-size:12px; padding:4px; min-width:0; }
+  #worldCatalogMenu { left:80px; max-width:calc(100vw - 90px); }
+}

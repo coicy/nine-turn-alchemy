@@ -26,7 +26,7 @@ new MutationObserver(()=>{if(!market.contains(back))market.append(back);if(marke
 document.addEventListener('click',e=>{const b=e.target.closest('[data-world-view]');if(!b)return;const view=b===back?lastHome:b.dataset.worldView;window.AlchemyViewState.navigate(view,{anchor:b});});
 marketBooks=market.querySelector('.world-books');
 const bell=document.getElementById('settleDay');bell.classList.add('world-day-bell');bell.innerHTML='<span aria-hidden="true">♧</span><span>收市铃 · 结束今日</span>';
-const settings=document.getElementById('worldSettings');for(const el of [...document.querySelector('.engine-nav').children])if(!el.matches('.world-location-toggle,#worldLocationMenu,#engineWallet,.world-settings-toggle,#worldSettings'))settings.append(el);
+const settings=document.getElementById('worldSettings');for(const el of [...document.querySelector('.engine-nav').children])if(!el.matches('.world-location-toggle,#worldLocationMenu,.world-catalog-toggle,#worldCatalogMenu,#engineWallet,.world-settings-toggle,#worldSettings'))settings.append(el);
 let placements=[null,null,null],triggerKey='',lastBagCount=0;
 function decorateTools(root){root.querySelectorAll('[data-tool-art]').forEach(el=>{const index=E.TOOL_DEFS.findIndex(t=>t.id===el.dataset.toolArt);if(index<0)return;el.classList.add('tool-art');el.style.backgroundPosition=`${index%6*20}% ${Math.floor(index/6)*50}%`;el.setAttribute('aria-hidden','true');});}
 function syncPlaces(ids){placements=placements.map(id=>ids.includes(id)?id:null);for(const id of ids)if(!placements.includes(id)){const i=placements.indexOf(null);if(i>=0)placements[i]=id;}}
