@@ -1,0 +1,28 @@
+/* Effects use the same stage and projection as the game canvas on every device. */
+body.object-world #refineAnimation {
+  display:block!important;
+  position:absolute;
+  inset:0;
+  width:100%!important;
+  height:100%!important;
+  pointer-events:none;
+  z-index:14;
+}
+body.object-world #refineFeedback {
+  background:#f5e9d1;
+  color:#49382a;
+  border:1px solid #b09770;
+  border-left:3px solid #b09770;
+  border-radius:3px;
+  pointer-events:none;
+  z-index:45;
+  box-shadow:0 3px 8px #30241720;
+}
+body.object-world #refineFeedback[data-kind=good] { border-left-color:#788358; }
+body.object-world #refineFeedback[data-kind=bad] { border-left-color:#a25740; }
+body.object-world .furnace-controls .furnace-fire:active:not(:disabled) {
+  transform:none;
+}
+@media(prefers-reduced-motion:reduce) {
+  body.object-world #refineAnimation { display:none!important; }
+}
