@@ -140,6 +140,7 @@
     eventTitle: document.getElementById("eventTitle"),
     valueChange: document.getElementById("valueChange"),
     runeOrbit: document.getElementById("runeOrbit"),
+    ritualPanel: document.getElementById("ritualPanel"), ritualGrid: document.getElementById("ritualGrid"), ritualStatus: document.getElementById("ritualStatus"),
   };
 
   let state = null;
@@ -157,7 +158,7 @@
   function randomRisk(turn=state?.pill?.turn||1) {const base=BREAK_CURVE[Math.max(0,Math.min(30,Math.floor(turn)-1))];return {explode:base*(window.AlchemyEconomy?.toolRisk(campaign?.economy?.equipped,state?.pill)||1)};}
 
   function freshPill() {
-    return { turn: 1, quality: 0, value: 24, runes: [], runeLevels:{}, bestTurn: 1, shield: false, toolUsed:false, damageSoftened:false, runeChoices:[] };
+    return { turn: 1, quality: 0, value: 24, runes: [], runeLevels:{}, bestTurn: 1, yuanHigh: 24, yuanPool: 0, yuanBonus: 0, yuanNode: 0, ritualSafe: 0, ritualActive: false, ritualStep: 0, shield: false, toolUsed:false, damageSoftened:false, runeChoices:[] };
   }
 
   function createState() {
@@ -170,7 +171,7 @@
       delivered: 0,
       attempt: 0,
       explosions: 0,
-      completedPills: 0,
+      completedPills: 0, ritualStep: 0, ritualActive: false, ritualSafe: 0,
       bestTurn: 1,
       bestValue: 24,
       riskResult: randomRisk(1),
@@ -413,11 +414,13 @@
     state.pill.refineSerial=(state.pill.refineSerial||0)+1;
     const before = playtestSnapshot();
     const profile = state.riskResult;
-    const explode = Math.random() < profile.explode;
+    const safeRun = state.pill.ritualSafe > 0;
+    const explode = safeRun ? false : Math.random() < profile.explode;
     const roll = Math.random();
     const tool=campaign?.economy?.equipped;
     const w=window.AlchemyEconomy?.outcomeWeights(tool)||{big:2,success:12,hold:5,damage:2};const total=w.big+w.success+w.hold+w.damage;
-    let outcome=explode?'explode':roll<w.big/total?'big':roll<(w.big+w.success)/total?'success':roll<(w.big+w.success+w.hold)/total?'hold':'damage';
+    let outcome=safeRun ? (roll < w.big/(w.big+w.success) ? 'big' : 'success') : (explode?'explode':roll<w.big/total?'big':roll<(w.big+w.success)/total?'success':roll<(w.big+w.success+w.hold)/total?'hold':'damage');
+    if (safeRun) state.pill.ritualSafe--;
     const protection=explosionProtection();
     const usedShield=explode&&protection?.source==='shield';
     state.pill.shield=false;
@@ -493,9 +496,29 @@
       state.riskResult = randomRisk();
       addLog("<strong>下一次风险</strong>：已按转数更新。", "");
     }
+    // 首次九转归元：总药力乘以本次催炼前炉险，独立积累后在九转兑现。
+    if (!state.pillEnded) {
+      if (state.pill.value < before.value && before.value > 0) {
+        const ratio = state.pill.value / before.value;
+        state.pill.yuanPool *= ratio;
+        state.pill.yuanBonus *= ratio;
+      }
+      if (state.pill.value > (state.pill.yuanHigh ?? 24)) {
+        state.pill.yuanPool += before.value * profile.explode;
+        state.pill.yuanHigh = state.pill.value;
+      } else state.pill.yuanHigh = Math.max(state.pill.yuanHigh ?? 24, state.pill.value);
+      const reachedNode = Math.floor(state.pill.turn / 9);
+      while (reachedNode > (state.pill.yuanNode ?? 0)) {
+        state.pill.yuanBonus += Math.round(state.pill.yuanPool);
+        state.pill.yuanPool = 0;
+        state.pill.yuanNode = (state.pill.yuanNode ?? 0) + 1;
+        addLog(`<strong>${state.pill.yuanNode * 9}转归元</strong>：归元药力累计 +${formatNumber(state.pill.yuanBonus)}，收丹后计入售价。`, 'good');
+      }
+    }
     updateRecord();
     telemetry?.record("refine_result", playtestSnapshot(), { before, outcome, shieldUsed: usedShield });
     if (state.roundEnded) { settleOrder(); telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss"); }
+    if (!state.pillEnded && state.pill.ritualSafe === 0 && state.pill.refineSerial % 9 === 0) beginRitual();
     decisionSince = Date.now();
     const visualOutcome = state.pill.turn >= 100 && !state.pillEnded ? "complete" : fused ? "fusion" : usedShield ? "shield" : outcome;
     setFeedback(feedback, feedbackTone, visualOutcome, outcome === "explode" ? -before.value : state.pill.value - before.value);
@@ -504,7 +527,7 @@
   }
 
   function refine() {
-    if (!state.started || state.busy || state.pillEnded || state.roundEnded || state.pill.turn >= 100 || state.pill.runeChoices?.length) return;
+    if (!state.started || state.busy || state.pillEnded || state.roundEnded || state.pill.turn >= 100 || state.pill.runeChoices?.length || state.pill.ritualActive) return;
     telemetry?.record("refine_choice", playtestSnapshot(), { decisionMs: Date.now() - decisionSince });
     state.busy = true;
     dom.pillVisual.classList.add("resolving");
@@ -593,13 +616,19 @@
 
   dom.startButton.addEventListener("click", startGame);
   dom.restartButton.addEventListener("click", startGame);
+  function beginRitual() {
+    state.pill.ritualActive = true; state.pill.ritualStep = 0; dom.ritualPanel.classList.remove('hidden');
+    dom.ritualGrid.innerHTML = '';
+    for (let i=0;i<9;i++) { const b=document.createElement('button'); b.type='button'; b.textContent=String(i+1); b.dataset.index=i; b.addEventListener('click',()=>{ if(Number(b.dataset.index)!==state.pill.ritualStep)return; b.classList.add('done'); state.pill.ritualStep++; if(state.pill.ritualStep<9){dom.ritualGrid.querySelector(`[data-index="${state.pill.ritualStep}"]`)?.classList.add('active');}else{state.pill.ritualActive=false;state.pill.ritualSafe=7;dom.ritualPanel.classList.add('hidden');dom.ritualStatus.textContent='步罡已成，炉息暂定';render(); for(let n=0;n<7&&!state.pillEnded&&state.pill.turn<100;n++)resolveRefine();}}); dom.ritualGrid.appendChild(b); }
+    dom.ritualGrid.querySelector('[data-index="0"]')?.classList.add('active'); dom.ritualStatus.textContent='循火星落位完成步罡'; render();
+  }
   dom.refineButton.addEventListener("click", refine);
   function collectPill() {
     if(!state.started||state.busy||state.pillEnded||state.pill.runeChoices?.length)return false;
     ensurePricing();lockPillIdentity();const before=playtestSnapshot(),o=campaignRules.active(campaign);
     if(!window.AlchemyEconomy.storePill(campaign,state.pill,o)){setFeedback('库存记录异常，炉内丹药已保留。','bad');render();return false;}
     const id=state.pill.id;state.pillEnded=true;state.pillEndReason='collect';if(o?.self)o.status='completed';state.roundEnded=!activeCommission();
-    telemetry?.record('collect',playtestSnapshot(),{before,decisionMs:Date.now()-decisionSince});addLog('<strong>收丹入库</strong>：药力 '+formatNumber(state.pill.value)+'，等待选择用途。','good');setFeedback('丹药已入库。','good','collect');render();window.dispatchEvent(new CustomEvent('alchemy:pill-stored',{detail:{id}}));window.dispatchEvent(new CustomEvent('alchemy:world-collect',{detail:{self:false,stored:true,id}}));return true;
+    telemetry?.record('collect',playtestSnapshot(),{before,decisionMs:Date.now()-decisionSince});addLog('<strong>收丹入库</strong>：药力 '+formatNumber(state.pill.value+(state.pill.yuanBonus||0))+'，等待选择用途。','good');setFeedback('丹药已入库。','good','collect');render();window.dispatchEvent(new CustomEvent('alchemy:pill-stored',{detail:{id}}));window.dispatchEvent(new CustomEvent('alchemy:world-collect',{detail:{self:false,stored:true,id}}));return true;
   }
   dom.collectButton.addEventListener("click", collectPill);
   dom.newPillButton.addEventListener("click", startNewPill);
