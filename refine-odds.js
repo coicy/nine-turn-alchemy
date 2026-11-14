@@ -7,7 +7,7 @@
   if(!p.available)return '';
   if(p.safeRun)return `动作前炉险 ${(p.baseExplosion*100).toFixed(1)}% · 九宫步罡安全段，剩余${p.safeRefines}次 · 最终炸丹 0.0%`;
   if(p.protection)return `动作前炉险 ${(p.baseExplosion*100).toFixed(1)}% · 保护后炸丹 ${(p.outcomes.explode*100).toFixed(1)}%`;
-  return `动作前炉险 ${(p.baseExplosion*100).toFixed(1)}% · 无护丹，抽中炉险将炸丹`;
+  return '';
  }
  function protectionCopy(p){
   if(!p.available||!p.protection)return '';
