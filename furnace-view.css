@@ -125,6 +125,8 @@ body.object-world .furnace-judgment #refineOdds dl { margin:0; gap:4px; }
 body.object-world .furnace-judgment #refineOdds dl>div { padding:1px 0 0; min-height:0; gap:0; border:0; background:none; border-radius:0; color:#493424; }
 body.object-world .furnace-judgment #refineOdds dt { font-size:12px; line-height:16px; font-weight:400; }
 body.object-world .furnace-judgment #refineOdds dd { font-size:16px; line-height:21px; }
+body.object-world .furnace-judgment #refineOdds dl>[data-outcome=success] dt,
+body.object-world .furnace-judgment #refineOdds dl>[data-outcome=success] dd { color:#3f704f !important; font-weight:600; }
 body.object-world .furnace-judgment .chance-bar { height:5px; margin-top:4px; border-radius:0; }
 body.object-world .furnace-judgment #refineOddsProtection { font-size:12px; margin:3px 0 0; }
 body.object-world .furnace-judgment #refineOddsState { display:none; }
