@@ -6,6 +6,7 @@
     fetch: root.fetch.bind(root),
     uuid: () => root.crypto.randomUUID(),
     now: () => Date.now(),
+    build: document.querySelector('meta[name="game-build"]')?.content,
     status: text => { const el = document.getElementById("telemetryStatus"); if (el) el.textContent = text; },
   });
 })(typeof window === "object" ? window : globalThis, function createTelemetry(options) {
@@ -26,6 +27,7 @@
   function record(type, state, extra = {}) {
     if (!enabled || !runId || ended) return;
     const event = { id: options.uuid(), runId, sequence: sequence++, type, state: JSON.parse(JSON.stringify(state)), elapsedMs: options.now() - startedAt, ...extra };
+    if (options.build) event.build = options.build;
     // The deployed v1 collector requires this array on both state snapshots.
     event.state.runes ??= [];
     if(event.before)event.before={...event.before,runes:event.before.runes||[]};
@@ -83,7 +85,7 @@
     if (!enabled) { data.queue = []; data.credential = null; save(); status("匿名上传已关闭"); }
     else { save(); status("匿名记录已开启"); }
   }
-  function exportData() { return { schemaVersion: 1, gameVersion: VERSION, policyVersion: "2026-10-27-v1", exportedAt: new Date(options.now()).toISOString(), events: data.history }; }
+  function exportData() { return { schemaVersion: 1, gameVersion: VERSION, build: options.build, policyVersion: "2026-10-27-v1", exportedAt: new Date(options.now()).toISOString(), events: data.history }; }
   function download() {
     const url = URL.createObjectURL(new Blob([JSON.stringify(exportData(), null, 2)], { type: "application/json" }));
     const link = document.createElement("a");

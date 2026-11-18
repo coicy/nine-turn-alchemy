@@ -218,7 +218,7 @@
     }
     if (campaign && state.started && !state.busy) {
       window.AlchemyEconomy?.ensure(campaign);
-      try { window.AlchemySaves ? window.AlchemySaves.write({version:1,campaign,state,target:ORDER_TARGET,materials:MAX_PILLS}) : window.localStorage?.setItem(SAVE_KEY, JSON.stringify({version:1,campaign,state,target:ORDER_TARGET,materials:MAX_PILLS})); } catch (_) {}
+      persistProgress();
     }
     window.dispatchEvent?.(new Event("alchemy:render"));
   }
@@ -452,7 +452,34 @@
   }
   function previewSubmission(id){const o=activeCommission(),e=campaign?.economy,p=Array.isArray(e?.pills)&&e.pills.find(p=>p.id===id);if(!o||!p||campaign.phase!=='open')return {ok:false};const after=state.delivered+p.value,complete=after>=o.target;return {ok:true,after,target:o.target,complete,reward:complete?window.AlchemyEconomy.commissionReward(o,[...(o.submitted||state.collected),p]):0};}
   function previewConsignment(id){const e=campaign?.economy,p=e?.pills?.find(p=>p?.id===id);if(!p||!window.AlchemyEconomy?.consignmentEligibility)return {ok:false,reason:'丹药不在丹匣中。'};const q=window.AlchemyEconomy.consignmentEligibility(campaign,p);return {...q,pill:{id:p.id,turn:p.turn,value:p.value}};}
-  function submitPill(id){if(!state.started||state.busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy||window.AlchemyScene2D?.held)return false;const q=previewSubmission(id);if(!q.ok)return false;const o=activeCommission(),e=campaign.economy,index=e.pills.findIndex(p=>p.id===id),p=e.pills[index];e.pills.splice(index,1);state.delivered=q.after;state.collected.push({...p});o.delivered=q.after;o.submitted=state.collected.map(p=>({...p}));o.used=state.attempt;if(q.complete){campaignRules.resolve(campaign,state.delivered,state.attempt);window.AlchemyEconomy.commission(campaign,o,state.collected);state.roundEnded=state.pillEnded;telemetry?.finish(playtestSnapshot(),'win');}else e.last='已提交 '+p.value+' 药力，累计 '+q.after+' / '+o.target;addLog('<strong>提交丹药</strong>：'+p.value+' 药力，累计 '+q.after+' / '+o.target+'。','good');setFeedback(q.complete?'委托已成，工钱已结。':e.last,'good',q.complete?'win':'submit');render();window.dispatchEvent(new CustomEvent('alchemy:inventory-action',{detail:{kind:'submit',id,complete:q.complete}}));return true;}
+  function submitPill(id) {
+    if (!state.started || state.busy || window.AlchemyInteractionBusy || window.AlchemyScene2D?.busy || window.AlchemyScene2D?.held) return false;
+    const quote = previewSubmission(id);
+    if (!quote.ok) return false;
+    const order = activeCommission();
+    const economy = campaign.economy;
+    const before = playtestSnapshot();
+    const [pill] = economy.pills.splice(economy.pills.findIndex(p => p.id === id), 1);
+    state.delivered = quote.after;
+    state.collected.push({...pill});
+    order.delivered = quote.after;
+    order.submitted = state.collected.map(p => ({...p}));
+    order.used = state.attempt;
+    telemetry?.record('submit', playtestSnapshot(), {before});
+    if (quote.complete) {
+      campaignRules.resolve(campaign, state.delivered, state.attempt);
+      window.AlchemyEconomy.commission(campaign, order, state.collected);
+      state.roundEnded = state.pillEnded;
+      telemetry?.finish(playtestSnapshot(), 'win');
+    } else {
+      economy.last = '已提交 '+pill.value+' 药力，累计 '+quote.after+' / '+order.target;
+    }
+    addLog('<strong>提交丹药</strong>：'+pill.value+' 药力，累计 '+quote.after+' / '+order.target+'。','good');
+    setFeedback(quote.complete?'委托已成，工钱已结。':economy.last,'good',quote.complete?'win':'submit');
+    render();
+    window.dispatchEvent(new CustomEvent('alchemy:inventory-action',{detail:{kind:'submit',id,complete:quote.complete}}));
+    return true;
+  }
   function startNewPill() {
     if (!state.started || state.busy || !state.pillEnded || state.roundEnded || state.attempt >= MAX_PILLS) return;
     state.attempt += 1;
@@ -526,10 +553,40 @@
   function beginRitual(resume = false) {
     const ritualHost = document.querySelector('.engine-viewport');
     if (ritualHost && dom.ritualPanel.parentElement !== ritualHost) ritualHost.append(dom.ritualPanel);
-    state.pill.ritualActive = true; state.pill.ritualStep = resume ? Math.min(8, Math.max(0, Number(state.pill.ritualStep) || 0)) : 0; dom.ritualPanel.classList.remove('hidden');
+    const pill = state.pill;
+    pill.ritualActive = true;
+    pill.ritualStep = resume ? Math.min(8, Math.max(0, Math.trunc(Number(pill.ritualStep)) || 0)) : 0;
+    dom.ritualPanel.classList.remove('hidden');
     dom.ritualGrid.innerHTML = '';
-    for (let i=0;i<9;i++) { const b=document.createElement('button'); b.type='button'; b.textContent=String(i+1); b.dataset.index=i; if (i < state.pill.ritualStep) b.classList.add('done'); if (i === state.pill.ritualStep) b.classList.add('active'); b.addEventListener('click',()=>{ if(Number(b.dataset.index)!==state.pill.ritualStep)return; b.classList.add('done'); state.pill.ritualStep++; if(state.pill.ritualStep<9){dom.ritualGrid.querySelector(`[data-index="${state.pill.ritualStep}"]`)?.classList.add('active');}else{state.pill.ritualActive=false;state.pill.ritualSafe=7;dom.ritualPanel.classList.add('hidden');dom.ritualStatus.textContent='步罡已成，安全催炼还剩7次';render();}}); dom.ritualGrid.appendChild(b); }
-    dom.ritualStatus.textContent=resume&&state.pill.ritualStep?'已完成前'+state.pill.ritualStep+'步，接着落位':'循火星落位完成步罡'; render();
+    for (let index = 0; index < 9; index++) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = String(index + 1);
+      button.dataset.index = index;
+      if (index < pill.ritualStep) button.classList.add('done');
+      if (index === pill.ritualStep) button.classList.add('active');
+      button.addEventListener('click', () => {
+        if (state.pill !== pill || state.pillEnded || !pill.ritualActive || index !== pill.ritualStep) return;
+        button.classList.remove('active');
+        button.classList.add('done');
+        pill.ritualStep++;
+        if (pill.ritualStep === 9) {
+          pill.ritualActive = false;
+          pill.ritualSafe = 7;
+          dom.ritualPanel.classList.add('hidden');
+          dom.ritualStatus.textContent = '步罡已成，安全催炼还剩7次';
+          render();
+          return;
+        }
+        dom.ritualGrid.querySelector(`[data-index="${pill.ritualStep}"]`)?.classList.add('active');
+        dom.ritualStatus.textContent = persistProgress()
+          ? `已完成 ${pill.ritualStep} / 9 步`
+          : '当前进度未能保存，请检查浏览器存储空间。';
+      });
+      dom.ritualGrid.appendChild(button);
+    }
+    dom.ritualStatus.textContent = pill.ritualStep ? `已完成 ${pill.ritualStep} / 9 步，接着落位` : '循火星落位完成步罡';
+    render();
   }
   dom.refineButton.addEventListener("click", refine);
   function collectPill() {
@@ -628,11 +685,17 @@
     const gate = canLeaveMainMenu();
     if (!gate.ok) return {...gate, saved:false};
     if (!campaign || !state?.started) return {ok:true, saved:false, reason:''};
+    return persistProgress() ? {ok:true, saved:true, reason:''} : {ok:false, saved:false, reason:window.AlchemySaves?.error || '存档未能保存，请检查浏览器存储空间或隐私设置。'};
+  }
+  function persistProgress() {
+    const progress = {version:1,campaign,state,target:ORDER_TARGET,materials:MAX_PILLS};
     try {
-      const ok = window.AlchemySaves ? window.AlchemySaves.write({version:1,campaign,state,target:ORDER_TARGET,materials:MAX_PILLS}) : false;
-      return ok ? {ok:true, saved:true, reason:''} : {ok:false, saved:false, reason:window.AlchemySaves?.error || '存档未能保存，请检查浏览器存储空间或隐私设置。'};
+      if (window.AlchemySaves) return window.AlchemySaves.write(progress);
+      if (!window.localStorage) return false;
+      window.localStorage.setItem(SAVE_KEY, JSON.stringify(progress));
+      return true;
     } catch (_) {
-      return {ok:false, saved:false, reason:'存档未能保存，请检查浏览器存储空间或隐私设置。'};
+      return false;
     }
   }
   window.AlchemyGame = { successValuePreview, submit:submitPill,previewSubmission,previewConsignment,canReplaceEquipment, replaceEquipment, canLeave:canLeaveMainMenu, saveNow, refinementProbabilities, valueForBase, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,

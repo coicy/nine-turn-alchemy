@@ -5,6 +5,22 @@
  const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function focusKey(el){if(!el)return null;if(el.id)return '#'+CSS.escape(el.id);for(const a of ['data-focus-key','data-world-view','data-pill-id','data-sell-pill','data-inspect','data-material-inspect','data-market-tab','data-world-tool','data-replace-equipment','data-slot','data-view','data-kind'])if(el.hasAttribute?.(a)){let key='['+a+'="'+CSS.escape(el.getAttribute(a))+'"]';if(a==='data-kind'&&el.dataset.id!==undefined)key+='[data-id="'+CSS.escape(el.dataset.id)+'"]';return key;}return null;}
  function html(host,content){const key=host.contains(document.activeElement)?focusKey(document.activeElement):null,scroll=host.scrollTop;host.innerHTML=content;host.scrollTop=scroll;if(key)host.querySelector(key)?.focus({preventScroll:true});}
+ function revealSubmission(panel, preview, button) {
+  if (!preview?.getClientRects().length || !button?.getClientRects().length) return;
+  const bounds = panel.getBoundingClientRect();
+  const top = bounds.top + panel.clientTop + 4;
+  const bottom = top + panel.clientHeight - 8;
+  const previewTop = preview.getBoundingClientRect().top;
+  const buttonBottom = button.getBoundingClientRect().bottom;
+  if (previewTop < top) panel.scrollTop += previewTop - top;
+  else if (buttonBottom > bottom) panel.scrollTop += buttonBottom - bottom;
+ }
+ function submissionSummary(quote) {
+  if (!quote.ok) return '';
+  const progress = '交后 ' + Math.round(quote.after) + ' / ' + quote.target;
+  if (!quote.complete) return progress + ' · 还需 ' + Math.ceil(quote.target - quote.after) + ' 药力';
+  return progress + ' · 可交齐 · 到账 ' + quote.reward + ' 铜钱';
+ }
  function restore(key,fallback){const el=key&&document.querySelector(key);(el?.checkVisibility()?el:fallback)?.focus?.({preventScroll:true});}
  function art(p){const a=window.AlchemyPillArt,d=a.describe(p),state={appearance:d.appearance,nature:d.nature,turn:d.turn,quality:d.quality};return '<span class="ux-pill-art" data-pill-art-state="'+esc(JSON.stringify(state))+'" data-pill-art-key="'+esc(d.key)+'"><img src="'+a.image(state)+'" alt=""></span>';}
  let blocked='',blockScope='',noticeTimer;
@@ -19,5 +35,5 @@
  dialog.querySelector('[data-cancel]').onclick=cancelConfirm;dialog.querySelector('[data-confirm]').onclick=()=>{const entry=confirmation;if(!entry)return;if(entry.scope!==scope()){cancelConfirm();return;}cancelConfirm();entry.onConfirm();};
  dialog.addEventListener('cancel',e=>{e.preventDefault();e.stopPropagation();cancelConfirm();});dialog.addEventListener('keydown',e=>{if(e.key==='Escape')e.stopPropagation();});
  window.addEventListener('alchemy:view-ready',e=>{blocked='';if(confirmation&&e.detail.view!==confirmation.location)cancelConfirm();});window.addEventListener('alchemy:render',()=>{if(confirmation&&confirmation.scope!==scope())cancelConfirm();if(blockScope!==scope())blocked='';});window.addEventListener('alchemy:carry',()=>{blocked='';});
- window.AlchemyUX={esc,html,focusKey,restore,art,tell,instruction,clearInstruction:()=>{blocked='';},notify,confirm,cancelConfirm,get confirming(){return !!confirmation;}};
+ window.AlchemyUX={esc,html,revealSubmission,submissionSummary,focusKey,restore,art,tell,instruction,clearInstruction:()=>{blocked='';},notify,confirm,cancelConfirm,get confirming(){return !!confirmation;}};
 })();
