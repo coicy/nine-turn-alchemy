@@ -1,5 +1,6 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const base=fs.readFileSync(__dirname+'/verify-simulation.cjs','utf8').split("const click=id=>")[0]
+ .replace('Event:class{constructor(type){this.type=type}}','Event:class{constructor(type){this.type=type}},CustomEvent:class{constructor(type,init={}){this.type=type;this.detail=init.detail}}')
  .replace("window.scrollTo=()=>{};","window.scrollTo=()=>{};window.localStorage=auditStorage;")
  .replace('vm.runInContext(source,context);',"vm.runInContext(fs.readFileSync(__dirname+'/economy.js','utf8'),context);vm.runInContext(fs.readFileSync(__dirname+'/campaign.js','utf8'),context);vm.runInContext(source,context);");
 const store=new Map(),storage={getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)};
@@ -10,11 +11,13 @@ click('startButton');assert.equal(api().campaign().orders.length,8);assert.ok(st
 assert.equal(api().endDay(),false);assert.equal(api().chooseOrder('D1-2'),false,'cannot mix orders');
 click('herbObject');click('fireObject');assert.equal(api().abandonOrder(),false,'pour locks order');flush(720);assert.equal(api().abandonOrder(),false,'live pill must be handled');
 e.context.testApi.getState().pill.value=500;e.context.testApi.render();click('pillVisual');click('trayObject');flush(320);
+assert.ok(api().submit(api().campaign().economy.pills[0].id));
 assert.ok(api().campaign().economy.coins>80,'successful commission earns money');assert.equal(api().campaign().orders[0].status,'completed');assert.equal(api().campaign().orders[0].returned,0);assert.equal(api().campaign().orders[0].gifted,2);assert.equal(state().delivered,500);assert.ok(api().campaign().orders.some(o=>o.status==='pending'));
 assert.equal(api().chooseOrder('D1-2'),true);assert.ok(state().target>=60);assert.equal(state().delivered,0);assert.equal(state().remaining,3);assert.equal(e.el('trayPills').innerHTML,'','new order clears tray');
 assert.equal(api().abandonOrder(),true);assert.equal(api().abandonOrder(),false,'no duplicate settlement');assert.equal(api().campaign().orders[1].returned,3);
 assert.equal(api().chooseOrder('D1-3'),true);
-for(let i=0;i<3;i++){click('herbObject');click('fireObject');flush(720);click('pillVisual');click('trayObject');flush(320)}
+for(let i=0;i<3;i++){click('herbObject');click('fireObject');flush(720);click('pillVisual');click('trayObject');flush(320);assert.ok(api().submit(api().campaign().economy.pills[0].id));}
+if(api().snapshot().commission)api().abandonOrder();
 assert.equal(api().campaign().orders[2].delivered,72);assert.ok(['completed','failed'].includes(api().campaign().orders[2].status));for(const o of api().campaign().orders.filter(o=>o.status==='pending')){api().chooseOrder(o.id);api().abandonOrder();}assert.equal(api().endDay(),true);assert.equal(api().endDay(),false);assert.equal(api().campaign().day,1,'day does not advance automatically');
 assert.equal(api().nextDay(),true);assert.equal(api().nextDay(),false);assert.equal(api().campaign().day,2);assert.equal(state().remaining,0,'no materials before accepting order');
 api().chooseOrder('D2-2');click('herbObject');click('fireObject');flush(720);

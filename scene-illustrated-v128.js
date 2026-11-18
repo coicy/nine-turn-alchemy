@@ -27,9 +27,9 @@
   if(!herbs.contains(shelfNav))herbs.prepend(shelfNav);if(!herbs.contains(pills))herbs.append(pills);if(!herbs.contains(stockStatus))shelfNav.after(stockStatus);
   const s=game.snapshot(),scope=[route.snapshot().workMode,s.orderId,s.attempt,s.turn,s.pillEnded].join(':');if(scope!==noticeScope||window.AlchemyScene2D.held)notice='';stockStatus.textContent=notice;stockStatus.hidden=!notice;
   const e=game.campaign()?.economy;if(!e)return;shelfNav.querySelector('.scene-balance').textContent=String(e.coins);
-  const list=Array.isArray(e.pills)?e.pills:[];pills.hidden=!list.length;const next=list.map(p=>p.id+':'+p.value+':'+p.turn+':'+(p.runes||[]).join()).join('|');
+  const list=Array.isArray(e.pills)?e.pills:[];pills.hidden=!list.length;const next=list.map(p=>p.id+':'+p.value+':'+p.turn+':'+(p.appearance||'plain')).join('|');
   if(next!==stockKey||!pills.childElementCount){stockKey=next;window.AlchemyUX.html(pills,'<div class="scene-pill-caption">丹药 <span>'+list.length+'</span></div>'+(list.length?'<div class="scene-pill-row">'+list.map(p=>'<button type="button" data-stock-pill="'+p.id+'" data-focus-key="stock-pill-'+p.id+'" aria-label="查看'+p.turn+'转丹药，药力'+Math.round(p.value)+'">'+window.AlchemyUX.art(p)+'<span>'+Math.round(p.value)+'</span></button>').join('')+'</div>':''));}
-  herbs.querySelectorAll('.herb-slot[data-slot]').forEach(el=>{const title=el.getAttribute('title')||'';el.dataset.shortLabel=title.includes('委托供料')?'本单料':title.startsWith('本炉药包')?'本炉料':title.startsWith('普通药包')?'普通料':title.startsWith('精选药包')?'精选料':title.startsWith('灵性药包')?'灵性料':title.split(' · ')[0];});
+  herbs.querySelectorAll('.herb-slot[data-slot]').forEach(el=>{const title=el.getAttribute('title')||'';el.dataset.shortLabel=title.includes('委托供料')?'本单料':title.startsWith('本炉药包')?'本炉料':title.startsWith('普通药包')?'普通料':title.startsWith('精选药包')?'精选料':title.split(' · ')[0];});
  }
  function fit(){if(fitting)return true;fitting=true;try{
   const s=game.snapshot(),v=route.snapshot(),near=v.workMode==='furnace',mobile=innerWidth<=650,w=viewport.clientWidth,h=viewport.clientHeight,data=P[keyFor()];if(!w||!h||!data)return true;
@@ -81,11 +81,11 @@
  function update(){const s=game.snapshot(),v=route.snapshot(),near=v.workMode==='furnace',heading=document.querySelector('.furnace-heading');stock();
   const host=near?heading:document.querySelector('.engine-nav');if(demand.parentElement!==host)host.append(demand);demand.hidden=v.location!=='work'||!s.order||s.roundEnded;demand.textContent=(s.order?.client||'委托')+' · 还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'药力';demand.setAttribute('aria-label','查看完整需求，目标'+s.target+'药力，已交'+Math.round(s.delivered)+'，还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'药力');
   const amount=facts.querySelector('b');amount.textContent=Math.round(s.value);amount.style.fontSize=amount.textContent.length>7?(innerWidth<=340?'14px':'18px'):amount.textContent.length>4?'22px':innerWidth<=650?'28px':'32px';amount.style.lineHeight='1.2';facts.querySelector('span').textContent=s.turn+'转';facts.querySelector('small').hidden=true;
-  judgment.hidden=!near||v.current!=='work'||!live(s)||!!s.runeChoices?.length;
+  judgment.hidden=!near||v.current!=='work'||!live(s);
   const back=heading.querySelector('.furnace-back');back.textContent='‹';back.setAttribute('aria-label','返回炼丹房');
   herbs.classList.add('scene-stock');herbs.dataset.sceneVisible=String(v.location==='work'&&v.current==='work'&&document.getElementById('roomSettlement').hidden);
   document.body.dataset.sceneAtWork=String(v.location==='work');document.body.dataset.sceneReading=String(v.reading);
-  collect.dataset.sceneLabel='收丹';collect.setAttribute('aria-label','收丹');collect.hidden=!near||v.current!=='work'||!live(s)||!!s.runeChoices?.length;collect.dataset.held=String(window.AlchemyScene2D.held==='pill');collect.disabled=!live(s)||s.busy||window.AlchemyScene2D.busy||!!s.runeChoices?.length||!!(window.AlchemyScene2D.held&&window.AlchemyScene2D.held!=='pill');
+  collect.dataset.sceneLabel='收丹';collect.setAttribute('aria-label','收丹');collect.hidden=!near||v.current!=='work'||!live(s);collect.dataset.held=String(window.AlchemyScene2D.held==='pill');collect.disabled=!live(s)||s.busy||window.AlchemyScene2D.busy||!!(window.AlchemyScene2D.held&&window.AlchemyScene2D.held!=='pill');
   const restock=document.querySelector('[data-furnace-room]');if(restock)restock.textContent='继续取料';fit();
  }
  const schedule=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;update();});};

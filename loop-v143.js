@@ -15,12 +15,6 @@
   const icon=icons[kind];
   return '<button class="loop-action-button loop-action-'+kind+'" data-loop-'+kind+'="'+UX.esc(id)+'"'+extra+'><img src="assets/uiux-v158/'+icon+'" alt="" aria-hidden="true"><span>'+label+'</span></button>';
  }
- function runeMarkup(p){
-  const runes=Array.isArray(p?.runes)?p.runes:[];
-  if(!runes.length)return '<div class="loop-rune-summary is-empty"><strong>丹纹</strong><span>尚未显现</span></div>';
-  const tags=runes.map(r=>'<span class="pill-rune-tag" data-rune-name="'+UX.esc(r)+'">'+UX.esc(r)+(p.runeLevels?.[r]?' · '+p.runeLevels[r]+'阶':'')+'</span>').join('');
-  return '<div class="loop-rune-summary"><strong>丹纹</strong><span class="loop-rune-tags">'+tags+'</span></div>';
- }
  function busy(s){return s.busy||window.AlchemyScene2D.busy||!!window.AlchemyScene2D.held||!!window.AlchemyInteractionBusy;}
  function nextCustomer(){const c=game.campaign();if(!c||c.orders.some(o=>o.status==='active'))return;window.dispatchEvent(new Event('alchemy:next-customer'));route.navigate('orders');}
  function terminate(){UX.confirm({title:'终止本单',message:'未用本单料退还，本单记为未完成。丹匣丹药保留，免赔。',confirmLabel:'终止并退还',onConfirm:()=>game.abandonOrder()});}
@@ -41,13 +35,13 @@
   if(!Array.isArray(pills))return;const p=pills.find(p=>p.id===selected);if(!p)selected=null;
   // A material repaint may not remove these independent controls.
   if(!stock.contains(selection))stock.append(selection);if(!stock.contains(next))stock.append(next);
-  document.getElementById('roomSettlement').hidden=true;document.getElementById('roomChoices').hidden=true;
+  document.getElementById('roomSettlement').hidden=true;
   stock.dataset.sceneVisible=String(atWork);const stockTitle=stock.querySelector('.scene-stock-nav strong');if(stockTitle){const readyToLoad=v.workMode==='furnace'&&s.pillEnded&&stock.querySelector('.herb-slot[aria-disabled=false]');
     stockTitle.textContent=notice&&performance.now()<noticeUntil?notice:readyToLoad?'取药投炉':'丹料';stockTitle.setAttribute('role','status');}const demand=document.querySelector('.scene-demand');demand.hidden=!s.commission||v.location!=='work';
   stock.querySelectorAll('[data-stock-pill]').forEach(el=>{el.setAttribute('aria-pressed',String(el.dataset.stockPill===selected));el.setAttribute('aria-label','选中丹药，药力'+(pills.find(p=>p.id===el.dataset.stockPill)?.value||''));});
    const locked=busy(s),disabled=locked?' disabled':'',q=p&&game.previewSubmission(p.id),cq=p&&game.previewConsignment(p.id);
   selection.hidden=!p;
-  if(p){const preview=q.ok?'提交后 '+Math.round(q.after)+' / '+q.target+(q.complete?' · 工钱 '+E.fee(s.commission)+' + 超额 '+Math.max(0,Math.round(q.after-q.target))+' = '+q.reward+' 铜钱':''):'';const consignPreview=cq?.quote?.guaranteedPayout?`寄售${cq.quote.waitDays}天后回款 ${cq.quote.guaranteedPayout} 铜钱 · ${cq.quote.tierName}`:'';const consignDisabled=cq?.ok?'':' disabled';html(selection,'<div class="loop-selected-heading"><strong>'+p.turn+'转 · 药力 '+Math.round(p.value)+'</strong><button data-loop-inspect aria-label="查看选中丹药">看丹</button><button data-loop-clear aria-label="取消选中丹药">×</button></div>'+runeMarkup(p)+(preview?'<p class="loop-preview">'+preview+'</p>':'')+(consignPreview?'<p class="loop-consignment-note">'+consignPreview+(cq.ok?'':' · '+UX.esc(cq.reason))+'</p>':'')+'<div class="loop-action-heading"><strong>处理丹药</strong><span>提交后才计入本单</span></div><div class="loop-trades">'+(q.ok?actionButton('submit',p.id,'提交委托',disabled):'')+actionButton('sell',p.id,'立即出售 · '+E.saleValue(c,p)+' 铜钱',disabled)+(cq?.quote?actionButton('consign',p.id,'寄售',consignDisabled):'')+'</div>');}
+  if(p){const preview=q.ok?'提交后 '+Math.round(q.after)+' / '+q.target+(q.complete?' · 工钱 '+E.fee(s.commission)+' + 超额 '+Math.max(0,Math.round(q.after-q.target))+' = '+q.reward+' 铜钱':''):'';const consignPreview=cq?.quote?.guaranteedPayout?`寄售${cq.quote.waitDays}天后回款 ${cq.quote.guaranteedPayout} 铜钱 · ${cq.quote.tierName}`:'';const consignDisabled=cq?.ok?'':' disabled';html(selection,'<div class="loop-selected-heading"><strong>'+p.turn+'转 · 药力 '+Math.round(p.value)+'</strong><button data-loop-inspect aria-label="查看选中丹药">看丹</button><button data-loop-clear aria-label="取消选中丹药">×</button></div>'+(preview?'<p class="loop-preview">'+preview+'</p>':'')+(consignPreview?'<p class="loop-consignment-note">'+consignPreview+(cq.ok?'':' · '+UX.esc(cq.reason))+'</p>':'')+'<div class="loop-action-heading"><strong>处理丹药</strong><span>提交后才计入本单</span></div><div class="loop-trades">'+(q.ok?actionButton('submit',p.id,'提交委托',disabled):'')+actionButton('sell',p.id,'立即出售 · '+E.saleValue(c,p)+' 铜钱',disabled)+(cq?.quote?actionButton('consign',p.id,'寄售',consignDisabled):'')+'</div>');}
   else html(selection,notice?'<p class="loop-notice" role="status">'+UX.esc(notice)+'</p>':'');
   const pending=c.orders.some(o=>o.status==='pending');let footer='';if(c.phase==='open'&&!s.commission){footer='<button data-loop-next'+(locked?' disabled':'')+'>'+(pending?'接待下一位':'回柜台收工')+'</button>';if(!s.order||s.order.status!=='active')footer+=(c.economy.stock.some(n=>n>0)||Object.values(c.economy.herbs).some(n=>n>0))?'':'<button data-loop-market'+disabled+'>购置药材</button>';}
   else if(s.commission&&s.pillEnded&&s.remaining===0)footer='<span>本单料已尽 · 还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'</span><button data-loop-stop'+disabled+'>终止本单</button>';

@@ -52,7 +52,7 @@
       if (controls.collect.disabled) return;
       controls.collect.click();
       delivered.push({...(before.appearance?{appearance:before.appearance}:{}),value:before.value, quality:before.quality, turn:before.turn, nature:before.order?.nature || 'neutral'});
-      $('trayPills').innerHTML = delivered.map(d => `<i data-turn="${d.turn}" data-runes="${(d.runes || []).join(',')}" data-quality="${d.quality}" data-nature="${d.nature || 'neutral'}" data-appearance="${window.AlchemyPillPalette?.resolve(d.nature,d.appearance)||''}" title="${d.turn}转 · ${Math.round(d.value)}">丹</i>`).join('');
+      $('trayPills').innerHTML = delivered.map(d => `<i data-turn="${d.turn}" data-quality="${d.quality}" data-nature="${d.nature || 'neutral'}" data-appearance="${window.AlchemyPillPalette?.resolve(d.nature,d.appearance)||''}" title="${d.turn}转 · ${Math.round(d.value)}">丹</i>`).join('');
       $('deliverySeals').innerHTML = delivered.map(d => `<i>${Math.round(d.value)}</i>`).join('');
     });
   }
@@ -145,7 +145,7 @@
     const heading = document.querySelector('.commission-slip b');
     if (heading) heading.textContent = s.order ? s.order.name : '储备丹药';
     document.querySelector('.commission-slip small').textContent=s.order?'客人委托 · 丹药统一入丹匣':'储备材料 · 丹药统一入丹匣';
-    $('workInstruction').textContent = locked ? '药材与成丹按本炉结算，请稍候…' : !s.started ? '接下委托或取储备药材，开始炼丹' : s.roundEnded ? (s.order ? (s.delivered >= target ? '委托已完成 · 丹药仍在丹匣' : '本单已结束 · 丹药仍在丹匣') : '本炉已结束 · 丹药已收入丹匣') : held === 'herbs' ? '整包药材已展开 · 点炉口倾倒，Esc 放回' : held === 'pill' ? '已托起灵丹 · 点收丹盘收入丹匣，Esc 放回炉中' : s.pillEnded ? (s.order ? '取一包药材，拖入炉口 · 也可点药包，再点炉口' : '取一份储备药材，拖入炉口开始炼丹') : s.busy ? '扇落火起，丹纹正在变化…' : s.turn >= 100 ? '百转已成 · 收丹入匣' : '点炉膛挥扇催炼 · 点收丹盘入匣';
+    $('workInstruction').textContent = locked ? '药材与成丹按本炉结算，请稍候…' : !s.started ? '接下委托或取储备药材，开始炼丹' : s.roundEnded ? (s.order ? (s.delivered >= target ? '委托已完成 · 丹药仍在丹匣' : '本单已结束 · 丹药仍在丹匣') : '本炉已结束 · 丹药已收入丹匣') : held === 'herbs' ? '整包药材已展开 · 点炉口倾倒，Esc 放回' : held === 'pill' ? '已托起灵丹 · 点收丹盘收入丹匣，Esc 放回炉中' : s.pillEnded ? (s.order ? '取一包药材，拖入炉口 · 也可点药包，再点炉口' : '取一份储备药材，拖入炉口开始炼丹') : s.busy ? '扇落火起，丹药正在炼化…' : s.turn >= 100 ? '百转已成 · 收丹入匣' : '点炉膛挥扇催炼 · 点收丹盘入匣';
   }
   function updateCampaignContext() {
     const s = snapshot();
@@ -164,7 +164,7 @@
     clearDropHint();generation++; clearTimeout(timer); timer = null; locked = false; window.AlchemyInteractionBusy = false; held = null; drag = null;
     stage.classList.remove('pouring','landing','fanning','dragging-herbs','dragging-pill');
     $('carriedObject').hidden = true; delivered = [...(snapshot().collected || [])]; suppress.clear();
-    $('trayPills').innerHTML = delivered.map(d => `<i data-turn="${d.turn}" data-runes="${(d.runes || []).join(',')}" data-quality="${d.quality}" data-nature="${d.nature || 'neutral'}" data-appearance="${window.AlchemyPillPalette?.resolve(d.nature,d.appearance)||''}">丹</i>`).join('');
+    $('trayPills').innerHTML = delivered.map(d => `<i data-turn="${d.turn}" data-quality="${d.quality}" data-nature="${d.nature || 'neutral'}" data-appearance="${window.AlchemyPillPalette?.resolve(d.nature,d.appearance)||''}">丹</i>`).join('');
     $('deliverySeals').innerHTML = delivered.map(d => `<i>${Math.round(d.value)}</i>`).join(''); sync();
     if (snapshot().order || !snapshot().campaignEnabled) herbs.focus({preventScroll:true});
   }

@@ -27,7 +27,7 @@
    if(judgment.parentElement!==viewport)viewport.append(judgment);
    if(herbs.parentElement!==viewport)viewport.append(herbs);
    const width=mobile?w:1600,ratio=near?1.25:4/3;
-   const reserve=mobile?Math.max(visibleHeight('#roomChoices'),visibleHeight('#roomSettlement'),v.reading&&v.short?visibleHeight(v.current==='pill'?'.pill-detail-panel':'.equipment-drawer'):0):0;
+   const reserve=mobile?Math.max(visibleHeight('#roomSettlement'),v.reading&&v.short?visibleHeight(v.current==='pill'?'.pill-detail-panel':'.equipment-drawer'):0):0;
    const imageHeight=mobile?Math.min(width*ratio,Math.max(230,h-reserve-8)):900,imageWidth=mobile?imageHeight/ratio:1600;
    const left=(width-imageWidth)/2,height=mobile?imageHeight:900,scale=mobile?1:Math.min(w/width,h/height,1.6);
    const ox=mobile?0:(w-width*scale)/2,oy=mobile?0:(h-height*scale)/2;
@@ -75,14 +75,14 @@
   demand.textContent=(s.order?.client||s.order?.name||'委托')+' · 还需'+Math.max(0,Math.ceil(s.target-s.delivered));
   demand.setAttribute('aria-label','查看完整需求，目标'+s.target+'药力，已交'+Math.round(s.delivered)+'，还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'药力');
   const amount=facts.querySelector('b');amount.textContent=Math.round(s.value);const digits=amount.textContent.length,available=Math.max(78,judgment.clientWidth||innerWidth*.25),font=Math.min(innerWidth<=650?28:34,Math.max(16,(available-4)/(Math.max(1,digits)*.62)));amount.style.fontSize=font+'px';amount.style.lineHeight=(font+4)+'px';facts.querySelector('span').textContent=s.turn+'转';facts.querySelector('small').hidden=true;
-  judgment.hidden=!near||v.current!=='work'||!live(s)||!!s.runeChoices?.length;
+  judgment.hidden=!near||v.current!=='work'||!live(s);
   const back=heading.querySelector('.furnace-back');back.textContent='‹';back.setAttribute('aria-label','返回炼丹房');
   if(!herbs.contains(shelfNav))herbs.prepend(shelfNav);
   shelfNav.querySelector('.scene-balance').textContent='◎ '+(game.campaign()?.economy?.coins||0);
-  herbs.querySelectorAll('.herb-slot[data-slot]').forEach(el=>{const title=el.getAttribute('title')||'';el.dataset.shortLabel=title.includes('委托供料')?'本单料':title.startsWith('本炉药包')?'本炉料':title.startsWith('普通药包')?'普通料':title.startsWith('精选药包')?'精选料':title.startsWith('灵性药包')?'灵性料':title.split(' · ')[0];});
+  herbs.querySelectorAll('.herb-slot[data-slot]').forEach(el=>{const title=el.getAttribute('title')||'';el.dataset.shortLabel=title.includes('委托供料')?'本单料':title.startsWith('本炉药包')?'本炉料':title.startsWith('普通药包')?'普通料':title.startsWith('精选药包')?'精选料':title.split(' · ')[0];});
   herbs.querySelectorAll('.herb-slot [class=world-herb-source]').forEach(e=>e.hidden=true);
   const atWork=v.location==='work';herbs.classList.toggle('scene-stock',atWork);herbs.dataset.sceneVisible=String(atWork&&v.current==='work'&&(!near||document.getElementById('roomSettlement').hidden));
-  const tray=document.querySelector('.furnace-tray');tray.setAttribute('data-scene-label','收丹');tray.setAttribute('aria-label','收丹');tray.hidden=!near||!live(s)||!!s.runeChoices?.length;tray.dataset.held=String(window.AlchemyScene2D?.held==='pill');tray.disabled=!live(s)||s.busy||window.AlchemyScene2D?.busy||!!s.runeChoices?.length||!!(window.AlchemyScene2D?.held&&window.AlchemyScene2D.held!=='pill');
+  const tray=document.querySelector('.furnace-tray');tray.setAttribute('data-scene-label','收丹');tray.setAttribute('aria-label','收丹');tray.hidden=!near||!live(s);tray.dataset.held=String(window.AlchemyScene2D?.held==='pill');tray.disabled=!live(s)||s.busy||window.AlchemyScene2D?.busy||!!(window.AlchemyScene2D?.held&&window.AlchemyScene2D.held!=='pill');
   const restock=document.querySelector('[data-furnace-room]');if(restock)restock.textContent='继续取料';
   fit();
  }

@@ -55,7 +55,7 @@
   }
   heading.querySelector('.furnace-back').onclick = returnToRoom;
   heading.querySelector('.furnace-inspect').onclick = () => route.navigate('pill', {anchor:heading.querySelector('.furnace-inspect')});
-  heading.querySelector('.furnace-manual').onclick = () => route.navigate('manual', {chapter:'runes', anchor:heading.querySelector('.furnace-manual')});
+  heading.querySelector('.furnace-manual').onclick = () => route.navigate('manual', {anchor:heading.querySelector('.furnace-manual')});
   resume.onclick = () => {
     if (!route.navigate('work', {workMode:'furnace'})) return;
     requestAnimationFrame(() => {
@@ -122,7 +122,7 @@
       const view = route.snapshot();
       const host = mobile ? document.body : viewport;
       if (judgment.parentElement !== host) host.append(judgment);
-      let reserve = mobile ? Math.max(heightOf('.furnace-judgment'), heightOf('#roomChoices'), heightOf('#roomSettlement')) + 12 : 0;
+      let reserve = mobile ? Math.max(heightOf('.furnace-judgment'), heightOf('#roomSettlement')) + 12 : 0;
       if (mobile && view.reading && view.short) {
         reserve = Math.max(reserve, heightOf(view.current === 'pill' ? '.pill-detail-panel' : '.equipment-drawer') + 12);
       }
@@ -214,7 +214,7 @@
         lastLiveKey = key;
         if (!active()) {
           route.navigate('work', {workMode:'furnace', internal:true});
-          requestAnimationFrame(() => {if (!game.snapshot().runeChoices.length) pill.focus({preventScroll:true});});
+          requestAnimationFrame(() => {pill.focus({preventScroll:true});});
           return;
         }
       }
@@ -227,12 +227,11 @@
     }
     const near = active();
     const held = !!window.AlchemyScene2D?.held;
-    const choosing = !!s.runeChoices?.length;
     const collected = s.pillEnded && s.endReason === 'collect';
     const ended = s.pillEnded && ['collect','explode'].includes(s.endReason);
-    const locked = s.busy || fanning || choosing;
-    const blocked = s.busy || fanning || choosing || !live(s);
-    if (s.busy || fanning || choosing) {
+    const locked = s.busy || fanning;
+    const blocked = s.busy || fanning || !live(s);
+    if (s.busy || fanning) {
       const instruction = document.getElementById('workInstruction');
       instruction.hidden = true;
       instruction.textContent = '';
@@ -260,7 +259,7 @@
     facts.querySelector('small').textContent = ended && s.roundEnded ? '' : s.order
       ? '本单余料 '+s.remaining+' 包' : '';
     facts.querySelector('small').hidden = !facts.querySelector('small').textContent;
-    judgment.hidden = !near || v.current !== 'work' || !live(s) || choosing;
+    judgment.hidden = !near || v.current !== 'work' || !live(s);
     if (held && !judgment.style.minHeight) judgment.style.minHeight = judgment.getBoundingClientRect().height+'px';
     if (!held) judgment.style.minHeight = '';
     controls.dataset.closed = fanning || s.busy ? 'true' : 'false';

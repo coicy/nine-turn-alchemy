@@ -1,6 +1,6 @@
 (() => {
  const E=window.AlchemyEconomy,market=document.querySelector('.economy-board'),drawer=document.getElementById('equipmentDrawer'),board=document.querySelector('.counter-board');
- const ids=['seal','needle','ward','stone','lucky','chain','repair','phoenix','burn','return','ash','fusion','six','guide_red','guide_blue','guide_moon','guide_thunder'];
+ const ids=['seal',null,'ward','stone','lucky','chain','repair','phoenix'];
  function icon(id){const i=ids.indexOf(id);if(i<0)return null;const el=document.createElement('i');el.className='tool-art';el.setAttribute('aria-hidden','true');el.style.backgroundPosition=`${(i%6)*20}% ${Math.floor(i/6)*50}%`;return el;}
  function decorate(){market.querySelectorAll('[data-inspect]').forEach(b=>{if(!b.querySelector('.tool-art')){const art=icon(b.dataset.inspect);if(art)b.prepend(art);}});
   const selected=market.querySelector('[data-inspect][aria-pressed=true]'),details=market.querySelector('.market-description');if(selected&&details&&!details.querySelector('.tool-art'))details.prepend(icon(selected.dataset.inspect));

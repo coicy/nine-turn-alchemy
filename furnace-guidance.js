@@ -30,7 +30,7 @@
     }else if(held==='herbs'){
       target=document.getElementById('alchemyScene');rect=layout.mouth;text='投入炉口';
     }else if(!enabled)return;
-    else if(s.runeChoices?.length)return;
+
     else if(near&&live&&!flags.refine&&s.turn<100){
       target=document.querySelector('.furnace-fire');rect=layout.firebox;text='点火门催炼';
     }else if(near&&live&&!flags.collect){
@@ -68,7 +68,6 @@
   window.addEventListener('alchemy:render',()=>{
     const s=game.snapshot();
     if(previous.started&&previous.pillEnded&&!s.pillEnded)done('load');
-    if(previous.runeChoices?.length&&!s.runeChoices?.length&&!s.pillEnded)done('choose');
     previous=s;schedule();
   });
   for(const name of ['alchemy:interaction','alchemy:world-layout','alchemy:opening-finished','resize'])window.addEventListener(name,schedule);

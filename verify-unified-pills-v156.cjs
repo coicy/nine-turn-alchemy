@@ -84,3 +84,57 @@ assert.equal(env.context.testApi.getState().materialNature, commissionNature);
 assert.equal(api().campaign().economy.herbs[commissionNature], 1);
 
 console.log('Unified pills V156 passed: reserve materials and commissions share one bag; no self order, ownership source, or synthetic order id is created.');
+
+// Resume a previous-version furnace and a pending contract, then reload the migrated save.
+env=environment();
+click('startButton');
+api().load();
+const old=JSON.parse(store.get('alchemy-days-v1'));
+const e=old.campaign.economy;
+delete e.rulesRevision;
+old.campaign.day=6;
+e.loopVersion=143;
+e.coins=100;
+e.spent=1500;
+e.tools=['needle','needle','seal','guide_red'];
+e.equipped=['guide_red','seal'];
+e.stock=[1,1,2];
+const vintage={id:'P-old',value:149,turn:5,quality:1,runes:['金纹'],runeLevels:{'金纹':2},nature:'warm'};
+e.pills=[vintage];
+e.consignments=[{id:'old-order',status:'listed',tier:'fusion',tierName:'融合专柜',settleDay:7,guaranteedPayout:211,pillSnapshot:{...vintage}}];
+Object.assign(old.state.pill,vintage,{id:'P-live',baseValue:100,shield:true,moonCharge:1,runeChoices:['赤纹']});
+store.set('alchemy-days-v1',JSON.stringify(old));
+function resume(){env=environment();const start=env.el('startButton');start.emit('click',{currentTarget:start});}
+resume();
+let economy=api().campaign().economy;
+assert.equal(economy.coins,772);
+assert.deepEqual(Array.from(economy.tools),['seal']);
+assert.deepEqual(Array.from(economy.equipped),['seal']);
+assert.equal(economy.pills[0].value,149);
+assert.equal(api().snapshot().value,149);
+assert.equal(api().refinementProbabilities().protection.source,'seal');
+assert.ok(!('runes' in api().snapshot()));
+assert.ok(!('runes' in economy.pills[0]));
+assert.equal(economy.consignments[0].guaranteedPayout,211);
+assert.equal(economy.consignments[0].settleDay,7);
+resume();
+assert.equal(api().campaign().economy.coins,772,'refund must only be credited once');
+const projected=api().successValuePreview();
+assert.ok(projected.value>149);
+api().refine();flush(280);
+assert.equal(api().snapshot().value,projected.value);
+assert.ok(api().collect());
+assert.ok(!('runes' in api().campaign().economy.pills.at(-1)));
+const E=env.window.AlchemyEconomy;
+assert.equal(E.TOOL_DEFS.length,7);
+assert.equal(E.buy(api().campaign(),'material',2),false);
+for(const [turn,bonusRate,waitDays] of [[1,.10,2],[14,.10,2],[15,.18,3],[30,.28,4],[60,.50,7],[100,.50,7]]){
+  const quote=E.consignmentQuote({day:6},{...vintage,turn});
+  assert.equal(quote.bonusRate,bonusRate);
+  assert.equal(quote.waitDays,waitDays);
+}
+const ledger=api().campaign();ledger.day=7;
+assert.equal(E.settleConsignments(ledger).length,1);
+assert.equal(ledger.economy.coins,983);
+assert.equal(E.settleConsignments(ledger).length,0);
+console.log('Retirement checks passed: legacy furnace, appraised stock, refunds, slot reload, previews, four new tiers and historical payout.');

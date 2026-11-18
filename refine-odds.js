@@ -1,6 +1,6 @@
 (() => {
  const api=window.AlchemyGame,stage=document.getElementById('pillStage'),toggle=document.createElement('button');toggle.type='button';toggle.className='refine-odds-toggle';toggle.textContent='展开五类概率';toggle.setAttribute('aria-controls','refineOdds');
- const panel=document.createElement('aside');panel.id='refineOdds';panel.className='refine-odds';panel.setAttribute('aria-labelledby','refineOddsTitle');panel.innerHTML='<header><h2 id="refineOddsTitle">下一次炼化</h2><button type="button" aria-label="收起炼丹概率窗口">收起 ×</button></header><p id="refineOddsState"></p><p id="refineOddsRisk" class="refine-odds-risk"></p><dl></dl><div class="chance-bar" aria-hidden="true"></div><p id="refineOddsProtection" class="refine-odds-protection"></p><button class="odds-rules" type="button">查阅概率与生纹规则</button>';
+ const panel=document.createElement('aside');panel.id='refineOdds';panel.className='refine-odds';panel.setAttribute('aria-labelledby','refineOddsTitle');panel.innerHTML='<header><h2 id="refineOddsTitle">下一次炼化</h2><button type="button" aria-label="收起炼丹概率窗口">收起 ×</button></header><p id="refineOddsState"></p><p id="refineOddsRisk" class="refine-odds-risk"></p><dl></dl><div class="chance-bar" aria-hidden="true"></div><p id="refineOddsProtection" class="refine-odds-protection"></p><button class="odds-rules" type="button">查阅炼化概率</button>';
  const definitions=[['explode','炸丹'],['damage','受损'],['hold','维持'],['success','成功'],['big','大成功']],rows=definitions.map(([id,label])=>{const row=document.createElement('div');row.dataset.outcome=id;row.innerHTML='<dt>'+label+'</dt><dd></dd>';panel.querySelector('dl').append(row);const segment=document.createElement('span');segment.className='chance-segment';segment.dataset.outcome=id;panel.querySelector('.chance-bar').append(segment);return {id,row,value:row.querySelector('dd'),segment};});
  stage.append(panel,toggle);let open=true,pillKey='',lastOutcome=null,timer;
  function riskCopy(p){
@@ -15,7 +15,7 @@
   return `${p.protection.name}：炸丹转为${p.protection.outcome==='damage'?'受损':'维持'}`;
  }
  function update(){const s=api.snapshot(),p=api.refinementProbabilities(),key=s.orderId+':'+s.attempt;if(key!==pillKey){pillKey=key;open=true;lastOutcome=null;}if(s.busy)lastOutcome=null;
-  const atWork=window.AlchemyViewState.snapshot().current==='work'&&window.AlchemyViewState.snapshot().workMode==='furnace',live=s.started&&!s.pillEnded&&!s.roundEnded,visible=live&&atWork&&!s.runeChoices?.length&&p.available;
+  const atWork=window.AlchemyViewState.snapshot().current==='work'&&window.AlchemyViewState.snapshot().workMode==='furnace',live=s.started&&!s.pillEnded&&!s.roundEnded,visible=live&&atWork&&p.available;
   toggle.hidden=!visible||open;panel.hidden=!visible||!open;toggle.setAttribute('aria-expanded',String(visible&&open));document.body.classList.toggle('odds-expanded',visible&&open);
   panel.querySelector('#refineOddsState').textContent=s.endReason==='explode'?'本炉炸丹':s.busy?'本次结算中…':'';
   rows.forEach(({id,row,value,segment})=>{value.textContent=p.available?(p.outcomes[id]*100).toFixed(1)+'%':'—';segment.style.width=(p.available?p.outcomes[id]*100:0)+'%';row.removeAttribute('data-hit');});

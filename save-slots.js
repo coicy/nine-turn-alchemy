@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const prefix='alchemy-slot-v1-', activeKey='alchemy-active-slot-v1';
+  const prefix='alchemy-slot-v2-', activeKey='alchemy-active-slot-v1';
   let error='', active=1;
   const validId=id=>Number.isInteger(id)&&id>=1&&id<=3;
   function get(key){try{return localStorage.getItem(key);}catch{error='浏览器未允许读取存档。';return null;}}
@@ -8,12 +8,12 @@
   function valid(d){return !!(d?.version===1&&Number.isInteger(d.campaign?.day)&&d.campaign.day>=1&&d.campaign.day<=30
     &&['open','settled','finished'].includes(d.campaign.phase)&&Array.isArray(d.campaign.orders)&&[3,7,8].includes(d.campaign.orders.length)
     &&Array.isArray(d.campaign.history)&&d.campaign.orders.every(o=>o&&typeof o.id==='string'&&Number.isFinite(o.target)&&['pending','active','completed','failed','skipped'].includes(o.status))
-    &&Number.isFinite(d.target)&&d.target>0&&[1,3].includes(d.materials)&&d.state?.started&&d.state.pill
+    &&Number.isFinite(d.target)&&(d.target>0||(d.target===0&&d.materials===1))&&[1,3].includes(d.materials)&&d.state?.started&&d.state.pill
     &&Number.isFinite(d.state.delivered)&&Number.isInteger(d.state.attempt)&&d.state.attempt>=0&&d.state.attempt<=3
-    &&Array.isArray(d.state.collected)&&Array.isArray(d.state.logs)&&Array.isArray(d.state.discoveredRunes)
-    &&Array.isArray(d.state.pill.runes)&&Number.isFinite(d.state.pill.value)&&Number.isFinite(d.state.riskResult?.explode));}
+    &&Array.isArray(d.state.collected)&&Array.isArray(d.state.logs)
+    &&Number.isFinite(d.state.pill.value)&&Number.isFinite(d.state.riskResult?.explode));}
   // Copy the old save once. Never remove the original or re-import over a reset slot.
-  if(get(prefix+1)===null){
+  if(get(prefix+1)===null&&get('alchemy-slot-v1-1')===null){
     const legacy=get('alchemy-days-v1');
     if(legacy!==null){try{const data=JSON.parse(legacy);if(valid(data))put(prefix+1,JSON.stringify({version:1,data,updatedAt:null,preferences:{expanded:get('alchemy-onboarding-expanded-v53')==='true'}}));
       else error='旧进度暂不能读取，原始数据已保留。';}catch{error='旧进度暂不能读取，原始数据已保留。';}}
@@ -21,7 +21,7 @@
   const selected=Number(get(activeKey));if(validId(selected))active=selected;
   function slot(id){
     if(!validId(id))throw Error('Invalid save slot');
-    const raw=get(prefix+id);if(raw===null)return {version:1,data:null,preferences:{}};
+    const raw=get(prefix+id)??get('alchemy-slot-v1-'+id);if(raw===null)return {version:1,data:null,preferences:{}};
     try{const entry=JSON.parse(raw);if(entry?.version===1&&(entry.data===null||valid(entry.data)))return entry;}catch{}
     return {corrupt:true,data:null,preferences:{}};
   }

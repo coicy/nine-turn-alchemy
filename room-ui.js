@@ -1,17 +1,17 @@
 (() => {
  const api=window.AlchemyGame,UX=window.AlchemyUX,forge=document.querySelector('.forge-panel'),stage=document.getElementById('pillStage');document.body.classList.add('painted-room');forge.dataset.room='true';
- stage.insertAdjacentHTML('beforeend','<section class="room-observation" aria-label="炉中丹药"><h2>炉中丹药</h2><div id="roomFacts"></div><p id="roomRunes"></p><small></small></section><p class="room-empty" id="roomEmpty" hidden></p><section id="roomChoices" class="room-loop-card" hidden aria-label="选择丹纹"><strong>选择一道丹纹</strong><div></div></section><section id="roomSettlement" class="room-loop-card" hidden aria-live="polite"></section>');
+ stage.insertAdjacentHTML('beforeend','<section class="room-observation" aria-label="炉中丹药"><h2>炉中丹药</h2><div id="roomFacts"></div><small></small></section><p class="room-empty" id="roomEmpty" hidden></p><section id="roomSettlement" class="room-loop-card" hidden aria-live="polite"></section>');
  const fire=document.getElementById('fireObject');fire.insertAdjacentHTML('afterbegin','<img class="room-tool" src="assets/runtime-v10/alchemy-fan-v1.webp" alt="" draggable="false">');document.querySelector('.tray-object b').textContent='收丹盘';
  const decision=document.createElement('p');decision.id='roomDecision';const stock=document.createElement('p');stock.id='roomStock';document.querySelector('.room-observation').append(decision,stock);
- let choiceKey='',receiptKey='',dismissedReceipt='';
+ let receiptKey='',dismissedReceipt='';
  const receiptId=s=>[s.orderId,s.attempt,s.endReason,s.collected.length].join(':');
  function dismissReceipt(){dismissedReceipt=receiptId(api.snapshot());settlement.hidden=true;}
- const settlement=document.getElementById('roomSettlement'),choices=document.getElementById('roomChoices');
- choices.addEventListener('click',e=>{const b=e.target.closest('[data-rune]');if(b&&api.economyAction('chooseRune',b.dataset.rune))document.getElementById('alchemyScene').focus({preventScroll:true});if(e.target.closest('[data-read-runes]'))window.AlchemyViewState.navigate('manual',{chapter:'runes'});});
+ const settlement=document.getElementById('roomSettlement');
+
  settlement.addEventListener('click',e=>{if(e.target.closest('button'))dismissReceipt();if(e.target.closest('[data-furnace-room]')){window.AlchemyFurnaceView.returnToRoom();return;}if(e.target.closest('#settlementReserveStart')){window.AlchemyViewState.navigate('work',{workMode:'room'});window.dispatchEvent(new Event('alchemy:reserve-select'));return;}const b=e.target.closest('[data-destination]');if(b){if(b.dataset.destination==='orders')window.dispatchEvent(new Event('alchemy:next-customer'));window.AlchemyViewState.navigate(b.dataset.destination);}});
  function update(){const s=api.snapshot(),c=api.campaign(),E=window.AlchemyEconomy,live=s.started&&!s.pillEnded&&!s.roundEnded;
-  const nextChoice=(s.runeChoices||[]).join('|')+':'+s.runes.join('|');choices.hidden=!s.runeChoices?.length;
-  if(nextChoice!==choiceKey){choiceKey=nextChoice;UX.html(choices.querySelector('div'),(s.runeChoices||[]).map(name=>{const pair={'赤纹':['青纹','金纹'],'青纹':['赤纹','金纹'],'月纹':['雷纹','星痕'],'雷纹':['月纹','星痕']}[name],fusion=pair&&s.runes.includes(pair[0])?'与已有'+pair[0]+'融合为'+pair[1]:'';return '<button data-rune="'+name+'">'+UX.art({appearance:s.appearance,nature:s.order?.nature,quality:s.quality,runes:[name]})+'<span><strong>凝成'+name+'</strong><span>'+UX.esc(api.RUNE_DEFS[name])+'</span>'+(fusion?'<em>'+fusion+'</em>':'')+'</span></button>';}).join('')+'<button data-read-runes data-focus-key="choice-read-runes">查阅炉谱</button>');if(s.runeChoices?.length)queueMicrotask(()=>{if(window.AlchemyViewState.snapshot().current==='work')choices.querySelector('[data-rune]')?.focus({preventScroll:true});});}
+
+
   const view=window.AlchemyViewState.snapshot(),furnaceEnd=view.workMode==='furnace'&&s.started&&s.pillEnded&&['collect','explode'].includes(s.endReason);
   settlement.hidden=true;
   const key=[receiptId(s),s.roundEnded,c?.economy?.stock.join(','),Object.values(c?.economy?.herbs||{}).join(','),c?.economy?.pills?.length].join(':');
@@ -27,7 +27,7 @@
   document.body.classList.toggle('info-live',live);document.body.classList.toggle('info-ended',s.roundEnded);stage.dataset.live=String(live);stage.dataset.loading=String(!!s.busy);document.querySelector('.room-observation').hidden=!live;
   for(const id of ['herbObject','trayObject','trayPills','deliverySeals','roomEmpty'])document.getElementById(id).hidden=true;fire.hidden=!live;
   const facts=document.getElementById('roomFacts');facts.replaceChildren();if(live)for(const [label,value]of[['转数',s.turn+'转'],['品质',document.getElementById('qualityValue').textContent],['当前药力',Math.round(s.value)],['炸丹概率',(api.refinementProbabilities().outcomes.explode*100).toFixed(1)+'%']]){const row=document.createElement('div');row.dataset.fact=label;row.innerHTML='<span>'+label+'</span><strong>'+value+'</strong>';facts.append(row);}
-  document.getElementById('roomRunes').textContent=s.runes.join('、');document.getElementById('fireLabel').textContent=s.busy?'炼化中':'炼化';document.getElementById('fireHint').textContent='点火门扇火';document.getElementById('trayHint').textContent=s.order?'计入本单':'收入丹匣';document.querySelector('.commission-slip').hidden=live||!s.order||s.roundEnded;document.getElementById('runeTriggerStatus').hidden=true;document.getElementById('valueChange').hidden=true;
+  document.getElementById('fireLabel').textContent=s.busy?'炼化中':'炼化';document.getElementById('fireHint').textContent='点火门扇火';document.getElementById('trayHint').textContent=s.order?'计入本单':'收入丹匣';document.querySelector('.commission-slip').hidden=live||!s.order||s.roundEnded;document.getElementById('toolTriggerStatus').hidden=true;document.getElementById('valueChange').hidden=true;
  }
  window.addEventListener('alchemy:furnace-leave',dismissReceipt);window.addEventListener('alchemy:view-ready',e=>{if(e.detail.location!=='work'||(e.detail.view!=='work'&&e.detail.workMode!=='furnace'))dismissReceipt();update();});window.addEventListener('alchemy:render',update);window.addEventListener('alchemy:order',update);update();
 })();

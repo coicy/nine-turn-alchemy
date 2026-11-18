@@ -13,7 +13,7 @@
   let held=null,pointer=null,hover=null,focusIndex=0,notice='',noticeUntil=0,prepareHerbs=null;
   const live=()=>{const s=state;return s.started&&!s.roundEnded&&!s.pillEnded;};
   const furnace=()=>window.AlchemyViewState?.snapshot().workMode==='furnace';
-  function ready(){const s=state,v=window.AlchemyViewState?.snapshot();return !(v?.reading&&(furnace()||!v.short))&&!fanTimer&&s.started&&!s.busy&&!s.runeChoices?.length&&!window.AlchemyInteractionBusy;}
+  function ready(){const s=state,v=window.AlchemyViewState?.snapshot();return !(v?.reading&&(furnace()||!v.short))&&!fanTimer&&s.started&&!s.busy&&!window.AlchemyInteractionBusy;}
   function image(src){if(!cache.has(src)){const im=window.AlchemyAssets?.getImage(src)||new Image();const item={im,mask:null};cache.set(src,item);im.onload=()=>{dirty=true;const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const k=c.getContext('2d',{willReadFrequently:true});k.drawImage(im,0,0);try{item.mask=k.getImageData(0,0,c.width,c.height);}catch{item.mask=false;}};if(im.complete&&im.naturalWidth)im.onload();else im.src=src;}return cache.get(src);}
   window.addEventListener('alchemy:assets-ready',()=>{cache.clear();dirty=true;});
   Object.values(objects).filter(o=>o.src).forEach(o=>image('assets/runtime-v10/'+o.src+'.webp'));

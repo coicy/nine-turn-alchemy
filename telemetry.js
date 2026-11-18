@@ -26,6 +26,9 @@
   function record(type, state, extra = {}) {
     if (!enabled || !runId || ended) return;
     const event = { id: options.uuid(), runId, sequence: sequence++, type, state: JSON.parse(JSON.stringify(state)), elapsedMs: options.now() - startedAt, ...extra };
+    // The deployed v1 collector requires this array on both state snapshots.
+    event.state.runes ??= [];
+    if(event.before)event.before={...event.before,runes:event.before.runes||[]};
     data.history.push(event);
     data.queue.push(event);
     if (data.history.length > 3000) data.history.shift();

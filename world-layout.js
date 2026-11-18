@@ -7,7 +7,7 @@
   if(window.AlchemyScene2D?.held&&lastViewport===vkey)return true;
   const visibleHeight=selector=>{const el=document.querySelector(selector);return el&&!el.hidden&&el.checkVisibility()?el.getBoundingClientRect().height:0;};
   const reading=window.AlchemyViewState?.snapshot(),top=mobile?Math.max(visibleHeight('.world-readout'),visibleHeight('.world-empty-readout')):0;
-  let reserve=mobile?Math.max(visibleHeight('#refineOdds'),visibleHeight('.refine-odds-toggle'),visibleHeight('#roomChoices'),visibleHeight('#roomSettlement')):0;
+  let reserve=mobile?Math.max(visibleHeight('#refineOdds'),visibleHeight('.refine-odds-toggle'),visibleHeight('#roomSettlement')):0;
   if(mobile&&reading?.short)reserve=Math.max(reserve,visibleHeight(reading.current==='pill'?'.pill-detail-panel':'.equipment-drawer'));
   const width=mobile?w:1600,height=mobile?Math.max(330,Math.floor(h-top-reserve-20)):900;
   // The room is a fixed physical plane. Reading changes the camera window, never its aspect.

@@ -1,7 +1,7 @@
 (() => {
  const saves=window.AlchemySaves,api=window.AlchemyGame,UX=window.AlchemyUX,dialog=document.createElement('dialog');dialog.className='save-picker';dialog.id='savePicker';dialog.setAttribute('aria-labelledby','savePickerTitle');dialog.innerHTML='<header><h2 id="savePickerTitle">存档</h2><button type="button" data-close>关闭</button></header><div class="save-slot-list"></div><p id="savePickerNotice" role="status"></p><small>进度自动保存在当前浏览器。</small>';document.body.append(dialog);
  const notice=document.createElement('p');notice.className='save-notice';notice.setAttribute('role','status');notice.hidden=true;document.body.append(notice);const buttons=[];let confirmId=null,origin=null;
- const busy=()=>window.AlchemyOpening?.active||api.snapshot().busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy||!!window.AlchemyScene2D?.held||!!api.snapshot().runeChoices?.length;
+ const busy=()=>window.AlchemyOpening?.active||api.snapshot().busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy||!!window.AlchemyScene2D?.held;
  function close(){confirmId=null;dialog.close();UX.restore(origin,document.querySelector('.world-location-toggle'));}
  function open(){if(busy())return;confirmId=null;origin=UX.focusKey(document.activeElement);render();dialog.showModal();dialog.querySelector('[data-close]').focus();}
  for(const host of [document.querySelector('.opening-launch'),document.querySelector('.engine-nav')]){const b=document.createElement('button');b.type='button';b.className='save-open';b.setAttribute('aria-controls','savePicker');b.dataset.focusKey=host.classList.contains('opening-launch')?'title-saves':'settings-saves';b.onclick=open;host.append(b);buttons.push(b);}
