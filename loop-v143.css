@@ -14,10 +14,15 @@ body.loop-v143 .loop-selection[hidden],body.loop-v143 .loop-next[hidden]{display
 .loop-selected-heading{display:flex;align-items:center;gap:4px;min-height:26px}
 .loop-selected-heading strong{font-size:13px;font-weight:500;margin-right:auto;white-space:nowrap}
 body.loop-v143 .loop-selected-heading button{padding:0 5px;min-height:44px;min-width:44px;background:transparent;border:0;font-size:12px;color:inherit}
+.loop-rune-summary{display:flex;align-items:center;gap:6px;margin:3px 0 4px;padding:4px 6px;background:#f0dfbd;border:1px solid #b58a4e;border-left:3px solid #a55b37;border-radius:3px;color:#4d3826;min-height:25px;box-sizing:border-box}
+.loop-rune-summary strong{font-size:12px;white-space:nowrap}.loop-rune-summary.is-empty{border-left-color:#b8a98b;color:#79694f}.loop-rune-summary.is-empty span{font-size:11px}.loop-rune-tags{display:flex;flex-wrap:wrap;gap:3px;min-width:0}.loop-rune-summary .pill-rune-tag{min-height:19px;padding:1px 5px;font-size:10px;line-height:16px}
 .loop-preview{margin:0 0 3px;font-size:12px;line-height:18px}
-.loop-trades{display:flex;gap:6px}
+.loop-action-heading{display:flex;align-items:baseline;gap:6px;margin:3px 0 2px;padding-top:4px;border-top:1px solid #b8a17c;color:#5e4128}.loop-action-heading strong{font-size:12px}.loop-action-heading span{font-size:11px;color:#826b4b}
+.loop-trades{display:flex;gap:6px;flex-wrap:wrap}
+.loop-consignment-note{margin:0 0 3px;font-size:12px;line-height:18px;color:#76572e}
 body.loop-v143 .loop-trades button,body.loop-v143 .loop-next button,body.loop-v143 .loop-return{min-height:44px;padding:5px 10px;font-size:13px;line-height:20px;border:1px solid #936142;background:#f1e4c7;color:#47301e;box-shadow:none;border-radius:2px}
-body.loop-v143 .loop-trades [data-loop-submit]{background:#934e31;color:#fff6e6}
+body.loop-v143 .loop-trades [data-loop-submit]{background:#934e31;color:#fff6e6;font-weight:700;min-width:148px;box-shadow:0 3px 0 #6e3224;order:-1}
+body.loop-v143 .loop-trades [data-loop-submit]:active{transform:translateY(1px);box-shadow:0 2px 0 #6e3224}
 .loop-next{display:flex;flex:none;gap:6px;align-items:center;padding-top:3px;flex-wrap:wrap}
 .loop-next>span{font-size:12px;margin-right:auto}
 .loop-notice{margin:0;min-height:44px;display:flex;align-items:center;font-size:13px}
@@ -36,6 +41,7 @@ body.loop-v143 .loop-letter{position:fixed;z-index:55;left:50%;top:70px;transfor
 .loop-letter dl{display:grid;grid-template-columns:100px 1fr;gap:8px;margin:18px 0}
 .loop-letter dt{color:#6e5534}.loop-letter dd{margin:0;font-variant-numeric:tabular-nums}
 @media(max-width:650px){body.loop-v143 .scene-stock{padding:4px 9px!important}.loop-selection .loop-selected-heading{min-height:28px}.loop-letter dl{grid-template-columns:88px 1fr}.loop-preview{font-size:12px}}
+@media(max-width:650px){.loop-rune-summary{margin:2px 0 3px;padding:3px 5px}.loop-action-heading{margin-top:2px}}
 /* The dock can grow over painted floor; it must not move the camera or cover its inputs. */
 @media(max-width:650px){body.loop-v143 .scene-stock[data-scene-visible=true]{overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain}}
 @media(prefers-reduced-motion:reduce){.loop-v143 *, .loop-v143 *:before,.loop-v143 *:after{scroll-behavior:auto}}
@@ -70,5 +76,7 @@ body.loop-v143 .loop-letter button{border:1px solid #936142;background:#f1e4c7;c
  body.loop-v143 .loop-selected-heading button{position:absolute;bottom:0;right:44px;height:44px}
  body.loop-v143 .loop-selected-heading [data-loop-clear]{right:0}
  body.loop-v143 .loop-preview{grid-column:2;grid-row:1;font-size:11px;align-self:center;margin:0;line-height:16px}
- body.loop-v143 .loop-trades{grid-column:1/-1;grid-row:2;padding-right:94px}
+ body.loop-v143 .loop-rune-summary,body.loop-v143 .loop-action-heading,body.loop-v143 .loop-trades{grid-column:1/-1}
+ body.loop-v143 .loop-trades{grid-row:2;padding-right:94px}
+ body.loop-v143 .loop-trades [data-loop-submit]{flex-basis:100%;min-width:0}
 }

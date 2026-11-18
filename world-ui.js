@@ -7,8 +7,8 @@ const emptyReadout=document.createElement('section');emptyReadout.className='wor
 for(const selector of ['#roomFacts','#roomDecision','#roomStock']){const el=observation.querySelector(selector);if(el)readout.append(el);}observation.querySelector('h2').textContent='炉胆 · 局部剖视';
 const caption=document.createElement('span');caption.className='world-section-caption';caption.textContent='';caption.hidden=true;observation.append(caption);
 const row=document.createElement('div');row.className='world-tool-row';row.setAttribute('aria-label','案后法器');stage.append(row);
-const bag=document.createElement('button');bag.className='world-casket';bag.setAttribute('aria-label','打开丹药背包');bag.innerHTML='<img src="assets/object-world-v86/casket.webp" alt=""><span>丹匣</span><small></small>';bag.onclick=()=>window.AlchemyViewState.navigate('bag');stage.append(bag);
-const seal=document.createElement('div');seal.className='world-delivery-seals';seal.setAttribute('aria-label','本单交付凭据');stage.append(seal);
+const bag=document.createElement('button');bag.className='world-casket';bag.setAttribute('aria-label','打开丹匣');bag.innerHTML='<img src="assets/object-world-v86/casket.webp" alt=""><span>丹匣</span><small></small>';bag.onclick=()=>window.AlchemyViewState.navigate('bag');stage.append(bag);
+const seal=document.createElement('div');seal.className='world-delivery-seals';seal.setAttribute('aria-label','本单提交凭据');stage.append(seal);
 const books=document.createElement('div');books.className='world-books';books.innerHTML='<button data-world-view="record">经营簿</button><button data-world-view="manual">炉谱</button>';stage.append(books);
 const bookRest=document.createElement('div');bookRest.className='world-book-rest';bookRest.setAttribute('aria-hidden','true');bookRest.innerHTML='<i class="rest-post"></i><i class="rest-brace"></i><i class="rest-stud rest-stud-top"></i><i class="rest-stud rest-stud-bottom"></i>';stage.append(bookRest);
 const portals=[];
@@ -30,14 +30,14 @@ const settings=document.getElementById('worldSettings');for(const el of [...docu
 let placements=[null,null,null],triggerKey='',lastBagCount=0;
 function decorateTools(root){root.querySelectorAll('[data-tool-art]').forEach(el=>{const index=E.TOOL_DEFS.findIndex(t=>t.id===el.dataset.toolArt);if(index<0)return;el.classList.add('tool-art');el.style.backgroundPosition=`${index%6*20}% ${Math.floor(index/6)*50}%`;el.setAttribute('aria-hidden','true');});}
 function syncPlaces(ids){placements=placements.map(id=>ids.includes(id)?id:null);for(const id of ids)if(!placements.includes(id)){const i=placements.indexOf(null);if(i>=0)placements[i]=id;}}
-function update(){const s=api.snapshot(),c=api.campaign();if(!c)return;stage.dataset.worldOrderSource=s.order?.self?'self':'commission';const e=E.ensure(c),ids=E.equippedIds(e.equipped),oldFocus=document.activeElement?.dataset?.worldTool;
+function update(){const s=api.snapshot(),c=api.campaign();if(!c)return;stage.dataset.worldOrderSource=s.order?'commission':'reserve';const e=E.ensure(c),ids=E.equippedIds(e.equipped),oldFocus=document.activeElement?.dataset?.worldTool;
  syncPlaces(ids);row.replaceChildren();placements.forEach((id,i)=>{const tool=E.TOOL_DEFS.find(t=>t.id===id),b=document.createElement('button');b.dataset.worldTool=id||'empty-'+i;b.className='world-placed-tool '+(id&&/needle|guide/.test(id)?'tool-needle':id&&/mirror|fusion|six|stone/.test(id)?'tool-stand':'tool-cushion');b.setAttribute('aria-label',tool?'查看'+tool.name:'布置法器');b.innerHTML=(tool?'<span data-tool-art="'+id+'"></span><small>'+tool.name+'</small>':'<span class="world-empty-rest"></span><small>布置</small>');b.onclick=()=>window.AlchemyEquipmentView.inspect(id,b);row.append(b);});decorateTools(row);
  if(oldFocus)row.querySelector('[data-world-tool="'+oldFocus+'"]')?.focus({preventScroll:true});
  const count=e.pills?.length||0;bag.querySelector('span').textContent=count?'丹匣 · '+count:'丹匣';bag.querySelector('small').textContent='';bag.setAttribute('aria-label','打开丹匣，共'+count+'颗');bag.dataset.filled=String(count>0);lastBagCount=count;
- seal.textContent=s.order&&!s.order.self&&s.collected.length?'已交 '+s.collected.length+' 丹 · '+Math.round(s.delivered)+' 药力':'';
+ seal.textContent=s.order&&s.collected.length?'已交 '+s.collected.length+' 丹 · '+Math.round(s.delivered)+' 药力':'';
  readout.hidden=!s.started||s.pillEnded||s.roundEnded;readout.dataset.live=String(!s.pillEnded&&!s.roundEnded);
- emptyReadout.hidden=!s.started||!s.pillEnded||s.roundEnded||!s.order;
- if(!emptyReadout.hidden){emptyReadout.replaceChildren();const title=document.createElement('strong'),detail=document.createElement('span');title.textContent=s.order.self?'自炼备料':s.order.name+' · 已接';detail.textContent=s.order.self?'自有药材 · 收丹入匣':`客料 ${s.remaining} 包 · 已交 ${Math.round(s.delivered)} / ${s.target}`;emptyReadout.append(title,detail);}
+ emptyReadout.hidden=!s.started||!s.pillEnded||s.roundEnded;
+ if(!emptyReadout.hidden){emptyReadout.replaceChildren();const title=document.createElement('strong'),detail=document.createElement('span');title.textContent=s.order?s.order.name:'储备药材';detail.textContent=s.order?`本单余料 ${s.remaining} 包 · 已交 ${Math.round(s.delivered)} / ${s.target}`:'选取药材后开炉，成丹统一收入丹匣';emptyReadout.append(title,detail);}
  const key=s.orderId+':'+s.attempt+':'+s.turn+':'+s.toolProgress.triggers.join('|');
  if(triggerKey&&key!==triggerKey&&s.toolProgress.triggers.length){for(const t of E.TOOL_DEFS)if(s.toolProgress.triggers.some(text=>text.includes(t.name))){const b=row.querySelector('[data-world-tool="'+t.id+'"]');if(b&&!matchMedia('(prefers-reduced-motion: reduce)').matches)b.animate([{filter:'brightness(1)'},{filter:'brightness(1.8)'},{filter:'brightness(1)'}],{duration:240});}}
  triggerKey=key;window.AlchemyWorldLayout.fit();
@@ -48,7 +48,7 @@ window.addEventListener('alchemy:equipment-replaced',e=>{const i=placements.inde
 window.addEventListener('alchemy:view-ready',e=>{if(['work','orders'].includes(e.detail.location))lastHome=e.detail.location;fitReading();});
 window.addEventListener('alchemy:order',()=>{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelector('.herb-tray')?.animate([{filter:'brightness(1)'},{filter:'brightness(1.4)'},{filter:'brightness(1)'}],{duration:400});});
 window.addEventListener('alchemy:render',update);window.addEventListener('alchemy:interaction',update);window.addEventListener('alchemy:world-layout',fitReading);
-window.addEventListener('alchemy:world-collect',e=>{const el=e.detail.self?bag:seal;if(!matchMedia('(prefers-reduced-motion: reduce)').matches)el.animate([{transform:'scale(1)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:400});});
+window.addEventListener('alchemy:world-collect',()=>{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)bag.animate([{transform:'scale(1)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:400});});
 window.addEventListener('alchemy:refine-result',e=>{stage.dataset.worldResult=e.detail.outcome;setTimeout(()=>{stage.dataset.worldResult='';},700);});
 window.addEventListener('alchemy:carry',e=>{document.body.dataset.worldCarry=e.detail.kind||'';});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!e.defaultPrevented&&window.AlchemyScene2D.held){e.preventDefault();window.AlchemyScene2D.cancel();return;}const details=observation.querySelector('details[open]');if(e.key==='Escape'&&details){e.preventDefault();details.open=false;details.querySelector('summary').focus();}});

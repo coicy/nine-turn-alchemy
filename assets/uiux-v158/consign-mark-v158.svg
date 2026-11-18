@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="寄售">
+  <path d="M5 8.5h14v10H5zM4 8.5l2-3h12l2 3" fill="none" stroke="#B98242" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M12 5.5v-2.2M10.3 3.3h3.4" stroke="#A84A3A" stroke-width="1.35" stroke-linecap="round"/>
+  <path d="M8.5 12h7M8.5 15h4" stroke="#263239" stroke-width="1.25" stroke-linecap="round"/>
+</svg>

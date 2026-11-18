@@ -243,7 +243,7 @@
     fire.disabled = blocked || held || s.turn >= 100;
     tray.disabled = locked || (!collected && (!held || blocked));
     tray.setAttribute('aria-label', collected ? '查看收丹盘中的本炉丹药' : '收丹盘');
-    controls.dataset.settled = collected ? (s.order?.self ? 'self' : 'commission') : '';
+    controls.dataset.settled = collected ? 'stored' : '';
     heading.querySelector('.furnace-back').disabled = locked || held;
     heading.querySelector('.furnace-inspect').disabled = locked || held || (!live(s) && !collected);
     heading.querySelector('.furnace-manual').disabled = s.busy || fanning || held;
@@ -253,12 +253,12 @@
     const campaign = game.campaign();
     facts.querySelector('b').textContent = s.endReason === 'explode' ? '本炉炸丹' : s.turn+'转 · 药力 '+Math.round(s.value);
     facts.querySelector('span').textContent = ended
-      ? collected ? (s.order?.self ? '已入丹匣' : '已计入本单交付') : '未成丹'
-      : s.order?.self
-      ? '收丹入匣 · 售价估计 '+window.AlchemyEconomy.saleValue(campaign,s)+' 铜钱'
-      : '收丹后交付 '+Math.round(s.delivered+s.value)+' / '+s.target;
-    facts.querySelector('small').textContent = ended && s.roundEnded ? '' : s.order?.self
-      ? '' : '余客料 '+s.remaining+' 包';
+      ? collected ? (s.order ? '已入丹匣 · 可提交本单' : '已入丹匣') : '未成丹'
+      : s.order
+      ? '收丹入匣后提交 '+Math.round(s.delivered+s.value)+' / '+s.target
+      : '收丹入匣 · 售价估计 '+window.AlchemyEconomy.saleValue(campaign,s)+' 铜钱';
+    facts.querySelector('small').textContent = ended && s.roundEnded ? '' : s.order
+      ? '本单余料 '+s.remaining+' 包' : '';
     facts.querySelector('small').hidden = !facts.querySelector('small').textContent;
     judgment.hidden = !near || v.current !== 'work' || !live(s) || choosing;
     if (held && !judgment.style.minHeight) judgment.style.minHeight = judgment.getBoundingClientRect().height+'px';

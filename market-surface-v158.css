@@ -1,0 +1,3 @@
+.market-secondary-toggle{width:100%;margin:8px 0;padding:9px 12px;border:1px solid #b99662;border-radius:4px;background:#f1e1c1;color:#68432d;text-align:left;cursor:pointer;font:inherit}
+.market-secondary-toggle:hover,.market-secondary-toggle:focus-visible{background:#fff0d1;border-color:#934d35}
+.economy-board .daily-orders[hidden],.economy-board .market-help[hidden],.economy-board label[hidden]{display:none!important}

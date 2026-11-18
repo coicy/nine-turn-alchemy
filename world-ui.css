@@ -141,7 +141,15 @@
 .object-world.engine-shell .counter-board.engine-panel{background-image:url('assets/object-world-v86/counter.webp')!important}
 .object-world .counter-board .world-counter-door{display:none}
 @media(max-width:650px){.world-mobile.object-world .herb-slot{height:62px;min-height:62px}.world-mobile.object-world .herb-slot img{height:43px;width:43px}.object-world .world-herb-source{font-size:12px}}
-.object-world.selecting-own #roomSettlement{display:none!important}
+
+/* Narrow world navigation: keep action labels intact instead of letting them wrap into vertical fragments. */
+@media(max-width:420px){
+ .object-world .engine-nav{min-height:90px;gap:2px;padding:3px 5px;overflow:visible;flex-wrap:wrap;align-content:center}
+ .object-world .engine-nav>button{flex:0 0 auto;white-space:nowrap;font-size:11px!important;min-height:38px;padding:4px 6px!important}
+ .object-world #engineWallet{flex:0 0 auto;font-size:11px!important;margin-left:0}
+ .world-mobile.object-world .engine-viewport>.forge-panel{top:90px!important}
+}
+.object-world.selecting-reserve #roomSettlement{display:none!important}
 .object-world.info-choosing .refine-odds,.object-world.info-choosing .refine-odds-toggle{visibility:hidden}
 @media(max-width:650px){.object-world .world-market .world-books{bottom:12px}}
 .object-world .world-day-bell{position:relative;display:block;min-width:128px;min-height:80px;padding:57px 5px 3px;background:#f4e6c7cc!important;border:0!important;font-size:12px;color:#4f3928}

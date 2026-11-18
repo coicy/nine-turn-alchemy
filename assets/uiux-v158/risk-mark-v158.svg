@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="炉险">
+  <path d="M12 3.8 21 20H3Z" fill="none" stroke="#A84A3A" stroke-width="1.6" stroke-linejoin="round"/>
+  <path d="M12 9v5.2" stroke="#A84A3A" stroke-width="1.75" stroke-linecap="round"/>
+  <circle cx="12" cy="17.4" r=".9" fill="#A84A3A"/>
+</svg>

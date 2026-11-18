@@ -11,7 +11,7 @@
 body:not(:has(.engine-nav [data-view=work][aria-pressed=true])) .mobile-odds{display:none}
 #roomSettlement>p,.counter-board .counter-receipt{white-space:pre-line;line-height:1.7}
 .canvas-room #roomSettlement{max-height:440px;overflow:auto}.counter-board .counter-receipt{max-width:min(420px,40%);text-align:left;font-size:14px}
-.herb-tray[data-select-self=true]{outline:4px solid #cf9b4d;outline-offset:3px}.herb-tray[data-select-self=true] .herb-slot[aria-disabled=false]{box-shadow:inset 0 0 0 2px #e5c06b}
+.herb-tray[data-select-reserve=true]{outline:4px solid #cf9b4d;outline-offset:3px}.herb-tray[data-select-reserve=true] .herb-slot[aria-disabled=false]{box-shadow:inset 0 0 0 2px #e5c06b}
 @media(max-width:800px){.counter-board .counter-receipt{max-width:70%;max-height:42%;overflow:auto;font-size:12px}}
 @media(forced-colors:active){.refine-odds,.refine-odds-toggle{border-color:ButtonText}}
 

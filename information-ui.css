@@ -37,13 +37,13 @@
  .refine-odds-toggle.mobile-odds{left:8px;right:8px;font-size:14px}
  .canvas-room .room-loop-card.mobile-info{padding:14px;max-height:42dvh;overflow:auto;font-size:14px;line-height:1.5;border-radius:5px}
  .room-loop-card.mobile-info>p{margin:0 0 8px;font-size:14px;line-height:1.6}.room-loop-card.mobile-info button{font-size:14px!important;min-height:40px;padding:8px;margin:4px 4px 0 0}
- .selecting-own #roomSettlement.mobile-info{display:none!important}
+ .selecting-reserve #roomSettlement.mobile-info{display:none!important}
  .canvas-room .herb-tray.mobile-info{padding:10px;max-height:240px;overflow:auto;background:#f3e6cf}
  .canvas-room .herb-tray.mobile-info h2{font-size:18px;margin:0}.canvas-room .herb-tray.mobile-info>p{font-size:12px;margin:4px 0}
  .canvas-room .herb-tray.mobile-info .herb-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-height:150px;gap:6px;overflow:auto}
  .canvas-room .herb-tray.mobile-info .herb-slot{width:auto;height:auto;min-height:52px;display:flex;padding:5px;margin:0;gap:4px;box-sizing:border-box;position:relative}
  .canvas-room .herb-tray.mobile-info .herb-slot span{display:block!important;position:static}.canvas-room .herb-tray.mobile-info .herb-slot img{width:32px;height:32px;position:static;transform:none}.canvas-room .herb-tray.mobile-info .herb-slot b,.canvas-room .herb-tray.mobile-info .herb-slot small{font-size:12px}.canvas-room .herb-tray.mobile-info .herb-slot strong{font-size:14px;position:static}
- .canvas-room.info-live .herb-tray.mobile-info,.canvas-room.info-ended:not(.selecting-own) .herb-tray.mobile-info{display:none!important}
+ .canvas-room.info-live .herb-tray.mobile-info,.canvas-room.info-ended:not(.selecting-reserve) .herb-tray.mobile-info{display:none!important}
  .canvas-room #workInstruction.mobile-info,.canvas-room #refineFeedback.mobile-info{top:auto!important;bottom:8px!important;padding:10px;font-size:14px;max-height:100px;overflow:auto;background:#f7ecd4;line-height:1.4}
  .canvas-room #refineFeedback.mobile-info strong{font-size:18px}.canvas-room #refineFeedback.mobile-info p,.canvas-room #refineFeedback.mobile-info small{font-size:14px}
  body:has(#refineFeedback:not([hidden])) #workInstruction.mobile-info{display:none}

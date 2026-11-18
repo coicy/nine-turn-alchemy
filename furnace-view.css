@@ -160,11 +160,11 @@ body.object-world[data-work-mode=furnace] #roomSettlement {
   padding:calc(20px / var(--scene-scale,1));
 }
 body.object-world[data-work-mode=furnace] #roomSettlement button { min-height:calc(45px / var(--scene-scale,1)); }
-body[data-work-mode=furnace] .furnace-controls[data-settled=self] .furnace-tray:after { content:'已入丹匣 · 看丹'; }
+body[data-work-mode=furnace] .furnace-controls[data-settled=stored] .furnace-tray:after { content:'已入丹匣 · 看丹'; }
 body[data-work-mode=furnace] .furnace-controls[data-settled=commission] .furnace-tray:after { content:'已交丹 · 看丹'; }
 body[data-work-mode=furnace] #pillStage[data-live=false] .furnace-fire:after { display:none; }
 @media(max-width:650px) {
-  body[data-work-mode=furnace] .furnace-controls[data-settled=self] .furnace-tray:after { content:'已入丹匣'; }
+  body[data-work-mode=furnace] .furnace-controls[data-settled=stored] .furnace-tray:after { content:'已入丹匣'; }
   body[data-work-mode=furnace] .furnace-controls[data-settled=commission] .furnace-tray:after { content:'已交丹'; }
   body.object-world[data-work-mode=furnace] #roomSettlement {
     position:fixed!important; inset:auto 8px max(8px,env(safe-area-inset-bottom))!important;

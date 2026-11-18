@@ -30,9 +30,9 @@
     const reserve=Math.min(innerHeight*.5,Math.max(0,bottom-top+16));
     document.body.style.setProperty('--work-reserve',reserve+'px');
   }
-  window.addEventListener('alchemy:self-select',()=>{document.body.classList.add('selecting-own');schedule();});
-  window.addEventListener('alchemy:order',()=>{document.body.classList.remove('selecting-own');schedule();});
-  window.addEventListener('alchemy:view-ready',e=>{const c=window.AlchemyGame.campaign(),s=window.AlchemyGame.snapshot();if(e.detail.view==='work'&&lastView==='shop'&&s.roundEnded&&(c?.economy?.stock?.some(n=>n>0)||Object.values(c?.economy?.herbs||{}).some(n=>n>0)))document.body.classList.add('selecting-own');lastView=e.detail.view;schedule();});
+  window.addEventListener('alchemy:reserve-select',()=>{document.body.classList.add('selecting-reserve');schedule();});
+  window.addEventListener('alchemy:order',()=>{document.body.classList.remove('selecting-reserve');schedule();});
+  window.addEventListener('alchemy:view-ready',e=>{const c=window.AlchemyGame.campaign(),s=window.AlchemyGame.snapshot();if(e.detail.view==='work'&&lastView==='shop'&&s.roundEnded&&(c?.economy?.stock?.some(n=>n>0)||Object.values(c?.economy?.herbs||{}).some(n=>n>0)))document.body.classList.add('selecting-reserve');lastView=e.detail.view;schedule();});
   for(const name of ['alchemy:render','alchemy:interaction','alchemy:view-ready','resize'])window.addEventListener(name,schedule);
   const observer=new ResizeObserver(schedule);[observation,settlement,choices,herbs,document.getElementById('refineOdds'),document.querySelector('.engine-nav')].forEach(el=>observer.observe(el));
   new MutationObserver(schedule).observe(instruction,{childList:true});

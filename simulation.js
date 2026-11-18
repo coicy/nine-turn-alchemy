@@ -5,13 +5,13 @@
   const controls = { refine: $('refineButton'), collect: $('collectButton'), load: $('newPillButton') };
   document.querySelector('.action-row').hidden = true;
   stage.insertAdjacentHTML('beforeend', `
-    <div class="commission-slip"><small>客人委托 · 材料与成丹归客</small><b>首批灵丹</b><span id="slipValue">已交 0 / 300</span><div id="deliverySeals" aria-label="已交付成丹"></div></div>
+    <div class="commission-slip"><small>丹药统一入丹匣</small><b>炼丹记录</b><span id="slipValue">等待取料</span><div id="deliverySeals" aria-label="已收入丹匣"></div></div>
     <div class="loose-herbs" aria-hidden="true"><i>叶</i><i>根</i><i>花</i></div>
     <div class="furnace-lid" aria-hidden="true"></div>
     <svg class="hand-fan" viewBox="0 0 120 160" aria-hidden="true"><path d="M58 95Q-8 65 16 20Q42 4 59 73Q58 8 85 10Q122 27 70 97Z" fill="#9bb39c" stroke="#d0cf9b" stroke-width="3"/><path d="M60 30L64 94M24 32L62 94M93 27L64 94" stroke="#426452" stroke-width="2"/><path d="M64 90L70 151" stroke="#b59155" stroke-width="9"/></svg>
-    <button class="work-object herb-object" id="herbObject" type="button"><span class="pack-stack" id="packStack" aria-hidden="true"></span><svg viewBox="0 0 100 100" aria-hidden="true"><path class="paper-wrap" d="M20 31L50 18L81 31L86 78L50 91L14 78Z" fill="#a58a59" stroke="#dbc795" stroke-width="2"/><path d="M20 31L50 46L81 31M50 46V90M18 58L83 58" fill="none" stroke="#5c4932" stroke-width="4"/><path d="M48 40Q22 17 35 12Q52 13 50 40Q68 8 76 19Q78 33 50 40" fill="#659679" stroke="#adc2a1" stroke-width="2"/></svg><b>委托药包</b><small id="herbHint"></small></button>
+    <button class="work-object herb-object" id="herbObject" type="button"><span class="pack-stack" id="packStack" aria-hidden="true"></span><svg viewBox="0 0 100 100" aria-hidden="true"><path class="paper-wrap" d="M20 31L50 18L81 31L86 78L50 91L14 78Z" fill="#a58a59" stroke="#dbc795" stroke-width="2"/><path d="M20 31L50 46L81 31M50 46V90M18 58L83 58" fill="none" stroke="#5c4932" stroke-width="4"/><path d="M48 40Q22 17 35 12Q52 13 50 40Q68 8 76 19Q78 33 50 40" fill="#659679" stroke="#adc2a1" stroke-width="2"/></svg><b>药材包</b><small id="herbHint"></small></button>
     <button class="work-object fire-object" id="fireObject" type="button"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M13 83V56A37 37 0 0 1 87 56V83Z" fill="#101e1c" stroke="#9b8054" stroke-width="5"/><path class="hand-flame" d="M50 79C17 77 29 51 43 44Q41 61 50 56Q62 41 57 25C90 55 80 81 50 79Z" fill="#e99b50"/><path d="M49 78Q35 67 52 55Q51 67 62 66Q62 80 49 78" fill="#ffe3a0"/></svg><b id="fireLabel"></b><small id="fireHint"></small></button>
-    <button class="work-object tray-object" id="trayObject" type="button" aria-label="将手中灵丹放入交付盘"><svg viewBox="0 0 120 70" aria-hidden="true"><ellipse cx="60" cy="46" rx="51" ry="17" fill="#617d72" stroke="#c3b47e" stroke-width="3"/><ellipse cx="60" cy="41" rx="51" ry="17" fill="#243f39" stroke="#97af95" stroke-width="3"/><ellipse cx="60" cy="40" rx="38" ry="10" fill="none" stroke="#698877"/></svg><span id="trayPills" aria-hidden="true"></span><b>交付盘</b><small id="trayHint">灵丹出炉后落在这里</small></button>
+    <button class="work-object tray-object" id="trayObject" type="button" aria-label="将手中灵丹收入丹匣"><svg viewBox="0 0 120 70" aria-hidden="true"><ellipse cx="60" cy="46" rx="51" ry="17" fill="#617d72" stroke="#c3b47e" stroke-width="3"/><ellipse cx="60" cy="41" rx="51" ry="17" fill="#243f39" stroke="#97af95" stroke-width="3"/><ellipse cx="60" cy="40" rx="38" ry="10" fill="none" stroke="#698877"/></svg><span id="trayPills" aria-hidden="true"></span><b>收丹入匣</b><small id="trayHint">灵丹出炉后收入丹匣</small></button>
     <p class="work-instruction" id="workInstruction" role="status"></p>
     <div class="carried-object" id="carriedObject" hidden aria-hidden="true"></div>
   `);
@@ -110,9 +110,9 @@
       ghost.style.left = e.clientX+'px'; ghost.style.top = e.clientY+'px';
       stage.classList.add('dragging-'+kind);
       const ready=kind==='herbs'?(inside(furnace,e)||inside(fire,e)):inside(tray,e);
-      const selling=!!snapshot().order?.self;
       dropHint.hidden=false;dropHint.dataset.ready=String(ready);
-      dropHint.textContent=kind==='herbs'?(ready?'松手投入药材 · 开始炼制':'拖到高亮炉口 · 松手投药'):(ready?(selling?'松手收丹 · 存入背包':'松手交付丹药 · 计入委托'):(selling?'拖到高亮收丹盘 · 松手入库':'拖到高亮交付盘 · 松手提交'));
+      const stored=!snapshot().order;
+      dropHint.textContent=kind==='herbs'?(ready?'松手投入药材 · 开始炼制':'拖到高亮炉口 · 松手投药'):(ready?'松手收丹入匣': '拖到高亮收丹盘 · 松手入匣');
       furnace.classList.toggle('drop-target-ready',kind==='herbs'&&ready);tray.classList.toggle('drop-target-ready',kind==='pill'&&ready);
       stage.classList.toggle('drop-ready',ready);
     });
@@ -125,9 +125,9 @@
     tray.disabled = !canCollect() || held === 'herbs';
     pill.setAttribute('aria-disabled',String(!canCollect()));
     pill.setAttribute('aria-pressed',String(held === 'pill'));
-    pill.setAttribute('aria-label','取出灵丹，再点交付盘落盘；也可拖入盘中');
+    pill.setAttribute('aria-label','取出灵丹，再点收丹盘收入丹匣；也可拖入盘中');
     herbs.setAttribute('aria-pressed',String(held === 'herbs'));
-    herbs.setAttribute('aria-label',`剩余 ${s.remaining} 包委托药材，取一包投入炉口`);
+    herbs.setAttribute('aria-label',`剩余 ${s.remaining} 包${s.order?'委托':'储备'}药材，取一包投入炉口`);
     fire.setAttribute('aria-label',held === 'herbs' ? '将整包药材投入炉口' : '挥扇催炼一次');
     stage.dataset.held = held || '';
     stage.classList.toggle('empty-furnace',s.pillEnded || !s.started);
@@ -136,25 +136,25 @@
     stage.classList.toggle('finished-order',s.roundEnded);
     stage.classList.toggle('no-herbs',s.remaining === 0);
     $('packStack').innerHTML = Array.from({length:Math.max(0,s.remaining-1)},() => '<i></i>').join('');
-    $('herbHint').textContent = held === 'herbs' ? '已拆包 · 点炉口投入' : `剩余 ${s.remaining} 包 · 取药`;
+    $('herbHint').textContent = held === 'herbs' ? '已拆包 · 点炉口投入' : s.order ? `剩余 ${s.remaining} 包 · 取药` : '储备药材 · 取药';
     $('fireLabel').textContent = locked ? '操作中' : held === 'herbs' ? '整包投入' : !s.pillEnded && s.turn >= 100 ? '百转已成' : '挥扇催炼';
     $('fireHint').textContent = s.pillEnded ? '等待投药起炉' : '点炉膛 · 每次一炼';
-    $('trayHint').textContent = s.order?.self ? '自炼成丹 · 点盘存入背包' : held === 'pill' ? '点此落盘，交还委托' : `已交 ${delivered.length} 颗 · 点盘收丹交付`;
-    const target = s.target || 300;
-    $('slipValue').textContent = `已交 ${Math.round(s.delivered)} / ${target}`;
+    $('trayHint').textContent = !s.order ? '丹药统一入丹匣 · 点盘收丹' : held === 'pill' ? '点此收丹入匣' : `已收入丹匣 ${delivered.length} 颗 · 点盘收丹入匣`;
+    const target = s.order ? s.target : 0;
+    $('slipValue').textContent = s.order ? `已交 ${Math.round(s.delivered)} / ${target}` : '储备炼制 · 不计委托';
     const heading = document.querySelector('.commission-slip b');
-    if (s.order && heading) heading.textContent = s.order.name;
-    document.querySelector('.commission-slip small').textContent=s.order?.self?'自购材料 · 成丹自售':'客人委托 · 材料与成丹归客';
-    $('workInstruction').textContent = locked ? '药材与成丹按本炉结算，请稍候…' : !s.started ? '接下委托，取药开炉' : s.roundEnded ? (s.delivered >= target ? '委托已完成 · 成丹已归客' : '三包药材已用尽 · 本单结束') : held === 'herbs' ? '整包药材已展开 · 点炉口倾倒，Esc 放回' : held === 'pill' ? '已托起灵丹 · 点交付盘，Esc 放回炉中' : s.pillEnded ? '取一包药材，拖入炉口 · 也可点药包，再点炉口' : s.busy ? '扇落火起，丹纹正在变化…' : s.turn >= 100 ? '百转已成 · 取丹放入交付盘' : '点炉膛挥扇催炼 · 点交付盘收丹，也可拖丹入盘';
+    if (heading) heading.textContent = s.order ? s.order.name : '储备丹药';
+    document.querySelector('.commission-slip small').textContent=s.order?'客人委托 · 丹药统一入丹匣':'储备材料 · 丹药统一入丹匣';
+    $('workInstruction').textContent = locked ? '药材与成丹按本炉结算，请稍候…' : !s.started ? '接下委托或取储备药材，开始炼丹' : s.roundEnded ? (s.order ? (s.delivered >= target ? '委托已完成 · 丹药仍在丹匣' : '本单已结束 · 丹药仍在丹匣') : '本炉已结束 · 丹药已收入丹匣') : held === 'herbs' ? '整包药材已展开 · 点炉口倾倒，Esc 放回' : held === 'pill' ? '已托起灵丹 · 点收丹盘收入丹匣，Esc 放回炉中' : s.pillEnded ? (s.order ? '取一包药材，拖入炉口 · 也可点药包，再点炉口' : '取一份储备药材，拖入炉口开始炼丹') : s.busy ? '扇落火起，丹纹正在变化…' : s.turn >= 100 ? '百转已成 · 收丹入匣' : '点炉膛挥扇催炼 · 点收丹盘入匣';
   }
   function updateCampaignContext() {
     const s = snapshot();
     if (!s.campaignEnabled) return;
     if (!s.order) {
-      document.getElementById('workInstruction').textContent = '今日尚未接单 · 在上方委托簿选择一份订单';
-      document.getElementById('slipValue').textContent = '等待接单';
-      document.querySelector('.commission-slip b').textContent = '今日待接单';
-    } else if(s.order.self){document.getElementById('workInstruction').textContent=s.roundEnded?'自炼结束 · 可继续购料或接委托':s.runeChoices?.length?'灵性药包：请在炉旁选择一道丹纹':'自有药材 · 投料、催炼，收丹存入背包';
+      const reserveRun=s.started;
+      document.getElementById('workInstruction').textContent = reserveRun ? (s.roundEnded ? '本炉已结束 · 丹药已收入丹匣' : '储备药材炼制 · 成丹统一收入丹匣') : '接下委托或取储备药材，开始炼丹';
+      document.getElementById('slipValue').textContent = reserveRun ? '储备炼制 · 不计委托' : '等待接单';
+      document.querySelector('.commission-slip b').textContent = reserveRun ? '储备丹药' : '今日待接单';
     } else if (s.roundEnded) {
       document.getElementById('workInstruction').textContent = '本单已结清 · 请接下一单，也可在柜台结束今日，未接委托会跳过';
     }

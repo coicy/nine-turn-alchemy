@@ -85,7 +85,7 @@ body.object-world #pillBagSelected p{font-size:14px;line-height:1.6}
 body.object-world .pill-bag-empty{font-size:14px;grid-column:1/-1}
 body.object-world .journal-book .record-scope{font-size:14px;margin:0 0 10px}
 body.object-world .journal-book #trialFlavor,body.object-world .journal-book #trialRule,body.object-world .journal-book .hint-box{display:none!important}
-body.object-world .journal-book[data-record-source=self] .target-card{display:none!important}
+body.object-world .journal-book[data-record-source=forge] .target-card{display:none!important}
 body.object-world .journal-book .resource-grid{margin-top:18px}
 .rune-atlas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.rune-atlas article{display:flex;align-items:center;gap:12px;border-bottom:1px solid #bba27c;padding:10px 0}.rune-atlas .ux-pill-art{width:80px;height:80px}.rune-atlas h3{font-size:18px;margin:0 0 6px}.rune-atlas p{font-size:14px;line-height:1.6;margin:0}.rune-discoveries{margin-top:20px}.rules-outcomes{display:grid;grid-template-columns:70px 1fr;gap:12px}.rules-outcomes dt,.rules-outcomes dd{margin:0}.log-scope,.log-entry small{font-size:12px}.log-entry small{display:block;color:#72583f;margin:0 0 5px}
 body.object-world .journal-book .journal-heading{padding-right:80px}.journal-tabs button{min-height:44px}

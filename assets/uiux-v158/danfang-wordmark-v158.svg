@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 128" role="img" aria-label="九转丹坊">
+  <g fill="#f7e7c6">
+    <text x="260" y="78" text-anchor="middle" font-family="STKaiti, KaiTi, FZKai-Z03, Noto Serif SC, serif" font-size="64" letter-spacing="8">九转丹坊</text>
+  </g>
+  <path d="M92 96h336" fill="none" stroke="#d6b27e" stroke-width="2" stroke-linecap="round" opacity=".82"/>
+  <circle cx="78" cy="96" r="3" fill="#a84a3a"/>
+  <circle cx="442" cy="96" r="3" fill="#a84a3a"/>
+</svg>

@@ -16,7 +16,7 @@
  }
  function update(){const s=api.snapshot(),p=api.refinementProbabilities(),key=s.orderId+':'+s.attempt;if(key!==pillKey){pillKey=key;open=true;lastOutcome=null;}if(s.busy)lastOutcome=null;
   const atWork=window.AlchemyViewState.snapshot().current==='work'&&window.AlchemyViewState.snapshot().workMode==='furnace',live=s.started&&!s.pillEnded&&!s.roundEnded,visible=live&&atWork&&!s.runeChoices?.length&&p.available;
-  toggle.hidden=true;panel.hidden=!visible;toggle.setAttribute('aria-expanded',String(visible));document.body.classList.toggle('odds-expanded',visible);
+  toggle.hidden=!visible||open;panel.hidden=!visible||!open;toggle.setAttribute('aria-expanded',String(visible&&open));document.body.classList.toggle('odds-expanded',visible&&open);
   panel.querySelector('#refineOddsState').textContent=s.endReason==='explode'?'本炉炸丹':s.busy?'本次结算中…':'';
   rows.forEach(({id,row,value,segment})=>{value.textContent=p.available?(p.outcomes[id]*100).toFixed(1)+'%':'—';segment.style.width=(p.available?p.outcomes[id]*100:0)+'%';row.removeAttribute('data-hit');});
   const risk=panel.querySelector('#refineOddsRisk');risk.textContent=riskCopy(p);risk.hidden=!risk.textContent;
