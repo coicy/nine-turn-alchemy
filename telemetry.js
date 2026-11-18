@@ -17,7 +17,7 @@
     const saved = JSON.parse(options.storage?.getItem(KEY) || "null");
     if (saved && Array.isArray(saved.history) && Array.isArray(saved.queue)) data = saved;
   } catch {}
-  let enabled = false, runId = null, ended = false, sequence = 0, startedAt = 0;
+  let enabled = data.enabled === true, runId = null, ended = false, sequence = 0, startedAt = 0;
   let busy = false, persistent = !!options.storage;
   function status(text) { options.status?.(text); }
   function save() {

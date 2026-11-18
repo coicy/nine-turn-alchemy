@@ -10,7 +10,7 @@ const fetch = async (url, init) => {
   const body = JSON.parse(init.body); uploads += body.events.length;
   return { ok: true, status: 200, json: async () => ({ accepted: body.events.map(e => e.id) }) };
 };
-const options = { storage, endpoint: "https://example.test", fetch, uuid: () => "test-id-" + (++sequence), now: () => 1000, status: value => states.push(value) };
+const options = { storage, endpoint: "https://example.test", fetch, uuid: () => "test-id-" + (++sequence), now: () => 1000, status: value => states.push(value), build: "v166" };
 const snapshot = { turn: 1, quality: 0, value: 24, attempt: 1, delivered: 0, risk: 0.12, runes: [], shield: false };
 (async () => {
   const first = createTelemetry(options);
@@ -20,13 +20,23 @@ const snapshot = { turn: 1, quality: 0, value: 24, attempt: 1, delivered: 0, ris
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(first.exportData().events.filter(e => e.type === "run_end").length, 1);
   assert.equal(uploads, 0);
-  const second = createTelemetry(options); second.setEnabled(true);
+  const second = createTelemetry(options);
   assert.equal(second.exportData().events.length, 4);
   offline = false; await second.flush();
   assert.equal(uploads, 4);
   await second.flush(); assert.equal(uploads, 4);
   assert.ok(states.includes("匿名记录已上传"));
-  second.setEnabled(false); second.begin(snapshot); await second.flush(); assert.equal(uploads, 4);
+  second.begin(snapshot);
+  second.record("submit", {...snapshot, delivered: 24}, {before: snapshot});
+  await new Promise(resolve => setImmediate(resolve));
+  await second.flush();
+  assert.equal(uploads, 7);
+  const submission = second.exportData().events.at(-1);
+  assert.equal(submission.type, "submit");
+  assert.equal(submission.build, "v166");
+  second.setEnabled(false);
+  const third = createTelemetry(options);
+  third.begin(snapshot); await third.flush(); assert.equal(uploads, 7);
   assert.equal(JSON.stringify(second.exportData()).includes("test-token"), false);
   console.log("Telemetry checks passed: offline persistence, retry, acknowledgement, opt-out, export without credentials.");
 })();
