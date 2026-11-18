@@ -7,7 +7,6 @@
   const palettes = window.AlchemyPillPalette;
   const SIZE = 256;
   const cache = new Map();
-  let bounds = new WeakMap();
   const definitions = {
     '赤纹': {color:'#cd8d65', light:'#ce9870', kind:'fire'},
     '青纹': {color:'#608477', light:'#91ac95', kind:'water'},
@@ -47,15 +46,6 @@
     return {appearance,nature,turn,quality,runes,shield,moonCharge,stage,growth,key,
       stageName:['初显','凝实','分枝','贯通'][stage]};
   }
-  function bodyBounds(im) {
-    if(bounds.has(im))return bounds.get(im);
-    const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;
-    const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(im,0,0);
-    const data=ctx.getImageData(0,0,c.width,c.height).data;
-    let x0=c.width,y0=c.height,x1=0,y1=0;
-    for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++)if(data[(y*c.width+x)*4+3]>200){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}
-    const result={x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};bounds.set(im,result);return result;
-  }
   function glyph(ctx,name,x,y,size,angle,d,secondary=false) {
     const def=definitions[name];if(!def)return;
     const g=d.growth,e=Math.sqrt(g),scale=.64+.36*e;
@@ -88,18 +78,18 @@
     const d=describe(p);if(cache.has(d.key)){const hit=cache.get(d.key);cache.delete(d.key);cache.set(d.key,hit);return hit;}
     const c=document.createElement('canvas');c.width=c.height=SIZE;const ctx=c.getContext('2d');
     const im=window.AlchemyAssets?.getImage(palettes.sources[d.appearance]);if(!im?.naturalWidth)return {canvas:c,url:c.toDataURL(),description:d};
-    const b=bodyBounds(im),cx=128,cy=128,r=124;
-    ctx.save();ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.clip();
-    ctx.drawImage(im,b.x,b.y,b.w,b.h,4,4,248,248);
-    // Colors are painted into the mineral bodies. Do not tint them back to the old blue/olive palette.
-    const sheen=ctx.createRadialGradient(82,70,0,88,80,145);sheen.addColorStop(0,'#fff5d8'+Math.round(8+d.quality*4).toString(16).padStart(2,'0'));sheen.addColorStop(1,'#ffffff00');ctx.fillStyle=sheen;ctx.fillRect(0,0,SIZE,SIZE);
+    const frame=palettes.frame(d.appearance,d.turn), sx=frame*SIZE;
+    ctx.save();
+    ctx.drawImage(im,sx,0,SIZE,SIZE,0,0,SIZE,SIZE);
+    // Keep pigment and light within the painted pill's irregular outline.
+    ctx.globalCompositeOperation='source-atop';
     const marks=d.runes,primary=marks[marks.length-1],others=marks.slice(0,-1);
     const surface=document.createElement('canvas');surface.width=surface.height=SIZE;const ink=surface.getContext('2d');
     const slots=others.length<=2?[[.23,.23,-.22],[.77,.77,.18]]:[[.20,.26,-.35],[.50,.15,.08],[.81,.29,.35],[.79,.73,.32],[.27,.79,-.2]];
     others.forEach((name,i)=>{const [x,y,a]=slots[i];const size=SIZE*.30;glyph(ink,name,SIZE*x-size/2,SIZE*y-size/2,size,a,d,true);});
     if(primary){const size=SIZE*.78;glyph(ink,primary,128-size/2,130-size/2,size,0,d);}
     // Borrow the actual painted body's patches and light direction inside the pigment only.
-    ink.globalCompositeOperation='source-atop';ink.globalAlpha=.24;ink.drawImage(im,b.x,b.y,b.w,b.h,4,4,248,248);
+    ink.globalCompositeOperation='source-atop';ink.globalAlpha=.24;ink.drawImage(im,sx,0,SIZE,SIZE,0,0,SIZE,SIZE);
     ink.globalAlpha=1;const shade=ink.createLinearGradient(30,30,210,235);shade.addColorStop(0,'#30231b00');shade.addColorStop(1,'#30231b40');ink.fillStyle=shade;ink.fillRect(0,0,SIZE,SIZE);ctx.drawImage(surface,0,0);
     ctx.restore();
     const entry={canvas:c,url:c.toDataURL('image/png'),description:d};cache.set(d.key,entry);if(cache.size>48)cache.delete(cache.keys().next().value);return entry;
@@ -121,7 +111,7 @@
   function selection(nature,quality,runes=[]){return {body:image({nature,quality,runes,turn:60}),cracks:[],q:clamp(quality,0,4)};}
   function hydrate(scope=document){scope.querySelectorAll('[data-pill-art-state]').forEach(el=>{const p=JSON.parse(el.dataset.pillArtState);el.querySelector('img').src=image(p);el.dataset.pillArtKey=describe(p).key;});}
   window.AlchemyPillArt={image,draw,describe,selection,hydrate,definitions,bodySource:BODY,bodySources:BODIES,paletteSources:palettes.sources,hues:['#D5DEE1','#91B78B','#74A9D4','#B091CC','#DFB87C'],get cacheSize(){return cache.size;},get feedback(){return feedback;}};
-  window.addEventListener('alchemy:assets-ready',()=>{bounds=new WeakMap();cache.clear();});
+  window.addEventListener('alchemy:assets-ready',()=>{cache.clear();});
   window.addEventListener('alchemy:render',()=>{const d=describe(window.AlchemyGame.snapshot());if(current?.key!==d.key){previous=current;current=d;}});
   window.addEventListener('alchemy:refine-result',e=>{const d=describe(window.AlchemyGame.snapshot());feedback={key:d.key,start:performance.now(),outcome:e.detail.outcome,previous:previous?.key||null};window.dispatchEvent(new Event('alchemy:pill-surface'));});
   window.addEventListener('alchemy:view-ready',()=>{feedback=null;});

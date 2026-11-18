@@ -2,16 +2,22 @@
 (function(root){
  'use strict';
  const sources=Object.freeze({
-  'lead-red':'assets/pill-mineral-v136/warm.webp',
-  'ochre-brown':'assets/pill-mineral-v136/neutral.webp',
-  'magnetite-black':'assets/pill-mineral-v136/cool.webp',
-  'lead-yellow':'assets/pill-mineral-v138/lead-yellow.webp',
-  'ochre-violet':'assets/pill-mineral-v138/ochre-violet.webp',
-  'copper-red':'assets/pill-mineral-v138/copper-red.webp',
-  'tin-white':'assets/pill-mineral-v138/tin-white.webp'
+  'tin-white':'assets/pill-growth/metal.webp',
+  'ochre-brown':'assets/pill-growth/wood.webp',
+  'magnetite-black':'assets/pill-growth/water.webp',
+  'lead-red':'assets/pill-growth/fire.webp',
+  'lead-yellow':'assets/pill-growth/earth.webp',
+  'ochre-violet':'assets/pill-growth/yin.webp',
+  'copper-red':'assets/pill-growth/yang.webp',
+  'plain':'assets/pill-growth/plain.webp'
  });
+ const turns=Object.freeze([1,3,5,9,10,15,30,45,60,80,100]);
+ function frame(appearance,turn){
+  const index=turns.filter(minimum=>turn>=minimum).length-1;
+  return Math.max(0,appearance==='plain'?Math.min(index,1):index);
+ }
  const groups=Object.freeze({warm:Object.freeze(['lead-red','lead-yellow','copper-red']),neutral:Object.freeze(['ochre-brown','ochre-violet']),cool:Object.freeze(['magnetite-black','tin-white'])});
- function resolve(nature,appearance){const group=groups[nature]||groups.neutral;return group.includes(appearance)?appearance:group[0];}
+ function resolve(nature,appearance){return Object.hasOwn(sources,appearance)?appearance:'plain';}
  function pick(nature,identity,attempt){const group=groups[nature]||groups.neutral;let hash=2166136261;for(const c of String(identity)+'/'+String(attempt))hash=Math.imul(hash^c.charCodeAt(0),16777619);return group[(hash>>>0)%group.length];}
- const api=Object.freeze({sources,groups,resolve,pick});if(typeof module!=='undefined')module.exports=api;else root.AlchemyPillPalette=api;
+ const api=Object.freeze({sources,groups,resolve,pick,frame});if(typeof module!=='undefined')module.exports=api;else root.AlchemyPillPalette=api;
 })(typeof window!=='undefined'?window:globalThis);
