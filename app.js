@@ -384,7 +384,7 @@
     updateRecord();
     telemetry?.record("refine_result", playtestSnapshot(), { before, outcome });
     if (state.roundEnded) { settleOrder(); telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss"); }
-    if (!state.pillEnded && state.pill.ritualSafe === 0 && state.pill.refineSerial % 9 === 0) beginRitual();
+    if (!state.pillEnded && state.pill.ritualSafe === 0 && state.pill.refineSerial % 10 === 0) beginRitual();
     decisionSince = Date.now();
     const visualOutcome = state.pill.turn >= 100 && !state.pillEnded ? "complete" : outcome;
     setFeedback(feedback, feedbackTone, visualOutcome, outcome === "explode" ? -before.value : state.pill.value - before.value);
