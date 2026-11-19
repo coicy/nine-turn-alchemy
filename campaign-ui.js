@@ -114,8 +114,44 @@ note.onclick=()=>{letterOpen=!letterOpen;syncNote();if(letterOpen)$('counterLett
 board.addEventListener('click',e=>{if(e.target.closest('[data-close-letter]')){letterOpen=false;syncNote();note.focus();}});
 board.addEventListener('keydown',e=>{if(e.key==='Escape'&&letterOpen&&!browseAll){e.stopPropagation();e.preventDefault();letterOpen=false;syncNote();note.focus();}});
 window.addEventListener('alchemy:view-ready',e=>{if(e.detail.view==='orders'){board.scrollLeft=0;board.scrollTop=0;const c=api.campaign();if(!e.detail.returning&&!window.AlchemyOpening?.active&&c?.phase==='open'&&!c.orders.some(o=>o.status==='active')){selectedId=c.orders.find(o=>o.status==='pending')?.id||selectedId;render();}updateNote(noteOrder,notePhase);}else if(e.detail.location!=='orders'){clearTimeout(noteTimer);noteTimer=0;noteReady=false;letterOpen=false;syncNote();}});
-window.addEventListener('alchemy:next-customer',()=>{const c=api.campaign(),s=api.snapshot();if(!c||c.phase!=='open'||c.orders.some(o=>o.status==='active')||s.busy||window.AlchemyInteractionBusy)return;const next=c.orders.find(o=>o.status==='pending');if(next)selectedId=next.id;browseAll=false;nextLetter=true;letterOpen=false;render();});
-function render(){const c=api.campaign();if(!c)return;const s=api.snapshot(),completed=c.orders.filter(o=>o.status==='completed').length,resolved=c.orders.filter(o=>['completed','failed'].includes(o.status)).length,active=!!c.orders.some(o=>o.status==='active');
+// An order can close from the furnace, the bag, or the counter.
+let previousActiveId = null;
+let awaitingReception = null;
+function advanceReception() {
+  if (!awaitingReception) return;
+  const c = api.campaign();
+  if (!c || c.phase !== 'open' || c.day !== awaitingReception.day || c.activeId) {
+    awaitingReception = null;
+    return;
+  }
+  const s = api.snapshot(), scene = window.AlchemyScene2D;
+  if (!s.pillEnded || s.busy || scene?.busy || scene?.held || window.AlchemyInteractionBusy) return;
+  const next = c.orders.find(order => order.status === 'pending');
+  selectedId = next?.id || awaitingReception.closedId;
+  awaitingReception = null;
+  browseAll = false;
+  nextLetter = !!next;
+  letterOpen = false;
+  if (window.AlchemyViewState.snapshot().current !== 'orders') window.AlchemyViewState.navigate('orders');
+  render();
+  if (next && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const portrait = board.querySelector('#counterVisitor .visitor-portrait');
+    portrait?.animate?.([{translate:'28px 0', opacity:0}, {translate:'0 0', opacity:1}],
+      {duration:280, easing:'ease-out'});
+  }
+}
+function observeQueue(c) {
+  if (previousActiveId && !c.activeId && c.phase === 'open' &&
+      c.orders.some(order => order.id === previousActiveId && ['completed','failed'].includes(order.status))) {
+    awaitingReception = {day:c.day, closedId:previousActiveId};
+  }
+  previousActiveId = c.activeId;
+  if (awaitingReception) queueMicrotask(advanceReception);
+}
+for (const event of ['alchemy:interaction','alchemy:carry','alchemy:view-ready']) {
+  window.addEventListener(event, () => { if (awaitingReception) queueMicrotask(advanceReception); });
+}
+function render(){const c=api.campaign();if(!c)return;observeQueue(c);const s=api.snapshot(),completed=c.orders.filter(o=>o.status==='completed').length,resolved=c.orders.filter(o=>['completed','failed'].includes(o.status)).length,active=!!c.orders.some(o=>o.status==='active');
  $('dayTitle').textContent='';
  $('careerTotal').textContent=`今日完成 ${completed} / ${c.orders.length} 单`;
  $('dailyHint').textContent=c.phase==='finished'?`三十日累计收入 ${c.economy?.earned||0} 铜钱，余额 ${c.economy?.coins||0} 铜钱。经营结束。查看总评，或重新经营。`:c.phase==='settled'?'今日已结清，准备迎接下一天。':`今日 ${completed} / ${c.orders.length} 单完成 · ${resolved} / ${c.orders.length} 单已处理。一次只接一单，明确提交后结单；成功余药赠留，失败退回且免赔。`;
