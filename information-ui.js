@@ -1,7 +1,7 @@
 (() => {
   'use strict';
-  const stage=document.getElementById('pillStage'),observation=document.querySelector('.room-observation'),settlement=document.getElementById('roomSettlement'),herbs=document.querySelector('.herb-tray'),instruction=document.getElementById('workInstruction'),feedback=document.getElementById('refineFeedback');
-  const surfaces=[observation,settlement,herbs,instruction,feedback];
+  const stage=document.getElementById('pillStage'),observation=document.querySelector('.room-observation'),settlement=document.getElementById('roomSettlement'),herbs=document.querySelector('.herb-tray'),instruction=document.getElementById('workInstruction');
+  const surfaces=[observation,settlement,herbs,instruction];
   const preview=observation.querySelector('.observation-pill');
   preview.removeAttribute('aria-hidden');preview.setAttribute('role','button');preview.tabIndex=0;preview.setAttribute('aria-label','拿起丹药，放入收丹盘');
   let drag=null,queued=false,lastView=window.AlchemyViewState.snapshot().current;

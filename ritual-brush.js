@@ -6,7 +6,7 @@
   const guides = Array.from(svg.querySelectorAll('.rite-guides path'));
   const inkPaths = svg.querySelectorAll('.rite-ink path');
   const nib = svg.querySelector('.rite-tip');
-  const status = document.getElementById('ritualStatus');
+  const lead = svg.querySelector('.rite-lead');
   const names = ['起云头', '行火令', '收符脚'];
   const samples = guides.map(path => {
     const length = path.getTotalLength();
@@ -16,7 +16,7 @@
       return [p.x, p.y];
     });
   });
-  let pill, save, finish, pointer = null, keyTimer = 0;
+  let pill, save, finish, pointer = null, keyTimer = 0, waitingForLift = false;
   const distance = (a,b) => Math.hypot(a[0]-b[0],a[1]-b[1]);
   const round = n => Math.round(n*10)/10;
 
@@ -24,7 +24,8 @@
     pointer = null;
     clearInterval(keyTimer);
     keyTimer = 0;
-    if (pill?.ritualActive) save();
+    waitingForLift = false;
+    if (pill?.ritualActive) {paint();save();}
   }
 
   // Render the two edges of a brush mark. Turns broaden and both ends taper.
@@ -48,9 +49,17 @@
     const step = pill.ritualStep;
     guides.forEach((g,i) => g.classList.toggle('current',i===step));
     if (step >= guides.length) return;
-    const [x,y] = samples[step][pill.ritualInk.cursor];
+    const cursor=pill.ritualInk.cursor;
+    const section=waitingForLift ? [] : samples[step].slice(cursor,cursor+9);
+    lead.setAttribute('d',section.length ? 'M'+section.map(point=>point.join(' ')).join('L') : '');
+    const [x,y]=samples[step][cursor];
+    nib.setAttribute('visibility',waitingForLift?'hidden':'visible');
     nib.setAttribute('transform',`translate(${x} ${y})`);
-    if (status.textContent !== names[step]) status.textContent = names[step];
+    const drawing=pointer!==null || keyTimer;
+    nib.classList.toggle('is-ready',!drawing&&!waitingForLift);
+    const instruction=waitingForLift ? '抬手换笔。' : drawing ? '沿亮线运笔。' :
+      cursor ? '按住金点，接着描。' : '按住金点，沿亮线拖动。';
+    window.AlchemyFeedback?.setRitualGuide(names[step]+' · '+instruction);
   }
 
   function prepare(p, sealed) {
@@ -68,12 +77,14 @@
   function endStroke() {
     pill.ritualStep++;
     pill.ritualInk.cursor = 0;
-    pointer = null;
+    waitingForLift = pointer!==null || !!keyTimer;
     clearInterval(keyTimer);
     keyTimer = 0;
-    paint();
-    if (pill.ritualStep === guides.length) finish();
-    else save();
+    if (pill.ritualStep === guides.length) {
+      pointer=null;waitingForLift=false;paint();finish();
+    } else {
+      paint();save();
+    }
   }
 
   function put(point) {
@@ -105,10 +116,11 @@
     pointer=e.pointerId;
     paper.setPointerCapture(pointer);
     if (!ink.lines[step].length) ink.lines[step].push(point.map(round));
+    paint();
   });
 
   paper.addEventListener('pointermove', e => {
-    if (pointer!==e.pointerId || !pill?.ritualActive) return;
+    if (pointer!==e.pointerId || !pill?.ritualActive || waitingForLift) return;
     const step=pill.ritualStep, ink=pill.ritualInk;
     const events=e.getCoalescedEvents?.() || [];
     for (const event of events.length ? events : [e]) {
@@ -116,10 +128,10 @@
       const span=distance(last,point);
       if (span>85) continue;
       const parts=Math.ceil(span/2.5);
-      for (let i=1;i<=parts && pointer!==null;i++) {
+      for (let i=1;i<=parts && pointer!==null && !waitingForLift;i++) {
         put([last[0]+(point[0]-last[0])*i/parts,last[1]+(point[1]-last[1])*i/parts]);
       }
-      if (pointer===null) break;
+      if (pointer===null || waitingForLift) break;
     }
     if (pointer!==null) paint();
   });
@@ -129,7 +141,7 @@
   paper.addEventListener('keydown',e=>{
     if (e.key!==' ' && e.key!=='Enter') return;
     e.preventDefault();
-    if(e.repeat || keyTimer || pointer!==null || !pill?.ritualActive) return;
+    if(e.repeat || keyTimer || waitingForLift || pointer!==null || !pill?.ritualActive) return;
     const guide=samples[pill.ritualStep], ink=pill.ritualInk;
     if (!ink.lines[pill.ritualStep].length) ink.lines[pill.ritualStep].push(guide[0]);
     keyTimer=setInterval(()=>{
@@ -137,12 +149,12 @@
       if(keyTimer) paint();
     },32);
   });
-  paper.addEventListener('keyup',e=>{if(keyTimer && (e.key===' ' || e.key==='Enter')) lift();});
-  paper.addEventListener('blur',()=>{if(keyTimer) lift();});
+  paper.addEventListener('keyup',e=>{if((keyTimer || waitingForLift) && (e.key===' ' || e.key==='Enter')) lift();});
+  paper.addEventListener('blur',()=>{if(keyTimer || (waitingForLift && pointer===null)) lift();});
   window.addEventListener('pagehide',()=>{if(pointer!==null || keyTimer) lift();});
   window.AlchemyRitualBrush = {
     begin(p,persist,onFinish) {
-      pointer=null;clearInterval(keyTimer);keyTimer=0;
+      pointer=null;clearInterval(keyTimer);keyTimer=0;waitingForLift=false;
       save=persist;finish=onFinish;
       prepare(p,false);
       paper.disabled=false;
@@ -152,6 +164,7 @@
     seal(p) {
       prepare(p,true);
       paper.disabled=true;
+      window.AlchemyFeedback?.setRitualGuide('');
       paint();
     }
   };

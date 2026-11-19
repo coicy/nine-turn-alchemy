@@ -15,33 +15,43 @@
   function tone(frequency,duration,delay=0,volume=.07){if(muted||!audio||audio.state!=='running')return;const t=audio.currentTime+delay,o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.setValueAtTime(frequency,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(volume,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+duration+.01);}
   function rush(delay=0,duration=.16,frequency=650,volume=.12){if(muted||!audio||audio.state!=='running')return;const t=audio.currentTime+delay,s=audio.createBufferSource(),f=audio.createBiquadFilter(),g=audio.createGain();s.buffer=noise;f.type='lowpass';f.frequency.value=frequency;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(volume,t+.035);g.gain.exponentialRampToValueAtTime(.0001,t+duration);s.connect(f);f.connect(g);g.connect(audio.destination);s.start(t);s.stop(t+duration);}
   function pulse(kind){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;clearTimeout(pulseTimer);fire.className='';void fire.offsetWidth;fire.className=kind;pulseTimer=setTimeout(()=>{fire.className='';},650);}
-  let lastJudgment = null;
-  function place() {
-    if (box.hidden) return;
-    if (box.parentElement !== document.body) document.body.append(box);
-    const judgment = document.querySelector('.furnace-judgment');
-    if (judgment?.checkVisibility()) lastJudgment = judgment.getBoundingClientRect();
-    const nav = document.querySelector('.engine-nav').getBoundingClientRect();
-    const width = innerWidth <= 650 ? 150 : 200;
-    box.style.setProperty('--feedback-scale', '1');
-    box.style.setProperty('width', width + 'px', 'important');
-    box.style.setProperty('max-width', 'calc(100vw - 16px)', 'important');
-    box.style.setProperty('position', 'fixed', 'important');
-    box.style.setProperty('right', 'auto', 'important');
-    box.style.setProperty('bottom', 'auto', 'important');
-    const x = lastJudgment ? lastJudgment.right - width : innerWidth - width - 12;
-    const y = lastJudgment ? lastJudgment.top - box.offsetHeight - 10 : nav.bottom + 12;
-    box.style.setProperty('left', Math.max(8, Math.min(innerWidth-width-8, x)) + 'px', 'important');
-    box.style.setProperty('top', Math.max(nav.bottom+8, y) + 'px', 'important');
+  box.classList.add('furnace-hint');
+  document.querySelector('.engine-viewport').append(box);
+  let guide = '', ritualGuide = '', result = null;
+  const titleNode=box.querySelector('strong'), messageNode=box.querySelector('p'), deltaNode=box.querySelector('small');
+  function renderGuide() {
+    const view=window.AlchemyViewState?.snapshot();
+    const ritualText=view?.current==='work' && view.workMode==='furnace' ? ritualGuide : '';
+    const entry=ritualText ? {title:'敕火符',message:ritualText,delta:'',kind:'neutral'} :
+      result || (guide ? {title:'',message:guide,delta:'',kind:'neutral'} : null);
+    box.hidden=!entry;
+    if (!entry) return;
+    for(const [node,value] of [[titleNode,entry.title],[messageNode,entry.message],[deltaNode,entry.delta]]) {
+      if(node.textContent!==value) node.textContent=value;
+    }
+    box.dataset.kind=entry.kind;
   }
-  function show(title,message,delta,kind='neutral',duration=1800){clearTimeout(timer);box.hidden=false;box.dataset.kind=kind;box.querySelector('strong').textContent=title;box.querySelector('p').textContent=message;box.querySelector('small').textContent=delta||'';place();timer=setTimeout(()=>{box.hidden=true;},duration);}
-  window.addEventListener('alchemy:fanning',()=>{clearTimeout(timer);box.hidden=true;unlock();pulse('fanning');rush(0);rush(.23);});
+  function clearResult() {
+    clearTimeout(timer);
+    result=null;
+    renderGuide();
+  }
+  function show(title,message,delta,kind='neutral',duration=1800) {
+    clearTimeout(timer);
+    result={title,message,delta:delta||'',kind};
+    renderGuide();
+    timer=setTimeout(clearResult,duration);
+  }
+  window.addEventListener('alchemy:fanning',()=>{clearResult();unlock();pulse('fanning');rush(0);rush(.23);});
   const names={big:'大成功',success:'炼化成功',hold:'火候维持',damage:'丹体受损',explode:'炸丹 · 本炉结束',complete:'百转成丹',collect:'收丹完成',submit:'丹药已提交',win:'委托完成',loss:'本单结束'};
-  window.addEventListener('alchemy:feedback',e=>{const d=e.detail,k=d.event;if(k==='start'){if(window.AlchemyGame.snapshot().pillEnded){box.hidden=true;return;}pulse('loaded');tone(180,.13);return;}if(k==='ritual-complete'){show('步罡已成',d.message,'','good',1800);tone(392,.17);tone(588,.25,.08);return;}if(!names[k])return;if(['collect','win','loss'].includes(k)&&window.AlchemyGame.snapshot().roundEnded){box.hidden=true;tone(740,.24);return;}const bad=['explode','damage','loss'].includes(k),good=['success','big','complete','win'].includes(k);const value=typeof d.value==='number'?(d.value===0?'药力未变':`药力 ${d.value>0?'+':'−'}${Math.round(Math.abs(d.value))}`):String(d.value||'');show(names[k],d.autoStep ? `自动催炼 ${d.autoStep} / 7` : '',value,bad?'bad':good?'good':'neutral',1800);pulse(bad?'damaged':'result');
+  window.addEventListener('alchemy:feedback',e=>{const d=e.detail,k=d.event;if(k==='start'){if(window.AlchemyGame.snapshot().pillEnded){clearResult();return;}pulse('loaded');tone(180,.13);return;}if(k==='ritual-complete'){show('步罡已成',d.message,'','good',1800);tone(392,.17);tone(588,.25,.08);return;}if(!names[k])return;if(['collect','win','loss'].includes(k)&&window.AlchemyGame.snapshot().roundEnded){clearResult();tone(740,.24);return;}const bad=['explode','damage','loss'].includes(k),good=['success','big','complete','win'].includes(k);const value=typeof d.value==='number'?(d.value===0?'药力未变':`药力 ${d.value>0?'+':'−'}${Math.round(Math.abs(d.value))}`):String(d.value||'');show(names[k],d.autoStep ? `自动催炼 ${d.autoStep} / 7` : '',value,bad?'bad':good?'good':'neutral',1800);pulse(bad?'damaged':'result');
     if(bad){rush(0,.25,220,.2);tone(110,.26);}else if(k==='hold'){tone(240,.2,.02,.045);}else if(['collect','win'].includes(k)){tone(740,.24);tone(990,.3,.08);}else{tone(520,.2);tone(780,.3,.08);if(['big','fusion','complete'].includes(k))tone(1040,.4,.17);}
   });
-  window.addEventListener('alchemy:view-ready',()=>{clearTimeout(timer);box.hidden=true;});
-  window.addEventListener('alchemy:order',()=>{clearTimeout(timer);box.hidden=true;fire.className='';});
-  window.addEventListener('resize',place);window.addEventListener('alchemy:world-layout',place);window.addEventListener('alchemy:carry',e=>{if(e.detail.kind){clearTimeout(timer);box.hidden=true;}});
-  window.AlchemyFeedback={get muted(){return muted;},get audioState(){return audio?.state||'locked';}};
+  window.addEventListener('alchemy:view-ready',clearResult);
+  window.addEventListener('alchemy:order',()=>{clearResult();fire.className='';});
+  window.addEventListener('alchemy:carry',e=>{if(e.detail.kind)clearResult();});
+  window.AlchemyFeedback={
+    setGuide(text){if(text!==guide){guide=text;renderGuide();}},
+    setRitualGuide(text){if(text!==ritualGuide){ritualGuide=text;renderGuide();}},
+    get muted(){return muted;},get audioState(){return audio?.state||'locked';}};
 })();

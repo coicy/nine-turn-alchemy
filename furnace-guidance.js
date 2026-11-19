@@ -5,7 +5,7 @@
   const stage=document.getElementById('pillStage');
   const cue=document.createElement('div');
   cue.className='furnace-action-cue';cue.hidden=true;
-  cue.innerHTML='<span id="furnaceActionHint" role="status"></span>';
+  cue.setAttribute('aria-hidden','true');
   stage.append(cue);
   const preference='tutorial-furnace-v105';
   const saved=window.AlchemySaves.preference(preference)||{};
@@ -22,19 +22,19 @@
     if(described){described.removeAttribute('aria-describedby');described=null;}
     cue.hidden=true;
     toggle.textContent=enabled?'关闭操作指引':'开启操作指引';
-    if(v.current!=='work'||window.AlchemyOpening?.active||!s.started||s.busy||window.AlchemyScene2D.busy)return;
+    if(v.current!=='work'||window.AlchemyOpening?.active||!s.started||s.ritualActive||s.busy||window.AlchemyScene2D.busy){window.AlchemyFeedback.setGuide('');return;}
     const near=v.workMode==='furnace',live=!s.pillEnded&&!s.roundEnded;
     let target=null,rect=null,text='';
     if(held==='pill'){
       target=document.querySelector('.furnace-tray');rect=layout.objects.tray;text='收丹入匣';
     }else if(held==='herbs'){
       target=document.getElementById('alchemyScene');rect=layout.mouth;text='投入炉口';
-    }else if(!enabled)return;
+    }else if(near&&live&&s.turn>=100){
+      target=document.querySelector('.furnace-tray');rect=layout.objects.tray;text='百转成丹，点击收丹。';
+    }else if(!enabled){window.AlchemyFeedback.setGuide('');return;}
 
     else if(near&&live&&!flags.refine&&s.turn<100){
       target=document.querySelector('.furnace-fire');rect=layout.firebox;text='点火门催炼';
-    }else if(near&&live&&!flags.collect){
-      target=document.querySelector('.furnace-tray');rect=layout.objects.tray;text='收丹入匣';
     }else if(near&&s.pillEnded&&['collect','explode'].includes(s.endReason)&&!flags.leave){
       // The receipt already names the next step; highlight its real action only.
       target=document.querySelector('#roomSettlement [data-primary]');text='';
@@ -43,11 +43,11 @@
       target=[...document.querySelectorAll('.herb-slot[aria-disabled=false]')].find(el=>el.checkVisibility());
       if(target){rect=screenRect(target);text='取一包药';}
     }
-    if(!rect||!target)return;
+    if(!rect||!target){window.AlchemyFeedback.setGuide('');return;}
     cue.hidden=false;cue.dataset.kind=held||'first-use';
     for(const [name,key]of [['left','x'],['top','y'],['width','w'],['height','h']])cue.style[name]=rect[key]+'px';
-    cue.querySelector('span').textContent=text;cue.querySelector('span').hidden=!text;
-    if(text){target.setAttribute('aria-describedby','furnaceActionHint');described=target;}
+    window.AlchemyFeedback.setGuide(text);
+    if(text){target.setAttribute('aria-describedby','refineFeedback');described=target;}
   }
   function schedule(){if(queued)return;queued=true;requestAnimationFrame(render);}
   function closeSettings(){const b=document.querySelector('.world-settings-toggle');if(b?.getAttribute('aria-expanded')==='true')b.click();}
@@ -57,7 +57,6 @@
   toggle.onclick=()=>{enabled=!enabled;save();closeSettings();schedule();};
   restart.onclick=()=>{flags={};enabled=true;save();closeSettings();schedule();};
   window.addEventListener('alchemy:carry',e=>{if(e.detail.kind==='herbs')done('take');schedule();});
-  window.addEventListener('alchemy:world-collect',()=>{done('collect');schedule();});
   window.addEventListener('alchemy:refine-result',()=>{done('refine');schedule();});
   window.addEventListener('alchemy:furnace-leave',()=>{if(game.snapshot().pillEnded)done('leave');schedule();});
   window.addEventListener('alchemy:view-ready',()=>{

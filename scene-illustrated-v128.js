@@ -65,8 +65,6 @@
   viewport.style.setProperty('--rite-y',riteCenterY+'px');
   viewport.style.setProperty('--rite-w',runeWidth+'px');
   viewport.style.setProperty('--rite-h',Math.max(150,Math.min(runeWidth*.86,(grate-rim)*1.05))+'px');
-  viewport.style.setProperty('--rite-caption-y',Math.max(2,(mouth.y*scale)-76)+'px');
-  viewport.style.setProperty('--rite-caption-x',Math.max(Math.min(w*.5,168),Math.min(w-168,cx))+'px');
   viewport.dataset.rite=near&&v.current==='work'?(s.ritualActive?'trace':s.ritualRemaining?'sealed':''):'';
   const minimum=(r,min=44/scale)=>{const nw=Math.max(r.w,min),nh=Math.max(r.h,min);return{x:r.x-(nw-r.w)/2,y:r.y-(nh-r.h)/2,w:nw,h:nh};};
   Object.assign(L.mouth,minimum(project(data.mouth)));Object.assign(L.firebox,minimum(project(data.fire)));
