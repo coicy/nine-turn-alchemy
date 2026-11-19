@@ -18,12 +18,12 @@
     const board=document.querySelector('.counter-board');
     const inCounter=board?.dataset.shellActive==='true'&&window.AlchemyViewState?.snapshot().phase==='idle';
     const n=inCounter&&visible(note),l=inCounter&&visible(letter);
-    if(n&&!lastNote&&!l)motion(note,[{opacity:0,translate:'0 -14px',rotate:'-2deg'},{opacity:1,translate:'0 1px',rotate:'.3deg',offset:.78},{opacity:1,translate:'0 0',rotate:'0deg'}],320);
+    if(n&&!lastNote&&!l&&note.dataset.noteArt==='image')motion(note,[{opacity:0,translate:'0 -14px',rotate:'-2deg'},{opacity:1,translate:'0 1px',rotate:'.3deg',offset:.78},{opacity:1,translate:'0 0',rotate:'0deg'}],320);
     if(l&&!lastLetter)motion(letter,[{opacity:0,translate:'0 12px'},{opacity:1,translate:'0 -1px',offset:.82},{opacity:1,translate:'0 0'}],240);
     if(!l&&lastLetter&&n)motion(note,[{opacity:.3,translate:'0 -3px'},{opacity:1,translate:'0 0'}],160);
     lastNote=n;lastLetter=l;
     const opening=document.body.classList.contains('opening-in-scene'),step=document.body.dataset.openingStep||'';
-    cue.hidden=!(opening&&step==='1'&&n&&!l);
+    cue.hidden=!(opening&&step==='1'&&n&&!l&&note.dataset.noteArt==='image');
     if(!cue.hidden){const r=note.getBoundingClientRect();cue.style.left=Math.max(10,Math.min(innerWidth-220,r.left+r.width/2-105))+'px';cue.style.top=Math.max(64,r.top-43)+'px';}
     if(opening&&step!==lastStep){const box=document.querySelector('.prologue-dialogue');if(box)motion(box,[{opacity:0,translate:'0 16px'},{opacity:1,translate:'0 0'}],300);}
     const copy=document.getElementById('prologueText');
@@ -33,7 +33,7 @@
   }
   function schedule(){if(!frame)frame=requestAnimationFrame(update);}
   const observer=new MutationObserver(schedule);
-  observer.observe(note,{attributes:true,attributeFilter:['hidden','aria-expanded']});
+  observer.observe(note,{attributes:true,attributeFilter:['hidden','aria-expanded','data-note-art']});
   observer.observe(letter,{attributes:true,attributeFilter:['hidden'],childList:true});
   observer.observe(document.body,{attributes:true,attributeFilter:['class','data-opening-step','data-view-phase']});
   const copy=document.getElementById('prologueText');if(copy)observer.observe(copy,{childList:true,characterData:true,subtree:true});

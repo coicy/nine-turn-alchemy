@@ -1,15 +1,92 @@
 (() => {
-'use strict';
-const names=['furnace-v1','herb-parcel-v1','delivery-tray-v1','alchemy-fan-v1','color-04-brown','color-07-slate','color-06-olive','crack-01-single','crack-02-fork','crack-03-opposed','crack-04-arc','crack-05-fragments','crack-06-traverse'];
-const cache=new Map(),decoded=new Set(),images=new Map();
-function load(src){if(!cache.has(src))cache.set(src,new Promise(resolve=>{const img=new Image();const timer=setTimeout(()=>{cache.delete(src);resolve(false);},60000);img.onload=async()=>{try{await img.decode();decoded.add(src);images.set(src,img);clearTimeout(timer);resolve(true);}catch{clearTimeout(timer);cache.delete(src);resolve(false);}};img.onerror=()=>{clearTimeout(timer);cache.delete(src);resolve(false);};img.src=src;}));return cache.get(src);}
-const start=document.getElementById('startButton'),status=document.createElement('p');status.setAttribute('role','status');start.after(status);
-let ready=false,running=false;
-async function prepare(){if(running)return;running=true;status.hidden=false;start.disabled=true;status.textContent='正在准备丹炉与药材…';const results=await Promise.all([...['room','furnace'].flatMap(view=>['desktop','mobile'].flatMap(size=>['open','closed','front'].map(state=>'assets/scene-illustrated-v128/'+view+'-'+size+'-'+state+'.webp'))),'assets/scene-art-v126/tools.webp',...Object.values(window.AlchemyPillPalette.sources),...['desktop','mobile-v2','lid-standing','lid-closed'].map(n=>'assets/furnace-view-v102/'+n+'.webp'),...names.map(n=>'assets/runtime-v10/'+n+'.webp'),...(window.AlchemyCustomers?.sources()||['assets/customers-v12/customers.webp']),'assets/workbench-v92/room-desktop.png','assets/workbench-v92/room-mobile.png','assets/workbench-v92/folio.png','assets/room-v25/room.webp','assets/object-world-v86/room-desktop.webp','assets/object-world-v86/room-mobile.webp','assets/object-world-v86/casket.webp','assets/object-world-v86/cutaway.webp','assets/object-world-v86/counter.webp','assets/object-world-v86/market.webp','assets/counter-scene-v71/counter.webp','assets/counter-props-v72/merchant.webp','assets/counter-props-v72/herb-parcel.webp','assets/scenes-v41/market.webp','assets/scene-props-v42/tools.webp','assets/scene-props-v42/merchant.webp'].map(load));ready=results.every(Boolean);running=false;start.disabled=false;status.textContent=ready?'丹坊已备妥': '素材加载未完成，点击开始重试。';status.hidden=ready;if(ready)window.dispatchEvent(new Event('alchemy:assets-ready'));}
-start.addEventListener('click',e=>{if(!ready){e.preventDefault();e.stopImmediatePropagation();void prepare();}},true);
-window.AlchemyAssets={load,getImage:src=>images.get(src),get loadedCount(){return decoded.size;},get ready(){return ready;}};void prepare();
+  'use strict';
+
+  const images = new Map();
+  const pending = new Map();
+  const layout = matchMedia('(max-width: 650px)');
+  const start = document.getElementById('startButton');
+  const status = document.createElement('p');
+  status.setAttribute('role', 'status');
+  start.after(status);
+
+  let preparation;
+  let preparedLayout;
+  let startRequested = false;
+
+  function load(src, {timeout = 60000} = {}) {
+    if (images.has(src)) return Promise.resolve(true);
+    if (pending.has(src)) return pending.get(src);
+
+    const loading = new Promise(resolve => {
+      const image = new Image();
+      function finish(ok) {
+        window.clearTimeout(timer);
+        image.onload = image.onerror = null;
+        if (ok) images.set(src, image);
+        resolve(ok);
+      }
+      const timer = window.setTimeout(() => finish(false), timeout);
+      image.onload = async () => {
+        try {
+          await image.decode();
+          if (image.onload) finish(true);
+        } catch {
+          if (image.onload) finish(false);
+        }
+      };
+      image.onerror = () => finish(false);
+      image.src = src;
+    }).finally(() => pending.delete(src));
+    pending.set(src, loading);
+    return loading;
+  }
+
+  function roomLayout() {
+    return layout.matches ? 'mobile' : 'desktop';
+  }
+
+  function prepare() {
+    if (preparedLayout === roomLayout()) return Promise.resolve(true);
+    if (preparation) return preparation;
+
+    const size = roomLayout();
+    const room = 'assets/scene-illustrated-v128/room-' + size;
+    status.hidden = false;
+    status.textContent = '正在准备丹房…';
+    preparation = Promise.all(['open', 'closed'].map(state =>
+      load(room + '-' + state + '.webp', {timeout: 12000})
+    )).then(results => {
+      preparation = undefined;
+      if (size !== roomLayout()) return prepare();
+      const ready = results.every(Boolean);
+      if (ready) preparedLayout = size;
+      status.hidden = ready;
+      status.textContent = ready ? '' : '丹房素材未能载入，请重试。';
+      if (ready) window.dispatchEvent(new Event('alchemy:assets-ready'));
+      return ready;
+    });
+    return preparation;
+  }
+
+  start.addEventListener('click', event => {
+    if (preparedLayout === roomLayout()) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (startRequested) return;
+    startRequested = true;
+    start.disabled = true;
+    prepare().then(ready => {
+      startRequested = false;
+      start.disabled = false;
+      if (ready) start.click();
+    });
+  }, true);
+
+  window.AlchemyAssets = {
+    load, prepare,
+    getImage: src => images.get(src),
+    get loadedCount() { return images.size; },
+    get ready() { return preparedLayout === roomLayout(); }
+  };
+  void prepare();
 })();
-
-
-
-

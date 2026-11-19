@@ -43,3 +43,15 @@
 .counter-board .counter-parcels img{width:calc(180 * var(--counter-scale,1px));height:calc(180 * var(--counter-scale,1px));left:calc(-25 * var(--counter-scale,1px));bottom:calc(-24 * var(--counter-scale,1px));filter:brightness(.9) saturate(.72) blur(.25px)}
 .counter-board .counter-parcels img:nth-child(2){left:calc(25 * var(--counter-scale,1px))}
 .counter-board .counter-parcels img:nth-child(3){left:0;bottom:calc(21 * var(--counter-scale,1px))}
+
+.counter-board .counter-note[data-note-art="text"] {
+  min-height: 44px;
+  background: #f3e5c8;
+  border: 1px solid #baa17c;
+  box-shadow: 2px 4px 8px #422a1838;
+}
+.counter-board .counter-note .counter-note-label {
+  color: #503b28;
+  font: 14px/1.4 system-ui, sans-serif;
+}
+.counter-note[data-note-art="image"] .counter-note-label { display: none; }

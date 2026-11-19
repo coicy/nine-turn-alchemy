@@ -13,7 +13,7 @@
   function isNoteTarget(el){return index===1&&!!el.closest?.('#counterNote,#counterLetter');}
   const shots=[
     ['一张新招牌','你带着一只旧丹炉，在坊市租下临街的小屋。今日，你的丹坊开张了。','丹房 · 开张第一日','去柜台迎客 →','work'],
-    ['第一位客人','','接待柜台 · 第一笔生意','请先点击桌上的委托纸笺','orders'],
+    ['第一位客人','','接待柜台 · 第一笔生意','稍候纸笺','orders'],
     ['点起第一炉火','三包委托药材已经备好。点丹炉进入炉前，再取一包投入炉口。','丹房 · 药材已备齐','亲手开炉 →','work']
   ];
   function request(view,ready){
@@ -25,6 +25,13 @@
     window.dispatchEvent(new CustomEvent('alchemy:opening-view',{detail:{view}}));
     complete();
   }
+  function showNotePrompt() {
+    if (!active || finishing || index !== 1 || readNote || layout.inert || scene.dataset.changing === 'true') return;
+    const note = document.getElementById('counterNote');
+    if (note.hidden) return;
+    next.textContent = '请点击桌上的委托纸笺';
+  }
+  window.addEventListener('alchemy:counter-note-availability', showNotePrompt);
   function show(){
     readNote=false;
     const shot=shots[index],order=window.AlchemyGame.snapshot().order;
@@ -32,10 +39,10 @@
     scene.querySelector('#prologueLocation').textContent=shot[2];
     scene.querySelector('#prologueTitle').textContent=shot[0];
     scene.querySelector('#prologueStep').textContent=`${index+1} / 3`;
-    scene.querySelector('#prologueText').textContent=index===1?`${window.AlchemyCustomers?.profile(order)?.name||order?.client||'客人'}将三包药材放上柜台：“请替我代炼。条件写在这张纸笺上，请掌柜先看看。” 点击客人身前的委托纸笺，展开所求药力、工钱与约定。`:shot[1];
+    scene.querySelector('#prologueText').textContent=index===1?`${window.AlchemyCustomers?.profile(order)?.name||order?.client||'客人'}将三包药材放上柜台：“请替我代炼。条件写在这张纸笺上，请掌柜先看看。”`:shot[1];
     next.textContent=shot[3];
     window.AlchemySaves?.setPreference('openingStep',index);
-    request(shot[4],()=>{if(index===1){allowNote();skip.focus({preventScroll:true});}else next.focus({preventScroll:true});});
+    request(shot[4],()=>{if(index===1){allowNote();showNotePrompt();skip.focus({preventScroll:true});}else next.focus({preventScroll:true});});
   }
   function finish(){
     if(!active||finishing)return;finishing=true;skip.disabled=true;

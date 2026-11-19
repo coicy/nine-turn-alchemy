@@ -21,7 +21,11 @@
   const oldFurnace=document.querySelector('.furnace');
   if(oldFurnace)window.AlchemyAssets.load('assets/runtime-v10/furnace-v1.webp').then(ok=>{if(ok){oldFurnace.style.backgroundImage='url("assets/runtime-v10/furnace-v1.webp")';oldFurnace.classList.add('raster-furnace');}});
   window.addEventListener('alchemy:render',updateSurface);
-  window.addEventListener('alchemy:assets-ready',()=>{last='';updateSurface();});
+  window.addEventListener('alchemy:pill-art-ready', () => {
+    last = '';
+    document.querySelectorAll('#trayPills i').forEach(node => delete node.dataset.artKey);
+    updateSurface();
+  });
   const trayTarget=document.getElementById('trayPills');if(trayTarget)new MutationObserver(updateSurface).observe(trayTarget,{childList:true});
   updateSurface();
 

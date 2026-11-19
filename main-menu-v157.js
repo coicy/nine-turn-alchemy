@@ -18,6 +18,7 @@
   let menuState = 'loading';
   let statusOverride = '';
   let returningFromGame = false;
+  let openingRequested = false;
   let returnButton = null;
 
   function setVisible(visible) {
@@ -85,8 +86,8 @@
   function render(state) {
     menuState = state.kind;
     context.textContent = '';
-    status.textContent = statusOverride || '';
-    primary.disabled = false;
+    status.textContent = openingRequested ? '正在准备丹房…' : statusOverride;
+    primary.disabled = openingRequested;
     primary.classList.toggle('is-primary', state.kind === 'active' || state.kind === 'empty');
     if (state.kind === 'active') {
       label.textContent = '继续经营';
@@ -152,7 +153,8 @@
     settingsButton.focus({preventScroll:true});
   }
 
-  function enterGame() {
+  async function enterGame() {
+    if (openingRequested) return;
     if (returningFromGame) {
       setVisible(false);
       returningFromGame = false;
@@ -168,8 +170,17 @@
       openSaves(menuState === 'other' ? readState().newest : null);
       return;
     }
+    openingRequested = true;
+    refresh({feedback: ''});
+    const ready = await window.AlchemyAssets.prepare();
+    openingRequested = false;
+    if (!ready) {
+      refresh({feedback: '丹房素材未能载入，请重试。'});
+      label.textContent = '重试进入';
+      primary.setAttribute('aria-label', '重试进入');
+      return;
+    }
     primary.disabled = true;
-    label.textContent = menuState === 'active' ? '读取中…' : '开张中…';
     setVisible(false);
     document.getElementById('startButton')?.click();
   }

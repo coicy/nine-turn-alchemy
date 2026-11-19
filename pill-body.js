@@ -5,6 +5,43 @@
   const palettes = window.AlchemyPillPalette;
   const SIZE = 256;
   const cache = new Map();
+  const fallback = new Map();
+  const loading = new Set();
+  const retryAfter = new Map();
+
+  function fallbackArt(nature) {
+    if (fallback.has(nature)) return fallback.get(nature);
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = SIZE;
+    const ctx = canvas.getContext('2d');
+    const shade = {warm: '#9b5943', cool: '#526967', neutral: '#83684c'};
+    const gradient = ctx.createRadialGradient(104, 94, 8, 129, 128, 89);
+    gradient.addColorStop(0, '#d7bea0');
+    gradient.addColorStop(.57, shade[nature] || shade.neutral);
+    gradient.addColorStop(1, '#372b24');
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(128, 128, 86, 0, 2 * Math.PI);
+    ctx.fill();
+    const entry = {canvas, url: canvas.toDataURL('image/png')};
+    fallback.set(nature, entry);
+    return entry;
+  }
+
+  function loadAppearance(src) {
+    if (loading.has(src) || Date.now() < (retryAfter.get(src) || 0)) return;
+    loading.add(src);
+    window.AlchemyAssets.load(src).then(ok => {
+      loading.delete(src);
+      if (ok) {
+        retryAfter.delete(src);
+        hydrate();
+        window.dispatchEvent(new Event('alchemy:pill-art-ready'));
+      } else {
+        retryAfter.set(src, Date.now() + 15000);
+      }
+    });
+  }
   function describe(p={}){
     const nature=p.nature||p.order?.nature||'neutral';
     const appearance=palettes.resolve(nature,p.appearance);
@@ -14,8 +51,13 @@
   }
   function make(p) {
     const d=describe(p);if(cache.has(d.key)){const hit=cache.get(d.key);cache.delete(d.key);cache.set(d.key,hit);return {...hit,description:d};}
+    const source = palettes.sources[d.appearance];
+    const im = window.AlchemyAssets.getImage(source);
+    if (!im) {
+      loadAppearance(source);
+      return {...fallbackArt(d.nature), description: d};
+    }
     const c=document.createElement('canvas');c.width=c.height=SIZE;const ctx=c.getContext('2d');
-    const im=window.AlchemyAssets?.getImage(palettes.sources[d.appearance]);if(!im?.naturalWidth)return {canvas:c,url:c.toDataURL(),description:d};
     const frame=palettes.frame(d.appearance,d.turn), sx=frame*SIZE;
     ctx.save();
     ctx.drawImage(im,sx,0,SIZE,SIZE,0,0,SIZE,SIZE);

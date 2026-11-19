@@ -12,12 +12,74 @@ const $=id=>document.getElementById(id);
 const customers=window.AlchemyCustomers;
 const labels={pending:'待接单',active:'已接',completed:'已完成',failed:'未完成',skipped:'未接' };
 const note=document.createElement('button');note.type='button';note.id='counterNote';note.className='counter-note';note.hidden=true;note.setAttribute('aria-controls','counterLetter');board.querySelector('.counter-desk').append(note);
-let noteArtReady=false,noteArtSource="",noteImage=null;
+let noteImage;
+const noteLabel = document.createElement('span');
+noteLabel.className = 'counter-note-label';
+noteLabel.textContent = '查看委托纸笺';
+note.append(noteLabel);
+
 let nextLetter=false;let noteId=null,noteStatus=null,noteReady=false,letterOpen=false,noteTimer=0,noteOrder=null,notePhase=null;
-function syncNote(){const available=!!noteOrder&&notePhase==='open',visible=board.dataset.shellActive==='true';note.hidden=!available||!visible||!noteReady||!noteArtReady;if(nextLetter&&noteReady&&available&&visible&&!window.AlchemyOpening?.active){letterOpen=true;nextLetter=false;}note.setAttribute('aria-expanded',String(letterOpen));$('counterLetter').hidden=!available||!visible||!noteReady||!letterOpen;board.classList.toggle('counter-letter-open',letterOpen&&noteReady&&visible);}
-function updateNote(order,phase){noteOrder=order;notePhase=phase;if(order?.id!==noteId){clearTimeout(noteTimer);noteTimer=0;noteId=order?.id;noteStatus=order?.status;noteReady=false;letterOpen=false;}else if(order?.status!==noteStatus){noteStatus=order?.status;letterOpen=false;}
- if(order){const art=customers.note(order);note.dataset.noteStyle=art.id;if(noteArtSource!==art.src){noteArtReady=false;delete note.dataset.noteFallback;noteArtSource=art.src;noteImage=new Image();noteImage.alt='';noteImage.setAttribute('aria-hidden','true');const expected=art.src;noteImage.onload=()=>{if(noteArtSource===expected){noteArtReady=true;syncNote();}};noteImage.onerror=()=>{if(noteArtSource!==expected)return;noteImage.onerror=null;note.dataset.noteFallback='true';noteImage.src='assets/counter-props-v72/merchant.webp';};noteImage.src=art.src;}note.replaceChildren(noteImage);note.title='查看'+customers.profile(order).name+'的委托详情';note.setAttribute('aria-label',`查看${customers.profile(order).name}的委托详情`);}
- if(order&&phase==='open'&&board.dataset.shellActive==='true'&&!noteReady&&!noteTimer){const id=order.id;noteTimer=setTimeout(()=>{noteTimer=0;if(noteId===id&&board.dataset.shellActive==='true'){noteReady=true;syncNote();}},window.AlchemyOpening?.active&&!matchMedia('(prefers-reduced-motion: reduce)').matches?420:0);}syncNote();}
+function syncNote() {
+  const canRead = !!noteOrder && notePhase === 'open' && board.dataset.shellActive === 'true' && noteReady;
+  const wasHidden = note.hidden;
+  note.hidden = !canRead;
+  if (nextLetter && canRead && !window.AlchemyOpening?.active) {
+    letterOpen = true;
+    nextLetter = false;
+  }
+  note.setAttribute('aria-expanded', String(letterOpen));
+  $('counterLetter').hidden = !canRead || !letterOpen;
+  board.classList.toggle('counter-letter-open', canRead && letterOpen);
+  if (note.hidden !== wasHidden) window.dispatchEvent(new Event('alchemy:counter-note-availability'));
+}
+function loadNoteArt(src) {
+  note.dataset.noteArt = 'text';
+  if (noteImage) noteImage.remove();
+  const image = new Image();
+  noteImage = image;
+  image.alt = '';
+  image.setAttribute('aria-hidden', 'true');
+  image.onload = () => {
+    if (noteImage !== image) return;
+    note.append(image);
+    note.dataset.noteArt = 'image';
+  };
+  image.src = src;
+}
+function updateNote(order, phase) {
+  noteOrder = order;
+  notePhase = phase;
+  if (order?.id !== noteId) {
+    clearTimeout(noteTimer);
+    noteTimer = 0;
+    noteId = order?.id;
+    noteStatus = order?.status;
+    noteReady = false;
+    letterOpen = false;
+  } else if (order?.status !== noteStatus) {
+    noteStatus = order?.status;
+    letterOpen = false;
+  }
+  if (order) {
+    const art = customers.note(order);
+    if (note.dataset.noteStyle !== art.id) {
+      note.dataset.noteStyle = art.id;
+      loadNoteArt(art.src);
+    }
+    const label = '查看' + customers.profile(order).name + '的委托详情';
+    note.title = label;
+    note.setAttribute('aria-label', label);
+  }
+  if (order && phase === 'open' && board.dataset.shellActive === 'true' && !noteReady && !noteTimer) {
+    noteTimer = setTimeout(() => {
+      noteTimer = 0;
+      if (noteId !== order.id || board.dataset.shellActive !== 'true') return;
+      noteReady = true;
+      syncNote();
+    }, window.AlchemyOpening?.active && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 420 : 0);
+  }
+  syncNote();
+}
 note.onclick=()=>{letterOpen=!letterOpen;syncNote();if(letterOpen)$('counterLetter').querySelector('button')?.focus({preventScroll:true});};
 board.addEventListener('click',e=>{if(e.target.closest('[data-close-letter]')){letterOpen=false;syncNote();note.focus();}});
 board.addEventListener('keydown',e=>{if(e.key==='Escape'&&letterOpen&&!browseAll){e.stopPropagation();e.preventDefault();letterOpen=false;syncNote();note.focus();}});
