@@ -384,7 +384,7 @@
     updateRecord();
     telemetry?.record("refine_result", playtestSnapshot(), { before, outcome });
     if (state.roundEnded) { settleOrder(); telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss"); }
-    if (!state.pillEnded && state.pill.ritualSafe === 0 && state.pill.refineSerial % 10 === 0) beginRitual();
+    if (ritualDue()) beginRitual();
     decisionSince = Date.now();
     const visualOutcome = state.pill.turn >= 100 && !state.pillEnded ? "complete" : outcome;
     setFeedback(feedback, feedbackTone, visualOutcome, outcome === "explode" ? -before.value : state.pill.value - before.value);
@@ -517,6 +517,7 @@
       setFeedback(resumedOldFurnace ? "旧炉药力已保留。可立即收丹，继续炼化按当前炉险结算。" : "已回到上次停炉的位置。", "good");
       window.dispatchEvent?.(new Event("alchemy:order")); render();
       if (state.pill.ritualActive) beginRitual(true);
+      else if (ritualDue()) beginRitual();
       return;
     }
     saved = null;
@@ -553,6 +554,10 @@
 
   dom.startButton.addEventListener("click", startGame);
   dom.restartButton.addEventListener("click", startGame);
+  function ritualDue() {
+    const {refineSerial, ritualSafe} = state.pill;
+    return !state.pillEnded && ritualSafe === 0 && refineSerial > 0 && refineSerial % 9 === 0;
+  }
   function beginRitual(resume = false) {
     const ritualHost = document.querySelector('.engine-viewport');
     if (ritualHost && dom.ritualPanel.parentElement !== ritualHost) ritualHost.append(dom.ritualPanel);
