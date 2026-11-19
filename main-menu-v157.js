@@ -14,16 +14,25 @@
   const context = primary.querySelector('.main-menu-v157__button-context');
   const status = document.getElementById('mainMenuStatus');
   const intro = document.getElementById('introModal');
+  const start = document.getElementById('startButton');
+  const loadingPage = document.getElementById('openingLoad');
+  const loadingTitle = document.getElementById('openingLoadTitle');
+  const loadingStatus = document.getElementById('openingLoadStatus');
+  const loadingRetry = document.getElementById('openingLoadRetry');
+  const loadingBack = document.getElementById('openingLoadBack');
   const saves = window.AlchemySaves;
   let menuState = 'loading';
   let statusOverride = '';
   let returningFromGame = false;
-  let openingRequested = false;
+  let openingAttempt = 0;
+  let loading = false;
   let returnButton = null;
 
-  function setVisible(visible) {
-    root.hidden = !visible;
-    document.body.classList.toggle('main-menu-open', visible);
+  function setView(view) {
+    root.hidden = view !== 'menu';
+    loadingPage.hidden = view !== 'loading';
+    const visible = view !== 'game';
+    document.body.classList.toggle('entry-screen-open', visible);
     const shell = document.querySelector('.app-shell');
     if (shell) {
       shell.inert = visible;
@@ -86,9 +95,8 @@
   function render(state) {
     menuState = state.kind;
     context.textContent = '';
-    status.textContent = openingRequested ? '正在准备丹房…' : statusOverride;
-    primary.disabled = openingRequested;
-    primary.setAttribute('aria-busy', String(openingRequested));
+    status.textContent = statusOverride;
+    primary.disabled = false;
     primary.classList.toggle('is-primary', state.kind === 'active' || state.kind === 'empty');
     if (state.kind === 'active') {
       label.textContent = '继续经营';
@@ -154,10 +162,45 @@
     settingsButton.focus({preventScroll:true});
   }
 
-  async function enterGame() {
-    if (openingRequested) return;
+  function returnToMenu() {
+    openingAttempt++;
+    loading = false;
+    setView('menu');
+    refresh();
+    primary.focus({preventScroll:true});
+  }
+
+  async function prepareEntry() {
+    if (loading) return;
+    const attempt = ++openingAttempt;
+    loading = true;
+    loadingPage.dataset.state = 'loading';
+    loadingTitle.textContent = '正在准备丹房…';
+    loadingStatus.textContent = '';
+    loadingRetry.hidden = true;
+    setView('loading');
+    loadingTitle.focus({preventScroll:true});
+
+    await new Promise(resolve => requestAnimationFrame(resolve));
+    if (attempt !== openingAttempt) return;
+    const ready = await window.AlchemyAssets.prepare();
+    if (attempt !== openingAttempt) return;
+    loading = false;
+    if (!ready) {
+      loadingPage.dataset.state = 'failed';
+      loadingTitle.textContent = '暂时无法开张';
+      loadingStatus.textContent = '丹房素材未能载入，请重试。';
+      loadingRetry.hidden = false;
+      loadingRetry.focus({preventScroll:true});
+      return;
+    }
+    setView('game');
+    start.click();
+  }
+
+  function enterGame() {
     if (returningFromGame) {
-      setVisible(false);
+      setView('game');
       returningFromGame = false;
       return;
     }
@@ -171,21 +214,22 @@
       openSaves(menuState === 'other' ? readState().newest : null);
       return;
     }
-    openingRequested = true;
-    refresh({feedback: ''});
-    const ready = await window.AlchemyAssets.prepare();
-    openingRequested = false;
-    if (!ready) {
-      refresh({feedback: '丹房素材未能载入，请重试。'});
-      label.textContent = '重试进入';
-      primary.setAttribute('aria-label', '重试进入');
-      return;
-    }
-    primary.disabled = true;
-    primary.setAttribute('aria-busy', 'false');
-    setVisible(false);
-    document.getElementById('startButton')?.click();
+    void prepareEntry();
   }
+
+  start.addEventListener('click', event => {
+    if (window.AlchemyAssets.ready) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    void prepareEntry();
+  }, true);
+  loadingRetry.addEventListener('click', prepareEntry);
+  loadingBack.addEventListener('click', returnToMenu);
+  loadingPage.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    event.preventDefault();
+    returnToMenu();
+  });
 
   primary.addEventListener('click', enterGame);
   savesButton.addEventListener('click', () => openSaves());
@@ -227,7 +271,7 @@
         }
         returningFromGame = true;
         statusOverride = '已保存';
-        setVisible(true);
+        setView('menu');
         refresh();
         status.textContent = '已保存';
         primary.focus({preventScroll:true});
@@ -238,7 +282,7 @@
     nav.append(returnButton);
   }
 
-  setVisible(true);
+  setView('menu');
   refresh();
   addReturnButton();
   window.addEventListener('alchemy:render', () => {

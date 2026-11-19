@@ -4,14 +4,8 @@
   const images = new Map();
   const pending = new Map();
   const layout = matchMedia('(max-width: 650px)');
-  const start = document.getElementById('startButton');
-  const status = document.createElement('p');
-  status.setAttribute('role', 'status');
-  start.after(status);
-
   let preparation;
   let preparedLayout;
-  let startRequested = false;
 
   function load(src, {timeout = 60000} = {}) {
     if (images.has(src)) return Promise.resolve(true);
@@ -51,8 +45,6 @@
 
     const size = roomLayout();
     const room = 'assets/scene-illustrated-v128/room-' + size;
-    status.hidden = false;
-    status.textContent = '正在准备丹房…';
     preparation = Promise.all(['open', 'closed'].map(state =>
       load(room + '-' + state + '.webp', {timeout: 12000})
     )).then(results => {
@@ -60,27 +52,11 @@
       if (size !== roomLayout()) return prepare();
       const ready = results.every(Boolean);
       if (ready) preparedLayout = size;
-      status.hidden = ready;
-      status.textContent = ready ? '' : '丹房素材未能载入，请重试。';
       if (ready) window.dispatchEvent(new Event('alchemy:assets-ready'));
       return ready;
     });
     return preparation;
   }
-
-  start.addEventListener('click', event => {
-    if (preparedLayout === roomLayout()) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    if (startRequested) return;
-    startRequested = true;
-    start.disabled = true;
-    prepare().then(ready => {
-      startRequested = false;
-      start.disabled = false;
-      if (ready) start.click();
-    });
-  }, true);
 
   window.AlchemyAssets = {
     load, prepare,
@@ -88,5 +64,4 @@
     get loadedCount() { return images.size; },
     get ready() { return preparedLayout === roomLayout(); }
   };
-  void prepare();
 })();

@@ -8,9 +8,9 @@
 
 #mainMenu[hidden] { display: none !important; }
 
-body.main-menu-open { overflow: hidden; }
-body.main-menu-open .app-shell { pointer-events: none; user-select: none; }
-body.main-menu-open #introModal { visibility: hidden; pointer-events: none; }
+body.entry-screen-open { overflow: hidden; }
+body.entry-screen-open .app-shell { pointer-events: none; user-select: none; }
+body.entry-screen-open #introModal { visibility: hidden; pointer-events: none; }
 
 .main-menu-v157 {
   position: fixed;
@@ -105,30 +105,6 @@ body.main-menu-open #introModal { visibility: hidden; pointer-events: none; }
 .main-menu-v157__button.is-primary:hover,
 .main-menu-v157__button.is-primary:focus-visible { background: #a45135; }
 .main-menu-v157__button:disabled { cursor: wait; opacity: .72; transform: none; }
-.main-menu-v157__button.is-primary[aria-busy="true"] {
-  position: relative;
-  background: var(--menu-vermilion) !important;
-  color: #fff4d7 !important;
-  border-color: #713421 !important;
-  cursor: progress;
-}
-.main-menu-v157__button[aria-busy="true"]::after {
-  content: "";
-  position: absolute;
-  inset-inline: 16px;
-  bottom: 5px;
-  height: 3px;
-  border-radius: 2px;
-  background-color: #53271d;
-  background-image: linear-gradient(90deg, transparent, #dc9c61 30%, #fff0b9 66%, transparent);
-  background-repeat: no-repeat;
-  background-size: 48% 100%;
-  animation: menu-heating 1.55s ease-in-out infinite;
-}
-@keyframes menu-heating {
-  from { background-position: -95% center; }
-  to { background-position: 195% center; }
-}
 .main-menu-v157__button small { display: block; margin-top: 3px; color: #e2c69d; font-size: 11px; letter-spacing: .04em; }
 .main-menu-v157__button:not(.is-primary) small { color: var(--menu-muted); }
 .main-menu-v157__status {
@@ -163,8 +139,4 @@ body.main-menu-open #introModal { visibility: hidden; pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .main-menu-v157__button, .main-menu-v157__settings-actions button { transition: none; }
-  .main-menu-v157__button[aria-busy="true"]::after {
-    animation: none;
-    background-position: center;
-  }
 }
