@@ -5,10 +5,6 @@
  const judgment=document.querySelector('.furnace-judgment'),facts=judgment.querySelector('.furnace-facts'),herbs=document.querySelector('.herb-tray'),collect=document.querySelector('.furnace-tray');viewport.append(collect);
  document.body.classList.add('scene-continuity','scene-spatial','art-repair');let fitting=false,queued=false,geometry='',heldViewport='',stockKey='',notice='',noticeTimer,noticeScope='';
  const drawLid=window.AlchemySceneLidLayer.mount(stage);
- const seal=document.createElement('div');
- seal.className='furnace-ritual-seal';seal.setAttribute('aria-hidden','true');
- seal.innerHTML='<svg viewBox="0 0 44 106"><path d="m7 25 8-11 7 8 7-11 8 10 M8 30l28-3 M22 75 34 37 10 55 10 37 22 55 34 75 34 55 10 75 22 37"/><path d="M13 87h17v12H13z m4 3h9m-9 5h9"/></svg>';
- viewport.append(seal);
  const foreground=document.createElement('div');foreground.className='scene-front-mask';foreground.setAttribute('aria-hidden','true');stage.append(foreground);
  const caption=document.createElement('p');caption.className='scene-value-caption';caption.textContent='药力';judgment.prepend(caption);
  const demand=document.createElement('button');demand.className='scene-demand';demand.type='button';demand.dataset.focusKey='scene-demand';demand.onclick=()=>window.AlchemyLoop.openDemand(demand);

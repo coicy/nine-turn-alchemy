@@ -581,95 +581,36 @@
     }, 850);
   }
   function startRitualRefines() {
+    mountRitual();
+    window.AlchemyRitualBrush.seal(state.pill);
+    dom.ritualPanel.classList.add('hidden');
     state.busy = true;
     setFeedback(`自动催炼还剩${state.pill.ritualSafe}次，期间不会炸丹。`, 'good', 'ritual-complete');
     render();
     scheduleRitualRefine();
   }
-  // Positions on the Luo Shu square, in walking order from one through nine.
-  const ritualPlaces = [[50,80],[80,20],[20,50],[20,20],[50,50],[80,80],[80,50],[20,80],[50,20]];
-  const ritualNumbers = '一二三四五六七八九';
+  function mountRitual() {
+    const host = document.querySelector('.engine-viewport');
+    if (host && dom.ritualPanel.parentElement !== host) host.append(dom.ritualPanel);
+  }
+
   function beginRitual(resume = false) {
-    const ritualHost = document.querySelector('.engine-viewport');
-    if (ritualHost && dom.ritualPanel.parentElement !== ritualHost) ritualHost.append(dom.ritualPanel);
     const pill = state.pill;
+    mountRitual();
     pill.ritualActive = true;
-    pill.ritualStep = resume ? Math.min(8, Math.max(0, Math.trunc(Number(pill.ritualStep)) || 0)) : 0;
+    if (!resume) {
+      delete pill.ritualInk;
+      pill.ritualStep = 0;
+    }
     dom.ritualPanel.classList.remove('hidden');
-    dom.ritualGrid.innerHTML = '';
-    const buttons = [];
-    function showStep() {
-      const step = pill.ritualStep;
-      document.getElementById('ritualTrail').setAttribute('points', ritualPlaces.slice(0, step).map(point => point.join(',')).join(' '));
-      const next = buttons[step];
-      next.disabled = false;
-      next.classList.add('active');
-      next.focus?.({preventScroll:true});
-      dom.ritualStatus.textContent = `${step} / 9 · 行至「${ritualNumbers[step]}」`;
-    }
-    for (let index = 0; index < 9; index++) {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.textContent = ritualNumbers[index];
-      button.setAttribute('aria-label', `第${ritualNumbers[index]}宫`);
-      const [x,y] = ritualPlaces[index];
-      button.style.left = x + '%';
-      button.style.top = y + '%';
-      button.disabled = true;
-      buttons.push(button);
-      button.dataset.index = index;
-      if (index < pill.ritualStep) button.classList.add('done');
-      button.addEventListener('click', () => {
-        if (state.pill !== pill || state.pillEnded || !pill.ritualActive || index !== pill.ritualStep) return;
-        button.disabled = true;
-        button.classList.remove('active');
-        button.classList.add('done', 'just-stamped');
-        pill.ritualStep++;
-        if (pill.ritualStep === 9) {
-          pill.ritualActive = false;
-          pill.ritualSafe = 7;
-          dom.ritualPanel.classList.add('hidden');
-          startRitualRefines();
-          return;
-        }
-        showStep();
-        if (!persistProgress()) dom.ritualStatus.textContent += ' · 当前进度保存失败';
-      });
-      dom.ritualGrid.appendChild(button);
-    }
-    showStep();
+    window.AlchemyRitualBrush.begin(pill, persistProgress, () => {
+      if (state.pill !== pill || !pill.ritualActive || state.pillEnded) return;
+      pill.ritualActive = false;
+      pill.ritualSafe = 7;
+      startRitualRefines();
+    });
     render();
   }
-  // Pointer capture keeps one brush stroke alive as each palace becomes disabled.
-  let tracingPointer = null;
-  dom.ritualGrid.addEventListener('pointerdown', event => {
-    const active = event.target.closest('button.active');
-    if (!active || !event.isPrimary || event.button !== 0) return;
-    tracingPointer = event.pointerId;
-    dom.ritualGrid.setPointerCapture(event.pointerId);
-    event.preventDefault();
-    active.click();
-  });
-  dom.ritualGrid.addEventListener('pointermove', event => {
-    if (tracingPointer !== event.pointerId || !state.pill.ritualActive) return;
-    const next = dom.ritualGrid.querySelector('button.active');
-    const hit = document.elementFromPoint(event.clientX, event.clientY);
-    const brush = document.getElementById('ritualBrush');
-    if (next && hit === next) {
-      brush.setAttribute('d','');
-      next.click();
-      return;
-    }
-    const box = dom.ritualGrid.getBoundingClientRect();
-    const [x,y] = ritualPlaces[state.pill.ritualStep - 1];
-    const localX = Math.max(0, Math.min(100, 100*(event.clientX-box.left)/box.width));
-    const localY = Math.max(0, Math.min(100, 100*(event.clientY-box.top)/box.height));
-    brush.setAttribute('d', `M${x} ${y}L${localX} ${localY}`);
-  });
-  dom.ritualGrid.addEventListener('lostpointercapture', () => {
-    tracingPointer = null;
-    document.getElementById('ritualBrush').setAttribute('d','');
-  });
   dom.refineButton.addEventListener("click", refine);
   function collectPill() {
     if(!state.started||state.busy||state.pillEnded||state.pill.ritualActive)return false;

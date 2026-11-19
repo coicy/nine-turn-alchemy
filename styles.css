@@ -21,43 +21,39 @@ body:has(.ritual-panel:not(.hidden)) #refineFeedback {visibility:hidden!importan
 #ritualTitle {display:inline;margin:0;color:#ffdfa3;font:bold 21px/1.3 KaiTi,STKaiti,SimSun,serif;letter-spacing:.12em}
 #ritualStatus {margin-left:9px;font-size:14px}
 .ritual-heading p {margin:2px 10px 0;font-size:13px;line-height:1.45}
-.ritual-dial {position:absolute;left:var(--rite-x);top:var(--rite-y);width:var(--rite-w);height:var(--rite-h);transform:translate(-50%,-50%);
-  background:radial-gradient(ellipse at 50% 52%,#fbd78f2e 15%,transparent 72%);}
-.ritual-dial svg,.ritual-grid {position:absolute;inset:0;width:100%;height:100%}
-.ritual-grid {touch-action:none;user-select:none}
-.ritual-orbit {fill:none;stroke:#763b28;stroke-width:.75;opacity:.8;filter:drop-shadow(0 1px 0 #ffe1a3)}
-.ritual-orbit path {stroke:#fcedae;stroke-width:.65}
-#ritualBrush {fill:none;stroke:#fff0bf;stroke-width:1.3;stroke-linecap:round;filter:drop-shadow(0 0 2px #c45218)}
-#ritualTrail {fill:none;stroke:#ffda83;stroke-width:1.4;stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 1px 1px #822b14) drop-shadow(0 0 2px #bd451e)}
-#ritualGrid button {position:absolute;transform:translate(-50%,-50%);width:44px;height:44px;padding:0;margin:0;
-  display:grid;place-items:center;isolation:isolate;touch-action:none;-webkit-tap-highlight-color:transparent;
-  font:bold 17px/1 KaiTi,STKaiti,SimSun,serif;border:0;border-radius:50%;background:transparent;box-shadow:none;color:#fff0ca}
-#ritualGrid button:disabled {opacity:1!important;background:transparent!important;border:0!important;color:#502d1d!important;text-shadow:0 1px 1px #ffde9e}
-#ritualGrid button::before {content:"";position:absolute;z-index:-1;width:21px;height:21px;transform:rotate(-12deg);border:1px solid #885a32;border-inline-color:transparent;background:#f2daaa82;border-radius:50%}
-#ritualGrid button.active::before {width:30px;height:32px;border-radius:70% 12% 65% 50%;background:#88351c;border:2px solid #ffdc8b;box-shadow:0 0 0 1px #873c1e,0 0 10px 3px #ffbe4ba6}
-#ritualGrid button.active::after {content:"";position:absolute;right:2px;top:1px;width:7px;height:13px;border-radius:90% 0 80% 25%;background:#fff0b1;transform:rotate(16deg)}
-#ritualGrid button.done:disabled {color:#fff1c7!important;text-shadow:0 1px 1px #69240e}
-#ritualGrid button.done::before {width:22px;height:22px;border-radius:62% 26% 64% 46%;background:#954222;border:1px solid #ffe49c;box-shadow:0 0 6px #df8327}
-#ritualGrid button:focus-visible {outline:2px dashed #ffedba;outline-offset:1px}
-.furnace-ritual-seal {display:none;pointer-events:none;position:absolute;z-index:32;left:var(--rite-x);top:var(--rite-y);
-  width:clamp(32px,calc(var(--rite-w)*.19),60px);aspect-ratio:44/106;transform:translate(-50%,-50%) rotate(-6deg);
-  filter:drop-shadow(1px 3px 2px #532d198f)}
-.engine-viewport[data-rite=sealed] .furnace-ritual-seal {display:block}
+#ritualGrid {
+  position:absolute;left:var(--rite-x);top:var(--rite-y);
+  height:clamp(172px,calc(var(--rite-h)*1.12),286px);width:auto;aspect-ratio:100/168;
+  display:block;padding:0;border:0!important;border-radius:0;background:transparent!important;outline-offset:3px;
+  transform:translate(-50%,-50%);transform-origin:center;filter:drop-shadow(2px 5px 3px #41271488);
+  cursor:crosshair;touch-action:none;user-select:none;-webkit-tap-highlight-color:transparent;
+}
+#ritualGrid svg {display:block;width:100%;height:100%;overflow:visible}
+.rite-paper {fill:url(#talisman-gold);stroke:#a1743d;stroke-width:.65}
+.rite-border {fill:none;stroke:#a95334;stroke-width:.65;opacity:.68}
+.rite-guides {fill:none;stroke:#a07f53;opacity:.68;stroke-width:1.5;stroke-linecap:round}
+.rite-guides .current {stroke:#745039;stroke-width:1.85}
+.rite-ink {fill:#93341e}
+.rite-tip circle:first-child {fill:#f5c87599;stroke:#9e5525;stroke-width:.9}
+.rite-tip circle:last-child {fill:#fff4b9;stroke:#a75322;stroke-width:.6}
+.engine-viewport[data-rite=sealed] .ritual-panel.hidden {
+  display:block;pointer-events:none;background:none;z-index:32
+}
+.engine-viewport[data-rite=sealed] .ritual-panel :is(.ritual-heading,.rite-guides,.rite-tip) {display:none}
+.engine-viewport[data-rite=sealed] #ritualGrid:disabled {
+  opacity:1!important;transform:translate(-50%,-50%) rotate(-6deg) scale(.52);
+  filter:drop-shadow(1px 2px 1px #55361b99);pointer-events:none
+}
+@media(prefers-reduced-motion:no-preference){
+  .engine-viewport[data-rite=sealed] #ritualGrid {animation:affix-written-paper .42s ease-in-out}
+  @keyframes affix-written-paper {from{transform:translate(-50%,-50%)}to{transform:translate(-50%,-50%) rotate(-6deg) scale(.52)}}
+}
 .engine-viewport[data-rite=sealed]::after {content:"";pointer-events:none;position:absolute;z-index:30;left:var(--rite-fire-x);top:var(--rite-fire-y);
   width:var(--rite-fire-w);height:calc(var(--rite-fire-w)*.75);transform:translate(-50%,-50%);border-radius:50%;
   background:radial-gradient(ellipse,#ffed9173,#ff93282e 48%,transparent 74%)}
 @media(prefers-reduced-motion:no-preference){
   .engine-viewport[data-rite=sealed]::after {animation:rite-fire .85s ease-out infinite}
   @keyframes rite-fire {0%,100%{opacity:.22}35%{opacity:1}}
-}
-.furnace-ritual-seal svg {height:100%;width:100%;background:linear-gradient(100deg,#c99448,#f4d084 46%,#e5af5b);
-  clip-path:polygon(2% 1%,98% 0,96% 96%,75% 99%,54% 94%,28% 100%,0 96%)}
-.furnace-ritual-seal path {fill:none;stroke:#8d3422;stroke-width:2.9;stroke-linejoin:round;stroke-linecap:round}
-@media(prefers-reduced-motion:no-preference){
-  #ritualGrid button.just-stamped::before {animation:rite-ember .28s ease-out}
-  .engine-viewport[data-rite=sealed] .furnace-ritual-seal {animation:rite-affix .3s ease-out}
-  @keyframes rite-ember {from{scale:1.4;filter:brightness(1.6)}to{scale:1;filter:brightness(1)}}
-  @keyframes rite-affix {from{translate:0 -14px;opacity:.3}to{translate:0 0;opacity:1}}
 }
 button,input {font:inherit}
 button {touch-action:manipulation}
