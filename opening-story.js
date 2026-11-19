@@ -12,7 +12,7 @@
   function allowNote(){layout.inert=false;const board=document.querySelector('.counter-board');for(const el of layout.children){if(el!==board){locked.set(el,el.inert);el.inert=true;}}for(const el of board.querySelectorAll('button,a,input,select,summary,[tabindex]')){if(el.id==='counterNote'||el.closest('#counterLetter'))continue;locked.set(el,el.inert);el.inert=true;}next.disabled=!readNote;}
   function isNoteTarget(el){return index===1&&!!el.closest?.('#counterNote,#counterLetter');}
   const shots=[
-    ['一张新招牌','你带着一只旧丹炉，在坊市租下临街的小屋。今日，你的丹坊开张了。','丹房 · 开张第一日','去柜台迎客 →','work'],
+    ['一张新招牌','邵四娘把铺契和铜钥匙放在桌上：“铺钱七日一结。头回四十，往后一百二十，都在契上。” 你在临街小屋安好旧丹炉，准备开张。','丹房 · 开张第一日','去柜台迎客 →','work'],
     ['第一位客人','','接待柜台 · 第一笔生意','稍候纸笺','orders'],
     ['点起第一炉火','三包委托药材已经备好。点丹炉进入炉前，再取一包投入炉口。','丹房 · 药材已备齐','亲手开炉 →','work']
   ];

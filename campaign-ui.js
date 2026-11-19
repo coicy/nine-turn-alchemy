@@ -10,6 +10,36 @@ board.addEventListener('keydown',e=>{if(e.key==='Escape'&&browseAll){e.stopPropa
 let abandonConfirm=false,restartConfirm=false,selectedId=null;
 const $=id=>document.getElementById(id);
 const customers=window.AlchemyCustomers;
+const lease = window.AlchemyLease;
+const leaseSlip = document.createElement('aside');
+leaseSlip.className = 'counter-lease-slip';
+leaseSlip.hidden = true;
+leaseSlip.setAttribute('aria-label', '铺契与药铺采购');
+board.append(leaseSlip);
+leaseSlip.addEventListener('click', event => {
+  const button = event.target.closest('button');
+  if (button?.dataset.leaseRoute === 'record') {
+    window.AlchemyViewState.navigate('record',{anchor:button,chapter:'lease'});
+  } else if (button?.dataset.leaseRoute === 'bag') {
+    window.AlchemyViewState.navigate('bag',{anchor:button,objectId:'lease-purchase'});
+  }
+});
+function renderLeaseSlip(c) {
+  const today = lease.closingQuote(c);
+  const next = c.lease?.terms.find(term => term.day > c.day);
+  let rent = '';
+  if (today.due) {
+    rent = '应交铺租 · ' + today.due + ' 铜钱';
+  } else if (next && (c.day === 1 || next.day - c.day <= 2)) {
+    rent = '第 ' + next.day + ' 天交铺租 · ' + next.amount + ' 铜钱';
+  }
+  const offer = lease.canOffer(c);
+  leaseSlip.hidden = (!rent && !offer) || c.phase === 'finished';
+  const html = (rent ? '<button type="button" data-lease-route="record" data-focus-key="counter-lease-record"><span class="lease-seal" aria-hidden="true">邵</span><span>'+rent+'</span></button>' : '') +
+    (offer ? '<button type="button" data-lease-route="bag" data-focus-key="counter-lease-bag"><strong>药铺采购</strong><span>第 '+lease.procurement.lastDay+' 天收工前 · 单颗药力 '+lease.procurement.minimum+'</span></button>' : '');
+  if (leaseSlip.innerHTML !== html) leaseSlip.innerHTML = html;
+}
+
 const labels={pending:'待接单',active:'已接',completed:'已完成',failed:'未完成',skipped:'未接' };
 const note=document.createElement('button');note.type='button';note.id='counterNote';note.className='counter-note';note.hidden=true;note.setAttribute('aria-controls','counterLetter');board.querySelector('.counter-desk').append(note);
 let noteImage;
@@ -115,11 +145,38 @@ function render(){const c=api.campaign();if(!c)return;const s=api.snapshot(),com
  updateNote(selected,c.phase);
  const skipped=c.orders.filter(o=>o.status==='skipped').length,failed=c.orders.filter(o=>o.status==='failed').length,income=c.orders.reduce((n,o)=>n+(o.reward||0),0),gifted=c.orders.reduce((n,o)=>n+(o.gifted||0),0);
  $('dailySummary').textContent=c.phase==='finished'?`三十日经营结束 · 完成 ${total} 单 · 炼制失败 ${totalOrders-total} 单` :c.phase==='settled'?`今日结清：完成 ${completed} 单 · 炼制失败 ${failed} 单 · 未接跳过 ${skipped} 单\n委托收入 ${income} 铜钱 · 赠药 ${gifted} 包`:'';
+  renderLeaseSlip(c);
+  const receipt = c.history.at(-1);
+  if (c.phase !== 'open' && receipt?.day === c.day && receipt.rent) {
+    $('dailySummary').textContent += '\n铺租已交 '+ receipt.rent.payment + ' 铜钱' +
+      (receipt.rent.remaining ? ' · 尚欠 '+ receipt.rent.remaining + ' 铜钱' : '');
+  }
+  if (c.phase === 'finished' && c.lease?.terms.length) {
+    const late = c.lease.terms.some(term => term.paidDay > term.day + 2);
+    $('dailySummary').textContent += lease.closingQuote(c).due ?
+      '\n邵四娘：铺钱尚未结清，今日交还铺面。' :
+      late ? '\n邵四娘：欠下的铺钱已补齐，可以续租。' :
+      '\n邵四娘：铺钱都结了，这间铺子可以续租。';
+  }
+
 
 }
 board.addEventListener('click',e=>{const letter=e.target.closest('[data-letter]');if(letter){selectedId=letter.dataset.letter;browseAll=false;render();letterOpen=true;syncNote();$('counterLetter').querySelector('.accept-stamp,button')?.focus({preventScroll:true});return;}if(e.target.closest('[data-return-forge]')){window.dispatchEvent(new Event('alchemy:work'));return;}const target=e.target.closest('[data-order]');if(target&&!target.disabled){abandonConfirm=false;api.chooseOrder(target.dataset.order);}});
  $('abandonOrder').addEventListener('click',()=>window.AlchemyUX.confirm({title:'终止本单',message:'未用本单料退还，本单记为未完成，丹匣丹药保留，免赔。',confirmLabel:'终止并退还',onConfirm:()=>api.abandonOrder()}));
-$('settleDay').addEventListener('click',()=>{const c=api.campaign(),pending=c.orders.filter(o=>o.status==='pending').length;window.AlchemyUX.confirm({title:'结束今日',message:`收工将跳过 ${pending} 份未接委托，不计炼制失败。`,confirmLabel:'确认收工',onConfirm:()=>api.endDay()});});
+$('settleDay').addEventListener('click', () => {
+  const c = api.campaign();
+  const pending = c.orders.filter(order => order.status === 'pending').length;
+  const rent = lease.closingQuote(c);
+  let message = '收工将跳过 '+pending+' 份未接委托，不计炼制失败。';
+  if (rent.due) {
+    const grace = c.day < rent.graceDay ? '可在第 '+rent.graceDay+' 天收工前补齐。' :
+      c.day === rent.graceDay ? '今日是宽限末日。' : '这笔铺租已逾期，仍可补缴。';
+    message = '邵四娘的账簿上写着这笔铺租。应交 '+rent.due+'，本次实交 '+rent.payment+'，交后剩 '+rent.balance+' 铜钱。'+
+      (rent.remaining ? '尚欠 '+rent.remaining+' 铜钱。'+grace : '') +
+      '\n'+message;
+  }
+  window.AlchemyUX.confirm({title:rent.due ? '收工与结租' : '结束今日',message,confirmLabel:'确认收工',onConfirm:()=>api.endDay()});
+});
 $('nextDay').addEventListener('click',()=>{abandonConfirm=false;if(api.nextDay())window.AlchemyViewState.navigate('orders');});
 $('restartButton').textContent='重新经营';
 $('restartButton').addEventListener('click',e=>{if(api.snapshot().started&&!restartConfirm){e.preventDefault();e.stopImmediatePropagation();restartConfirm=true;$('restartButton').textContent='确认重开30天？';}else{restartConfirm=false;$('restartButton').textContent='重新经营';}},true);

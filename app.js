@@ -448,6 +448,7 @@
   }
   function migrateLoop(){const E=window.AlchemyEconomy,e=E.ensure(campaign),o=campaignRules.active(campaign);if(!state.pillEnded)lockPillIdentity();if(e.loopVersion!==143){const pendingSpirit=!state.pillEnded&&state.pill.tier===2&&(!state.pill.spiritUsed);const units=(Number.isInteger(e.stock[2])?e.stock[2]:0)+(pendingSpirit?1:0),refund=units*14;if(refund){e.coins+=refund;e.spent=Math.max(0,e.spent-refund);e.refunded=(e.refunded||0)+refund;e.last='灵性药包调价补差 '+refund+' 铜钱';addLog('<strong>药包调价补差</strong>：'+units+'包灵性药包，退回 '+refund+' 铜钱。','good');}e.loopVersion=143;}
     retireLegacyEffects(e);
+    window.AlchemyLease?.ensure(campaign);
     if(o&&o.status==='active'){state.roundEnded=false;o.submitted ||= state.collected.map(p=>({...p}));}
   }
   function previewSubmission(id){const o=activeCommission(),e=campaign?.economy,p=Array.isArray(e?.pills)&&e.pills.find(p=>p.id===id);if(!o||!p||campaign.phase!=='open')return {ok:false};const after=state.delivered+p.value,complete=after>=o.target;return {ok:true,after,target:o.target,complete,reward:complete?window.AlchemyEconomy.commissionReward(o,[...(o.submitted||state.collected),p]):0};}
@@ -627,6 +628,8 @@
   }
   function endDay() {
     if (!campaign || state.busy || window.AlchemyInteractionBusy || !state.pillEnded || !campaignRules.settle(campaign)) return false;
+    const receipt = window.AlchemyLease?.collectRent(campaign);
+    if (receipt) campaign.history[campaign.history.length - 1].rent = receipt;
     render(); return true;
   }
   function nextDay() {
@@ -646,6 +649,13 @@
     if(kind==='submit')return submitPill(id);
     if(kind==='sell'){if(window.AlchemyScene2D?.busy||window.AlchemyScene2D?.held)return false;ok=window.AlchemyEconomy.sale(campaign,id)!==false;if(ok)window.dispatchEvent(new CustomEvent('alchemy:inventory-action',{detail:{kind:'sell',id}}));}
     else if(kind==='consign'){if(window.AlchemyScene2D?.busy||window.AlchemyScene2D?.held)return false;ok=!!window.AlchemyEconomy.consign(campaign,id);if(ok)window.dispatchEvent(new CustomEvent('alchemy:inventory-action',{detail:{kind:'consign',id}}));}
+    else if (kind === 'leasePurchase') {
+      if (window.AlchemyScene2D?.busy || window.AlchemyScene2D?.held ||
+          !window.AlchemyLease?.buyPill(campaign, id)) return false;
+      render();
+      window.dispatchEvent(new CustomEvent('alchemy:inventory-action',{detail:{kind,id}}));
+      return true;
+    }
     else if(kind==='equip'){const e=campaign.economy;if(!state.pillEnded||(!e.tools.includes(id)&&id!==null))return false;const ids=window.AlchemyEconomy.equippedIds(e.equipped);if(id===null)e.equipped=[];else if(ids.includes(id))e.equipped=ids.filter(t=>t!==id);else{if(ids.length>=window.AlchemyEconomy.EQUIP_SLOTS)return false;e.equipped=[...ids,id];}ok=true;}
     else if(kind==='reservePack'||kind==='reserveHerb'){if(campaign.phase!=='open'||campaignRules.active(campaign)||!state.pillEnded)return false;const e=campaign.economy;if(kind==='reserveHerb'){nature=id;if(!['warm','cool','neutral'].includes(nature)||!e.herbs[nature])return false;e.herbs[nature]--;id=0;}else{if(!Number.isInteger(id)||id<0||id>=window.AlchemyEconomy.PRICES.length||!e.stock[id])return false;e.stock[id]--;}ORDER_TARGET=0;MAX_PILLS=1;state=createState();state.started=true;state.roundEnded=false;state.pillEnded=true;state.pillEndReason='waiting';state.orderId=null;state.materialTier=kind==='reservePack'?id:0;state.materialNature=nature;window.dispatchEvent?.(new Event('alchemy:order'));ok=true;}
     else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded))ok=window.AlchemyEconomy.buy(campaign,kind,id);

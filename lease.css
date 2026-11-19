@@ -1,0 +1,73 @@
+.counter-lease-slip {
+  position: absolute;
+  left: 18px;
+  top: 73px;
+  z-index: 9;
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  max-width: calc(100% - 36px);
+}
+
+.counter-lease-slip[hidden],
+.opening-in-scene .counter-lease-slip { display: none !important; }
+.counter-letter-open > .counter-lease-slip { visibility: hidden; }
+
+.object-world .counter-lease-slip button {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 9px;
+  padding: 6px 10px;
+  color: #493624;
+  background: #f7ecd4;
+  border: 1px solid #a9885f;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px #33201333;
+  text-align: left;
+  font: 13px/1.45 system-ui, sans-serif;
+}
+
+.lease-seal {
+  padding: 0 3px;
+  border: 1px solid #a75037;
+  border-radius: 2px;
+  color: #8b3d28;
+  background: #f9e6d0;
+  font: 700 14px/1.4 serif;
+}
+
+.lease-ledger ul { margin: 6px 0 18px; padding: 0; list-style: none; }
+.lease-ledger li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid #cdb494;
+}
+.lease-ledger strong { color: #6d4b32; }
+
+.pill-bag-panel .pill-bag-lease-offer {
+  grid-column: 1 / -1;
+  margin: 6px 0;
+  padding: 6px 9px;
+  color: #653e29;
+  border-left: 2px solid #985438;
+  background: #f2e3c6;
+}
+.pill-bag-lease-offer[hidden] { display: none !important; }
+#pillBagSelected .pill-bag-lease-purchase {
+  background: #ead8b5;
+  color: #4d3020;
+  border-color: #9d6443;
+}
+
+@media (max-width:650px) {
+  .counter-lease-slip { left: 12px; top: 62px; max-width: calc(100% - 24px); }
+  body.object-world.engine-shell .pill-bag-panel.engine-panel.lease-purchase-view {
+    top: var(--lease-bag-top, 106px) !important;
+    max-height: calc(100dvh - var(--lease-bag-top, 106px) - 8px);
+  }
+}
