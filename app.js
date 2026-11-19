@@ -605,7 +605,7 @@
       next.disabled = false;
       next.classList.add('active');
       next.focus?.({preventScroll:true});
-      dom.ritualStatus.textContent = `落印 ${step} / 9　·　请点「${ritualNumbers[step]}」`;
+      dom.ritualStatus.textContent = `${step} / 9 · 行至「${ritualNumbers[step]}」`;
     }
     for (let index = 0; index < 9; index++) {
       const button = document.createElement('button');
@@ -640,9 +640,39 @@
     showStep();
     render();
   }
+  // Pointer capture keeps one brush stroke alive as each palace becomes disabled.
+  let tracingPointer = null;
+  dom.ritualGrid.addEventListener('pointerdown', event => {
+    const active = event.target.closest('button.active');
+    if (!active || !event.isPrimary || event.button !== 0) return;
+    tracingPointer = event.pointerId;
+    dom.ritualGrid.setPointerCapture(event.pointerId);
+    event.preventDefault();
+    active.click();
+  });
+  dom.ritualGrid.addEventListener('pointermove', event => {
+    if (tracingPointer !== event.pointerId || !state.pill.ritualActive) return;
+    const next = dom.ritualGrid.querySelector('button.active');
+    const hit = document.elementFromPoint(event.clientX, event.clientY);
+    const brush = document.getElementById('ritualBrush');
+    if (next && hit === next) {
+      brush.setAttribute('d','');
+      next.click();
+      return;
+    }
+    const box = dom.ritualGrid.getBoundingClientRect();
+    const [x,y] = ritualPlaces[state.pill.ritualStep - 1];
+    const localX = Math.max(0, Math.min(100, 100*(event.clientX-box.left)/box.width));
+    const localY = Math.max(0, Math.min(100, 100*(event.clientY-box.top)/box.height));
+    brush.setAttribute('d', `M${x} ${y}L${localX} ${localY}`);
+  });
+  dom.ritualGrid.addEventListener('lostpointercapture', () => {
+    tracingPointer = null;
+    document.getElementById('ritualBrush').setAttribute('d','');
+  });
   dom.refineButton.addEventListener("click", refine);
   function collectPill() {
-    if(!state.started||state.busy||state.pillEnded)return false;
+    if(!state.started||state.busy||state.pillEnded||state.pill.ritualActive)return false;
     ensurePricing();lockPillIdentity();const before=playtestSnapshot(),o=campaignRules.active(campaign);
     if(!window.AlchemyEconomy.storePill(campaign,state.pill,o)){setFeedback('丹匣记录异常，炉内丹药已保留。','bad');render();return false;}
     const id=state.pill.id;state.pillEnded=true;state.pillEndReason='collect';state.roundEnded=o? !activeCommission() : true;
@@ -762,7 +792,7 @@
   window.AlchemyGame = { successValuePreview, submit:submitPill,previewSubmission,previewConsignment,canReplaceEquipment, replaceEquipment, canLeave:canLeaveMainMenu, saveNow, refinementProbabilities, valueForBase, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
     snapshot: () => ({ ...playtestSnapshot(), materialAdvance:state.pill.materialAdvance||0, nature:state.pill.nature||(campaign?campaignRules.active(campaign)?.nature:null)||'neutral',tier:state.pill.tier||0,pillId:state.pill.id||null,commission:activeCommission(), ...(state.pill.appearance?{appearance:state.pill.appearance}:{}), started: state.started,
-    busy: state.busy, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
+    busy: state.busy, ritualActive: !!state.pill.ritualActive, ritualRemaining: state.pill.ritualSafe || 0, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
     endReason: state.pillEndReason, remaining: campaign&&campaignRules.active(campaign)?.status==='active' ? Math.max(0,MAX_PILLS-state.attempt) : 0, target: ORDER_TARGET,
     toolProgress:{uses:{...state.pill.toolUses},scars:state.pill.scars||0,chain:state.pill.successChain||0,valueFactor:state.pill.valueFactor??1,triggers:[...(state.pill.triggers||[])]},toolUsed:!!state.pill.toolUsed,campaignEnabled: !!campaign, collected: state.collected,
     order: campaign ? campaignRules.active(campaign) : null }) };

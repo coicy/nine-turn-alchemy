@@ -5,6 +5,10 @@
  const judgment=document.querySelector('.furnace-judgment'),facts=judgment.querySelector('.furnace-facts'),herbs=document.querySelector('.herb-tray'),collect=document.querySelector('.furnace-tray');viewport.append(collect);
  document.body.classList.add('scene-continuity','scene-spatial','art-repair');let fitting=false,queued=false,geometry='',heldViewport='',stockKey='',notice='',noticeTimer,noticeScope='';
  const drawLid=window.AlchemySceneLidLayer.mount(stage);
+ const seal=document.createElement('div');
+ seal.className='furnace-ritual-seal';seal.setAttribute('aria-hidden','true');
+ seal.innerHTML='<svg viewBox="0 0 44 106"><path d="m7 25 8-11 7 8 7-11 8 10 M8 30l28-3 M22 75 34 37 10 55 10 37 22 55 34 75 34 55 10 75 22 37"/><path d="M13 87h17v12H13z m4 3h9m-9 5h9"/></svg>';
+ viewport.append(seal);
  const foreground=document.createElement('div');foreground.className='scene-front-mask';foreground.setAttribute('aria-hidden','true');stage.append(foreground);
  const caption=document.createElement('p');caption.className='scene-value-caption';caption.textContent='药力';judgment.prepend(caption);
  const demand=document.createElement('button');demand.className='scene-demand';demand.type='button';demand.dataset.focusKey='scene-demand';demand.onclick=()=>window.AlchemyLoop.openDemand(demand);
@@ -19,7 +23,7 @@
  collect.onclick=()=>{if(window.AlchemyScene2D.held==='pill')window.AlchemyScene2D.collectHeld();else if(!window.AlchemyScene2D.held)game.collect();};
  document.getElementById('roomSettlement').addEventListener('click',e=>{if(e.target.closest('[data-furnace-room]')&&route.snapshot().workMode==='furnace'){e.preventDefault();e.stopImmediatePropagation();document.getElementById('roomSettlement').hidden=true;update();herbs.querySelector('.herb-slot[aria-disabled=false]')?.focus({preventScroll:true});}},true);
  const live=s=>s.started&&!s.pillEnded&&!s.roundEnded;
- const lidState=()=>live(game.snapshot())&&!game.snapshot().busy&&!window.AlchemyScene2D.busy?'open':'closed';
+ const lidState=()=>live(game.snapshot())&&!game.snapshot().busy&&!game.snapshot().ritualActive&&!window.AlchemyScene2D.busy?'open':'closed';
  const rect=(el,r)=>{if(!el)return;for(const [k,n]of Object.entries({left:r.x,top:r.y,width:r.w,height:r.h}))el.style.setProperty(k,n+'px','important');el.style.setProperty('right','auto','important');el.style.setProperty('bottom','auto','important');};
  const keyFor=()=> (route.snapshot().workMode==='furnace'?'furnace':'room')+'-'+(innerWidth<=650?'mobile':'desktop');
  const imageFor=()=>window.AlchemySceneLidLayer.baseImage(keyFor());
@@ -51,8 +55,23 @@
   for(const el of [stage,forge]){for(const [k,n]of Object.entries({'--world-width':width,'--world-height':height,'--room-base-width':width,'--room-base-height':imageHeight,'--room-camera-left':0}))el.style.setProperty(k,n+'px');el.style.setProperty('width',width+'px','important');el.style.setProperty('height',height+'px','important');}
   stage.style.setProperty('--scene-scale',String(scale));stage.style.setProperty('--scene-image-top',top+'px');forge.style.left='0';forge.style.top='0';forge.style.transform='scale('+scale+')';forge.style.transformOrigin='0 0';
   const canvas=document.getElementById('alchemyScene');if(canvas.width!==Math.round(width))canvas.width=Math.round(width);if(canvas.height!==Math.round(height))canvas.height=Math.round(height);
-  const lid=lidState(),src=imageFor();drawLid(keyFor(),lid);stage.style.setProperty('--scene-v122-image','url("'+src+'")');stage.style.setProperty('--scene-front-image','url("assets/scene-illustrated-v128/'+keyFor()+'-front.webp")');foreground.hidden=!live(s)||!!window.AlchemyScene2D.held||s.busy||window.AlchemyScene2D.busy;stage.dataset.sceneImage=src;stage.dataset.lidState=lid;stage.dataset.camera='work';stage.dataset.cameraCropped='false';
+  const lid=lidState(),src=imageFor();drawLid(keyFor(),lid);stage.style.setProperty('--scene-v122-image','url("'+src+'")');stage.style.setProperty('--scene-front-image','url("assets/scene-illustrated-v128/'+keyFor()+'-front.webp")');foreground.hidden=s.ritualActive||!live(s)||!!window.AlchemyScene2D.held||s.busy||window.AlchemyScene2D.busy;stage.dataset.sceneImage=src;stage.dataset.lidState=lid;stage.dataset.camera='work';stage.dataset.cameraCropped='false';
   const point=p=>({x:p.x*width,y:top+p.y*imageHeight}),project=r=>({x:r.x*width,y:top+r.y*imageHeight,w:r.w*width,h:r.h*imageHeight});
+  // Place the trace on the clay between the projected mouth and the firebox.
+  const mouth=project(data.mouth),fire=project(data.fire);
+  const cx=(mouth.x+mouth.w/2)*scale, rim=(mouth.y+mouth.h)*scale, grate=fire.y*scale;
+  const riteCenterY=(rim+grate)/2;
+  const runeWidth=Math.max(156,Math.min(330,mouth.w*scale*.88));
+  viewport.style.setProperty('--rite-fire-x',(fire.x+fire.w/2)*scale+'px');
+  viewport.style.setProperty('--rite-fire-y',(fire.y+fire.h/2)*scale+'px');
+  viewport.style.setProperty('--rite-fire-w',fire.w*scale+'px');
+  viewport.style.setProperty('--rite-x',cx+'px');
+  viewport.style.setProperty('--rite-y',riteCenterY+'px');
+  viewport.style.setProperty('--rite-w',runeWidth+'px');
+  viewport.style.setProperty('--rite-h',Math.max(150,Math.min(runeWidth*.86,(grate-rim)*1.05))+'px');
+  viewport.style.setProperty('--rite-caption-y',Math.max(2,(mouth.y*scale)-76)+'px');
+  viewport.style.setProperty('--rite-caption-x',Math.max(Math.min(w*.5,168),Math.min(w-168,cx))+'px');
+  viewport.dataset.rite=near&&v.current==='work'?(s.ritualActive?'trace':s.ritualRemaining?'sealed':''):'';
   const minimum=(r,min=44/scale)=>{const nw=Math.max(r.w,min),nh=Math.max(r.h,min);return{x:r.x-(nw-r.w)/2,y:r.y-(nh-r.h)/2,w:nw,h:nh};};
   Object.assign(L.mouth,minimum(project(data.mouth)));Object.assign(L.firebox,minimum(project(data.fire)));
   const center=point(data.pill),diameter=data.pillDiameter*width,size=Math.max(48/scale,diameter);Object.assign(L.objects.pill,{x:center.x-size/2,y:center.y-size/2,w:size,h:size,visualDiameter:diameter});L.cutaway.source=null;
@@ -85,7 +104,7 @@
   const back=heading.querySelector('.furnace-back');back.textContent='‹';back.setAttribute('aria-label','返回炼丹房');
   herbs.classList.add('scene-stock');herbs.dataset.sceneVisible=String(v.location==='work'&&v.current==='work'&&document.getElementById('roomSettlement').hidden);
   document.body.dataset.sceneAtWork=String(v.location==='work');document.body.dataset.sceneReading=String(v.reading);
-  collect.dataset.sceneLabel='收丹';collect.setAttribute('aria-label','收丹');collect.hidden=!near||v.current!=='work'||!live(s);collect.dataset.held=String(window.AlchemyScene2D.held==='pill');collect.disabled=!live(s)||s.busy||window.AlchemyScene2D.busy||!!(window.AlchemyScene2D.held&&window.AlchemyScene2D.held!=='pill');
+  collect.dataset.sceneLabel='收丹';collect.setAttribute('aria-label','收丹');collect.hidden=!near||v.current!=='work'||!live(s);collect.dataset.held=String(window.AlchemyScene2D.held==='pill');collect.disabled=!live(s)||s.busy||s.ritualActive||window.AlchemyScene2D.busy||!!(window.AlchemyScene2D.held&&window.AlchemyScene2D.held!=='pill');
   const restock=document.querySelector('[data-furnace-room]');if(restock)restock.textContent='继续取料';fit();
  }
  const schedule=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;update();});};
