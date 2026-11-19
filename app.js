@@ -558,6 +558,9 @@
     const {refineSerial, ritualSafe} = state.pill;
     return !state.pillEnded && ritualSafe === 0 && refineSerial > 0 && refineSerial % 9 === 0;
   }
+  // Positions on the Luo Shu square, in walking order from one through nine.
+  const ritualPlaces = [[50,73],[73,27],[27,50],[27,27],[50,50],[73,73],[73,50],[27,73],[50,27]];
+  const ritualNumbers = '一二三四五六七八九';
   function beginRitual(resume = false) {
     const ritualHost = document.querySelector('.engine-viewport');
     if (ritualHost && dom.ritualPanel.parentElement !== ritualHost) ritualHost.append(dom.ritualPanel);
@@ -566,15 +569,31 @@
     pill.ritualStep = resume ? Math.min(8, Math.max(0, Math.trunc(Number(pill.ritualStep)) || 0)) : 0;
     dom.ritualPanel.classList.remove('hidden');
     dom.ritualGrid.innerHTML = '';
+    const buttons = [];
+    function showStep() {
+      const step = pill.ritualStep;
+      document.getElementById('ritualTrail').setAttribute('points', ritualPlaces.slice(0, step).map(point => point.join(',')).join(' '));
+      const next = buttons[step];
+      next.disabled = false;
+      next.classList.add('active');
+      next.focus?.({preventScroll:true});
+      dom.ritualStatus.textContent = `已走 ${step} / 9 宫 · 请点「${ritualNumbers[step]}」`;
+    }
     for (let index = 0; index < 9; index++) {
       const button = document.createElement('button');
       button.type = 'button';
-      button.textContent = String(index + 1);
+      button.textContent = ritualNumbers[index];
+      button.setAttribute('aria-label', `第${ritualNumbers[index]}宫`);
+      const [x,y] = ritualPlaces[index];
+      button.style.left = x + '%';
+      button.style.top = y + '%';
+      button.disabled = true;
+      buttons.push(button);
       button.dataset.index = index;
       if (index < pill.ritualStep) button.classList.add('done');
-      if (index === pill.ritualStep) button.classList.add('active');
       button.addEventListener('click', () => {
         if (state.pill !== pill || state.pillEnded || !pill.ritualActive || index !== pill.ritualStep) return;
+        button.disabled = true;
         button.classList.remove('active');
         button.classList.add('done');
         pill.ritualStep++;
@@ -584,16 +603,15 @@
           dom.ritualPanel.classList.add('hidden');
           dom.ritualStatus.textContent = '步罡已成，安全催炼还剩7次';
           render();
+          document.querySelector('.furnace-fire')?.focus?.({preventScroll:true});
           return;
         }
-        dom.ritualGrid.querySelector(`[data-index="${pill.ritualStep}"]`)?.classList.add('active');
-        dom.ritualStatus.textContent = persistProgress()
-          ? `已完成 ${pill.ritualStep} / 9 步`
-          : '当前进度未能保存，请检查浏览器存储空间。';
+        showStep();
+        if (!persistProgress()) dom.ritualStatus.textContent += ' · 当前进度保存失败';
       });
       dom.ritualGrid.appendChild(button);
     }
-    dom.ritualStatus.textContent = pill.ritualStep ? `已完成 ${pill.ritualStep} / 9 步，接着落位` : '循火星落位完成步罡';
+    showStep();
     render();
   }
   dom.refineButton.addEventListener("click", refine);

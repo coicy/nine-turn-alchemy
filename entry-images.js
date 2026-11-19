@@ -12,6 +12,7 @@
 
   window.AlchemyEntryImages = Object.freeze([...new Set([
     ...paintedScenes,
+    'assets/ritual/bronze-dial.webp',
     ...Object.values(window.AlchemyPillPalette.sources),
     ...window.AlchemyCustomers.sources(),
     ...Object.values(window.AlchemyCustomers.catalog.notes).map(note => note.src),
