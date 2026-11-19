@@ -36,7 +36,7 @@ function renderLeaseSlip(c) {
   const offer = lease.canOffer(c);
   leaseSlip.hidden = (!rent && !offer) || c.phase === 'finished';
   const html = (rent ? '<button type="button" data-lease-route="record" data-focus-key="counter-lease-record"><span class="lease-seal" aria-hidden="true">邵</span><span>'+rent+'</span></button>' : '') +
-    (offer ? '<button type="button" data-lease-route="bag" data-focus-key="counter-lease-bag"><strong>药铺采购</strong><span>第 '+lease.procurement.lastDay+' 天收工前 · 单颗药力 '+lease.procurement.minimum+'</span></button>' : '');
+    (offer ? '<button type="button" data-lease-route="bag" data-focus-key="counter-lease-bag"><strong>药铺采购</strong><span>第 '+lease.procurement.lastDay+' 天收工前 · 九转加价 '+lease.procurement.featuredPremium+'</span></button>' : '');
   if (leaseSlip.innerHTML !== html) leaseSlip.innerHTML = html;
 }
 
@@ -144,7 +144,7 @@ function render(){const c=api.campaign();if(!c)return;const s=api.snapshot(),com
  if(!$('counterLetter').querySelector('[data-close-letter]')){const close=document.createElement('button');close.type='button';close.className='letter-close';close.dataset.closeLetter='';close.textContent='收起';close.setAttribute('aria-label','收起委托详情');$('counterLetter').prepend(close);}
  updateNote(selected,c.phase);
  const skipped=c.orders.filter(o=>o.status==='skipped').length,failed=c.orders.filter(o=>o.status==='failed').length,income=c.orders.reduce((n,o)=>n+(o.reward||0),0),gifted=c.orders.reduce((n,o)=>n+(o.gifted||0),0);
- $('dailySummary').textContent=c.phase==='finished'?`三十日经营结束 · 完成 ${total} 单 · 炼制失败 ${totalOrders-total} 单` :c.phase==='settled'?`今日结清：完成 ${completed} 单 · 炼制失败 ${failed} 单 · 未接跳过 ${skipped} 单\n委托收入 ${income} 铜钱 · 赠药 ${gifted} 包`:'';
+ $('dailySummary').textContent=c.phase==='finished'?`三十日经营结束 · 完成 ${total} 单 · 未完成委托 ${totalOrders-total} 单` :c.phase==='settled'?`今日结清：完成 ${completed} 单 · 未完成委托 ${failed} 单 · 未接跳过 ${skipped} 单\n委托收入 ${income} 铜钱 · 赠药 ${gifted} 包`:'';
   renderLeaseSlip(c);
   const receipt = c.history.at(-1);
   if (c.phase !== 'open' && receipt?.day === c.day && receipt.rent) {
@@ -167,7 +167,7 @@ $('settleDay').addEventListener('click', () => {
   const c = api.campaign();
   const pending = c.orders.filter(order => order.status === 'pending').length;
   const rent = lease.closingQuote(c);
-  let message = '收工将跳过 '+pending+' 份未接委托，不计炼制失败。';
+  let message = '收工将跳过 '+pending+' 份未接委托，不计未完成委托。';
   if (rent.due) {
     const grace = c.day < rent.graceDay ? '可在第 '+rent.graceDay+' 天收工前补齐。' :
       c.day === rent.graceDay ? '今日是宽限末日。' : '这笔铺租已逾期，仍可补缴。';

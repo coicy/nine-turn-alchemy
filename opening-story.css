@@ -26,3 +26,13 @@
 .opening-in-scene[data-opening-step="1"] #counterLetter [data-close-letter],.opening-in-scene[data-opening-step="1"] #counterLetter [data-return-forge]{display:block!important}
 @media(max-width:650px){.opening-in-scene[data-opening-step="1"] #counterLetter{left:3%;width:94%;bottom:36%;max-height:48%;font-size:14px;padding:14px}.opening-in-scene[data-opening-step="1"] .prologue-dialogue{max-height:32%;overflow:auto}.opening-in-scene[data-opening-step="1"] #counterNote{z-index:4}}
 .prologue-actions #prologueNext:disabled{background:#e2d2b6;color:#705b42;border-color:#b79b77;cursor:default}
+
+@media (max-width:650px) and (max-height:700px) {
+  .opening-in-scene .prologue-dialogue,
+  .opening-in-scene[data-opening-step="1"] .prologue-dialogue {
+    display:flex; flex-direction:column; max-height:38dvh; overflow:hidden;
+    bottom:max(12px, env(safe-area-inset-bottom));
+  }
+  .prologue-copy {min-height:0; overflow:auto}
+  .prologue-actions {flex-shrink:0}
+}

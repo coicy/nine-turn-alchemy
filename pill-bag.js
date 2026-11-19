@@ -6,13 +6,13 @@
  function updateLeaseOffer(c) {
    const fromLease=window.AlchemyViewState?.snapshot().context?.objectId==='lease-purchase';
    panel.classList.toggle('lease-purchase-view',fromLease);
-   if (fromLease) {
+   if (fromLease || matchMedia("(max-width: 360px)").matches) {
      const nav=document.querySelector('.engine-nav');
      panel.style.setProperty('--lease-bag-top',Math.ceil(nav.getBoundingClientRect().bottom+8)+'px');
    }
    offerNote.hidden=!c || !fromLease || !lease.canOffer(c);
    if (!offerNote.hidden) {
-     offerNote.textContent='药铺采购 · 第 '+lease.procurement.lastDay+' 天收工前交付一颗药力至少 '+lease.procurement.minimum+' 的丹，按售价加 '+lease.procurement.premium+' 铜钱。';
+     UX.html(offerNote,UX.art({turn:lease.procurement.featuredTurn,quality:1,nature:'warm',appearance:'lead-red'})+'药铺采购 · 第 '+lease.procurement.lastDay+' 天收工前交付一颗药力至少 '+lease.procurement.minimum+' 的丹，按售价加 '+lease.procurement.premium+' 文；九转及以上加 '+lease.procurement.featuredPremium+' 文。限购一颗。');
    }
  }
  function render(){const c=api.campaign();if(!c){panel.hidden=true;return;}const e=E.ensure(c),s=api.snapshot(),list=panel.querySelector('#pillBagList'),detail=panel.querySelector('#pillBagSelected');if(!Array.isArray(e.pills)){panel.querySelector('#pillBagCount').textContent='记录异常，原数据已保留';return;}panel.querySelector('#pillBagCount').textContent=e.pills.length?e.pills.length+' 颗':'';
@@ -27,7 +27,7 @@
   const blocked=s.busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy||window.AlchemyScene2D?.held;
   const purchaseAction=purchase?'<button type="button" class="pill-bag-action pill-bag-lease-purchase" data-lease-purchase="'+UX.esc(p.id)+'" '+(blocked?'disabled':'')+'>药铺收购 · '+purchase.payout+' 铜钱</button>':'';
   UX.html(detail,UX.art(p)+'<h3>'+p.turn+'转 · '+quality[p.quality]+'灵丹</h3><p>'+nature[p.nature]+' · 药力 '+Math.round(p.value)+' · 第 '+p.day+' 天收丹</p>'
-   +(preview?'<p class="pill-bag-submit-preview">'+preview+'</p>':'')+'<div class="pill-bag-detail-actions" aria-label="丹药处理动作">'
+   +(p.materialAdvance?'<p>交易报价已抵客料款，最多24文。</p>':'')+(preview?'<p class="pill-bag-submit-preview">'+preview+'</p>':'')+'<div class="pill-bag-detail-actions" aria-label="丹药处理动作">'
    +(preview?'<button data-submit-pill="'+p.id+'" '+(s.busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy||window.AlchemyScene2D?.held?'disabled':'')+'>提交委托</button>':'')
    +'<button data-sell-pill="'+p.id+'" '+(s.busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy?'disabled':'')+'>出售 · '+E.saleValue(c,p)+' 铜钱</button>'+purchaseAction+'</div>');
  }

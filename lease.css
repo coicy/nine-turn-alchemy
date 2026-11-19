@@ -71,3 +71,12 @@
     max-height: calc(100dvh - var(--lease-bag-top, 106px) - 8px);
   }
 }
+
+.pill-bag-lease-offer .ux-pill-art {display:inline-block;width:38px;height:38px;vertical-align:middle;margin-right:6px}
+.pill-bag-lease-offer .ux-pill-art img {width:100%;height:100%;object-fit:contain}
+@media(max-width:360px) {
+  body.object-world.engine-shell .pill-bag-panel.engine-panel {
+    top:var(--lease-bag-top,106px)!important;
+    max-height:calc(100dvh - var(--lease-bag-top,106px) - 8px);
+  }
+}

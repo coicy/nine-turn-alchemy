@@ -3,7 +3,7 @@
 
   const E = root.AlchemyEconomy || (typeof require === 'function' ? require('./economy.js') : null);
   const schedule = [[7, 40], [14, 120], [21, 120], [28, 120]];
-  const procurement = Object.freeze({firstDay:15, lastDay:21, minimum:120, premium:20});
+  const procurement = Object.freeze({firstDay:15, lastDay:21, minimum:120, premium:20, featuredTurn:9, featuredPremium:120});
 
   function ensure(campaign) {
     if (!campaign.lease) {
@@ -48,6 +48,7 @@
     }
     e.coins -= quote.payment;
     e.spent += quote.payment;
+    E.recordCash(campaign,"铺租",e.coins+quote.payment,campaign.day);
     return quote;
   }
 
@@ -62,7 +63,8 @@
     const pill = campaign.economy?.pills?.find(item => item.id === id);
     if (!pill || !Number.isFinite(pill.value) || pill.value < procurement.minimum ||
         !Number.isInteger(pill.turn) || pill.turn < 1 || pill.turn > 100) return null;
-    return {pill, payout:E.saleValue(campaign, pill) + procurement.premium};
+    const premium = pill.turn >= procurement.featuredTurn ? procurement.featuredPremium : procurement.premium;
+    return {pill, premium, payout:E.saleValue(campaign,pill) + premium};
   }
 
   function buyPill(campaign, id) {
@@ -71,7 +73,7 @@
     const e = campaign.economy;
     e.pills.splice(e.pills.indexOf(quote.pill), 1);
     campaign.lease.purchase = {id, day:campaign.day, value:quote.pill.value, payout:quote.payout};
-    E.credit(campaign, quote.payout, '药铺收购');
+    E.credit(campaign, quote.payout, '药铺收购',id);
     return true;
   }
 

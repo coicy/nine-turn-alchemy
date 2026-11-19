@@ -29,7 +29,8 @@
     if (!active || finishing || index !== 1 || readNote || layout.inert || scene.dataset.changing === 'true') return;
     const note = document.getElementById('counterNote');
     if (note.hidden) return;
-    next.textContent = '请点击桌上的委托纸笺';
+    next.textContent = '查看委托纸笺';
+    next.disabled = false;
   }
   window.addEventListener('alchemy:counter-note-availability', showNotePrompt);
   function show(){
@@ -68,7 +69,7 @@
     pending=!start.textContent.includes('继续经营')?0:Number.isInteger(step)&&step>=0&&step<3?step:null;
   },true);
   start.addEventListener('click',()=>{if(pending!==null&&window.AlchemyGame.snapshot().started){const step=pending;pending=null;begin(step);}});
-  next.addEventListener('click',()=>{if(finishing||next.disabled)return;if(index<2){index++;show();}else finish();});
+  next.addEventListener('click',()=>{if(finishing||next.disabled)return;if(index===1&&!readNote){document.getElementById('counterNote').click();return;}if(index<2){index++;show();}else finish();});
   skip.addEventListener('click',finish);
   document.addEventListener('click',e=>{if(!active||index!==1||finishing)return;const note=e.target.closest?.('#counterNote');if(note){readNote=true;next.disabled=false;next.textContent='看清委托，携药回炉 →';scene.querySelector('#prologueText').textContent='委托纸笺可以随时点开查看。所求药力、约定工钱和药材归属都在这里；看清后，带着客人的药材回炉。';}},false);
   document.addEventListener('click',e=>{if(!active||index!==1||finishing)return;if(e.target.closest?.('#counterLetter [data-return-forge]')){e.preventDefault();e.stopImmediatePropagation();if(readNote){index=2;show();}}},true);

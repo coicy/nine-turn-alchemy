@@ -5,6 +5,7 @@
     storage: (() => { try { return root.localStorage; } catch { return null; } })(),
     fetch: root.fetch.bind(root),
     uuid: () => root.crypto.randomUUID(),
+    currentLedger: () => root.AlchemyGame?.campaign()?.cashLedger,
     now: () => Date.now(),
     build: document.querySelector('meta[name="game-build"]')?.content,
     status: text => { const el = document.getElementById("telemetryStatus"); if (el) el.textContent = text; },
@@ -85,7 +86,13 @@
     if (!enabled) { data.queue = []; data.credential = null; save(); status("匿名上传已关闭"); }
     else { save(); status("匿名记录已开启"); }
   }
-  function exportData() { return { schemaVersion: 1, gameVersion: VERSION, build: options.build, policyVersion: "2026-10-27-v1", exportedAt: new Date(options.now()).toISOString(), events: data.history }; }
+  function cash(campaign, kind, before, reference) {
+    if (!enabled) return;
+    const ledger = campaign.cashLedger ||= {id:options.uuid(), entries:[]};
+    const after = campaign.economy.coins;
+    ledger.entries.push({day:campaign.day, kind, reference, before, after, amount:after-before});
+  }
+  function exportData() { return { schemaVersion: 1, gameVersion: VERSION, build: options.build, policyVersion: "2026-10-27-v1", exportedAt: new Date(options.now()).toISOString(), cashLedger:options.currentLedger?.() || null, events: data.history }; }
   function download() {
     const url = URL.createObjectURL(new Blob([JSON.stringify(exportData(), null, 2)], { type: "application/json" }));
     const link = document.createElement("a");
@@ -98,5 +105,5 @@
       const element = document.getElementById(id); if (element) element.checked = data.enabled === true;
     }
   }
-  return { setEnabled, begin, record, finish, flush, exportData, download };
+  return { cash, setEnabled, begin, record, finish, flush, exportData, download };
 });

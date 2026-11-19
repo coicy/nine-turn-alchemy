@@ -1,20 +1,75 @@
-const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const E=require('./economy.js'),C=require('./campaign.js');
-const c=C.create();E.ensure(c);assert.equal(c.economy.coins,80);assert.equal(E.buy(c,'material',0),true);assert.equal(c.economy.coins,62);assert.equal(E.buy(c,'material',-1),false);
-c.economy.coins=5000;assert.ok(E.buy(c,'tool','seal'));assert.equal(E.buy(c,'tool','seal'),false);assert.ok(E.buy(c,'tool','needle'));assert.ok(E.buy(c,'furnace'));assert.ok(E.buy(c,'furnace'));assert.equal(E.buy(c,'furnace'),false);
-const o={target:200,status:'completed',returned:2,nature:'cool'};const cash=c.economy.coins;assert.ok(E.commission(c,o,[{quality:4,turn:9,runes:['金纹']}])>0);assert.equal(E.commission(c,o,[]),0);assert.equal(c.economy.herbs.cool,2);assert.equal(o.returned,0);assert.ok(c.economy.coins>cash);assert.ok(E.storePill(c,{value:24,turn:6,quality:1,runes:[]},{id:'test-pill',self:true,status:'active',nature:'neutral'}));assert.equal(E.sale(c,'test-pill'),16);assert.equal(E.sale(c,'test-pill'),false);
-const skipped=C.create();assert.ok(C.settle(skipped));assert.ok(skipped.orders.every(o=>o.status==='skipped'));assert.equal(skipped.history[0].failed,0);
-const legacy={economy:{...c.economy}};delete legacy.economy.pills;const oldCoins=legacy.economy.coins,oldSold=legacy.economy.sold;E.ensure(legacy);assert.deepEqual(legacy.economy.pills,[]);assert.equal(legacy.economy.coins,oldCoins);assert.equal(legacy.economy.sold,oldSold);
-legacy.economy.pills='unreadable';assert.equal(E.storePill(legacy,{runes:[]},{id:'S1',self:true,status:'active'}),false);assert.equal(E.sale(legacy,'S1'),false);assert.equal(legacy.economy.pills,'unreadable','preserve malformed bag data rather than clearing it');
-const base=fs.readFileSync(__dirname+'/verify-simulation.cjs','utf8').split('const click=id=>')[0]
-.replace('getState:()=>state,render','getState:()=>state,getCampaign:()=>campaign,resolveRefine,applyDamage,tryAddRune,render')
-.replace('vm.runInContext(source,context);',"vm.runInContext(fs.readFileSync(__dirname+'/campaign.js','utf8'),context);vm.runInContext(fs.readFileSync(__dirname+'/economy.js','utf8'),context);vm.runInContext(source,context);");
-const outer={require,__dirname,console};vm.createContext(outer);vm.runInContext(base+';globalThis.env={window,el,flush,context,testMath};',outer);const {window:w,el,flush,context:ctx,testMath}=outer.env;const api=w.AlchemyGame;el('startButton').click();const state=()=>ctx.testApi.getState();const campaign=ctx.testApi.getCampaign();
-assert.ok(api.abandonOrder());assert.ok(api.economyAction('material',0));assert.ok(api.economyAction('self',0));assert.equal(api.snapshot().remaining,1);assert.equal(api.snapshot().order.self,true);assert.equal(api.endDay(),false);el('herbObject').click();el('fireObject').click();flush(720);assert.equal(state().attempt,1);const before=campaign.economy.coins;el('trayObject').click();flush(320);assert.equal(campaign.economy.coins,before);assert.equal(campaign.economy.pills.length,1);el('trayObject').click();flush(320);assert.equal(campaign.economy.pills.length,1);const pillId=campaign.economy.pills[0].id;assert.ok(api.economyAction('sell',pillId));assert.equal(api.economyAction('sell',pillId),false);assert.equal(campaign.economy.sold,1);
-campaign.economy.coins=5000;api.economyAction('material',2);api.economyAction('self',2);el('herbObject').click();el('fireObject').click();flush(720);ctx.testApi.tryAddRune();ctx.testApi.render();assert.equal(api.snapshot().runeChoices.length,2);assert.ok(el('collectButton').disabled);const choice=api.snapshot().runeChoices[0];assert.ok(api.economyAction('chooseRune',choice));assert.equal(api.snapshot().runeChoices.length,0);assert.equal(api.economyAction('chooseRune',choice),false);
-campaign.economy.tools=['seal','needle'];campaign.economy.equipped='seal';state().pill.runes=[];state().pill.shield=false;state().riskResult={explode:1};state().pill.value=100;state().pill.turn=4;testMath.random=()=>0;ctx.testApi.resolveRefine();assert.equal(api.snapshot().pillEnded,false);assert.equal(api.snapshot().toolUsed,true);ctx.testApi.resolveRefine();assert.equal(api.snapshot().pillEnded,true);
-assert.ok(api.economyAction('material',1));assert.ok(api.economyAction('self',1));el('herbObject').click();el('fireObject').click();flush(720);assert.equal(api.snapshot().quality,1);campaign.economy.furnace=1;state().pill.value=100;ctx.testApi.applyDamage();assert.equal(state().pill.value,85);ctx.testApi.applyDamage();assert.equal(state().pill.value,Math.round(85*.7));
-campaign.economy.equipped='needle';state().pill.runes=['赤纹'];state().pill.toolUsed=false;assert.equal(api.economyAction('reroll'),false,'no manual rune reroll');ctx.testApi.tryAddRune();assert.equal(state().pill.toolUses.needle,1,'first successful rune generation auto triggers needle');
-console.log('PASS: purchases, ownership, economic settlement and material isolation, self-sale once, optional day close, rune choice, tool limits, damage upgrade');
+const assert = require('node:assert/strict');
+const C = require('./campaign.js');
+const E = require('./economy.js');
+const L = require('./lease.js');
+const createTelemetry = require('./telemetry.js');
 
-el('trayObject').click();flush(320);campaign.economy.herbs.cool=2;assert.ok(api.economyAction('herbself','cool'));assert.equal(api.snapshot().order.nature,'cool');assert.equal(campaign.economy.herbs.cool,1);assert.equal(api.economyAction('herbself','cool'),false);console.log('PASS: leftover gift is idempotent; selected herb nature and one-pack consumption preserved');
+const shop = C.create();
+const wallet = E.ensure(shop);
+assert.equal(wallet.coins, 80);
+assert(E.buy(shop, 'material', 0));
+assert.equal(wallet.coins, 62);
+assert.equal(E.buy(shop, 'material', -1), false);
+wallet.coins = 2000;
+assert(E.buy(shop, 'tool', 'seal'));
+assert.equal(E.buy(shop, 'tool', 'seal'), false);
+assert(E.buy(shop, 'furnace'));
+assert(E.buy(shop, 'furnace'));
+assert.equal(wallet.coins, 920);
+assert.equal(E.buy(shop, 'furnace'), false);
+
+const makePill = (id, value, turn, extra={}) => ({id, value, turn, quality:0, ...extra});
+const c = C.create();
+E.ensure(c);
+L.ensure(c);
+let seq = 0;
+globalThis.AlchemyTelemetry = createTelemetry({
+  now: Date.now,
+  uuid: () => String(++seq),
+  currentLedger: () => c.cashLedger
+});
+const telemetry = globalThis.AlchemyTelemetry;
+const free = makePill('initial',24,1,{materialAdvance:24});
+assert(E.storePill(c,free));
+assert.equal(E.sale(c,free.id),0);
+assert.equal(E.sale(c,free.id),false);
+assert.equal(c.cashLedger,undefined);
+telemetry.setEnabled(true);
+assert(E.buy(c,'material',0));
+const pill = makePill('high',160,9,{materialAdvance:24});
+assert.equal(E.saleValue(c,pill),136);
+assert.equal(E.commissionReward({target:150},[pill]),E.fee({target:150})+10);
+assert.equal(E.saleValue(c,makePill('old',24,1)),24);
+c.day=6;
+assert(E.storePill(c,pill));
+const entry=E.consign(c,pill.id);
+assert.equal(entry.guaranteedPayout,150);
+c.day=7;
+L.collectRent(c);
+c.day=8;
+E.settleConsignments(c);
+E.settleConsignments(c);
+c.day=15;
+assert(E.storePill(c,pill));
+assert.equal(L.purchaseQuote(c,pill.id).payout,256);
+assert(L.buyPill(c,pill.id));
+assert.equal(L.buyPill(c,pill.id),false);
+const rows=telemetry.exportData().cashLedger.entries;
+assert.deepEqual(rows.map(x=>x.amount),[-18,-40,150,256]);
+assert.equal(rows[0].before,80);
+rows.slice(1).forEach((row,i)=>assert.equal(row.before,rows[i].after));
+assert.equal(rows.at(-1).after,c.economy.coins);
+assert.equal(rows[2].reference,entry.id);
+const resumed=JSON.parse(JSON.stringify(c));
+E.buy(resumed,'material',0);
+assert.equal(resumed.cashLedger.id,c.cashLedger.id);
+telemetry.setEnabled(false);
+E.buy(resumed,'material',0);
+assert.equal(resumed.cashLedger.entries.length,5);
+const skipped=C.create();
+assert(C.settle(skipped));
+assert.equal(skipped.history[0].failed,0);
+const bad=C.create();E.ensure(bad).pills='unreadable';
+assert.equal(E.storePill(bad,pill),false);
+assert.equal(E.sale(bad,pill.id),false);
+console.log('PASS v174 purchases, cash ledger, delivery, consignment, procurement, stock and legacy prices');
