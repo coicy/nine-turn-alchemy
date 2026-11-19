@@ -26,6 +26,7 @@
   let statusOverride = '';
   let returningFromGame = false;
   let openingAttempt = 0;
+  let openingController;
   let loading = false;
   let returnButton = null;
 
@@ -165,6 +166,8 @@
 
   function returnToMenu() {
     openingAttempt++;
+    openingController?.abort();
+    openingController = undefined;
     loading = false;
     setView('menu');
     refresh();
@@ -178,6 +181,8 @@
   async function prepareEntry() {
     if (loading) return;
     const attempt = ++openingAttempt;
+    const controller = new AbortController();
+    openingController = controller;
     loading = true;
     loadingPage.dataset.state = 'loading';
     loadingTitle.textContent = '正在加载…';
@@ -190,8 +195,9 @@
 
     await new Promise(resolve => requestAnimationFrame(resolve));
     if (attempt !== openingAttempt) return;
-    const ready = await window.AlchemyAssets.prepare();
+    const ready = await window.AlchemyAssets.prepare(controller.signal);
     if (attempt !== openingAttempt) return;
+    openingController = undefined;
     loading = false;
     if (!ready) {
       loadingPage.dataset.state = 'failed';
