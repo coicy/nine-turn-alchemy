@@ -141,6 +141,28 @@
 
 .opening-load h1 { margin: 0; font-size: clamp(24px, 6vw, 35px); line-height: 1.4; font-weight: 500; letter-spacing: .085em; }
 .opening-load h1:focus { outline: none; }
+.opening-load__progress {
+  display: block;
+  appearance: none;
+  width: min(224px, 76%);
+  height: 7px;
+  margin: 17px auto 0;
+  overflow: hidden;
+  border: 1px solid #bd8d5d9e;
+  border-radius: 5px;
+  background: #241916;
+  color: #e6ad6f;
+}
+.opening-load__progress::-webkit-progress-bar { background: #241916; }
+.opening-load__progress::-webkit-progress-value {
+  background: linear-gradient(90deg, #9e5833, #f0c48d);
+  border-radius: 4px;
+}
+.opening-load__progress::-moz-progress-bar {
+  background: linear-gradient(90deg, #9e5833, #f0c48d);
+  border-radius: 4px;
+}
+
 .opening-load__status { margin: 10px 0 0; font-size: 15px; line-height: 1.5; color: #e0bb96; }
 .opening-load__status:empty { display: none; }
 .opening-load__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 24px; }

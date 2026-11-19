@@ -39,15 +39,25 @@
     return layout.matches ? 'mobile' : 'desktop';
   }
 
+  function roomImages(size) {
+    const room = 'assets/scene-illustrated-v128/room-' + size;
+    return [room + '-open.webp', room + '-closed.webp'];
+  }
+
+  function announceProgress() {
+    window.dispatchEvent(new Event('alchemy:entry-progress'));
+  }
+
   function prepare() {
     if (preparedLayout === roomLayout()) return Promise.resolve(true);
     if (preparation) return preparation;
 
     const size = roomLayout();
-    const room = 'assets/scene-illustrated-v128/room-' + size;
-    preparation = Promise.all(['open', 'closed'].map(state =>
-      load(room + '-' + state + '.webp', {timeout: 12000})
-    )).then(results => {
+    preparation = Promise.all(roomImages(size).map(async source => {
+      const ready = await load(source, {timeout: 12000});
+      if (ready && size === roomLayout()) announceProgress();
+      return ready;
+    })).then(results => {
       preparation = undefined;
       if (size !== roomLayout()) return prepare();
       const ready = results.every(Boolean);
@@ -58,10 +68,15 @@
     return preparation;
   }
 
+  layout.addEventListener('change', announceProgress);
   window.AlchemyAssets = {
     load, prepare,
     getImage: src => images.get(src),
     get loadedCount() { return images.size; },
+    get entryProgress() {
+      const required = roomImages(roomLayout());
+      return required.filter(source => images.has(source)).length / required.length;
+    },
     get ready() { return preparedLayout === roomLayout(); }
   };
 })();

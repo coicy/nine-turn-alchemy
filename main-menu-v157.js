@@ -18,6 +18,7 @@
   const loadingPage = document.getElementById('openingLoad');
   const loadingTitle = document.getElementById('openingLoadTitle');
   const loadingStatus = document.getElementById('openingLoadStatus');
+  const loadingProgress = document.getElementById('openingLoadProgress');
   const loadingRetry = document.getElementById('openingLoadRetry');
   const loadingBack = document.getElementById('openingLoadBack');
   const saves = window.AlchemySaves;
@@ -170,14 +171,20 @@
     primary.focus({preventScroll:true});
   }
 
+  function updateProgress() {
+    if (loading) loadingProgress.value = window.AlchemyAssets.entryProgress;
+  }
+
   async function prepareEntry() {
     if (loading) return;
     const attempt = ++openingAttempt;
     loading = true;
     loadingPage.dataset.state = 'loading';
-    loadingTitle.textContent = '正在准备丹房…';
+    loadingTitle.textContent = '正在加载…';
     loadingStatus.textContent = '';
+    loadingProgress.hidden = false;
     loadingRetry.hidden = true;
+    updateProgress();
     setView('loading');
     loadingTitle.focus({preventScroll:true});
 
@@ -188,8 +195,9 @@
     loading = false;
     if (!ready) {
       loadingPage.dataset.state = 'failed';
-      loadingTitle.textContent = '暂时无法开张';
-      loadingStatus.textContent = '丹房素材未能载入，请重试。';
+      loadingTitle.textContent = '加载失败';
+      loadingStatus.textContent = '请重试，或返回主菜单。';
+      loadingProgress.hidden = true;
       loadingRetry.hidden = false;
       loadingRetry.focus({preventScroll:true});
       return;
@@ -223,6 +231,7 @@
     event.stopImmediatePropagation();
     void prepareEntry();
   }, true);
+  window.addEventListener('alchemy:entry-progress', updateProgress);
   loadingRetry.addEventListener('click', prepareEntry);
   loadingBack.addEventListener('click', returnToMenu);
   loadingPage.addEventListener('keydown', event => {
