@@ -5,7 +5,7 @@
  stage.append(panel,toggle);let open=true,pillKey='',lastOutcome=null,timer;
  function riskCopy(p){
   if(!p.available)return '';
-  if(p.safeRun)return `动作前炉险 ${(p.baseExplosion*100).toFixed(1)}% · 九宫步罡安全段，剩余${p.safeRefines}次 · 最终炸丹 0.0%`;
+  if(p.safeRun)return `动作前炉险 ${(p.baseExplosion*100).toFixed(1)}% · 步罡自动催炼，剩余${p.safeRefines}次 · 最终炸丹 0.0%`;
   if(p.protection)return `动作前炉险 ${(p.baseExplosion*100).toFixed(1)}% · 保护后炸丹 ${(p.outcomes.explode*100).toFixed(1)}%`;
   return '';
  }
@@ -22,7 +22,7 @@
   const risk=panel.querySelector('#refineOddsRisk');risk.textContent=riskCopy(p);risk.hidden=!risk.textContent;
   const protection=panel.querySelector('#refineOddsProtection');protection.textContent=protectionCopy(p);protection.hidden=!protection.textContent;
   toggle.textContent='展开五类概率';
-  let toggleRisk=toggle.querySelector('small');if(!toggleRisk){toggleRisk=document.createElement('small');toggle.append(toggleRisk);}toggleRisk.textContent=p.available?'炉险 '+(p.baseExplosion*100).toFixed(1)+'% · 炸丹 '+(p.outcomes.explode*100).toFixed(1)+'%'+(p.safeRun?' · 步罡余'+p.safeRefines:''):'';
+  let toggleRisk=toggle.querySelector('small');if(!toggleRisk){toggleRisk=document.createElement('small');toggle.append(toggleRisk);}toggleRisk.textContent=p.available?'炉险 '+(p.baseExplosion*100).toFixed(1)+'% · 炸丹 '+(p.outcomes.explode*100).toFixed(1)+'%'+(p.safeRun?' · 自动催炼余'+p.safeRefines:''):'';
   const narrow=innerWidth<=650,host=document.querySelector('.furnace-judgment')||(narrow?document.body:stage);for(const el of [panel,toggle]){if(el.parentElement!==host)host.append(el);el.classList.toggle('mobile-odds',narrow);}window.dispatchEvent(new Event('alchemy:ux-layout'));
  }
  toggle.onclick=()=>{open=true;update();panel.querySelector('button').focus({preventScroll:true});};panel.querySelector('header button').onclick=()=>{open=false;update();toggle.focus({preventScroll:true});};

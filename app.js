@@ -50,7 +50,7 @@
   function protectedOutcomeLabel(protection){return protection?.outcome==='damage'?'受损':'维持';}
   function riskDescription(probabilities){
     if(!probabilities.available)return '本炉已结束';
-    if(probabilities.safeRun)return `九宫步罡安全段：本次不会炸丹，剩余${probabilities.safeRefines}次`;
+    if(probabilities.safeRun)return `步罡自动催炼中，不会炸丹，还剩${probabilities.safeRefines}次`;
     if(probabilities.protection)return `${probabilities.protection.name}：抽中炸丹时转为${protectedOutcomeLabel(probabilities.protection)}`;
     return '无护丹效果，抽中炉险将炸丹';
   }
@@ -182,7 +182,7 @@
     dom.trialHint.textContent = state.roundEnded
       ? (campaign ? (activeOrder ? "本单已结清；可接下一单或回柜台收工。" : "本炉已结束，丹药已留在丹匣中。") : state.delivered >= ORDER_TARGET ? "订单完成！点击重新开始再挑战。" : "原料已用尽，订单未完成。点击重新开始再挑战。")
       : state.pillEnded ? (activeOrder ? "取一包本单药材，投入炉口开炉。" : "取一份储备药材，投入炉口开炉。") : state.pill.turn >= 100 ? "百转已成，收丹入匣即可锁定价值。" : state.pill.ritualSafe > 0
-        ? `九宫步罡安全段还剩${state.pill.ritualSafe}次，可继续安全催炼或收丹入匣。`
+        ? `正在自动催炼，还剩${state.pill.ritualSafe}次，期间不会炸丹。`
         : `动作前炉险 ${percentage(refinementProbabilities().baseExplosion)}，可继续炼化或收丹入匣。`;
     dom.pillName.textContent = `${({warm:'温性',cool:'寒性',neutral:'平性'}[state.pill.nature || activeOrder?.nature || 'neutral'])}灵丹`;
     dom.turnValue.textContent = (TURN_NAMES[state.pill.turn] || String(state.pill.turn));
@@ -193,7 +193,7 @@
     dom.pillVisual.dataset.quality = String(state.pill.quality);
     dom.pillStage.dataset.state = state.pillEnded ? state.pillEndReason : state.pill.turn >= 100 ? "complete" : "active";
     dom.pillAura.style.transform = `scale(${1 + state.pill.quality * 0.06 + state.pill.turn * 0.02})`;
-    dom.riskBadge.textContent = state.pillEnded ? (state.pillEndReason === "explode" ? "丹散炉息" : "已收丹") : state.pill.ritualSafe > 0 ? "步罡安全" : `${(TURN_NAMES[state.pill.turn] || String(state.pill.turn))}转`;
+    dom.riskBadge.textContent = state.pillEnded ? (state.pillEndReason === "explode" ? "丹散炉息" : "已收丹") : state.pill.ritualSafe > 0 ? "自动催炼" : `${(TURN_NAMES[state.pill.turn] || String(state.pill.turn))}转`;
     dom.riskBadge.className = "risk-badge";
     dom.riskDescription.textContent = state.pillEnded ? "本炉已结束" : state.pill.turn >= 100 ? "百转已成，可收丹入匣" : riskDescription(refinementProbabilities());
     const triggerStatus=document.getElementById('toolTriggerStatus');
@@ -208,7 +208,7 @@
     dom.restartButton.disabled = state.busy;
     dom.actionHint.textContent = state.pillEnded
       ? (state.roundEnded ? "本局结束，点击“重新开始”再试一次。" : "本炉已结束，点击“再开一炉”。")
-      : state.pill.turn >= 100 ? "百转成丹，点击“收丹入匣”。" : state.pill.ritualSafe > 0 ? `九宫步罡安全段还剩${state.pill.ritualSafe}次；每次仍可能受损或维持，可随时收丹入匣。` : "炉险随转数上升；收丹入匣可锁定当前价值。";
+      : state.pill.turn >= 100 ? "百转成丹，点击“收丹入匣”。" : state.pill.ritualSafe > 0 ? `正在自动催炼，还剩${state.pill.ritualSafe}次，完成后可收丹。` : "炉险随转数上升；收丹入匣可锁定当前价值。";
     if (state.pillEndReason === "waiting") {
       dom.pillName.textContent = "空炉待药";
       dom.pillValue.textContent = "—";
@@ -216,7 +216,7 @@
       dom.riskBadge.textContent = "待投药";
       dom.riskDescription.textContent = "整包投药后开始本炉";
     }
-    if (campaign && state.started && !state.busy) {
+    if (campaign && state.started && (!state.busy || state.pill.ritualSafe > 0)) {
       window.AlchemyEconomy?.ensure(campaign);
       persistProgress();
     }
@@ -234,7 +234,7 @@
     dom.logList.innerHTML=groups.length?groups.map(({entry,messages})=>'<div class="log-entry"><small>'+(entry.day===undefined?'旧炉讯 · 炉次未记录':`第${entry.day}天 · ${entry.source==='commission'?'委托':'炼丹'} · ${entry.attempt?'第'+entry.attempt+'炉':'备料'}`)+'</small>'+messages.map(e=>'<p class="'+e.tone+'">'+e.message+'</p>').join('')+'</div>').join(''):'<p>暂无本次炉讯</p>';
   }
 
-  function setFeedback(message, tone = "", event = "start", value = null) {
+  function setFeedback(message, tone = "", event = "start", value = null, autoStep = 0) {
     const titles = { "ritual-complete": "步罡已成", start: "炉火初起", big: "大成功", success: "炼化成功", hold: "火候维持", damage: "丹体受损", explode: "丹散炉息", complete: "百转成丹", collect: "收丹入匣", win: "委托已成", loss: "本局结束" };
     dom.eventTitle.textContent = titles[event] || "炉火流转";
     dom.valueChange.textContent = typeof value === "number" ? (value === 0 ? "价值持平" : `${value > 0 ? "+" : "−"}${formatNumber(Math.abs(value))}`) : value || "";
@@ -244,7 +244,7 @@
     dom.eventBanner.classList.add("flash");
     dom.pillStage.dataset.tone = tone;
     dom.pillStage.dataset.outcome = event;
-    if (typeof CustomEvent !== 'undefined') window.dispatchEvent?.(new CustomEvent('alchemy:feedback', {detail:{event,message,value,turn:state.pill.turn,quality:state.pill.quality}}));
+    if (typeof CustomEvent !== 'undefined') window.dispatchEvent?.(new CustomEvent('alchemy:feedback', {detail:{event,message,value,autoStep,turn:state.pill.turn,quality:state.pill.quality}}));
     dom.pillStage.classList.remove("is-feedback");
     void dom.pillStage.offsetWidth;
     dom.pillStage.classList.add("is-feedback");
@@ -300,6 +300,7 @@
     const before = playtestSnapshot();
     const profile = state.riskResult;
     const safeRun = state.pill.ritualSafe > 0;
+    const autoStep = safeRun ? 8 - state.pill.ritualSafe : 0;
     const explode = safeRun ? false : Math.random() < profile.explode;
     const roll = Math.random();
     const tool=campaign?.economy?.equipped;
@@ -381,15 +382,23 @@
         addLog(`<strong>${state.pill.yuanNode * 9}转归元</strong>：归元药力累计 +${formatNumber(state.pill.yuanBonus)}，收丹后计入售价。`, 'good');
       }
     }
+    if (safeRun) {
+      if (state.pill.turn >= 100) state.pill.ritualSafe = 0;
+      state.busy = state.pill.ritualSafe > 0;
+    }
     updateRecord();
-    telemetry?.record("refine_result", playtestSnapshot(), { before, outcome });
+    telemetry?.record("refine_result", playtestSnapshot(), { before, outcome, autoStep });
     if (state.roundEnded) { settleOrder(); telemetry?.finish(playtestSnapshot(), state.delivered >= ORDER_TARGET ? "win" : "loss"); }
     if (ritualDue()) beginRitual();
     decisionSince = Date.now();
     const visualOutcome = state.pill.turn >= 100 && !state.pillEnded ? "complete" : outcome;
-    setFeedback(feedback, feedbackTone, visualOutcome, outcome === "explode" ? -before.value : state.pill.value - before.value);
+    setFeedback(feedback, feedbackTone, visualOutcome, outcome === "explode" ? -before.value : state.pill.value - before.value, autoStep);
     render();
-    if(typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:refine-result',{detail:{outcome}}));
+    if(typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:refine-result',{detail:{outcome,autoStep}}));
+    if (safeRun) {
+      if (state.busy) scheduleRitualRefine();
+      else document.querySelector('.furnace-fire')?.focus?.({preventScroll:true});
+    }
   }
 
   function refine() {
@@ -504,6 +513,10 @@
     if (state && state.busy) return;
     if (saved && event?.currentTarget === dom.startButton) {
       campaign = saved.campaign; state = saved.state; state.busy = false; window.AlchemyEconomy?.settleConsignments?.(campaign); if(state.pill.toolUsed&&!state.pill.toolUses){state.pill.toolUses={};for(const id of window.AlchemyEconomy?.equippedIds(campaign.economy?.equipped)||[])if(['seal','phoenix'].includes(id))state.pill.toolUses[id]=1;}state.riskResult=randomRisk(state.pill.turn);
+      if (state.pillEnded || state.roundEnded || state.pill.turn >= 100) {
+        state.pill.ritualActive = false;
+        state.pill.ritualSafe = 0;
+      }
       const resumedOldFurnace=!state.pillEnded && campaign.economy?.rulesRevision!==164;
       migrateLoop();migrateLegacyState();ensurePricing();
       state.pill.qualityFloor=state.pill.tier===1?1:0;state.pill.quality=Math.max(state.pill.qualityFloor,qualityAtTurn(state.pill.turn));
@@ -517,7 +530,9 @@
       setFeedback(resumedOldFurnace ? "旧炉药力已保留。可立即收丹，继续炼化按当前炉险结算。" : "已回到上次停炉的位置。", "good");
       window.dispatchEvent?.(new Event("alchemy:order")); render();
       if (state.pill.ritualActive) beginRitual(true);
-      else if (ritualDue()) beginRitual();
+      else if (state.pill.ritualSafe > 0 && !state.pillEnded && !state.roundEnded && state.pill.turn < 100) {
+        startRitualRefines();
+      } else if (ritualDue()) beginRitual();
       return;
     }
     saved = null;
@@ -556,7 +571,20 @@
   dom.restartButton.addEventListener("click", startGame);
   function ritualDue() {
     const {refineSerial, ritualSafe} = state.pill;
-    return !state.pillEnded && ritualSafe === 0 && refineSerial > 0 && refineSerial % 9 === 0;
+    return !state.pillEnded && state.pill.turn < 100 && ritualSafe === 0 && refineSerial > 0 && refineSerial % 9 === 0;
+  }
+  // Each timeout settles one result. The saved remainder always describes the next turn.
+  function scheduleRitualRefine() {
+    const pill = state.pill;
+    window.setTimeout(() => {
+      if (state.pill === pill && state.busy && pill.ritualSafe > 0) resolveRefine();
+    }, 850);
+  }
+  function startRitualRefines() {
+    state.busy = true;
+    setFeedback(`自动催炼还剩${state.pill.ritualSafe}次，期间不会炸丹。`, 'good', 'ritual-complete');
+    render();
+    scheduleRitualRefine();
   }
   // Positions on the Luo Shu square, in walking order from one through nine.
   const ritualPlaces = [[50,80],[80,20],[20,50],[20,20],[50,50],[80,80],[80,50],[20,80],[50,20]];
@@ -601,9 +629,7 @@
           pill.ritualActive = false;
           pill.ritualSafe = 7;
           dom.ritualPanel.classList.add('hidden');
-          setFeedback('接下来七次催炼免炸。', 'good', 'ritual-complete');
-          render();
-          document.querySelector('.furnace-fire')?.focus?.({preventScroll:true});
+          startRitualRefines();
           return;
         }
         showStep();
