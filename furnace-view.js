@@ -279,6 +279,9 @@
   window.addEventListener('alchemy:world-layout', () => {
     if (!active() && !window.AlchemySceneContinuity) rect(resume, layout.mouth);
   });
-  new ResizeObserver(() => {if (active()) fit();}).observe(judgment);
+  new ResizeObserver(() => {
+    // Fitting also positions observed controls. Let the resize observer finish its delivery first.
+    requestAnimationFrame(() => { if (active()) fit(); });
+  }).observe(judgment);
   update();
 })();
