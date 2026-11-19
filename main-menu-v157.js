@@ -88,6 +88,7 @@
     context.textContent = '';
     status.textContent = openingRequested ? '正在准备丹房…' : statusOverride;
     primary.disabled = openingRequested;
+    primary.setAttribute('aria-busy', String(openingRequested));
     primary.classList.toggle('is-primary', state.kind === 'active' || state.kind === 'empty');
     if (state.kind === 'active') {
       label.textContent = '继续经营';
@@ -181,6 +182,7 @@
       return;
     }
     primary.disabled = true;
+    primary.setAttribute('aria-busy', 'false');
     setVisible(false);
     document.getElementById('startButton')?.click();
   }
