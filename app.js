@@ -235,7 +235,7 @@
   }
 
   function setFeedback(message, tone = "", event = "start", value = null) {
-    const titles = { start: "炉火初起", big: "大成功", success: "炼化成功", hold: "火候维持", damage: "丹体受损", explode: "丹散炉息", complete: "百转成丹", collect: "收丹入匣", win: "委托已成", loss: "本局结束" };
+    const titles = { "ritual-complete": "步罡已成", start: "炉火初起", big: "大成功", success: "炼化成功", hold: "火候维持", damage: "丹体受损", explode: "丹散炉息", complete: "百转成丹", collect: "收丹入匣", win: "委托已成", loss: "本局结束" };
     dom.eventTitle.textContent = titles[event] || "炉火流转";
     dom.valueChange.textContent = typeof value === "number" ? (value === 0 ? "价值持平" : `${value > 0 ? "+" : "−"}${formatNumber(Math.abs(value))}`) : value || "";
     dom.eventBanner.textContent = message;
@@ -559,7 +559,7 @@
     return !state.pillEnded && ritualSafe === 0 && refineSerial > 0 && refineSerial % 9 === 0;
   }
   // Positions on the Luo Shu square, in walking order from one through nine.
-  const ritualPlaces = [[50,73],[73,27],[27,50],[27,27],[50,50],[73,73],[73,50],[27,73],[50,27]];
+  const ritualPlaces = [[50,80],[80,20],[20,50],[20,20],[50,50],[80,80],[80,50],[20,80],[50,20]];
   const ritualNumbers = '一二三四五六七八九';
   function beginRitual(resume = false) {
     const ritualHost = document.querySelector('.engine-viewport');
@@ -577,7 +577,7 @@
       next.disabled = false;
       next.classList.add('active');
       next.focus?.({preventScroll:true});
-      dom.ritualStatus.textContent = `已走 ${step} / 9 宫 · 请点「${ritualNumbers[step]}」`;
+      dom.ritualStatus.textContent = `落印 ${step} / 9　·　请点「${ritualNumbers[step]}」`;
     }
     for (let index = 0; index < 9; index++) {
       const button = document.createElement('button');
@@ -595,13 +595,13 @@
         if (state.pill !== pill || state.pillEnded || !pill.ritualActive || index !== pill.ritualStep) return;
         button.disabled = true;
         button.classList.remove('active');
-        button.classList.add('done');
+        button.classList.add('done', 'just-stamped');
         pill.ritualStep++;
         if (pill.ritualStep === 9) {
           pill.ritualActive = false;
           pill.ritualSafe = 7;
           dom.ritualPanel.classList.add('hidden');
-          dom.ritualStatus.textContent = '步罡已成，安全催炼还剩7次';
+          setFeedback('接下来七次催炼免炸。', 'good', 'ritual-complete');
           render();
           document.querySelector('.furnace-fire')?.focus?.({preventScroll:true});
           return;
