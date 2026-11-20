@@ -18,6 +18,11 @@
   function clearLight(){if(lit)lit.classList.remove('object-guide-lit');lit=null;light.style.display='none';}
   function illuminate(target,kind){
     if(!['mouth','fire'].includes(kind)){lit=target.querySelector('img')||target;lit.classList.add('object-guide-lit');return;}
+    // The living fire is above the painted light; brighten the flame itself too.
+    if(kind==='fire'){
+      lit=document.getElementById('furnaceLivingFire');
+      lit?.classList.add('object-guide-lit');
+    }
     const key=(route.snapshot().workMode==='furnace'?'furnace':'room')+'-'+(innerWidth<=650?'mobile':'desktop');
     const p=window.AlchemySceneProjection?.[key];if(!p)return;
     const r=p[kind],x=r.x*p.width,y=r.y*p.height,w=r.w*p.width,h=r.h*p.height;

@@ -8,16 +8,18 @@
   let preparation;
   let preparedLayout;
 
-  function load(src, {timeout = 60000} = {}) {
+  function load(src, {timeout = 60000, priority = 'auto'} = {}) {
     if (images.has(src)) return Promise.resolve(true);
     if (pending.has(src)) return pending.get(src);
 
     const loading = new Promise(resolve => {
       const image = new Image();
+      image.fetchPriority = priority;
       function finish(ok) {
         window.clearTimeout(timer);
         image.onload = image.onerror = null;
         if (ok) images.set(src, image);
+        else image.removeAttribute('src');
         resolve(ok);
       }
       const timer = window.setTimeout(() => finish(false), timeout);
@@ -41,7 +43,7 @@
   }
 
   function roomImages(size) {
-    const room = 'assets/scene-illustrated-v128/room-' + size;
+    const room = (size === 'desktop' ? 'assets/scene-entry-v190/' : 'assets/scene-illustrated-v128/') + 'room-' + size;
     return [room + '-open.webp', room + '-closed.webp'];
   }
 
@@ -50,72 +52,35 @@
   }
 
   function entryImages(size) {
-    return size === 'desktop' ? window.AlchemyEntryImages : roomImages(size);
+    // The first visible room is the entry contract on both platforms.
+    // Customer art and later scenes already load through their own renderers.
+    return [...roomImages(size), (size === 'desktop' ? 'assets/scene-entry-v190/' : 'assets/scene-illustrated-v128/') + 'room-' + size + '-front.webp'];
   }
 
   function available(source) {
     return images.has(source) || preloaded.has(source);
   }
 
-  function preloadImage(source, signal) {
-    return new Promise(resolve => {
-      const image = new Image();
-      const timer = window.setTimeout(cancel, 25000);
-
-      function finish(ok) {
-        window.clearTimeout(timer);
-        signal.removeEventListener('abort', cancel);
-        image.onload = image.onerror = null;
-        if (ok) {
-          preloaded.add(source);
-          announceProgress();
-        } else {
-          image.removeAttribute('src');
-        }
-        resolve(ok);
-      }
-
-      function cancel() {
-        finish(false);
-      }
-
-      signal.addEventListener('abort', cancel, {once:true});
-      image.decoding = 'async';
-      image.onload = () => finish(true);
-      image.onerror = cancel;
-      image.src = source;
+  async function loadEntry(size, signal) {
+    if (signal?.aborted) return false;
+    const sources = entryImages(size);
+    const loading = Promise.all(sources.map(async source => {
+      const ready = await load(source, {timeout: 30000, priority: 'high'});
+      if (!signal?.aborted) announceProgress();
+      return ready;
+    }));
+    // Leaving the loading screen must release this attempt immediately; the
+    // shared image cache may still finish for another consumer or a retry.
+    let cancel;
+    const aborted = new Promise(resolve => {
+      cancel = () => resolve(false);
+      signal?.addEventListener('abort', cancel, {once:true});
     });
-  }
-
-  async function preloadDesktop(signal) {
-    const queue = entryImages('desktop').filter(source => !available(source));
-    const batch = new AbortController();
-    const cancel = () => batch.abort();
-    signal?.addEventListener('abort', cancel, {once:true});
-    let next = 0;
-
-    async function worker() {
-      while (!batch.signal.aborted && next < queue.length) {
-        if (!await preloadImage(queue[next++], batch.signal)) cancel();
-      }
-    }
-
     try {
-      await Promise.all(Array.from({length: Math.min(queue.length, 4)}, worker));
-      return !batch.signal.aborted;
+      return await Promise.race([loading.then(result => result.every(Boolean)), aborted]);
     } finally {
       signal?.removeEventListener('abort', cancel);
     }
-  }
-
-  async function loadEntry(size, signal) {
-    const required = await Promise.all(roomImages(size).map(async source => {
-      const ready = await load(source, {timeout: 12000});
-      if (ready) announceProgress();
-      return ready;
-    }));
-    if (signal?.aborted || !required.every(Boolean)) return false;
-    return size !== 'desktop' || size !== roomLayout() || preloadDesktop(signal);
   }
 
   function prepare(signal) {

@@ -3,7 +3,7 @@
 (() => {
   'use strict';
 
-  const directory = 'assets/scene-illustrated-v128/';
+  const directory = key => key.endsWith('desktop') ? 'assets/scene-entry-v190/' : 'assets/scene-illustrated-v128/';
   const patches = {
     'room-desktop': {
       size: [1600, 1600], feather: 4,
@@ -64,7 +64,7 @@
         }
         blur.setAttribute('stdDeviation', feather);
         footprint.setAttribute('d', lidPath + ' ' + rest);
-        painting.setAttribute('href', directory + key + '-closed.webp');
+        painting.setAttribute('href', directory(key) + key + '-closed.webp');
         currentKey = key;
       }
       if (lid !== currentLid) {
@@ -74,5 +74,5 @@
     };
   }
 
-  window.AlchemySceneLidLayer = {mount, baseImage: key => directory + key + '-open.webp'};
+  window.AlchemySceneLidLayer = {mount, baseImage: key => directory(key) + key + '-open.webp'};
 })();
