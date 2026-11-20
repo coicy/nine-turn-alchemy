@@ -5,8 +5,9 @@
     opening_room:'你把旧丹炉安放在临街的小屋。炉火点起，门外的新招牌也挂好了。',
     opening_lease:'铺钱七日一结。头回四十文，往后一百二十文，都写在铺契上。守炉归守炉，也别忘了留些周转的钱。',
     opening_customer:'{{request}}条件写在纸笺上，劳烦掌柜先看清。',
-    opening_terms:'我先核对这一单的药材、所求药力和约定工钱。成丹要先收入丹匣，再明确提交委托，才算交付。',
-    opening_fire:'{{materials}}包客料已经备好。点丹炉进入炉前，再取一包投入炉口；想收手时，就把成丹收入丹匣。委托纸笺随时可以回柜台查看。',
+    opening_terms:'药材、所求药力和工钱都对上了。这一单我接下了。',
+    opening_fire:'{{materials}}包客料已经备好。点丹炉进入炉前，再取一包投入炉口，便能开始催炼。',
+    opening_collect:'火候由你把握。想收手时，先将成丹收入丹匣；满足委托要求后，再回柜台提交。委托纸笺随时可以查看。',
     opening_question:'若这一炉没能炼成，该怎么办？',
     opening_answer:'未成丹不必赔药。别把“收丹入匣”和“提交委托”混在一起：先收好，再按这一单的要求交付。',
     opt_continue:'继续',opt_meet:'去柜台迎客',opt_terms:'先核对委托',opt_risk:'问清交付与失败',opt_fire:'携料回炉',opt_begin:'亲手开炉',
@@ -25,14 +26,15 @@
       notice:{speaker:'visitor',line:'commission_notice',scene:'orders',next:'letter',nextText:'opt_read_commission'},
       letter:{end:true,action:'letter'}
     }},
-    opening:{id:'opening',version:1,title:'丹坊开张',start:'room',kind:'opening',nodes:{
-      room:{speaker:'narrator',line:'opening_room',scene:'work',next:'lease'},
-      lease:{speaker:'landlady',line:'opening_lease',scene:'work',next:'arrival',nextText:'opt_meet'},
-      arrival:{speaker:'visitor',line:'opening_customer',scene:'orders',choices:[{id:'terms',text:'opt_terms',to:'terms'},{id:'risk',text:'opt_risk',to:'question'}]},
-      question:{speaker:'player',line:'opening_question',next:'answer'},
-      answer:{speaker:'visitor',line:'opening_answer',next:'terms'},
-      terms:{speaker:'player',line:'opening_terms',facts:true,set:{'read_terms':true},next:'fire',nextText:'opt_fire'},
-      fire:{speaker:'narrator',line:'opening_fire',scene:'work',next:'end',nextText:'opt_begin'},
+    opening:{id:'opening',version:2,title:'丹坊开张',start:'room',kind:'opening',legacySteps:['room','arrival','fire'],nodes:{
+      room:{stage:0,speaker:'narrator',line:'opening_room',scene:'work',next:'lease'},
+      lease:{stage:0,speaker:'landlady',line:'opening_lease',scene:'work',next:'arrival',nextText:'opt_meet'},
+      arrival:{stage:1,speaker:'visitor',line:'commission_notice',scene:'orders',next:'terms',nextText:'opt_terms'},
+      question:{stage:1,speaker:'player',line:'opening_question',scene:'orders',next:'answer'},
+      answer:{stage:1,speaker:'visitor',line:'opening_answer',scene:'orders',next:'fire',nextText:'opt_fire'},
+      terms:{stage:1,speaker:'player',line:'opening_terms',scene:'orders',facts:true,set:{'read_terms':true},next:'question'},
+      fire:{stage:2,speaker:'narrator',line:'opening_fire',scene:'work',next:'collect'},
+      collect:{stage:2,speaker:'narrator',line:'opening_collect',scene:'work',next:'end',nextText:'opt_begin'},
       end:{end:true,set:{openingComplete:true}}
     }},
     visitor:{id:'visitor',version:1,title:'柜前交谈',start:'greeting',kind:'visitor',nodes:{

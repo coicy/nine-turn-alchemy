@@ -9,7 +9,14 @@
     if(dialogue.pending){dialogue.resumeConversation();pending=null;return;}
     if(pending!==null&&!dialogue.flags.openingComplete){const step=pending;pending=null;dialogue.openOpening(step);}
   });
-  window.addEventListener('alchemy:dialogue-state',()=>{const p=window.AlchemyDialogue.present();if(window.AlchemyDialogue.active&&p?.graph==='opening')window.AlchemySaves.setPreference('openingStep',p.node==='room'||p.node==='lease'?0:p.node==='fire'?2:1);});
+  // The dialogue cursor owns progress; openingStep is only a legacy-save bridge.
+  window.addEventListener('alchemy:dialogue-state',()=>{
+    const dialogue=window.AlchemyDialogue,p=dialogue.present();
+    if(!dialogue.active||p?.graph!=='opening')return;
+    const stage=window.AlchemyDialogueContent.graphs.opening.nodes[p.node].stage;
+    if(Number.isInteger(stage)&&window.AlchemySaves.preference('openingStep')!==stage)
+      window.AlchemySaves.setPreference('openingStep',stage);
+  });
   window.addEventListener('alchemy:dialogue-ended',e=>{if(e.detail.graph!=='opening')return;
     window.AlchemySaves.setPreference('openingStep',3);
     window.AlchemyViewState.navigate('work',{internal:true,workMode:'room'});
