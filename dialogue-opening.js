@@ -19,7 +19,7 @@
   });
   window.addEventListener('alchemy:dialogue-ended',e=>{if(e.detail.graph!=='opening')return;
     window.AlchemySaves.setPreference('openingStep',3);
-    window.AlchemyViewState.navigate('work',{internal:true,workMode:'room'});
+    window.AlchemyViewState.navigate('work',{internal:true,workMode:e.detail.skipped?'room':'furnace'});
     window.dispatchEvent(new Event('alchemy:opening-finished'));
     requestAnimationFrame(()=>document.querySelector('.furnace-resume')?.focus({preventScroll:true}));
   });

@@ -39,7 +39,10 @@
   function facts(p){const el=$('dialogueFacts');el.hidden=!p.facts;el.replaceChildren();if(p.facts)for(const [label,value]of [['药材',p.context.materials+'包 · '+p.context.nature],['所求药力',p.context.target],['约定工钱',p.context.fee+'文']]){const item=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;item.append(dt,dd);el.append(item);}}
   function render(){
     const p=runtime.present();if(!p)return;
-    if(p.scene&&window.AlchemyViewState.snapshot().current!==p.scene)window.AlchemyViewState.navigate(p.scene,{internal:true});
+    const node=content.graphs[p.graph].nodes[p.node],scene=window.AlchemyViewState.snapshot();
+    root.dataset.openingShot=p.graph==='opening'?(node.shot||''):'';
+    if(p.scene&&(scene.current!==p.scene||(node.workMode&&scene.workMode!==node.workMode)))
+      window.AlchemyViewState.navigate(p.scene,{internal:true,...(node.workMode?{workMode:node.workMode}:{})});
     const changed=token!==p.token;current=p;
     if(!changed){$('dialogueSpeed').value=runtime.settings.speed;$('dialogueDelay').value=runtime.settings.autoDelay;return;}
     clearTimers();setView('conversation');token=p.token;chars=0;$('dialogueStatus').textContent=runtime.error;
