@@ -21,7 +21,7 @@
   window.AlchemyDialogue=runtime;
   function show(){if(!root.open){returnFocus=document.activeElement;root.showModal();setView('conversation');}}
   function restoreFocus(){if(returnFocus?.isConnected&&!returnFocus.inert&&returnFocus.getClientRects().length)returnFocus.focus({preventScroll:true});else document.querySelector('.world-location-toggle')?.focus({preventScroll:true});}
-  function setView(next){view=next;root.querySelectorAll('[data-dialogue-view]').forEach(el=>{el.hidden=el.dataset.dialogueView!==next;});if(next!=='conversation')pause();}
+  function setView(next){view=next;root.dataset.view=next;root.querySelectorAll('[data-dialogue-view]').forEach(el=>{el.hidden=el.dataset.dialogueView!==next;});if(next!=='conversation')pause();}
   function updatePortrait(p){const el=root.querySelector('.dialogue-portrait');el.style.backgroundImage='none';el.querySelector('span').textContent=p.speaker.seal||'客';el.dataset.art='seal';
     if(p.speaker===undefined)return;
     if(content.graphs[p.graph].nodes[p.node].speaker==='visitor'){
@@ -30,7 +30,11 @@
     }
   }
   function paintChoices(){const host=$('dialogueChoices');host.replaceChildren();for(const [i,c]of current.choices.entries()){
-    const b=document.createElement('button');b.type='button';b.dataset.dialogueChoice=c.id;b.disabled=!c.enabled;b.textContent=(i+1)+'  '+c.text+(c.enabled?'':' · '+c.reason);b.onclick=()=>{if(!readyInput())return;pause();runtime.choose(c.id,current.token);};host.append(b);
+    const b=document.createElement('button');b.type='button';b.dataset.dialogueChoice=c.id;b.disabled=!c.enabled;
+    const label=document.createElement('span');label.textContent=c.text;b.append(label);
+    if(!c.enabled){const reason=document.createElement('small');reason.className='dialogue-choice-reason';reason.textContent=c.reason;b.append(reason);}
+    const key=document.createElement('kbd');key.className='dialogue-choice-key';key.textContent=String(i+1);key.setAttribute('aria-hidden','true');b.append(key);b.setAttribute('aria-keyshortcuts',String(i+1));
+    b.onclick=()=>{if(!readyInput())return;pause();runtime.choose(c.id,current.token);};host.append(b);
   }host.hidden=!!current.choices.length&&!runtime.present()?.read;$('dialogueNext').hidden=!!current.choices.length;}
   function facts(p){const el=$('dialogueFacts');el.hidden=!p.facts;el.replaceChildren();if(p.facts)for(const [label,value]of [['药材',p.context.materials+'包 · '+p.context.nature],['所求药力',p.context.target],['约定工钱',p.context.fee+'文']]){const item=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;item.append(dt,dd);el.append(item);}}
   function render(){
@@ -99,4 +103,6 @@
   const end=document.createElement('button');end.type='button';end.textContent='结束本段交谈';end.title='结束本次交谈，下次从开头开始';end.disabled=!runtime.pending;end.onclick=()=>runtime.end(false);root.querySelector('[data-dialogue-view="settings"]').append(end);
   window.addEventListener('alchemy:dialogue-state',()=>{end.hidden=current?.kind==='opening';end.disabled=!runtime.pending;});
   if(runtime.error)$('dialogueStatus').textContent=runtime.error;updateEntry();
+  function fitLayout(){const box=root.querySelector('.dialogue-main');root.style.setProperty('--dialogue-box-height',box.offsetHeight+'px');}
+  new ResizeObserver(fitLayout).observe(root.querySelector('.dialogue-main'));window.addEventListener('resize',fitLayout);
 })();
