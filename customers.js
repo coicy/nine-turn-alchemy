@@ -9,7 +9,7 @@
   case 'pending':return p.request+`这${order.materials}包药材，炼到药力${order.target}便好。`;
   case 'active':return '我在柜边候着，掌柜照常守炉便好。';
   case 'completed':return order.gifted>0?'丹药收到了，多谢掌柜。未用的药材便留给你吧。':'丹药收到了，多谢掌柜，这一单辛苦了。';
-  case 'failed':return '这一炉没能如愿，也不必赔药。成丹与余料我领回了，改日再来。';
+  case 'failed':return '这回没能凑齐，也不必赔药。改日再来。';
   default:return '今日未能托付，改日再来。';
  }}
  function waiting(orders,selectedId,limit=2){const selected=orders.find(o=>o.id===selectedId),used=new Set();if(selected&&!visit(selected).away)used.add(profile(selected).appearanceId);const result=[];for(const o of orders){const id=profile(o).appearanceId;if(o.id===selectedId||o.status!=='pending'||!id||used.has(id))continue;used.add(id);result.push(o);if(result.length>=limit)break;}return result;}
