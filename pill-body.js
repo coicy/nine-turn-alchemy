@@ -67,15 +67,20 @@
   const image=p=>make(p).url;
   let current=null,previous=null,feedback=null;
   function draw(ctx,x,y,size,p){
-    const rendered=make(p),d=rendered.description;ctx.drawImage(rendered.canvas,x,y,size,size);
+    const rendered=make(p),d=rendered.description;
+    const motion=window.AlchemyGameFeel?.sample();
+    ctx.save();
+    if(motion){ctx.translate(x+size/2,y+size/2+motion.lift*size);ctx.scale(motion.sx,motion.sy);ctx.translate(-x-size/2,-y-size/2);}
+    ctx.drawImage(rendered.canvas,x,y,size,size);
     const elapsed=feedback&&performance.now()-feedback.start;
-    const animating=!!(feedback&&feedback.key===d.key&&elapsed<650&&!matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const animating=!!(feedback&&feedback.key===d.key&&elapsed<650&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!window.AlchemyGameFeel?.reduced);
     if(animating){
       const t=elapsed/650;ctx.save();ctx.translate(x,y);ctx.scale(size/SIZE,size/SIZE);ctx.beginPath();ctx.arc(128,128,124,0,Math.PI*2);ctx.clip();ctx.globalAlpha=Math.sin(t*Math.PI)*.5;
       if(feedback.outcome==='damage'){ctx.fillStyle='#23180e';ctx.fillRect(0,0,SIZE,SIZE);}
       ctx.restore();
     }
-    return {...d,animating};
+    ctx.restore();
+    return {...d,animating:animating||!!motion};
   }
   function selection(nature,quality){return {body:image({nature,quality,turn:60}),cracks:[],q:describe({quality}).quality};}
   function hydrate(scope=document){scope.querySelectorAll('[data-pill-art-state]').forEach(el=>{const p=JSON.parse(el.dataset.pillArtState);el.querySelector('img').src=image(p);el.dataset.pillArtKey=describe(p).key;});}

@@ -34,7 +34,7 @@
   function start(kind) {
     stop();
     fit();
-    if (reduced.matches || AlchemyViewState.snapshot().current !== 'work') return;
+    if (reduced.matches || window.AlchemyGameFeel?.reduced || AlchemyViewState.snapshot().current !== 'work') return;
     phase = {kind, start:performance.now(), duration:durations[kind]};
     serial++;
     raf = requestAnimationFrame(draw);
@@ -118,7 +118,7 @@
 
   function draw(now) {
     if (!phase) return;
-    if (document.hidden) { stop(); return; }
+    if (document.hidden || window.AlchemyGameFeel?.reduced) { stop(); return; }
     frames++;
     ctx.clearRect(0,0,canvas.width,canvas.height);
     const progress = Math.min(1,(now-phase.start)/phase.duration);
