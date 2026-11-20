@@ -52,7 +52,7 @@
   function continueTyping(){if(!runtime.present()?.read){if(media.matches||runtime.settings.speed===0)reveal();else type();}}
   function reveal(){clearTimeout(typingTimer);if(!current)return;$('dialogueText').textContent=current.text;chars=Array.from(current.text).length;
     if(!runtime.markRead()){$('dialogueStatus').textContent=runtime.error;$('dialogueNext').disabled=false;return;}
-    current=runtime.present();$('dialogueChoices').hidden=false;$('dialogueNext').disabled=!!current.choices.length;
+    current=runtime.present();$('dialogueStatus').textContent=runtime.error;$('dialogueChoices').hidden=false;$('dialogueNext').disabled=!!current.choices.length;
     $('dialogueAdvance').setAttribute('aria-label',current.choices.length?'请选择回应':'下一句');$('dialogueProgress').textContent=current.choices.length?'请选择回应':'点击继续';scheduleAuto();
   }
   function scheduleAuto(){clearTimeout(autoTimer);if(!runtime.active||view!=='conversation'||current.choices.length)return;
