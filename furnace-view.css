@@ -134,11 +134,13 @@ body.object-world .furnace-judgment .odds-rules { display:none; }
 body.object-world .furnace-judgment .refine-odds-toggle { text-align:left; min-height:44px; }
 .furnace-judgment .refine-odds-toggle small { display:block; font-size:12px; }
 body[data-work-mode=furnace] #workInstruction { left:auto!important; right:2%!important; top:70%!important; bottom:auto!important; width:35%; }
-.furnace-action-cue { position:absolute; box-sizing:border-box; z-index:19; pointer-events:none; outline:2px solid #ebca83; outline-offset:2px; border-radius:5px; background:#e9ce7420; }
-.furnace-action-cue[hidden] { display:none!important; }
+.furnace-object-light {position:absolute;left:0;top:var(--scene-image-top);width:var(--room-base-width);height:var(--room-base-height);z-index:13;pointer-events:none;filter:brightness(1.9) saturate(1.18);opacity:.55}
+.object-guide-lit {filter:brightness(1.15) drop-shadow(0 0 5px #efbc64)}
 @media(prefers-reduced-motion:no-preference) {
-  .furnace-action-cue:not([hidden]) {animation:furnace-guide-breathe 1.6s ease-in-out infinite}
-  @keyframes furnace-guide-breathe {50%{transform:scale(1.06);box-shadow:0 0 13px #e6ac5780}}
+  body:not(.reduced-feedback) .furnace-object-light {animation:furnace-object-breathe 2s ease-in-out infinite}
+  body:not(.reduced-feedback) .object-guide-lit {animation:furnace-control-breathe 2s ease-in-out infinite}
+  @keyframes furnace-object-breathe {0%,100%{opacity:.2}50%{opacity:.85}}
+  @keyframes furnace-control-breathe {0%,100%{filter:brightness(1.05) drop-shadow(0 0 2px #efbc6460)}50%{filter:brightness(1.3) drop-shadow(0 0 8px #efbc64)}}
 }
 @media(max-width:650px) {
   body[data-work-mode=furnace] .furnace-heading { flex-wrap:nowrap; }
