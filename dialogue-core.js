@@ -20,6 +20,8 @@
         if(n.scene&&!['work','orders'].includes(n.scene))errors.push(id+'/'+nid+': unknown scene');
       }
       const reached=new Set(),walk=n=>{if(reached.has(n)||!g.nodes[n])return;reached.add(n);const node=g.nodes[n];if(node.next)walk(node.next);for(const c of node.choices||[])walk(c.to);};walk(g.start);
+      // Historical cursor entrances are valid but are not part of a new conversation.
+      for(const nid of g.legacyStarts||[]){if(!g.nodes[nid])errors.push(id+': missing legacy start '+nid);else walk(nid);}
       for(const nid of Object.keys(g.nodes||{}))if(!reached.has(nid))errors.push(id+'/'+nid+': unreachable');
     }return errors;
   }
