@@ -2,8 +2,18 @@
   'use strict';
   const content=window.AlchemyDialogueContent,media=matchMedia('(prefers-reduced-motion: reduce)');
   const root=document.createElement('dialog');root.id='gameDialogue';root.className='game-dialogue';root.setAttribute('aria-label','角色对话');
-  root.innerHTML=`<section data-dialogue-view="conversation"><div class="dialogue-main"><div class="dialogue-portrait" aria-hidden="true"><span></span></div><div class="dialogue-copy"><header><strong id="dialogueSpeaker"></strong><span id="dialogueRole"></span><small id="dialogueTitle"></small></header><p id="dialogueAccessible" class="dialogue-sr" aria-live="polite"></p><button type="button" id="dialogueAdvance" aria-label="显示完整对白"><span id="dialogueText" aria-hidden="true"></span><i aria-hidden="true">▾</i></button><dl id="dialogueFacts" hidden></dl><div id="dialogueChoices" aria-label="选择回应"></div></div></div><footer><span id="dialogueProgress"></span><button type="button" id="dialogueAuto" aria-pressed="false">自动</button><button type="button" id="dialogueSkip" aria-pressed="false">已读快进</button><button type="button" data-dialogue-history>回看</button><button type="button" data-dialogue-settings>设置</button><button type="button" id="dialogueLeave">暂别</button><button type="button" id="dialogueNext" class="dialogue-primary">继续</button></footer></section><section data-dialogue-view="history" hidden><header class="dialogue-subhead"><h2>交谈回看</h2><button type="button" data-dialogue-back>返回</button></header><div id="dialogueHistory" tabindex="0"></div><small>仅回看已出现的对白，不会重放选择或交易。</small></section><section data-dialogue-view="settings" hidden><header class="dialogue-subhead"><h2>对话设置</h2><button type="button" data-dialogue-back>返回</button></header><label>文字显示<select id="dialogueSpeed"><option value="55">慢速</option><option value="32">标准</option><option value="18">快速</option><option value="0">立即显示</option></select></label><label>自动阅读停留<select id="dialogueDelay"><option value="800">较短</option><option value="1200">标准</option><option value="2000">较长</option></select></label><p>点击文字或按空格先显示整句，再次操作才进入下一句。分支选择不会自动代选。系统减少动态时直接显示整句。</p></section><section data-dialogue-view="confirm" hidden><h2>跳过开场？</h2><p>将直接开始经营。未读对白不会标记为已读，也不会替你作出交易选择。</p><button type="button" id="dialogueKeep">继续阅读</button><button type="button" id="dialogueConfirmSkip" class="dialogue-primary">跳过开场</button></section><p id="dialogueStatus" role="status"></p>`;
+  root.innerHTML=`<section data-dialogue-view="conversation"><div class="dialogue-main"><div class="dialogue-portrait" aria-hidden="true"><span></span></div><div class="dialogue-copy"><header><strong id="dialogueSpeaker"></strong><span id="dialogueRole"></span><small id="dialogueTitle"></small></header><p id="dialogueAccessible" class="dialogue-sr" aria-live="polite"></p><button type="button" id="dialogueAdvance" aria-label="显示完整对白"><span id="dialogueText" aria-hidden="true"></span><i aria-hidden="true">▾</i></button><dl id="dialogueFacts" hidden></dl><div id="dialogueChoices" aria-label="选择回应"></div></div></div><footer><span id="dialogueProgress"></span><button type="button" id="dialogueAuto" aria-pressed="false">自动</button><button type="button" id="dialogueSkip" aria-pressed="false">已读快进</button><button type="button" data-dialogue-history>回看</button><button type="button" data-dialogue-settings>设置</button><button type="button" id="dialogueLeave">暂别</button><button type="button" id="dialogueNext" class="dialogue-primary">继续</button></footer></section><section data-dialogue-view="history" hidden><header class="dialogue-subhead"><h2>交谈回看</h2><button type="button" data-dialogue-back>返回</button></header><div id="dialogueHistory" tabindex="0"></div><small>仅回看已出现的对白，不会重放选择或交易。</small></section><section data-dialogue-view="settings" hidden><header class="dialogue-subhead"><h2>对话设置</h2><button type="button" data-dialogue-back>返回</button></header><label>文字显示<select id="dialogueSpeed"><option value="55">慢速</option><option value="32">标准</option><option value="18">快速</option><option value="0">立即显示</option></select></label><label>自动阅读停留<select id="dialogueDelay"><option value="800">较短</option><option value="1200">标准</option><option value="2000">较长</option></select></label><p>点击文字或按空格先显示整句，再次操作才进入下一句。分支选择不会自动代选。系统减少动态时直接显示整句。</p></section><section data-dialogue-view="confirm" hidden><h2>跳过开场？</h2><p>将直接开始经营，未读对白不计为已读。</p><button type="button" id="dialogueKeep">继续阅读</button><button type="button" id="dialogueConfirmSkip" class="dialogue-primary">跳过开场</button></section><p id="dialogueStatus" role="status"></p>`;
   document.body.append(root);const $=id=>document.getElementById(id);
+  const readingTools=document.createElement('div');readingTools.id='dialogueReadingTools';readingTools.hidden=true;
+  root.querySelector('[data-dialogue-view="settings"]').append(readingTools);
+  function placeReadingTools(opening){
+    const footer=root.querySelector('footer'),anchor=footer.querySelector('[data-dialogue-history]');
+    for(const id of ['dialogueAuto','dialogueSkip']){
+      const button=$(id),host=opening?readingTools:footer;
+      if(button.parentElement!==host){if(opening)host.append(button);else host.insertBefore(button,anchor);}
+    }
+    readingTools.hidden=!opening;
+  }
   let runtime,view='conversation',current=null,token=null,chars=0,typingTimer=null,autoTimer=null,automatic=false,skipping=false,returnFocus=null,lastInput=0;
   const clearTimers=()=>{clearTimeout(typingTimer);clearTimeout(autoTimer);typingTimer=autoTimer=null;};
   function modes(){ $('dialogueAuto').setAttribute('aria-pressed',String(automatic));$('dialogueAuto').textContent=automatic?'自动：开':'自动';$('dialogueSkip').setAttribute('aria-pressed',String(skipping)); }
@@ -40,6 +50,7 @@
   function render(){
     const p=runtime.present();if(!p)return;
     const node=content.graphs[p.graph].nodes[p.node],scene=window.AlchemyViewState.snapshot();
+    root.dataset.kind=p.kind;placeReadingTools(p.kind==='opening');
     root.dataset.openingShot=p.graph==='opening'?(node.shot||''):'';
     if(p.scene&&(scene.current!==p.scene||(node.workMode&&scene.workMode!==node.workMode)))
       window.AlchemyViewState.navigate(p.scene,{internal:true,...(node.workMode?{workMode:node.workMode}:{})});
@@ -48,15 +59,15 @@
     clearTimers();setView('conversation');token=p.token;chars=0;$('dialogueStatus').textContent=runtime.error;
     $('dialogueSpeaker').textContent=p.speaker.name;$('dialogueRole').textContent=p.speaker.role||'';$('dialogueTitle').textContent=p.title;updatePortrait(p);facts(p);
     $('dialogueAccessible').textContent=p.speaker.name+'：'+p.text;$('dialogueText').textContent='';
-    $('dialogueLeave').textContent=p.kind==='opening'?'跳过开场':p.kind==='commission'?'离开':'暂别';$('dialogueLeave').title=p.kind==='opening'?'确认后跳过开场':p.kind==='commission'?'回到柜台':'保留当前句，稍后继续';$('dialogueNext').textContent=p.nextText;
-    $('dialogueSkip').disabled=!p.wasSeen;paintChoices();$('dialogueNext').disabled=true;
+    $('dialogueLeave').textContent=p.kind==='opening'?'跳过开场':p.kind==='commission'?'离开':'暂别';$('dialogueLeave').title=p.kind==='opening'?'确认后跳过开场':p.kind==='commission'?'回到柜台':'保留当前句，稍后继续';$('dialogueNext').textContent=p.kind==='opening'?(node.next==='end'?'开始经营':'继续'):p.nextText;
+    $('dialogueSkip').disabled=!p.wasSeen;$('dialogueSkip').hidden=p.kind==='opening'&&!p.wasSeen;paintChoices();$('dialogueNext').disabled=true;
     $('dialogueAdvance').setAttribute('aria-label','显示完整对白');$('dialogueProgress').textContent='';
     modes();if(skipping&&!p.wasSeen){skipping=false;modes();$('dialogueStatus').textContent='来到未读对白，快进已停止。';}
     if(p.read||media.matches||runtime.settings.speed===0||skipping)reveal();else type();
     requestAnimationFrame(()=>$('dialogueAdvance').focus({preventScroll:true}));
   }
   function type(){if(!runtime.active||view!=='conversation')return;const points=Array.from(current.text);chars=Math.min(points.length,chars+1);$('dialogueText').textContent=points.slice(0,chars).join('');if(chars===points.length)reveal();else typingTimer=setTimeout(type,runtime.settings.speed);}
-  function continueTyping(){if(!runtime.present()?.read){if(media.matches||runtime.settings.speed===0)reveal();else type();}}
+  function continueTyping(){if(!runtime.present()?.read){if(media.matches||runtime.settings.speed===0)reveal();else type();}else scheduleAuto();}
   function reveal(){clearTimeout(typingTimer);if(!current)return;$('dialogueText').textContent=current.text;chars=Array.from(current.text).length;
     if(!runtime.markRead()){$('dialogueStatus').textContent=runtime.error;$('dialogueNext').disabled=false;return;}
     current=runtime.present();$('dialogueStatus').textContent=runtime.error;$('dialogueChoices').hidden=false;$('dialogueNext').disabled=!!current.choices.length;
@@ -73,11 +84,12 @@
   $('dialogueSkip').onclick=()=>{if(!current?.wasSeen)return;skipping=!skipping;automatic=false;modes();if(skipping)reveal();else clearTimeout(autoTimer);};
   function leave(){if(current?.kind==='opening')setView('confirm');else if(current?.kind==='commission'){if(!runtime.end(false))runtime.suspend();}else runtime.suspend();}
   $('dialogueLeave').onclick=leave;
-  $('dialogueKeep').onclick=()=>{setView('conversation');continueTyping();};$('dialogueConfirmSkip').onclick=()=>runtime.end(true);
+  function resumeReading(){setView('conversation');continueTyping();$('dialogueAdvance').focus({preventScroll:true});}
+  $('dialogueKeep').onclick=resumeReading;$('dialogueConfirmSkip').onclick=()=>runtime.end(true);
   function history(){pause();clearTimeout(typingTimer);if(!root.open){returnFocus=document.activeElement;root.showModal();}setView('history');const el=$('dialogueHistory');el.replaceChildren();for(const row of runtime.history){const entry=document.createElement('article'),name=document.createElement('strong'),line=document.createElement('p');name.textContent=row.speaker+' · 第'+row.day+'日';line.textContent=row.text;entry.dataset.kind=row.kind;entry.append(name,line);el.append(entry);}if(!el.childElementCount)el.textContent='还没有交谈记录。';el.scrollTop=el.scrollHeight;requestAnimationFrame(()=>root.querySelector('[data-dialogue-view="history"] [data-dialogue-back]').focus());}
   function settings(){pause();clearTimeout(typingTimer);if(!root.open){returnFocus=document.activeElement;root.showModal();}setView('settings');$('dialogueSpeed').value=runtime.settings.speed;$('dialogueDelay').value=runtime.settings.autoDelay;}
   root.querySelectorAll('[data-dialogue-history]').forEach(b=>b.onclick=history);root.querySelectorAll('[data-dialogue-settings]').forEach(b=>b.onclick=settings);
-  root.querySelectorAll('[data-dialogue-back]').forEach(b=>b.onclick=()=>{if(runtime.active){setView('conversation');continueTyping();}else{root.close();restoreFocus();}});
+  root.querySelectorAll('[data-dialogue-back]').forEach(b=>b.onclick=()=>{if(runtime.active)resumeReading();else{root.close();restoreFocus();}});
   $('dialogueSpeed').onchange=()=>runtime.setSettings({speed:Number($('dialogueSpeed').value)});$('dialogueDelay').onchange=()=>runtime.setSettings({autoDelay:Number($('dialogueDelay').value)});
   root.addEventListener('cancel',e=>{e.preventDefault();if(view!=='conversation'){root.querySelector(`[data-dialogue-view="${view}"] [data-dialogue-back]`)?.click();if(view==='confirm')$('dialogueKeep').click();}else if(runtime.active)leave();else root.close();});
   document.addEventListener('keydown',e=>{if(!root.open||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;

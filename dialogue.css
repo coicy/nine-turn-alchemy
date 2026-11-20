@@ -74,3 +74,7 @@ body:has(#gameDialogue[open][data-opening-shot=customer]) .counter-waiting{visib
 
 /* A modal owns input; the painted furnace remains, its unavailable action does not. */
 body:has(#gameDialogue[open]) .furnace-resume {visibility:hidden!important}
+
+/* Opening-only subtraction: one progression cue, reading modes on demand. */
+#gameDialogue[data-kind=opening] #dialogueAdvance i {display:none}
+#gameDialogue #dialogueReadingTools {display:flex;flex-wrap:wrap;gap:12px;margin:16px 0 4px}
