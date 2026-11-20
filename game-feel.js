@@ -7,7 +7,7 @@
     big: {duration:510, amount:.13, lift:.065},
     complete: {duration:600, amount:.15, lift:.08},
     damage: {duration:380, amount:-.09, lift:0},
-    hold: {duration:280, amount:.03, lift:.01},
+    hold: {duration:280, amount:0, lift:0},
     explode: {duration:640, amount:-.18, lift:-.02}
   });
   let quiet = false, impulse = null, flight = null, landing = null, serial = 0;

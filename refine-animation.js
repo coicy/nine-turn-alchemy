@@ -34,6 +34,7 @@
   function start(kind) {
     stop();
     fit();
+    if(window.AlchemyRefinePerformance?.owns(kind))return;
     if (reduced.matches || window.AlchemyGameFeel?.reduced || AlchemyViewState.snapshot().current !== 'work') return;
     phase = {kind, start:performance.now(), duration:durations[kind]};
     serial++;
