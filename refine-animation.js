@@ -132,7 +132,7 @@
     const kind = phase.kind;
     ctx.save();
     if (kind === 'fan') {
-      fire(progress,layout);
+      if (!window.AlchemyFurnaceFire) fire(progress,layout);
     } else if (kind === 'explode' || kind === 'damage') {
       const power = kind === 'explode' ? 1.8 : 1;
       const smokeY = kind === 'explode' ? mouth.y+mouth.h*.75 : y;
