@@ -49,6 +49,7 @@
     e.coins -= quote.payment;
     e.spent += quote.payment;
     E.recordCash(campaign,"铺租",e.coins+quote.payment,campaign.day);
+    root.AlchemyGameFeel?.emit('rent-paid',{day:campaign.day,payment:quote.payment,remaining:quote.remaining,tier:'medium'});
     return quote;
   }
 
@@ -74,6 +75,7 @@
     e.pills.splice(e.pills.indexOf(quote.pill), 1);
     campaign.lease.purchase = {id, day:campaign.day, value:quote.pill.value, payout:quote.payout};
     E.credit(campaign, quote.payout, '药铺收购',id);
+    root.AlchemyGameFeel?.emit('sell',{kind:'pharmacy',id,value:quote.payout,tier:'large'});
     return true;
   }
 

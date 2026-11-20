@@ -75,11 +75,13 @@
   }
 
   function endStroke() {
+    const finishedStep = pill.ritualStep;
     pill.ritualStep++;
     pill.ritualInk.cursor = 0;
     waitingForLift = pointer!==null || !!keyTimer;
     clearInterval(keyTimer);
     keyTimer = 0;
+    window.AlchemyGameFeel?.emit('stroke', {step:finishedStep+1, total:guides.length, tier:'small'});
     if (pill.ritualStep === guides.length) {
       pointer=null;waitingForLift=false;paint();finish();
     } else {
@@ -156,6 +158,7 @@
     begin(p,persist,onFinish) {
       pointer=null;clearInterval(keyTimer);keyTimer=0;waitingForLift=false;
       save=persist;finish=onFinish;
+      window.AlchemyGameFeel?.emit('ritual-start', {resume:!!p.ritualInk, tier:'large'});
       prepare(p,false);
       paper.disabled=false;
       paint();
@@ -165,6 +168,7 @@
       prepare(p,true);
       paper.disabled=true;
       window.AlchemyFeedback?.setRitualGuide('');
+      window.AlchemyGameFeel?.emit('ritual-sealed', {tier:'large'});
       paint();
     }
   };

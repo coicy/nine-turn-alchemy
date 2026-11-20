@@ -244,7 +244,8 @@
     dom.eventBanner.classList.add("flash");
     dom.pillStage.dataset.tone = tone;
     dom.pillStage.dataset.outcome = event;
-    if (typeof CustomEvent !== 'undefined') window.dispatchEvent?.(new CustomEvent('alchemy:feedback', {detail:{event,message,value,autoStep,turn:state.pill.turn,quality:state.pill.quality}}));
+    const detail={event,message,value,autoStep,turn:state.pill.turn,quality:state.pill.quality,pillId:state.pill.id||null};
+    if (typeof CustomEvent !== 'undefined') window.dispatchEvent?.(new CustomEvent('alchemy:feedback', {detail}));
     dom.pillStage.classList.remove("is-feedback");
     void dom.pillStage.offsetWidth;
     dom.pillStage.classList.add("is-feedback");
@@ -309,6 +310,7 @@
     if (safeRun) state.pill.ritualSafe--;
     const protection=explosionProtection();
     const protectedByTool=explode&&!!protection;
+    if (protectedByTool) window.AlchemyGameFeel?.emit('protection', {source:protection.source, outcome:protection.outcome, tier:'large'});
     if(explode&&protection){
       outcome=protection.outcome;
       if(protection.source==='seal'){useTool('seal');triggerLog('镇炉印挡下炸炉，改为丹体受损。','good');}
@@ -380,6 +382,7 @@
         state.pill.yuanPool = 0;
         state.pill.yuanNode = (state.pill.yuanNode ?? 0) + 1;
         addLog(`<strong>${state.pill.yuanNode * 9}转归元</strong>：归元药力累计 +${formatNumber(state.pill.yuanBonus)}，收丹后计入售价。`, 'good');
+        window.AlchemyGameFeel?.emit('yuan', {node:state.pill.yuanNode, value:state.pill.yuanBonus, tier:'large'});
       }
     }
     if (safeRun) {
@@ -392,6 +395,8 @@
     if (ritualDue()) beginRitual();
     decisionSince = Date.now();
     const visualOutcome = state.pill.turn >= 100 && !state.pillEnded ? "complete" : outcome;
+    if (autoStep) window.AlchemyGameFeel?.emit('auto', {step:autoStep, outcome:visualOutcome, remaining:state.pill.ritualSafe, tier:'medium'});
+    window.AlchemyGameFeel?.emit('refine', {outcome:visualOutcome, tier:visualOutcome==='explode'||visualOutcome==='complete'?'large':'medium'});
     setFeedback(feedback, feedbackTone, visualOutcome, outcome === "explode" ? -before.value : state.pill.value - before.value, autoStep);
     render();
     if(typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:refine-result',{detail:{outcome,autoStep}}));
@@ -489,6 +494,7 @@
     setFeedback(quote.complete?'委托已成，工钱已结。':economy.last,'good',quote.complete?'win':'submit');
     render();
     window.dispatchEvent(new CustomEvent('alchemy:inventory-action',{detail:{kind:'submit',id,complete:quote.complete}}));
+    window.AlchemyGameFeel?.emit(quote.complete?'win':'submit',{kind:'submit',id,complete:quote.complete,tier:quote.complete?'large':'medium'});
     return true;
   }
   function startNewPill() {
@@ -506,6 +512,7 @@
     telemetry?.record("pill_start", playtestSnapshot());
     addLog(`<strong>再开一炉</strong>：第 ${state.attempt} 颗丹药开始炼化。`, "good");
     setFeedback("炉火重新点燃。", "good");
+    window.AlchemyGameFeel?.emit('furnace-start', {pillId:state.pill.id, tier:'medium'});
     render();
   }
 
@@ -583,6 +590,7 @@
   function startRitualRefines() {
     mountRitual();
     window.AlchemyRitualBrush.seal(state.pill);
+    window.AlchemyGameFeel?.emit('ritual-sealed', {tier:'large'});
     dom.ritualPanel.classList.add('hidden');
     state.busy = true;
     setFeedback(`自动催炼还剩${state.pill.ritualSafe}次，期间不会炸丹。`, 'good', 'ritual-complete');
@@ -591,12 +599,19 @@
   }
   function mountRitual() {
     const host = document.querySelector('.engine-viewport');
-    if (host && dom.ritualPanel.parentElement !== host) host.append(dom.ritualPanel);
+    if (host && dom.ritualPanel.parentElement !== host && typeof host.append === 'function') host.append(dom.ritualPanel);
   }
 
   function beginRitual(resume = false) {
     const pill = state.pill;
     mountRitual();
+    window.AlchemyGameFeel?.emit('ritual', {resume, tier:'large'});
+    if (!window.AlchemyRitualBrush?.begin) {
+      // Logic-only harnesses do not mount the brush UI; keep the simulation testable.
+      pill.ritualActive = false;
+      pill.ritualSafe = 0;
+      return;
+    }
     pill.ritualActive = true;
     if (!resume) {
       delete pill.ritualInk;
@@ -607,6 +622,7 @@
       if (state.pill !== pill || !pill.ritualActive || state.pillEnded) return;
       pill.ritualActive = false;
       pill.ritualSafe = 7;
+      window.AlchemyGameFeel?.emit('ritual-complete', {tier:'large'});
       startRitualRefines();
     });
     render();
@@ -617,7 +633,7 @@
     ensurePricing();lockPillIdentity();const before=playtestSnapshot(),o=campaignRules.active(campaign);
     if(!window.AlchemyEconomy.storePill(campaign,state.pill,o)){setFeedback('丹匣记录异常，炉内丹药已保留。','bad');render();return false;}
     const id=state.pill.id;state.pillEnded=true;state.pillEndReason='collect';state.roundEnded=o? !activeCommission() : true;
-    telemetry?.record('collect',playtestSnapshot(),{before,decisionMs:Date.now()-decisionSince});addLog('<strong>收丹入匣</strong>：药力 '+formatNumber(state.pill.value+(state.pill.yuanBonus||0))+'，可从丹匣提交委托或处理丹药。','good');setFeedback('丹药已收入丹匣，可选择提交委托或处理丹药。','good','collect');render();if(typeof CustomEvent!=='undefined'){window.dispatchEvent(new CustomEvent('alchemy:pill-stored',{detail:{stored:true,id}}));window.dispatchEvent(new CustomEvent('alchemy:world-collect',{detail:{stored:true,id}}));}return true;
+    telemetry?.record('collect',playtestSnapshot(),{before,decisionMs:Date.now()-decisionSince});addLog('<strong>收丹入匣</strong>：药力 '+formatNumber(state.pill.value+(state.pill.yuanBonus||0))+'，可从丹匣提交委托或处理丹药。','good');setFeedback('丹药已收入丹匣，可选择提交委托或处理丹药。','good','collect');render();window.AlchemyGameFeel?.emit('collect',{id,tier:'medium'});if(typeof CustomEvent!=='undefined'){window.dispatchEvent(new CustomEvent('alchemy:pill-stored',{detail:{stored:true,id}}));window.dispatchEvent(new CustomEvent('alchemy:world-collect',{detail:{stored:true,id}}));}return true;
   }
   dom.collectButton.addEventListener("click", collectPill);
   dom.newPillButton.addEventListener("click", startNewPill);
@@ -646,26 +662,26 @@
     if(!campaignRules.accept(campaign,id))return false;const o=activeCommission();ORDER_TARGET=o.target;MAX_PILLS=o.materials;
     state=createState();state.started=true;state.orderId=o.id;state.pillEnded=!live;state.pillEndReason=live?'':'waiting';
     if(live){state.pill=previous.pill;state.riskResult=previous.riskResult;state.logs=previous.logs;state.bestTurn=previous.bestTurn;state.bestValue=previous.bestValue;}
-    decisionSince=Date.now();telemetry?.begin(playtestSnapshot());setFeedback(o.client+'的委托已接下，药材已备齐。','good');window.dispatchEvent(new Event('alchemy:order'));render();return true;
+    decisionSince=Date.now();telemetry?.begin(playtestSnapshot());setFeedback(o.client+'的委托已接下，药材已备齐。','good');window.AlchemyGameFeel?.emit('order',{orderId:o.id,tier:'medium'});window.dispatchEvent(new Event('alchemy:order'));render();return true;
   }
   function endDay() {
     if (!campaign || state.busy || window.AlchemyInteractionBusy || !state.pillEnded || !campaignRules.settle(campaign)) return false;
     const receipt = window.AlchemyLease?.collectRent(campaign);
     if (receipt) campaign.history[campaign.history.length - 1].rent = receipt;
-    render(); return true;
+    render(); window.AlchemyGameFeel?.emit('settle',{day:campaign.day,tier:'medium'}); return true;
   }
   function nextDay() {
     if (!campaign || !campaignRules.next(campaign)) return false;
     state.roundEnded = true; state.pillEnded = true;
     state.delivered = 0; state.attempt = 0; state.orderId = null; state.collected = [];
     state.pill = freshPill(); state.pillEndReason = "waiting";
-    window.dispatchEvent?.(new Event("alchemy:order")); render(); return true;
+    window.dispatchEvent?.(new Event("alchemy:order")); window.AlchemyGameFeel?.emit('day-next',{day:campaign.day,tier:'medium'}); render(); return true;
   }
   function abandonOrder() {
     if (!campaign || state.busy || window.AlchemyInteractionBusy || !state.pillEnded || state.roundEnded) return false;
     if (!campaignRules.resolve(campaign, state.delivered, state.attempt, true)) return false;
     state.roundEnded = true; telemetry?.finish(playtestSnapshot(), "abandoned");
-    setFeedback("本单已终止，未用本单料已退还，丹匣丹药保留。", "", "loss"); render(); return true;
+    setFeedback("本单已终止，未用本单料已退还，丹匣丹药保留。", "", "loss"); window.AlchemyGameFeel?.emit('loss',{tier:'medium'}); render(); return true;
   }
   function economyAction(kind,id,nature='neutral'){if(!campaign||state.busy||window.AlchemyInteractionBusy)return false;window.AlchemyEconomy.ensure(campaign);let ok=false;
     if(kind==='submit')return submitPill(id);
@@ -681,7 +697,7 @@
     else if(kind==='equip'){const e=campaign.economy;if(!state.pillEnded||(!e.tools.includes(id)&&id!==null))return false;const ids=window.AlchemyEconomy.equippedIds(e.equipped);if(id===null)e.equipped=[];else if(ids.includes(id))e.equipped=ids.filter(t=>t!==id);else{if(ids.length>=window.AlchemyEconomy.EQUIP_SLOTS)return false;e.equipped=[...ids,id];}ok=true;}
     else if(kind==='reservePack'||kind==='reserveHerb'){if(campaign.phase!=='open'||campaignRules.active(campaign)||!state.pillEnded)return false;const e=campaign.economy;if(kind==='reserveHerb'){nature=id;if(!['warm','cool','neutral'].includes(nature)||!e.herbs[nature])return false;e.herbs[nature]--;id=0;}else{if(!Number.isInteger(id)||id<0||id>=window.AlchemyEconomy.PRICES.length||!e.stock[id])return false;e.stock[id]--;}ORDER_TARGET=0;MAX_PILLS=1;state=createState();state.started=true;state.roundEnded=false;state.pillEnded=true;state.pillEndReason='waiting';state.orderId=null;state.materialTier=kind==='reservePack'?id:0;state.materialNature=nature;window.dispatchEvent?.(new Event('alchemy:order'));ok=true;}
     else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded))ok=window.AlchemyEconomy.buy(campaign,kind,id);
-    if(ok){state.riskResult=randomRisk();render();if(['material','tool','furnace'].includes(kind)&&typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:purchase',{detail:{kind}}));}return ok;
+    if(ok){state.riskResult=randomRisk();render();if(['material','tool','furnace'].includes(kind)&&typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:purchase',{detail:{kind}}));if(ok)window.AlchemyGameFeel?.emit(kind==='equip'?'equipment':kind==='reservePack'||kind==='reserveHerb'?'material':'purchase',{kind,id,tier:kind==='furnace'||kind==='equip'?'medium':'small'});}return ok;
   }
   function canReplaceEquipment(oldId,newId){
     const fail=reason=>({ok:false,reason});

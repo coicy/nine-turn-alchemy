@@ -8,10 +8,33 @@
     complete: {duration:600, amount:.15, lift:.08},
     damage: {duration:380, amount:-.09, lift:0}
   });
-  let quiet = false, impulse = null, flight = null, landing = null;
+  let quiet = false, impulse = null, flight = null, landing = null, serial = 0;
   try { quiet = localStorage.getItem('alchemy.reducedFeedback') === 'on'; } catch {}
   const reduced = () => quiet || media.matches;
   const controls = [];
+  const tierFor = name => ({
+    picked:'small', dropped:'small', loaded:'medium', start:'medium', refine:'medium', material:'small',
+    success:'medium', hold:'small', damage:'medium', explode:'large',
+    protection:'large', big:'large', complete:'large', collect:'medium',
+    ritual:'large', 'ritual-start':'large', 'ritual-sealed':'large', 'ritual-complete':'large',
+    yuan:'large', stroke:'small', auto:'medium', submit:'medium', order:'medium',
+    win:'large', purchase:'small', equipment:'medium', settle:'medium', 'day-next':'medium',
+    paid:'medium', consign:'medium', sell:'medium', 'rent-paid':'medium', loss:'medium', campaign:'large'
+  }[name] || 'small');
+  function emit(event, detail = {}) {
+    const payload = {event, tier: detail.tier || tierFor(event), serial: ++serial, ...detail};
+    window.dispatchEvent(new CustomEvent('alchemy:feel', {detail:payload}));
+    return payload;
+  }
+  function animate(selector, className, duration = 500) {
+    if (reduced()) return;
+    const node = typeof selector === 'string' ? document.querySelector(selector) : selector;
+    if (!node) return;
+    node.classList.remove(className);
+    void node.offsetWidth;
+    node.classList.add(className);
+    window.setTimeout(() => node.classList.remove(className), duration);
+  }
   function clear() {
     impulse = null;
     flight?.getAnimations().forEach(a => a.cancel());
@@ -77,10 +100,51 @@
   }
   window.addEventListener('alchemy:feedback', e => {
     const kind = e.detail.event;
+    emit(kind, e.detail);
     if (kind === 'collect') { clear(); return; }
     const preset = presets[kind];
     impulse = !reduced() && preset ? {...preset, start:performance.now(), kind} : null;
     window.dispatchEvent(new Event('alchemy:pill-surface'));
+  });
+  window.addEventListener('alchemy:feel', e => {
+    const d = e.detail || {};
+    const stage = document.getElementById('pillStage');
+    const map = {
+      picked: ['.herb-tray,.scene-pill-stock,.scene-tool-stock', 'feel-picked'],
+      dropped: ['#alchemyScene,.furnace-tray', 'feel-dropped'],
+      loaded: ['#pillStage', 'feel-loaded'],
+      start: ['#pillStage,.furnace-panel', 'feel-loaded'],
+      'furnace-start': ['#pillStage,.furnace-panel', 'feel-loaded'],
+      refine: ['#fireObject,.furnace-fire', 'feel-refine'],
+      protection: ['#pillStage,.world-tool-row', 'feel-protection'],
+      ritual: ['#ritualPanel,#pillStage', 'feel-ritual'],
+      'ritual-start': ['#ritualPanel,#pillStage', 'feel-ritual'],
+      'ritual-sealed': ['#ritualPanel,#pillStage', 'feel-ritual'],
+      'ritual-complete': ['#ritualPanel,#pillStage', 'feel-win'],
+      yuan: ['#pillStage,#refineFeedback', 'feel-protection'],
+      stroke: ['#ritualGrid', 'feel-stroke'],
+      auto: ['#pillStage,#refineFeedback', 'feel-auto'],
+      submit: ['.pill-bag-panel,.room-loop-card', 'feel-submit'],
+      win: ['.room-loop-card,.counter-board', 'feel-win'],
+      purchase: ['.market-board,.herb-tray', 'feel-purchase'],
+      material: ['.market-board,.herb-tray', 'feel-purchase'],
+      equipment: ['#equipmentDrawer,.world-tool-row', 'feel-equipment'],
+      settle: ['#dailySummary,.counter-board', 'feel-settle'],
+      'day-next': ['#dailySummary,.counter-board', 'feel-settle'],
+      paid: ['.consignment-board-v158,.economy-board', 'feel-paid'],
+      consign: ['.pill-bag-panel,.consignment-board-v158', 'feel-paid'],
+      sell: ['.pill-bag-panel,.economy-board', 'feel-submit'],
+      'rent-paid': ['#dailySummary,.economy-board', 'feel-settle'],
+      order: ['#counterNote,.counter-board', 'feel-win'],
+      loss: ['#counterNote,.room-loop-card', 'feel-submit'],
+      campaign: ['#dailySummary,.counter-board', 'feel-campaign']
+    };
+    const entry = map[d.event];
+    if (entry) animate(entry[0], entry[1], d.tier === 'large' ? 900 : 520);
+    if (stage && d.tier === 'large' && !reduced()) {
+      stage.dataset.feelTier = d.event;
+      window.setTimeout(() => { if (stage.dataset.feelTier === d.event) stage.dataset.feelTier = ''; }, 900);
+    }
   });
   // Inventory is painted after the feedback event. Wait for that real storage hook.
   window.addEventListener('alchemy:pill-stored', e => requestAnimationFrame(() => collect(e.detail.id)));
@@ -89,6 +153,7 @@
   window.AlchemyGameFeel = {
     get reduced() { return reduced(); },
     get active() { return impulse ? impulse.kind : null; },
+    emit,
     sample(now = performance.now()) {
       if (!impulse || reduced()) return null;
       const t = Math.max(0, (now-impulse.start)/impulse.duration);

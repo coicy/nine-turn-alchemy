@@ -47,6 +47,16 @@
   window.addEventListener('alchemy:feedback',e=>{const d=e.detail,k=d.event;if(k==='start'){if(window.AlchemyGame.snapshot().pillEnded){clearResult();return;}pulse('loaded');tone(180,.13);return;}if(k==='ritual-complete'){show('步罡已成',d.message,'','good',1800);tone(392,.17);tone(588,.25,.08);return;}if(!names[k])return;if(['collect','win','loss'].includes(k)&&window.AlchemyGame.snapshot().roundEnded){clearResult();tone(740,.24);return;}const bad=['explode','damage','loss'].includes(k),good=['success','big','complete','win'].includes(k);const value=typeof d.value==='number'?(d.value===0?'药力未变':`药力 ${d.value>0?'+':'−'}${Math.round(Math.abs(d.value))}`):String(d.value||'');show(names[k],d.autoStep ? `自动催炼 ${d.autoStep} / 7` : '',value,bad?'bad':good?'good':'neutral',1800);pulse(bad?'damaged':'result');
     if(k==='explode'){rush(0,.25,220,.2);tone(90,.28);}else if(bad){rush(0,.12,420,.09);tone(155,.14,0,.045);}else if(k==='hold'){tone(240,.2,.02,.045);}else if(['collect','win'].includes(k)){tone(740,.24);tone(990,.3,.08);}else if(['big','fusion','complete'].includes(k)){tone(392,.24,0,.08);tone(588,.3,.045,.065);tone(784,.38,.10,.055);}else{tone(520,.14,0,.045);tone(780,.18,.055,.035);}
   });
+  window.addEventListener('alchemy:feel',e=>{
+    const d=e.detail||{};
+    if(d.event==='yuan'){unlock();tone(330,.22,0,.055);tone(660,.32,.08,.05);}
+    else if(d.event==='protection'){unlock();tone(260,.18,0,.045);tone(520,.28,.08,.04);}
+    else if(d.event==='ritual-start'){unlock();tone(180,.24,0,.04);}
+    else if(d.event==='ritual-sealed'){unlock();tone(392,.18,0,.05);tone(784,.32,.08,.045);}
+    else if(d.event==='stroke'){unlock();tone(520,.07,0,.025);}
+    else if(['purchase','equipment'].includes(d.event)){unlock();tone(460,.12,0,.035);}
+    else if(['paid','rent-paid'].includes(d.event)){unlock();tone(620,.15,0,.04);tone(840,.22,.06,.035);}
+  });
   window.addEventListener('alchemy:view-ready',clearResult);
   window.addEventListener('alchemy:order',()=>{clearResult();fire.className='';});
   window.addEventListener('alchemy:carry',e=>{if(e.detail.kind)clearResult();});
