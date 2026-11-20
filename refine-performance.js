@@ -106,8 +106,8 @@
         sc.fillStyle=g;sc.fillRect(0,0,256,256);
       }
       sc.globalCompositeOperation='source-over';
-      target.save();const lift=k==='damage'?0:-Math.sin(t*Math.PI)*size*(major?.13:.07)*(1-t);
-      const shake=k==='damage'?Math.sin(t*24)*size*.025*(1-t):0;
+      target.save();const lift=k==='damage'?0:-Math.sin(t*Math.PI)*size*(major?.30:.18)*(1-t);
+      const shake=k==='damage'?Math.sin(t*24)*size*.045*(1-t):0;
       target.drawImage(surface,x+shake,y+lift,size,size);target.restore();return true;
     }
   };
