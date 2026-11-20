@@ -50,7 +50,7 @@
     if(described){described.removeAttribute('aria-describedby');described=null;}
     clearLight();
     toggle.textContent=enabled?'关闭操作指引':'开启操作指引';
-    if(v.current!=='work'||window.AlchemyOpening?.active||!s.started||s.ritualActive||s.busy||window.AlchemyScene2D.busy){window.AlchemyFeedback.setGuide('');return;}
+    if(v.current!=='work'||document.querySelector('#gameDialogue[open]')||window.AlchemyOpening?.active||!s.started||s.ritualActive||s.busy||window.AlchemyScene2D.busy){window.AlchemyFeedback.setGuide('');return;}
     const near=v.workMode==='furnace',live=!s.pillEnded&&!s.roundEnded;
     let target=null,rect=null,text='';
     if(held==='pill'){
@@ -97,6 +97,11 @@
     previous=s;schedule();
   });
   for(const name of ['alchemy:interaction','alchemy:world-layout','alchemy:opening-finished','resize'])window.addEventListener(name,schedule);
+  function observeDialogue(){
+    const dialogue=document.getElementById('gameDialogue');
+    if(dialogue)new MutationObserver(schedule).observe(dialogue,{attributes:true,attributeFilter:['open']});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',observeDialogue,{once:true});else observeDialogue();
   window.AlchemyFurnaceGuidance={refresh:schedule,get enabled(){return enabled;}};
   render();
 })();

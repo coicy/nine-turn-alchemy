@@ -71,3 +71,6 @@ body:has(#gameDialogue[open][data-view=conversation]) :is(.engine-nav,.visitor-d
 body:has(#gameDialogue[open][data-view=conversation][data-opening-shot=customer]) .counter-note{visibility:visible!important;pointer-events:none}
 body:has(#gameDialogue[open][data-view=conversation][data-opening-shot=customer]) .counter-note-label{display:none}
 body:has(#gameDialogue[open][data-opening-shot=customer]) .counter-waiting{visibility:hidden}
+
+/* A modal owns input; the painted furnace remains, its unavailable action does not. */
+body:has(#gameDialogue[open]) .furnace-resume {visibility:hidden!important}

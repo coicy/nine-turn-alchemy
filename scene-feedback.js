@@ -24,6 +24,9 @@
     const ritualText=view?.current==='work' && view.workMode==='furnace' ? ritualGuide : '';
     const entry=ritualText ? {title:'敕火符',message:ritualText,delta:'',kind:'neutral'} :
       result || (guide ? {title:'',message:guide,delta:'',kind:'neutral'} : null);
+    // Targets name these actions already; retain their accessible description.
+    // Results, ritual steps and nonredundant guidance still use the visible strip.
+    box.dataset.presentation=!ritualText&&!result&&['点火门催炼','收丹入匣'].includes(guide)?'assistive':'visible';
     box.hidden=!entry;
     if (!entry) return;
     for(const [node,value] of [[titleNode,entry.title],[messageNode,entry.message],[deltaNode,entry.delta]]) {

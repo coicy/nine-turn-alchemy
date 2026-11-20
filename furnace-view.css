@@ -176,3 +176,11 @@ body[data-work-mode=furnace] #pillStage[data-live=false] .furnace-fire:after { d
     width:auto!important; max-width:none; max-height:38dvh; padding:18px;
   }
 }
+
+/* De-duplicate only routine commands; keep their live description accessible. */
+body.object-world #refineFeedback.furnace-hint[data-presentation=assistive] {
+  position:absolute!important;width:1px!important;height:1px!important;
+  min-width:0!important;min-height:0!important;padding:0!important;margin:-1px!important;
+  overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;
+  border:0!important;box-shadow:none!important;
+}
