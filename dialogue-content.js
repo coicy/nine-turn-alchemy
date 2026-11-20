@@ -2,12 +2,18 @@
 (() => {
   'use strict';
   const strings={
-    opening_room:'旧丹炉已经安置妥当，火门里的炉火轻轻跳动。这间临街的小丹房，今日开张。',
+    opening_room:'开张头一日，你在柜台后等来了第一位客人。替人守炉的零工做了几年，攒下的钱，终于换成了一只旧丹炉和这间临街的小铺。',
     opening_lease:'你想起邵四娘交铺契时的叮嘱：“铺钱七日一结，头回四十文，往后一百二十文。手头再紧，也得留些周转的钱。”',
-    opening_customer:'掌柜，药料我带来了，想请你代炼。所求都写在纸笺上。',
-    opening_terms:'条件我看过了。这单我接，您候着便是。',
-    opening_fire:'你在炉前站定。炉盖尚合着，火门透着红光。开张后的第一炉，就从这里起手。',
-    opening_collect:'铺租要按时交，来客的嘱托也不能轻慢。先把这第一炉守稳。',
+    opening_customer:'邵四娘指我来的，说你这里接零散的代炼。怎么，连一颗成丹也没摆出来？',
+    opening_offer:'还没本钱囤一柜成丹。您若自备药料，我替您守炉，只收这一单的工钱。',
+    opening_purpose:'{{request}}',
+    opening_referral:'街东那几家都忙着整批出货。我这点药，问了两日也没排上。你从前在哪儿做过？',
+    opening_craft:'在别人的丹房帮工，配料、守火，接的也是这些日用丹。如今想自己开门做生意，总得从第一炉起。',
+    opening_materials:'那就先托你一单。药料我带来了，所求和工钱都在纸笺上，你瞧瞧。',
+    opening_terms:'药料、所求、工钱，都对得上。这单我接，您在柜边稍候。',
+    opening_trust:'好，我不催你。若炼得合用，下回来备药，也省得满街去问了。',
+    opening_fire:'纸笺留在柜上，客人也没有走。过去守炉，身后总有东家拿主意；今日这一声“掌柜”，叫的是你。',
+    opening_collect:'第一笔工钱还没到手，七日后的铺租却已有了定数。你收住心神：先替眼前的人炼好这一炉，让这间小铺有个下回。',
     opening_question:'药料和嘱咐，我都记下了。',
     opening_answer:'那就有劳掌柜了。',
     opt_continue:'继续',opt_meet:'去柜台迎客',opt_terms:'先核对委托',opt_fire:'携料回炉',opt_begin:'亲手开炉',
@@ -26,15 +32,21 @@
       notice:{speaker:'visitor',line:'commission_notice',scene:'orders',next:'letter',nextText:'opt_read_commission'},
       letter:{end:true,action:'letter'}
     }},
-    opening:{id:'opening',version:5,title:'丹坊开张',start:'room',kind:'opening',legacySteps:['room','arrival','fire'],legacyStarts:['question','answer'],nodes:{
-      room:{stage:0,workMode:'room',shot:'room',speaker:'narrator',line:'opening_room',scene:'work',next:'lease'},
-      lease:{stage:0,workMode:'room',shot:'room',speaker:'narrator',line:'opening_lease',scene:'work',next:'arrival',nextText:'opt_meet'},
-      arrival:{stage:1,shot:'customer',speaker:'visitor',line:'opening_customer',scene:'orders',next:'terms',nextText:'opt_terms'},
+    opening:{id:'opening',version:6,title:'丹坊开张',start:'room',kind:'opening',legacySteps:['room','arrival','fire'],legacyStarts:['question','answer'],nodes:{
+      room:{stage:0,shot:'customer',speaker:'narrator',line:'opening_room',scene:'orders',next:'lease'},
+      lease:{stage:0,shot:'customer',speaker:'narrator',line:'opening_lease',scene:'orders',next:'arrival'},
+      arrival:{stage:1,shot:'customer',speaker:'visitor',line:'opening_customer',scene:'orders',next:'offer'},
+      offer:{stage:1,shot:'customer',speaker:'player',line:'opening_offer',scene:'orders',next:'purpose'},
+      purpose:{stage:1,shot:'customer',speaker:'visitor',line:'opening_purpose',scene:'orders',next:'referral'},
+      referral:{stage:1,shot:'customer',speaker:'visitor',line:'opening_referral',scene:'orders',next:'craft'},
+      craft:{stage:1,shot:'customer',speaker:'player',line:'opening_craft',scene:'orders',next:'materials'},
+      materials:{stage:1,shot:'customer',speaker:'visitor',line:'opening_materials',scene:'orders',next:'terms'},
       question:{stage:1,shot:'customer',speaker:'player',line:'opening_question',scene:'orders',next:'answer'},
       answer:{stage:1,shot:'customer',speaker:'visitor',line:'opening_answer',scene:'orders',next:'terms',nextText:'opt_terms'},
-      terms:{stage:1,shot:'customer',speaker:'player',line:'opening_terms',scene:'orders',facts:true,set:{'read_terms':true},next:'fire',nextText:'opt_fire'},
-      fire:{stage:2,workMode:'furnace',shot:'furnace',speaker:'narrator',line:'opening_fire',scene:'work',next:'collect'},
-      collect:{stage:2,workMode:'furnace',shot:'furnace',speaker:'narrator',line:'opening_collect',scene:'work',next:'end',nextText:'opt_begin'},
+      terms:{stage:1,shot:'customer',speaker:'player',line:'opening_terms',scene:'orders',facts:true,set:{'read_terms':true},next:'trust'},
+      trust:{stage:1,shot:'customer',speaker:'visitor',line:'opening_trust',scene:'orders',next:'fire'},
+      fire:{stage:2,shot:'customer',speaker:'narrator',line:'opening_fire',scene:'orders',next:'collect'},
+      collect:{stage:2,shot:'customer',speaker:'narrator',line:'opening_collect',scene:'orders',next:'end',nextText:'opt_begin'},
       end:{end:true,set:{openingComplete:true}}
     }},
     visitor:{id:'visitor',version:1,title:'柜前交谈',start:'greeting',kind:'visitor',nodes:{

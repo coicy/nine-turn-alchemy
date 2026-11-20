@@ -62,6 +62,7 @@ body:has(#gameDialogue[open][data-view=conversation]) :is(.engine-nav,.visitor-d
  #gameDialogue footer button{font-size:11px}
  #gameDialogue #dialogueNext{position:fixed;right:26px;bottom:calc(var(--dialogue-bottom) + 3px);margin:0;font-size:11px;min-width:44px;min-height:44px;color:#865036!important;text-shadow:none}
  #gameDialogue #dialogueFacts{gap:4px 14px;padding-top:5px;font-size:12px}
+ #gameDialogue .dialogue-main:has(#dialogueFacts:not([hidden])){padding-bottom:48px}
  #gameDialogue dt{font-size:11px}
  #gameDialogue [data-dialogue-view]:not([data-dialogue-view=conversation]){padding:17px;width:calc(100% - 24px)}
  .counter-conversation{top:84px;right:12px;max-width:175px;font-size:13px}
