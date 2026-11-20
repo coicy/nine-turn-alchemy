@@ -2,8 +2,8 @@
 (() => {
   'use strict';
   const strings={
-    opening_room:'开张头一日，你在柜台后等来了第一位客人。替人守炉的零工做了几年，攒下的钱，终于换成了一只旧丹炉和这间临街的小铺。',
-    opening_lease:'你想起邵四娘交铺契时的叮嘱：“铺钱七日一结，头回四十文，往后一百二十文。手头再紧，也得留些周转的钱。”',
+    opening_room:'开张头一日，总算等来了第一位客人。替人守炉的零工做了几年，攒下的钱，终于换成了我自己的旧丹炉和这间临街小铺。',
+    opening_lease:'邵四娘交铺契时叮嘱我的话，还记得清楚：“铺钱七日一结，头回四十文，往后一百二十文。手头再紧，也得留些周转的钱。”',
     opening_customer:'邵四娘指我来的，说你这里接零散的代炼。怎么，连一颗成丹也没摆出来？',
     opening_offer:'还没本钱囤一柜成丹。您若自备药料，我替您守炉，只收这一单的工钱。',
     opening_purpose:'{{request}}',
@@ -12,8 +12,8 @@
     opening_materials:'那就先托你一单。药料我带来了，所求和工钱都在纸笺上，你瞧瞧。',
     opening_terms:'药料、所求、工钱，都对得上。这单我接，您在柜边稍候。',
     opening_trust:'好，我不催你。若炼得合用，下回来备药，也省得满街去问了。',
-    opening_fire:'纸笺留在柜上，客人也没有走。过去守炉，身后总有东家拿主意；今日这一声“掌柜”，叫的是你。',
-    opening_collect:'第一笔工钱还没到手，七日后的铺租却已有了定数。你收住心神：先替眼前的人炼好这一炉，让这间小铺有个下回。',
+    opening_fire:'纸笺留在柜上，客人也没走。以前替人守炉，总有东家拿主意。如今这一声“掌柜”，叫的真是我了。',
+    opening_collect:'第一笔工钱还没到手，七日后的铺租已经定了。先稳住，替眼前的人炼好这一炉，才有下回。',
     opening_question:'药料和嘱咐，我都记下了。',
     opening_answer:'那就有劳掌柜了。',
     opt_continue:'继续',opt_meet:'去柜台迎客',opt_terms:'先核对委托',opt_fire:'携料回炉',opt_begin:'亲手开炉',
@@ -32,9 +32,9 @@
       notice:{speaker:'visitor',line:'commission_notice',scene:'orders',next:'letter',nextText:'opt_read_commission'},
       letter:{end:true,action:'letter'}
     }},
-    opening:{id:'opening',version:6,title:'丹坊开张',start:'room',kind:'opening',legacySteps:['room','arrival','fire'],legacyStarts:['question','answer'],nodes:{
-      room:{stage:0,shot:'customer',speaker:'narrator',line:'opening_room',scene:'orders',next:'lease'},
-      lease:{stage:0,shot:'customer',speaker:'narrator',line:'opening_lease',scene:'orders',next:'arrival'},
+    opening:{id:'opening',version:7,title:'丹坊开张',start:'room',kind:'opening',legacySteps:['room','arrival','fire'],legacyStarts:['question','answer'],nodes:{
+      room:{stage:0,shot:'customer',speaker:'player',line:'opening_room',scene:'orders',next:'lease'},
+      lease:{stage:0,shot:'customer',speaker:'player',line:'opening_lease',scene:'orders',next:'arrival'},
       arrival:{stage:1,shot:'customer',speaker:'visitor',line:'opening_customer',scene:'orders',next:'offer'},
       offer:{stage:1,shot:'customer',speaker:'player',line:'opening_offer',scene:'orders',next:'purpose'},
       purpose:{stage:1,shot:'customer',speaker:'visitor',line:'opening_purpose',scene:'orders',next:'referral'},
@@ -45,8 +45,8 @@
       answer:{stage:1,shot:'customer',speaker:'visitor',line:'opening_answer',scene:'orders',next:'terms',nextText:'opt_terms'},
       terms:{stage:1,shot:'customer',speaker:'player',line:'opening_terms',scene:'orders',facts:true,set:{'read_terms':true},next:'trust'},
       trust:{stage:1,shot:'customer',speaker:'visitor',line:'opening_trust',scene:'orders',next:'fire'},
-      fire:{stage:2,shot:'customer',speaker:'narrator',line:'opening_fire',scene:'orders',next:'collect'},
-      collect:{stage:2,shot:'customer',speaker:'narrator',line:'opening_collect',scene:'orders',next:'end',nextText:'opt_begin'},
+      fire:{stage:2,shot:'customer',speaker:'player',line:'opening_fire',scene:'orders',next:'collect'},
+      collect:{stage:2,shot:'customer',speaker:'player',line:'opening_collect',scene:'orders',next:'end',nextText:'opt_begin'},
       end:{end:true,set:{openingComplete:true}}
     }},
     visitor:{id:'visitor',version:1,title:'柜前交谈',start:'greeting',kind:'visitor',nodes:{
@@ -65,5 +65,5 @@
       end:{end:true,set:{'met.{{customerId}}':true}}
     }}
   };
-  window.AlchemyDialogueContent={locale:'zh-CN',strings:{'zh-CN':strings},graphs,speakers:{narrator:{name:'旁白',seal:'叙'},landlady:{name:'邵四娘',role:'铺契交接',seal:'邵'},player:{name:'你',role:'丹坊掌柜',seal:'掌'},visitor:{name:'{{visitor}}',role:'{{role}}',seal:'客'}}};
+  window.AlchemyDialogueContent={locale:'zh-CN',strings:{'zh-CN':strings},graphs,speakers:{narrator:{name:'旁白',seal:'叙'},landlady:{name:'邵四娘',role:'铺契交接',seal:'邵'},player:{name:'我',role:'丹坊掌柜',seal:'我'},visitor:{name:'{{visitor}}',role:'{{role}}',seal:'客'}}};
 })();
