@@ -44,6 +44,7 @@
 #gameDialogue #dialogueHistory [data-kind=choice]{padding-left:20px}
 #gameDialogue label{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:20px 0}
 #gameDialogue .dialogue-primary{background:#975238!important;color:#fff1d2!important}
+#gameDialogue #dialogueNext.dialogue-primary{background:transparent!important;box-shadow:none;border:0}
 .dialogue-sr{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden;white-space:nowrap}
 .counter-conversation{position:absolute;z-index:7;right:24px;top:90px;min-height:44px;padding:9px 16px;background:#f0dfbb;color:#6d432c;border:1px solid #a98659;border-radius:3px;font:15px "Microsoft YaHei",sans-serif}
 .counter-conversation[hidden]{display:none!important}
