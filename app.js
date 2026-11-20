@@ -590,7 +590,6 @@
   function startRitualRefines() {
     mountRitual();
     window.AlchemyRitualBrush.seal(state.pill);
-    window.AlchemyGameFeel?.emit('ritual-sealed', {tier:'large'});
     dom.ritualPanel.classList.add('hidden');
     state.busy = true;
     setFeedback(`自动催炼还剩${state.pill.ritualSafe}次，期间不会炸丹。`, 'good', 'ritual-complete');

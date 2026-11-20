@@ -6,14 +6,16 @@
     success: {duration:340, amount:.065, lift:.025},
     big: {duration:510, amount:.13, lift:.065},
     complete: {duration:600, amount:.15, lift:.08},
-    damage: {duration:380, amount:-.09, lift:0}
+    damage: {duration:380, amount:-.09, lift:0},
+    hold: {duration:280, amount:.03, lift:.01},
+    explode: {duration:640, amount:-.18, lift:-.02}
   });
   let quiet = false, impulse = null, flight = null, landing = null, serial = 0;
   try { quiet = localStorage.getItem('alchemy.reducedFeedback') === 'on'; } catch {}
   const reduced = () => quiet || media.matches;
   const controls = [];
   const tierFor = name => ({
-    picked:'small', dropped:'small', loaded:'medium', start:'medium', refine:'medium', material:'small',
+    picked:'small', dropped:'small', loaded:'medium', start:'medium', refine:'medium', material:'small', cancel:'small',
     success:'medium', hold:'small', damage:'medium', explode:'large',
     protection:'large', big:'large', complete:'large', collect:'medium',
     ritual:'large', 'ritual-start':'large', 'ritual-sealed':'large', 'ritual-complete':'large',
@@ -112,6 +114,7 @@
     const map = {
       picked: ['.herb-tray,.scene-pill-stock,.scene-tool-stock', 'feel-picked'],
       dropped: ['#alchemyScene,.furnace-tray', 'feel-dropped'],
+      cancel: ['#alchemyScene,.furnace-tray', 'feel-dropped'],
       loaded: ['#pillStage', 'feel-loaded'],
       start: ['#pillStage,.furnace-panel', 'feel-loaded'],
       'furnace-start': ['#pillStage,.furnace-panel', 'feel-loaded'],
