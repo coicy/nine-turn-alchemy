@@ -50,7 +50,7 @@
   function protectedOutcomeLabel(protection){return protection?.outcome==='damage'?'受损':'维持';}
   function riskDescription(probabilities){
     if(!probabilities.available)return '本炉已结束';
-    if(probabilities.safeRun)return `步罡自动催炼中，不会炸丹，还剩${probabilities.safeRefines}次`;
+    if(probabilities.safeRun)return `符力自动催炼中，不会炸丹，还剩${probabilities.safeRefines}次`;
     if(probabilities.protection)return `${probabilities.protection.name}：抽中炸丹时转为${protectedOutcomeLabel(probabilities.protection)}`;
     return '无护丹效果，抽中炉险将炸丹';
   }
@@ -235,7 +235,7 @@
   }
 
   function setFeedback(message, tone = "", event = "start", value = null, autoStep = 0) {
-    const titles = { "ritual-complete": "步罡已成", start: "炉火初起", big: "大成功", success: "炼化成功", hold: "火候维持", damage: "丹体受损", explode: "丹散炉息", complete: "百转成丹", collect: "收丹入匣", win: "委托已成", loss: "本局结束" };
+    const titles = { "ritual-complete": "敕火符已成", start: "炉火初起", big: "大成功", success: "炼化成功", hold: "火候维持", damage: "丹体受损", explode: "丹散炉息", complete: "百转成丹", collect: "收丹入匣", win: "委托已成", loss: "本局结束" };
     dom.eventTitle.textContent = titles[event] || "炉火流转";
     dom.valueChange.textContent = typeof value === "number" ? (value === 0 ? "价值持平" : `${value > 0 ? "+" : "−"}${formatNumber(Math.abs(value))}`) : value || "";
     dom.eventBanner.textContent = message;

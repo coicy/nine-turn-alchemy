@@ -99,10 +99,14 @@
       const d=distance(point,guide[i]);
       if (d < error) { error=d; best=i; }
     }
-    if (error>8 || best===from) return;
+    if (error>8) return;
+    // Reaching the last sample slightly outside the finish radius must remain recoverable.
+    // Returning to the nib can finish the stroke even when the cursor cannot advance.
+    const atEnd=best>=guide.length-2 && distance(point,guide.at(-1))<5;
+    if (best===from && !atEnd) return;
     ink.cursor = best;
     ink.lines[step].push(point.map(round));
-    if (best >= guide.length-2 && distance(point,guide.at(-1))<5) endStroke();
+    if (atEnd) endStroke();
   }
 
   function location(e) {
@@ -121,7 +125,7 @@
     paint();
   });
 
-  paper.addEventListener('pointermove', e => {
+  function trace(e) {
     if (pointer!==e.pointerId || !pill?.ritualActive || waitingForLift) return;
     const step=pill.ritualStep, ink=pill.ritualInk;
     const events=e.getCoalescedEvents?.() || [];
@@ -136,8 +140,11 @@
       if (pointer===null || waitingForLift) break;
     }
     if (pointer!==null) paint();
-  });
-  for (const type of ['pointerup','pointercancel','lostpointercapture']) {
+  }
+  paper.addEventListener('pointermove',trace);
+  // A pen or finger may report its final position only on release.
+  paper.addEventListener('pointerup',e=>{if(e.pointerId===pointer){trace(e);if(e.pointerId===pointer)lift();}});
+  for (const type of ['pointercancel','lostpointercapture']) {
     paper.addEventListener(type,e=>{if(e.pointerId===pointer) lift();});
   }
   paper.addEventListener('keydown',e=>{
@@ -153,6 +160,8 @@
   });
   paper.addEventListener('keyup',e=>{if((keyTimer || waitingForLift) && (e.key===' ' || e.key==='Enter')) lift();});
   paper.addEventListener('blur',()=>{if(keyTimer || (waitingForLift && pointer===null)) lift();});
+  window.addEventListener('blur',()=>{if(pointer!==null || keyTimer || waitingForLift) lift();});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden && (pointer!==null || keyTimer || waitingForLift)) lift();});
   window.addEventListener('pagehide',()=>{if(pointer!==null || keyTimer) lift();});
   window.AlchemyRitualBrush = {
     begin(p,persist,onFinish) {
