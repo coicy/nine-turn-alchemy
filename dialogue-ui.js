@@ -14,7 +14,7 @@
     else if(runtime.error&&!root.open){returnFocus=document.activeElement;root.showModal();setView('settings');}
     if(runtime.error)$('dialogueStatus').textContent=runtime.error;
     window.dispatchEvent(new CustomEvent('alchemy:dialogue-state',{detail:{active:runtime.active,...info}}));
-    if(info.ended){window.dispatchEvent(new CustomEvent('alchemy:dialogue-ended',{detail:info}));if(info.action==='letter')openLetter();}
+    if(info.ended){window.dispatchEvent(new CustomEvent('alchemy:dialogue-ended',{detail:info}));if(info.action==='letter')openLetter(info.context?.orderId);}
   }
   runtime=window.AlchemyDialogueEngine.create(content,{read:()=>window.AlchemySaves.preference('dialogue-v192'),write:s=>window.AlchemySaves.setPreference('dialogue-v192',s)},notify);
   Object.defineProperty(runtime,'blocking',{get:()=>runtime.active||root.open});
@@ -45,7 +45,7 @@
     clearTimers();setView('conversation');token=p.token;chars=0;$('dialogueStatus').textContent=runtime.error;
     $('dialogueSpeaker').textContent=p.speaker.name;$('dialogueRole').textContent=p.speaker.role||'';$('dialogueTitle').textContent=p.title;updatePortrait(p);facts(p);
     $('dialogueAccessible').textContent=p.speaker.name+'：'+p.text;$('dialogueText').textContent='';
-    $('dialogueLeave').textContent=p.kind==='opening'?'跳过开场':'暂别';$('dialogueLeave').title=p.kind==='opening'?'确认后跳过开场':'保留当前句，稍后继续';$('dialogueNext').textContent=p.nextText;
+    $('dialogueLeave').textContent=p.kind==='opening'?'跳过开场':p.kind==='commission'?'离开':'暂别';$('dialogueLeave').title=p.kind==='opening'?'确认后跳过开场':p.kind==='commission'?'回到柜台':'保留当前句，稍后继续';$('dialogueNext').textContent=p.nextText;
     $('dialogueSkip').disabled=!p.wasSeen;paintChoices();$('dialogueNext').disabled=true;
     $('dialogueAdvance').setAttribute('aria-label','显示完整对白');$('dialogueProgress').textContent='';
     modes();if(skipping&&!p.wasSeen){skipping=false;modes();$('dialogueStatus').textContent='来到未读对白，快进已停止。';}
@@ -68,14 +68,15 @@
   $('dialogueAdvance').onclick=advance;$('dialogueNext').onclick=()=>{if(!runtime.present()?.read)reveal();else advance();};
   $('dialogueAuto').onclick=()=>{automatic=!automatic;skipping=false;modes();if(runtime.present()?.read)scheduleAuto();};
   $('dialogueSkip').onclick=()=>{if(!current?.wasSeen)return;skipping=!skipping;automatic=false;modes();if(skipping)reveal();else clearTimeout(autoTimer);};
-  $('dialogueLeave').onclick=()=>{if(current.kind==='opening')setView('confirm');else runtime.suspend();};
+  function leave(){if(current?.kind==='opening')setView('confirm');else if(current?.kind==='commission'){if(!runtime.end(false))runtime.suspend();}else runtime.suspend();}
+  $('dialogueLeave').onclick=leave;
   $('dialogueKeep').onclick=()=>{setView('conversation');continueTyping();};$('dialogueConfirmSkip').onclick=()=>runtime.end(true);
   function history(){pause();clearTimeout(typingTimer);if(!root.open){returnFocus=document.activeElement;root.showModal();}setView('history');const el=$('dialogueHistory');el.replaceChildren();for(const row of runtime.history){const entry=document.createElement('article'),name=document.createElement('strong'),line=document.createElement('p');name.textContent=row.speaker+' · 第'+row.day+'日';line.textContent=row.text;entry.dataset.kind=row.kind;entry.append(name,line);el.append(entry);}if(!el.childElementCount)el.textContent='还没有交谈记录。';el.scrollTop=el.scrollHeight;requestAnimationFrame(()=>root.querySelector('[data-dialogue-view="history"] [data-dialogue-back]').focus());}
   function settings(){pause();clearTimeout(typingTimer);if(!root.open){returnFocus=document.activeElement;root.showModal();}setView('settings');$('dialogueSpeed').value=runtime.settings.speed;$('dialogueDelay').value=runtime.settings.autoDelay;}
   root.querySelectorAll('[data-dialogue-history]').forEach(b=>b.onclick=history);root.querySelectorAll('[data-dialogue-settings]').forEach(b=>b.onclick=settings);
   root.querySelectorAll('[data-dialogue-back]').forEach(b=>b.onclick=()=>{if(runtime.active){setView('conversation');continueTyping();}else{root.close();restoreFocus();}});
   $('dialogueSpeed').onchange=()=>runtime.setSettings({speed:Number($('dialogueSpeed').value)});$('dialogueDelay').onchange=()=>runtime.setSettings({autoDelay:Number($('dialogueDelay').value)});
-  root.addEventListener('cancel',e=>{e.preventDefault();if(view!=='conversation'){root.querySelector(`[data-dialogue-view="${view}"] [data-dialogue-back]`)?.click();if(view==='confirm')$('dialogueKeep').click();}else if(current?.kind==='opening')setView('confirm');else if(runtime.active)runtime.suspend();else root.close();});
+  root.addEventListener('cancel',e=>{e.preventDefault();if(view!=='conversation'){root.querySelector(`[data-dialogue-view="${view}"] [data-dialogue-back]`)?.click();if(view==='confirm')$('dialogueKeep').click();}else if(runtime.active)leave();else root.close();});
   document.addEventListener('keydown',e=>{if(!root.open||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;
     if(view==='conversation'&&/^[1-9]$/.test(e.key)&&runtime.present()?.read){const c=current.choices[Number(e.key)-1];if(c?.enabled){e.preventDefault();pause();runtime.choose(c.id,current.token);}return;}
     if(view==='conversation'&&[' ','Enter'].includes(e.key)&&(e.target===$('dialogueAdvance')||e.target===root)){e.preventDefault();e.stopImmediatePropagation();advance();}
@@ -84,18 +85,21 @@
   window.addEventListener('blur',pause);document.addEventListener('visibilitychange',()=>{if(document.hidden){pause();clearTimeout(typingTimer);}else if(runtime.active&&view==='conversation')continueTyping();});media.addEventListener('change',()=>{if(runtime.active&&view==='conversation'&&!document.hidden)reveal();});
   function available(){const s=window.AlchemyGame.snapshot();return s.started&&!s.busy&&!window.AlchemyScene2D?.busy&&!window.AlchemyScene2D?.held&&!window.AlchemyInteractionBusy&&!document.querySelector('dialog[open]');}
   const startGraph=runtime.start,resumeGraph=runtime.resume;
-  runtime.start=(...args)=>available()?startGraph(...args):false;
-  runtime.resume=()=>available()?resumeGraph():false;
-  function context(order){const p=window.AlchemyCustomers.profile(order),c=window.AlchemyGame.campaign(),met=!!runtime.flags['met.'+p.id];return {day:c.day,visitor:p.name,role:p.role,customerId:p.id,orderId:order.id,materials:order.materials,target:order.target,fee:window.AlchemyEconomy.fee(order),nature:({warm:'温性',cool:'寒性',neutral:'平性'}[order.nature]||'平性'),request:p.request||'想请掌柜代炼。',met,greeting:met?content.strings['zh-CN'].visitor_return:window.AlchemyCustomers.line(order),smalltalk:/行商|信使|船客/.test(p.role)?'赶路的人，最怕临行前还在四处找药。单子写明白，交接也就省心。':/采药|药农/.test(p.role)?'进山采药得看天色，守炉也得看火候。今天这炉，就交给掌柜了。':'出门也好，闭关也好，准备周全些总是好事。掌柜照平常的节奏守炉便好。'};}
-  runtime.openVisitor=order=>{if(!available())return false;if(runtime.pending&&runtime.pending.context.orderId!==order.id){runtime.resume();$('dialogueStatus').textContent='先继续上次交谈；也可在设置中结束本段，再与新来客交谈。';return true;}return runtime.start('visitor',context(order));};
+  runtime.start=(gid,...args)=>available()?startGraph(gid==='visitor'?'commission':gid,...args):false;
+  runtime.resume=()=>{if(!available())return false;const pending=runtime.pending;if(pending?.graph==='visitor'){const c=window.AlchemyGame.campaign(),order=c.orders.find(o=>o.id===pending.context.orderId&&['pending','active'].includes(o.status))||window.AlchemyGame.snapshot().order||c.orders.find(o=>o.status==='pending');return order?runtime.replacePending('commission',context(order)):runtime.end(false);}return resumeGraph();};
+  function context(order){
+    const p=window.AlchemyCustomers.profile(order),c=window.AlchemyGame.campaign();
+    return {day:c.day,visitor:p.name,role:p.role,customerId:p.id,orderId:order.id,materials:order.materials,target:order.target,fee:window.AlchemyEconomy.fee(order),nature:({warm:'温性',cool:'寒性',neutral:'平性'}[order.nature]||'平性'),request:p.request||'想请掌柜代炼。'};
+  }
+  runtime.openVisitor=order=>{if(!available())return false;const pending=runtime.pending;if(pending&&['visitor','commission'].includes(pending.graph)){if(pending.graph==='commission'&&pending.context.orderId===order.id)return runtime.resume();return runtime.replacePending('commission',context(order));}if(pending){runtime.resume();return true;}return runtime.start('commission',context(order));};
   runtime.openOpening=step=>{if(!available())return false;const s=window.AlchemyGame.snapshot(),order=s.order||window.AlchemyGame.campaign().orders[0];return runtime.start('opening',context(order),{node:step===1?'arrival':step===2?'fire':'room'});};
   runtime.showHistory=()=>{if(!runtime.active&&!available())return false;history();return true;};runtime.showSettings=()=>{if(!runtime.active&&!available())return false;settings();return true;};
   runtime.resumeConversation=()=>{if(!available())return false;return runtime.resume();};runtime.contextFor=context;
-  function openLetter(){let timer;const attempt=()=>{const note=$('counterNote');if(window.AlchemyViewState.snapshot().current!=='orders')return;if(note&&!note.hidden){if(note.getAttribute('aria-expanded')!=='true')note.click();window.removeEventListener('alchemy:counter-note-availability',attempt);clearTimeout(timer);}};if(window.AlchemyViewState.snapshot().current!=='orders')window.AlchemyViewState.navigate('orders',{internal:true});window.addEventListener('alchemy:counter-note-availability',attempt);timer=setTimeout(()=>window.removeEventListener('alchemy:counter-note-availability',attempt),1500);attempt();}
+  function openLetter(orderId){if(orderId&&!window.AlchemyGame.campaign()?.orders.some(o=>o.id===orderId))return;let timer;const attempt=()=>{if(window.AlchemyViewState.snapshot().current!=='orders')return;if(orderId&&selectedOrder()?.id!==orderId)document.querySelector('[data-letter="'+CSS.escape(orderId)+'"]')?.click();const note=$('counterNote');if(note&&!note.hidden){if(note.getAttribute('aria-expanded')!=='true')note.click();window.removeEventListener('alchemy:counter-note-availability',attempt);clearTimeout(timer);}};if(window.AlchemyViewState.snapshot().current!=='orders')window.AlchemyViewState.navigate('orders',{internal:true});window.addEventListener('alchemy:counter-note-availability',attempt);timer=setTimeout(()=>window.removeEventListener('alchemy:counter-note-availability',attempt),1500);attempt();}
   const entry=document.createElement('button');entry.type='button';entry.id='counterConversation';entry.className='counter-conversation';document.querySelector('.counter-board').append(entry);
   function selectedOrder(){const id=document.querySelector('#counterVisitor .visitor-portrait')?.dataset.visitId;return window.AlchemyGame.campaign()?.orders.find(o=>o.id===id);}
   entry.onclick=()=>{const order=selectedOrder();if(order)runtime.openVisitor(order);};
-  function updateEntry(){const order=selectedOrder(),p=order&&window.AlchemyCustomers.profile(order);entry.hidden=!order||!['pending','active'].includes(order.status)||window.AlchemyViewState.snapshot().current!=='orders'||window.AlchemyOpening?.active;entry.textContent=p?'与'+p.name+'交谈':'交谈';}
+  function updateEntry(){const order=selectedOrder(),p=order&&window.AlchemyCustomers.profile(order);entry.hidden=!order||!['pending','active'].includes(order.status)||window.AlchemyViewState.snapshot().current!=='orders'||window.AlchemyOpening?.active;entry.textContent=p?p.name+' · 委托来意':'委托来意';}
   new MutationObserver(updateEntry).observe($('counterVisitor'),{childList:true});window.addEventListener('alchemy:render',updateEntry);window.addEventListener('alchemy:view-ready',updateEntry);window.addEventListener('alchemy:opening-finished',updateEntry);
   const menus=[document.getElementById('worldBooksMenu'),document.querySelector('#mainMenuSettingsPanel .main-menu-v157__settings-actions')].filter(Boolean);
   for(const host of menus){const b=document.createElement('button');b.type='button';b.textContent='交谈回看';b.onclick=()=>{if(document.getElementById('mainMenu').hidden)runtime.showHistory();else history();};host.append(b);}

@@ -16,9 +16,15 @@
     visitor_talk:'{{smalltalk}}',visitor_market:'坊市的药材、炉具和法器各有用途。先看清货物和价钱，留足铺租，再决定添置什么。',
     visitor_end:'那就劳烦掌柜了。纸笺留在柜上，随时可以再看。',
     opt_intro:'初次见面，怎么称呼？',opt_chat:'聊聊近况',opt_market:'问问坊市',opt_market_locked:'第二日开门后可聊',opt_letter:'打开原委托纸笺',opt_back:'还有一事',opt_goodbye:'先去忙了',opt_close:'结束交谈',
-    visitor_return:'掌柜，我们又见面了。这回还是先把手头这一单说清楚。'
+    visitor_return:'掌柜，我们又见面了。这回还是先把手头这一单说清楚。',
+    commission_notice:'掌柜，我有一份代炼委托，详情都在这张纸笺上。',
+    opt_read_commission:'查看委托'
   };
   const graphs={
+    commission:{id:'commission',version:1,title:'来客委托',start:'notice',kind:'commission',nodes:{
+      notice:{speaker:'visitor',line:'commission_notice',scene:'orders',next:'letter',nextText:'opt_read_commission'},
+      letter:{end:true,action:'letter'}
+    }},
     opening:{id:'opening',version:1,title:'丹坊开张',start:'room',kind:'opening',nodes:{
       room:{speaker:'narrator',line:'opening_room',scene:'work',next:'lease'},
       lease:{speaker:'landlady',line:'opening_lease',scene:'work',next:'arrival',nextText:'opt_meet'},

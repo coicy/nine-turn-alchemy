@@ -64,6 +64,7 @@
         if(state.cursor){error='上次交谈尚未结束，请先继续或结束那段交谈。';onChange();return false;}
         const target=options.node||content.graphs[gid].start;if(!content.graphs[gid].nodes[target])return false;const candidate=clone(state),ending=enter(candidate,gid,target,safe);if(!commit(candidate,false))return false;active=!ending.ended;onChange(ending);return true;},
       resume(){if(!state.cursor||active||corrupt)return false;active=true;onChange();return true;},
+      replacePending(gid,context=state.cursor?.context){if(active||!state.cursor||!content.graphs[gid]||!context)return false;const candidate=clone(state),ending=enter(candidate,gid,content.graphs[gid].start,context);if(!commit(candidate,false))return false;active=!ending.ended;onChange(ending);return true;},
       suspend(){active=false;onChange({suspended:true});return true;},
       markRead(){if(!active||!state.cursor)return false;if(state.cursor.read)return true;const next=clone(state);next.cursor.read=true;next.seen[next.cursor.lineKey]=true;const keys=Object.keys(next.seen);while(keys.length>1000)delete next.seen[keys.shift()];return commit(next,false);},
       advance(token){const c=state.cursor;if(!active||!c||!c.read||(token!==undefined&&token!==c.token))return false;const n=content.graphs[c.graph].nodes[c.node];if(n.choices)return false;return move(n.next);},
