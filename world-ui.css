@@ -121,8 +121,10 @@
  .world-mobile.object-world .world-books{left:auto;right:95px;top:63%;bottom:auto;gap:5px}
  .world-mobile .world-books button{font-size:12px;min-height:44px}
  .object-world .counter-board .world-books,.object-world .world-market .world-books{top:auto;bottom:75px;left:16px;right:auto}
- .object-world .counter-board>.visitor-dialogue{left:10px!important;right:auto!important;top:130px!important;width:145px!important;max-width:45%;padding:9px;font-size:12px;transform:none}
+ .object-world .counter-board>.visitor-dialogue{left:10px!important;right:auto!important;top:calc(var(--counter-origin-y,0px) + 340 * var(--counter-scale,1px))!important;width:145px!important;max-width:45%;padding:9px;font-size:12px;transform:none}
  .object-world .counter-board>.visitor-dialogue p{display:block;margin:5px 0;line-height:1.5}
+ .object-world .counter-board .counter-conversation{top:calc(var(--counter-origin-y,0px) + 340 * var(--counter-scale,1px))}
+ .object-world .counter-board .counter-lease-slip{top:48px}
 }
 /* Painted same-material cutaway replaces the temporary geometry used for layout checking. */
 .object-world .room-observation{width:210px!important;height:170px!important;background:url('assets/object-world-v86/cutaway.webp') center/100% 100% no-repeat;border:0;border-radius:0;box-shadow:none}
