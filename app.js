@@ -407,6 +407,7 @@
   }
 
   function refine() {
+    if(window.AlchemyDialogue?.blocking)return false;
     if (!state.started || state.busy || state.pillEnded || state.roundEnded || state.pill.turn >= 100 || state.pill.ritualActive) return;
     telemetry?.record("refine_choice", playtestSnapshot(), { decisionMs: Date.now() - decisionSince });
     state.busy = true;
@@ -469,6 +470,7 @@
   function previewSubmission(id){const o=activeCommission(),e=campaign?.economy,p=Array.isArray(e?.pills)&&e.pills.find(p=>p.id===id);if(!o||!p||campaign.phase!=='open')return {ok:false};const after=state.delivered+p.value,complete=after>=o.target;return {ok:true,after,target:o.target,complete,reward:complete?window.AlchemyEconomy.commissionReward(o,[...(o.submitted||state.collected),p]):0};}
   function previewConsignment(id){const e=campaign?.economy,p=e?.pills?.find(p=>p?.id===id);if(!p||!window.AlchemyEconomy?.consignmentEligibility)return {ok:false,reason:'丹药不在丹匣中。'};const q=window.AlchemyEconomy.consignmentEligibility(campaign,p);return {...q,pill:{id:p.id,turn:p.turn,value:p.value}};}
   function submitPill(id) {
+    if(window.AlchemyDialogue?.blocking)return false;
     if (!state.started || state.busy || window.AlchemyInteractionBusy || window.AlchemyScene2D?.busy || window.AlchemyScene2D?.held) return false;
     const quote = previewSubmission(id);
     if (!quote.ok) return false;
@@ -498,6 +500,7 @@
     return true;
   }
   function startNewPill() {
+    if(window.AlchemyDialogue?.blocking)return false;
     if (!state.started || state.busy || !state.pillEnded || state.roundEnded || state.attempt >= MAX_PILLS) return;
     state.attempt += 1;
     state.pill = freshPill();
@@ -628,6 +631,7 @@
   }
   dom.refineButton.addEventListener("click", refine);
   function collectPill() {
+    if(window.AlchemyDialogue?.blocking)return false;
     if(!state.started||state.busy||state.pillEnded||state.pill.ritualActive)return false;
     ensurePricing();lockPillIdentity();const before=playtestSnapshot(),o=campaignRules.active(campaign);
     if(!window.AlchemyEconomy.storePill(campaign,state.pill,o)){setFeedback('丹匣记录异常，炉内丹药已保留。','bad');render();return false;}
@@ -655,6 +659,7 @@
     campaignRules.resolve(campaign,state.delivered,state.attempt);window.AlchemyEconomy?.commission(campaign,o,state.collected);
   }
   function chooseOrder(id) {
+    if(window.AlchemyDialogue?.blocking)return false;
     if(!campaign||state.busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy||window.AlchemyScene2D?.held||activeCommission()||campaign.phase!=='open')return false;
     if(!campaign.orders.some(o=>o.id===id&&o.status==='pending'))return false;
     const live=!state.pillEnded,previous=state;
@@ -664,12 +669,14 @@
     decisionSince=Date.now();telemetry?.begin(playtestSnapshot());setFeedback(o.client+'的委托已接下，药材已备齐。','good');window.AlchemyGameFeel?.emit('order',{orderId:o.id,tier:'medium'});window.dispatchEvent(new Event('alchemy:order'));render();return true;
   }
   function endDay() {
+    if(window.AlchemyDialogue?.blocking)return false;
     if (!campaign || state.busy || window.AlchemyInteractionBusy || !state.pillEnded || !campaignRules.settle(campaign)) return false;
     const receipt = window.AlchemyLease?.collectRent(campaign);
     if (receipt) campaign.history[campaign.history.length - 1].rent = receipt;
     render(); window.AlchemyGameFeel?.emit('settle',{day:campaign.day,tier:'medium'}); return true;
   }
   function nextDay() {
+    if(window.AlchemyDialogue?.blocking)return false;
     if (!campaign || !campaignRules.next(campaign)) return false;
     state.roundEnded = true; state.pillEnded = true;
     state.delivered = 0; state.attempt = 0; state.orderId = null; state.collected = [];
@@ -677,12 +684,14 @@
     window.dispatchEvent?.(new Event("alchemy:order")); window.AlchemyGameFeel?.emit('day-next',{day:campaign.day,tier:'medium'}); render(); return true;
   }
   function abandonOrder() {
+    if(window.AlchemyDialogue?.blocking)return false;
     if (!campaign || state.busy || window.AlchemyInteractionBusy || !state.pillEnded || state.roundEnded) return false;
     if (!campaignRules.resolve(campaign, state.delivered, state.attempt, true)) return false;
     state.roundEnded = true; telemetry?.finish(playtestSnapshot(), "abandoned");
     setFeedback("本单已终止，未用本单料已退还，丹匣丹药保留。", "", "loss"); window.AlchemyGameFeel?.emit('loss',{tier:'medium'}); render(); return true;
   }
-  function economyAction(kind,id,nature='neutral'){if(!campaign||state.busy||window.AlchemyInteractionBusy)return false;window.AlchemyEconomy.ensure(campaign);let ok=false;
+  function economyAction(kind,id,nature='neutral'){
+    if(window.AlchemyDialogue?.blocking)return false;if(!campaign||state.busy||window.AlchemyInteractionBusy)return false;window.AlchemyEconomy.ensure(campaign);let ok=false;
     if(kind==='submit')return submitPill(id);
     if(kind==='sell'){if(window.AlchemyScene2D?.busy||window.AlchemyScene2D?.held)return false;ok=window.AlchemyEconomy.sale(campaign,id)!==false;if(ok)window.dispatchEvent(new CustomEvent('alchemy:inventory-action',{detail:{kind:'sell',id}}));}
     else if(kind==='consign'){if(window.AlchemyScene2D?.busy||window.AlchemyScene2D?.held)return false;ok=!!window.AlchemyEconomy.consign(campaign,id);if(ok)window.dispatchEvent(new CustomEvent('alchemy:inventory-action',{detail:{kind:'consign',id}}));}
@@ -715,6 +724,7 @@
     return {ok:true,reason:'',next};
   }
   function replaceEquipment(oldId,newId){
+    if(window.AlchemyDialogue?.blocking)return false;
     const result=canReplaceEquipment(oldId,newId);if(!result.ok)return false;if(oldId===newId)return true;
     campaign.economy.equipped=result.next;
     if(typeof CustomEvent!=='undefined')window.dispatchEvent(new CustomEvent('alchemy:equipment-replaced',{detail:{oldId,newId}}));
@@ -723,7 +733,7 @@
   function canLeaveMainMenu() {
     if (!state?.started || !campaign) return {ok:true, reason:''};
     const viewPhase = window.AlchemyViewState?.snapshot?.().phase;
-    if (state.busy || window.AlchemyInteractionBusy || window.AlchemyScene2D?.busy || window.AlchemyScene2D?.held || window.AlchemyOpening?.active || (viewPhase && viewPhase !== 'idle')) {
+    if (window.AlchemyDialogue?.blocking || state.busy || window.AlchemyInteractionBusy || window.AlchemyScene2D?.busy || window.AlchemyScene2D?.held || window.AlchemyOpening?.active || (viewPhase && viewPhase !== 'idle')) {
       return {ok:false, reason:'当前操作完成后才能返回主菜单。'};
     }
     return {ok:true, reason:''};
