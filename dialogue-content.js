@@ -25,9 +25,26 @@
     opt_intro:'初次见面，怎么称呼？',opt_chat:'聊聊近况',opt_market:'问问坊市',opt_market_locked:'第二日开门后可聊',opt_letter:'打开原委托纸笺',opt_back:'还有一事',opt_goodbye:'先去忙了',opt_close:'结束交谈',
     visitor_return:'掌柜，我们又见面了。这回还是先把手头这一单说清楚。',
     commission_notice:'掌柜，我带了药料来，有一份代炼委托。详情都在这张纸笺上。',
-    opt_read_commission:'查看委托'
+    opt_read_commission:'查看委托',
+    merchant_hello:'听说这儿新开了间丹坊，过来认个门。我在坊市卖些护炉的法器。',
+    merchant_offer:'这枚{{toolName}}，能压一压炸炉的险。掌柜刚开张，可要添一件？',
+    merchant_question:'什么价？',
+    merchant_price:'{{price}}文。摊上还有几样，要不要过去瞧瞧？',
+    merchant_market:'去坊市看看',merchant_later:'改日再说',
+    merchant_equipment:'开炉前把它安置好，才管用。',merchant_arrange:'回丹房布置'
   };
   const graphs={
+    merchant:{id:'merchant',version:1,title:'法器商来访',start:'hello',kind:'merchant',nodes:{
+      hello:{speaker:'merchant',line:'merchant_hello',scene:'orders',next:'offer'},
+      offer:{speaker:'merchant',line:'merchant_offer',scene:'orders',next:'question'},
+      question:{speaker:'player',line:'merchant_question',scene:'orders',next:'price'},
+      price:{speaker:'merchant',line:'merchant_price',scene:'orders',choices:[{id:'market',text:'merchant_market',to:'market'},{id:'later',text:'merchant_later',to:'later'}]},
+      market:{end:true,set:{merchantDecision:'market'}},later:{end:true,set:{merchantDecision:'declined'}}
+    }},
+    merchant_equipment:{id:'merchant_equipment',version:1,title:'法器入手',start:'arrange',kind:'merchant',nodes:{
+      arrange:{speaker:'merchant',line:'merchant_equipment',scene:'shop',next:'end',nextText:'merchant_arrange'},
+      end:{end:true,set:{merchantEquipmentRead:true}}
+    }},
     commission:{id:'commission',version:2,title:'来客委托',start:'notice',kind:'commission',nodes:{
       notice:{speaker:'visitor',line:'commission_notice',scene:'orders',next:'letter',nextText:'opt_read_commission'},
       letter:{end:true,action:'letter'}
@@ -65,5 +82,5 @@
       end:{end:true,set:{'met.{{customerId}}':true}}
     }}
   };
-  window.AlchemyDialogueContent={locale:'zh-CN',strings:{'zh-CN':strings},graphs,speakers:{narrator:{name:'旁白',seal:'叙'},landlady:{name:'邵四娘',role:'铺契交接',seal:'邵'},player:{name:'我',role:'丹坊掌柜',seal:'我'},visitor:{name:'{{visitor}}',role:'{{role}}',seal:'客'}}};
+  window.AlchemyDialogueContent={locale:'zh-CN',strings:{'zh-CN':strings},graphs,speakers:{merchant:{name:'法器商',role:'坊市法器摊主',seal:'商'},narrator:{name:'旁白',seal:'叙'},landlady:{name:'邵四娘',role:'铺契交接',seal:'邵'},player:{name:'我',role:'丹坊掌柜',seal:'我'},visitor:{name:'{{visitor}}',role:'{{role}}',seal:'客'}}};
 })();

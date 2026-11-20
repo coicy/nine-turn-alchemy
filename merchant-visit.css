@@ -1,0 +1,7 @@
+/* The existing market stallholder also visits the counter. */
+body[data-merchant-visit=counter] .counter-board :is(#counterNote,#counterLetter,#counterParcels,#counterParcelHint,#counterReceipt,#counterConversation,.browse-customers,.counter-waiting){display:none!important}
+body[data-merchant-visit=counter] .counter-board>.visitor-dialogue{display:none!important}
+body[data-merchant-visit=counter] .counter-board .counter-sign{visibility:hidden}
+body[data-merchant-visit=counter] #merchantConversation{display:block}
+body:has(#gameDialogue[open]) #merchantConversation{visibility:hidden!important}
+#gameDialogue[data-kind=merchant]:has(#dialogueChoices button) #dialogueLeave{display:none}

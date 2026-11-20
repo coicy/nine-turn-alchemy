@@ -17,7 +17,7 @@
         for(const target of [n.next,...(n.choices||[]).map(c=>c.to)].filter(Boolean))if(!g.nodes[target])errors.push(id+'/'+nid+': missing target '+target);
         const ids=new Set();for(const c of n.choices||[]){if(ids.has(c.id))errors.push(id+'/'+nid+': duplicate choice');ids.add(c.id);if(!content.strings?.[content.locale]?.[c.text])errors.push(id+'/'+nid+': missing choice text');}
         if(n.action&&!['letter'].includes(n.action))errors.push(id+'/'+nid+': unknown action');
-        if(n.scene&&!['work','orders'].includes(n.scene))errors.push(id+'/'+nid+': unknown scene');
+        if(n.scene&&!['work','orders','shop'].includes(n.scene))errors.push(id+'/'+nid+': unknown scene');
       }
       const reached=new Set(),walk=n=>{if(reached.has(n)||!g.nodes[n])return;reached.add(n);const node=g.nodes[n];if(node.next)walk(node.next);for(const c of node.choices||[])walk(c.to);};walk(g.start);
       // Historical cursor entrances are valid but are not part of a new conversation.

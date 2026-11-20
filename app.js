@@ -660,6 +660,7 @@
   }
   function chooseOrder(id) {
     if(window.AlchemyDialogue?.blocking)return false;
+    if(window.AlchemyMerchantVisit?.atCounter)return false;
     if(!campaign||state.busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy||window.AlchemyScene2D?.held||activeCommission()||campaign.phase!=='open')return false;
     if(!campaign.orders.some(o=>o.id===id&&o.status==='pending'))return false;
     const live=!state.pillEnded,previous=state;
