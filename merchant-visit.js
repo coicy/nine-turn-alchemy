@@ -2,7 +2,7 @@
 (() => {
  'use strict';
  const api=window.AlchemyGame,saves=window.AlchemySaves,D=window.AlchemyDialogue;
- const key='merchant-visit-v205',art='assets/scene-props-v42/merchant.webp';
+ const key='merchant-visit-v205',art=window.AlchemyMarketMerchants.merchants.find(m=>m.id==='artificer').portrait;
  const board=document.querySelector('.counter-board'),visitor=document.getElementById('counterVisitor');
  let scheduled=false,restored=false,marketSelected=false;
  function record(){const value=saves.preference(key);return value?.version===1?value:{version:1,phase:'unseen'};}
@@ -46,7 +46,7 @@
   }
   const view=window.AlchemyViewState.snapshot();
   if(r.phase==='market'){
-   if(!marketSelected){if(view.current!=='shop'){window.AlchemyViewState.navigate('shop');return;}window.AlchemyMarketLayout.inspectTool('ward');marketSelected=true;}
+   if(!marketSelected){if(view.current!=='shop'){window.AlchemyViewState.navigate('shop');return;}window.AlchemyMarketLayout.inspectTool('ward','artificer');marketSelected=true;}
    if(view.location!=='shop'){finish();return;}
    const owned=api.campaign().economy.tools;
    if(owned.length&&!D.flags.merchantEquipmentRead){

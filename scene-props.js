@@ -5,7 +5,7 @@
  function decorate(){market.querySelectorAll('[data-inspect]').forEach(b=>{if(!b.querySelector('.tool-art')){const art=icon(b.dataset.inspect);if(art)b.prepend(art);}});
   const selected=market.querySelector('[data-inspect][aria-pressed=true]'),details=market.querySelector('.market-description');if(selected&&details&&!details.querySelector('.tool-art'))details.prepend(icon(selected.dataset.inspect));
   drawer.querySelectorAll('.equipment-slot[data-equipment],.equipment-card').forEach(el=>{const id=el.dataset.equipment||el.querySelector('[data-equipment]')?.dataset.equipment;if(!el.querySelector('.tool-art')){const art=icon(id);if(art)el.prepend(art);}});
-  if(!market.querySelector('.market-merchant')){const img=document.createElement('img');img.className='market-merchant';img.src='assets/scene-props-v42/merchant.webp';img.alt='坊市掌柜';market.append(img);}
+  if(!market.classList.contains('world-market')&&!market.querySelector('.market-merchant')){const img=document.createElement('img');img.className='market-merchant';img.src='assets/scene-props-v42/merchant.webp';img.alt='坊市掌柜';market.append(img);}
  }
  const waiting=document.createElement('div');waiting.className='counter-waiting';waiting.setAttribute('aria-label','候客');board.append(waiting);
 

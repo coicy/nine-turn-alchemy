@@ -1,0 +1,77 @@
+/* Stall signs and merchandise share one market counter on both layouts. */
+body.object-world.engine-shell .world-market.engine-panel[data-shell-active=true] {
+  top: var(--market-top,64px)!important;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+}
+body.object-world .world-market > .world-market-tabs {
+  min-height: 0;
+  padding: 6px 10px;
+  gap: 6px;
+  align-items: center;
+  border-bottom: 1px solid #b99a70;
+}
+body.object-world .world-market > .world-market-tabs button {
+  flex: 0 1 128px;
+  min-width: 0;
+  min-height: 46px;
+  padding: 4px 8px;
+  line-height: 1.2;
+  background: #efe1c8;
+  color: #58412d;
+  border: 1px solid #ae916b;
+  border-radius: 4px;
+}
+body.object-world .world-market > .world-market-tabs button[aria-pressed=true] {
+  color: #fff5dd;
+  background: #79442f;
+  border-bottom: 3px solid #533623;
+}
+.world-market-tabs :is(b, small) { display: block; }
+.world-market-tabs small { font-size: 12px; margin-top: 2px; }
+.merchant-list { display: flex; align-items: center; gap: 8px; font-weight: bold; color: #58412d; }
+.merchant-list select { min-height: 44px; font: inherit; color: inherit; background: #fff3d9; border: 1px solid #ae916b; padding: 4px 8px; max-width: 100%; }
+body.object-world .world-market .market-stage { min-height: 0; }
+.world-market .stall-shelves {
+  position: absolute; z-index: 4; top: 8px; right: 8px; display: flex;
+  border: 1px solid #8e6a48; border-radius: 4px; background: #efdfc3;
+}
+body.object-world .world-market .stall-shelves button {
+  min-height: 44px; min-width: 48px; margin: 0; padding: 4px 9px; border: 0;
+  color: #573d29; background: transparent; font-size: 14px; border-radius: 3px;
+}
+body.object-world .world-market .stall-shelves button[aria-pressed=true] {
+  color: #fff5dd; background: #79442f; font-weight: bold;
+}
+.world-market .market-receipt { margin-right: auto; color: #513920; font-size: 13px; }
+body.object-world .world-market .market-stage .market-stalls > section { min-height: 0; }
+.world-market .plan-display { display: flex; justify-content: center; }
+.world-market .stall-wares { box-sizing: border-box; }
+.world-market .empty-market { grid-row: 1 / 4; }
+.world-market .empty-market p { width: fit-content; margin: 12px; padding: 8px; background: #f7ecd4; }
+body.object-world .world-market .market-stage .artifact-picker { justify-content: safe center; }
+.world-market .market-foot .merchant-wallet { font-weight: bold; font-variant-numeric: tabular-nums; }
+@media (min-width: 900px) {
+  .world-market .market-foot .merchant-wallet { display: none; }
+}
+body.object-world .world-market > .world-price-tag { grid-row: 3; }
+body.object-world .world-market > .market-foot { grid-row: 4; }
+@media (max-width: 650px) {
+  body.object-world[data-world-location=shop] .engine-nav .furnace-heading,
+  body.object-world[data-world-location=shop] .engine-nav #engineWallet { display: none!important; }
+  body.object-world[data-world-location=shop] .engine-nav { justify-content: space-between; }
+  body.object-world[data-world-location=shop] .engine-nav > button {
+    flex: 0 1 auto;
+    min-width: 0;
+    margin: 0;
+    padding: 4px!important;
+    font-size: 12px!important;
+  }
+  body.object-world .world-market > .world-market-tabs button { flex: 1; }
+  body.object-world .world-market > .market-foot { min-height: 52px; padding: 4px 8px; }
+  body.object-world .world-market .market-stage .market-stalls > [data-market-group] { display: block; }
+}
+@media (max-width: 650px) and (max-height: 650px) {
+  body.object-world .world-market > .world-price-tag { max-height: 32dvh; padding: 6px 10px; }
+  .world-market > .world-price-tag p { margin: 3px 0; }
+}
