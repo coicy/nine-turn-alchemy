@@ -5,11 +5,20 @@
   const board=document.querySelector('.counter-board');
   const sale=document.createElement('section');
   sale.id='counterSale'; sale.hidden=true; sale.setAttribute('aria-label','柜台选货');
-  sale.innerHTML='<div class="sale-stage"><img class="sale-person" alt=""><div class="sale-desk"></div><header><strong></strong><button type="button" data-sale-leave>下次再看</button></header><div class="sale-wares" role="group" aria-label="柜上的货物"></div></div><div class="sale-slip"><div class="sale-description"></div><footer><span class="sale-wallet"></span><button type="button" data-sale-hold>留到收市</button><button type="button" data-sale-buy></button></footer><span class="sale-status" role="status"></span></div>';
+  sale.innerHTML='<div class="sale-stage"><img class="sale-person" alt=""><div class="sale-desk"></div><header><strong></strong><button type="button" data-sale-leave>下次再看</button></header><div class="sale-wares" role="group" aria-label="柜上的货物"></div></div><div class="sale-slip"><div class="sale-description" id="counterSaleDetail"><button class="sale-use" data-sale-use hidden></button><div class="sale-facts" aria-live="polite" aria-atomic="true"></div></div><footer><div class="sale-account"><span class="sale-wallet"></span><span class="sale-status" role="status"></span></div><button type="button" data-sale-hold>留到收市</button><button type="button" data-sale-buy></button></footer></div>';
   board.append(sale);
   const stage=sale.querySelector('.sale-stage'), person=sale.querySelector('img'), wares=sale.querySelector('.sale-wares');
   const hold=sale.querySelector('[data-sale-hold]'),buy=sale.querySelector('[data-sale-buy]'),leave=sale.querySelector('[data-sale-leave]');
   const parcel='<img class="sale-parcel" src="assets/runtime-v10/herb-parcel-v1.webp" alt="">';
+  const detail=sale.querySelector('.sale-description');
+  const facts=detail.querySelector('.sale-facts'), useButton=detail.querySelector('[data-sale-use]');
+  const framed=g=>g.kind==='tool'||g.kind==='furnace';
+  function wareButton(g,d,i,selected) {
+    const name=UX.esc(d.name);
+    const tag=framed(g)?'':'<span class="sale-tag"><b>'+name+'</b><small>'+(d.disabled?d.status:d.price+' 文')+'</small></span>';
+    const label=framed(g)?' aria-label="'+name+'"':'';
+    return '<button type="button" data-sale-item="'+i+'" data-focus-key="sale-'+i+'" data-object="'+UX.esc(g.id)+'" data-type="'+UX.esc(g.kind)+'"'+label+' aria-controls="counterSaleDetail" aria-pressed="'+(i===selected)+'"><span class="sale-object">'+d.art+'</span>'+tag+'</button>';
+  }
   function describe(c,g) {
     const e=c.economy;
     if (g.kind==='tool') {
@@ -32,7 +41,8 @@
     const scale=Math.max(w/1672,h/941), edge=(h-941*scale)/2+523*scale;
     const count=wares.children.length, depth=h-edge;
     const twoRows=count>=4 && w<=650 && (w<count*84+24 || depth>=170);
-    const size=twoRows?Math.min(94,w/(count===4?2:3)*.76,(depth-18)/2-42):Math.min(104,w/(count+1)*.77,h*.22);
+    const rowPadding=wares.classList.contains('sale-objects-only')?14:42;
+    const size=twoRows?Math.min(94,w/(count===4?2:3)*.76,(depth-18)/2-rowPadding):Math.min(104,w/(count+1)*.77,h*.22);
     wares.dataset.count=String(count);
     wares.classList.toggle('sale-two-rows',twoRows);
     stage.style.setProperty('--desk-edge',edge+'px');
@@ -48,15 +58,22 @@
     const seller=trade.merchants[a.seller], goods=a.goods.map(g=>describe(c,g)),g=a.goods[a.selected],d=goods[a.selected];
     person.src=seller.portrait;
     stage.querySelector('header strong').textContent=seller.name+(a.source==='held'?' · 今日留货':a.source==='delivery'?' · 送药':'');
-    UX.html(wares,goods.map((d,i)=>'<button type="button" data-sale-item="'+i+'" data-focus-key="sale-'+i+'" data-object="'+a.goods[i].id+'" data-type="'+a.goods[i].kind+'" aria-pressed="'+(i===a.selected)+'"><span class="sale-object">'+d.art+'</span><span class="sale-tag"><b>'+d.name+'</b><small>'+(d.disabled?d.status:d.price+' 文')+'</small></span></button>').join(''));
+    wares.classList.toggle('sale-objects-only',a.goods.every(framed));
+    UX.html(wares,goods.map((d,i)=>wareButton(a.goods[i],d,i,a.selected)).join(''));
     window.AlchemyWorldUI?.decorateTools(wares);
     const use=g.kind==='tool' && c.economy.tools.includes(g.id) ? '回炉布置' : g.kind==='craftMaterial' && c.economy.craftStock[g.id] ? '回丹房取料' : '';
-    UX.html(sale.querySelector('.sale-description'),(use?'<button class="sale-use" data-sale-use>'+use+'</button>':'')+'<header><h3>'+d.name+'</h3><span>'+d.status+'</span></header><p>'+d.description+'</p>');
+    const displayPrice=framed(g) && Number.isFinite(d.price);
+    const price=displayPrice?'<strong class="sale-price">'+d.price+' 文</strong>':'';
+    detail.classList.toggle('sale-framed-detail',framed(g));
+    useButton.hidden=!use; useButton.textContent=use;
+    const info='<header><h3>'+d.name+'</h3>'+price+(d.status?'<span>'+d.status+'</span>':'')+'</header><p>'+d.description+'</p>';
+    if (facts.innerHTML!==info) facts.innerHTML=info;
     sale.querySelector('.sale-wallet').textContent='现有 '+c.economy.coins+' 文';
     hold.hidden=a.source!=='first'||g.kind!=='tool'||d.disabled;
     const short=Math.max(0,(d.price||0)-c.economy.coins);
     buy.disabled=!!(d.disabled||short);
-    buy.textContent=d.disabled?d.status:short?'还差 '+short+' 文':(g.kind==='furnace'?'改炉':'买下')+' · '+d.price+' 文';
+    const purchase=g.kind==='furnace'?'改炉':'买下';
+    buy.textContent=d.disabled?d.status:short?'还差 '+short+' 文':displayPrice?purchase:purchase+' · '+d.price+' 文';
     leave.textContent=a.source==='delivery'?'收起药单':a.source==='held'?'稍后再取':'送客';
     fit();
   }
