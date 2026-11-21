@@ -23,7 +23,7 @@
     const e=c.economy;
     if (g.kind==='tool') {
       const d=E.TOOL_DEFS.find(t=>t.id===g.id),owned=e.tools.includes(g.id);
-      return {name:d.name,price:d.price,description:d.description,status:owned?'已持有':'',disabled:owned,art:'<i class="tool-art" data-tool-art="'+d.id+'"></i>'};
+      return {name:d.name,price:d.price,description:d.description,status:owned?'已持有':'',disabled:owned,art:'<img class="sale-tool" src="assets/counter-tools-v216/'+d.id+'.webp" alt="" draggable="false">'};
     }
     if (g.kind==='craftMaterial') {
       const d=window.AlchemyCrafts.get(g.id);
@@ -60,7 +60,6 @@
     stage.querySelector('header strong').textContent=seller.name+(a.source==='held'?' · 今日留货':a.source==='delivery'?' · 送药':'');
     wares.classList.toggle('sale-objects-only',a.goods.every(framed));
     UX.html(wares,goods.map((d,i)=>wareButton(a.goods[i],d,i,a.selected)).join(''));
-    window.AlchemyWorldUI?.decorateTools(wares);
     const use=g.kind==='tool' && c.economy.tools.includes(g.id) ? '回炉布置' : g.kind==='craftMaterial' && c.economy.craftStock[g.id] ? '回丹房取料' : '';
     const displayPrice=framed(g) && Number.isFinite(d.price);
     const price=displayPrice?'<strong class="sale-price">'+d.price+' 文</strong>':'';
