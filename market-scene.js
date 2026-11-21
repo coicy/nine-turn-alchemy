@@ -3,6 +3,7 @@
   const api = window.AlchemyGame, E = window.AlchemyEconomy, UX = window.AlchemyUX;
   const catalog = window.AlchemyMarketMerchants;
   const section = document.querySelector('.economy-board');
+  const consignment = section.querySelector('.consignment-board-v158');
   const packNames = ['普通药包', '精选药包'];
   const packEffects = ['基础起炉材料', '起炉至少良品'];
   let merchantId, kind, selection, notice = '', noticeTimer;
@@ -95,6 +96,11 @@
     return '<h3>' + tool.name + '</h3><p>' + tool.description + '</p>' + action;
   }
 
+  function paint(content) {
+    UX.html(section, content);
+    if (consignment) section.prepend(consignment);
+  }
+
   function render() {
     const c = api.campaign();
     if (!c) return;
@@ -105,7 +111,7 @@
       merchantId = kind = selection = null;
       delete section.dataset.merchant;
       delete section.dataset.marketTab;
-      UX.html(section, '<div class="market-stage empty-market"><p>今日尚无商人出摊</p></div><footer class="market-foot"></footer>');
+      paint('<div class="market-stage empty-market"><p>今日尚无商人出摊</p></div><footer class="market-foot"></footer>');
       requestAnimationFrame(fit);
       return;
     }
@@ -118,7 +124,7 @@
     const blocked = s.busy || window.AlchemyInteractionBusy || window.AlchemyScene2D?.busy || c.phase !== 'open';
     section.dataset.merchant = merchantId;
     section.dataset.marketTab = kind;
-    UX.html(section, navigation(stalls, stall) +
+    paint(navigation(stalls, stall) +
       '<div class="market-stage">' +
       shelfNavigation(stall) + '<img class="market-merchant" loading="lazy" src="' + UX.esc(stall.portrait) +
       '" alt="' + UX.esc(stall.name) + '"><div class="market-foreground" aria-hidden="true"></div><div class="market-stalls">' +
