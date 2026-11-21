@@ -2,7 +2,7 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const base=fs.readFileSync(__dirname+'/verify-simulation.cjs','utf8').split("const click=id=>")[0]
  .replace('Event:class{constructor(type){this.type=type}}','Event:class{constructor(type){this.type=type}},CustomEvent:class{constructor(type,init={}){this.type=type;this.detail=init.detail}}')
  .replace("window.scrollTo=()=>{};","window.scrollTo=()=>{};window.localStorage=auditStorage;")
- .replace('vm.runInContext(source,context);',"vm.runInContext(fs.readFileSync(__dirname+'/economy.js','utf8'),context);vm.runInContext(fs.readFileSync(__dirname+'/campaign.js','utf8'),context);vm.runInContext(source,context);");
+ .replace('vm.runInContext(source,context);',"vm.runInContext(fs.readFileSync(__dirname+'/crafts.js','utf8'),context);vm.runInContext(fs.readFileSync(__dirname+'/economy.js','utf8'),context);vm.runInContext(fs.readFileSync(__dirname+'/campaign.js','utf8'),context);vm.runInContext(source,context);");
 const store=new Map(),storage={getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)};
 function environment(){const outer={require,__dirname,console,auditStorage:storage};vm.createContext(outer);vm.runInContext(base+`;globalThis.env={window,document,el,flush,context};`,outer);return outer.env;}
 let e=environment();const api=()=>e.window.AlchemyGame;

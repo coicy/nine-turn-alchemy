@@ -44,14 +44,14 @@
    const preview=UX.submissionSummary(q);
    const consignPreview=cq?.quote?.guaranteedPayout?`寄售${cq.quote.waitDays}天后回款 ${cq.quote.guaranteedPayout} 铜钱 · ${cq.quote.tierName}`:'';
    const consignDisabled=cq?.ok?'':' disabled';
-   html(selection,'<div class="loop-selected-heading"><strong>'+p.turn+'转 · 药力 '+Math.round(p.value)+'</strong><button data-loop-inspect aria-label="查看选中丹药">看丹</button><button data-loop-clear aria-label="取消选中丹药">×</button></div>'
+   html(selection,'<div class="loop-selected-heading"><strong>'+p.turn+'转 · '+(p.craftKind?window.AlchemyCrafts.name(p)+' · 估值 ':'药力 ')+Math.round(p.value)+'</strong><button data-loop-inspect aria-label="查看选中物品">看丹</button><button data-loop-clear aria-label="取消选中丹药">×</button></div>'
     +(preview?'<p class="loop-preview">'+preview+'</p>':'')+'<div class="loop-trades">'
     +(q.ok?actionButton('submit',p.id,'提交委托',disabled):'')+actionButton('sell',p.id,(p.materialAdvance?'抵料后出售 · ':'立即出售 · ')+E.saleValue(c,p)+' 铜钱',disabled)
     +(cq?.quote?actionButton('consign',p.id,'寄售',consignDisabled):'')+'</div>'
     +(consignPreview?'<p class="loop-consignment-note">'+consignPreview+(cq.ok?'':' · '+UX.esc(cq.reason))+'</p>':''));
   }
   else html(selection,notice?'<p class="loop-notice" role="status">'+UX.esc(notice)+'</p>':'');
-  const pending=c.orders.some(o=>o.status==='pending');let footer='';if(c.phase==='open'&&!s.commission){if(!pending)footer='<button data-loop-close-day'+(locked?' disabled':'')+'>回柜台收工</button>';if(!s.order||s.order.status!=='active')footer+=(c.economy.stock.some(n=>n>0)||Object.values(c.economy.herbs).some(n=>n>0))?'':'<button data-loop-market'+disabled+'>购置药材</button>';}
+  const pending=c.orders.some(o=>o.status==='pending');let footer='';if(c.phase==='open'&&!s.commission){if(!pending)footer='<button data-loop-close-day'+(locked?' disabled':'')+'>回柜台收工</button>';if(!s.order||s.order.status!=='active')footer+=(c.economy.stock.some(n=>n>0)||Object.values(c.economy.herbs).some(n=>n>0)||Object.values(c.economy.craftStock||{}).some(n=>n>0))?'':'<button data-loop-market'+disabled+'>购置材料</button>';}
   else if(s.commission&&s.pillEnded&&s.remaining===0)footer='<span>本单料已尽 · 还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'</span><button data-loop-stop'+disabled+'>终止本单</button>';
   html(next,footer);next.hidden=!footer;
   back.hidden=!atWork||!['herbs','pill'].includes(window.AlchemyScene2D.held);if(!back.hidden){const sr=stock.getBoundingClientRect(),vr=viewport.getBoundingClientRect();back.style.left=Math.max(8,Math.min(vr.width-80,sr.left-vr.left+8))+'px';back.style.top=Math.max(8,sr.top-vr.top-52)+'px';}

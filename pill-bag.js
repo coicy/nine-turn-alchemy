@@ -1,5 +1,5 @@
 (() => {
- const api=window.AlchemyGame,E=window.AlchemyEconomy,UX=window.AlchemyUX,panel=document.createElement('section');panel.className='pill-bag-panel';panel.setAttribute('aria-labelledby','pillBagTitle');panel.innerHTML='<header class="pill-bag-heading"><div><h2 id="pillBagTitle">丹匣</h2><p id="pillBagCount"></p></div><button data-bag-return data-focus-key="close-bag">合上丹匣</button></header><p id="pillBagStatus" role="status"></p><p id="pillBagLeaseOffer" class="pill-bag-lease-offer" hidden></p><div id="pillBagList" tabindex="-1"></div><section id="pillBagSelected" aria-label="选中丹药详情"></section>';document.querySelector('.game-layout').append(panel);
+ const api=window.AlchemyGame,E=window.AlchemyEconomy,UX=window.AlchemyUX,panel=document.createElement('section');panel.className='pill-bag-panel';panel.setAttribute('aria-labelledby','pillBagTitle');panel.innerHTML='<header class="pill-bag-heading"><div><h2 id="pillBagTitle">收纳匣</h2><p id="pillBagCount"></p></div><button data-bag-return data-focus-key="close-bag">合上收纳匣</button></header><p id="pillBagStatus" role="status"></p><p id="pillBagLeaseOffer" class="pill-bag-lease-offer" hidden></p><div id="pillBagList" tabindex="-1"></div><section id="pillBagSelected" aria-label="选中丹药详情"></section>';document.querySelector('.game-layout').append(panel);
  let selected=null,vacancy=null;const nature={warm:'温性',cool:'寒性',neutral:'平性'},quality=['凡品','良品','上品','极品','绝品'];
  const lease=window.AlchemyLease;
  const offerNote=panel.querySelector('#pillBagLeaseOffer');
@@ -15,18 +15,18 @@
      UX.html(offerNote,UX.art({turn:lease.procurement.featuredTurn,quality:1,nature:'warm',appearance:'lead-red'})+'药铺采购 · 第 '+lease.procurement.lastDay+' 天收工前交付一颗药力至少 '+lease.procurement.minimum+' 的丹，按售价加 '+lease.procurement.premium+' 文；九转及以上加 '+lease.procurement.featuredPremium+' 文。限购一颗。');
    }
  }
- function render(){const c=api.campaign();if(!c){panel.hidden=true;return;}const e=E.ensure(c),s=api.snapshot(),list=panel.querySelector('#pillBagList'),detail=panel.querySelector('#pillBagSelected');if(!Array.isArray(e.pills)){panel.querySelector('#pillBagCount').textContent='记录异常，原数据已保留';return;}panel.querySelector('#pillBagCount').textContent=e.pills.length?e.pills.length+' 颗':'';
+ function render(){const c=api.campaign();if(!c){panel.hidden=true;return;}const e=E.ensure(c),s=api.snapshot(),list=panel.querySelector('#pillBagList'),detail=panel.querySelector('#pillBagSelected');if(!Array.isArray(e.pills)){panel.querySelector('#pillBagCount').textContent='记录异常，原数据已保留';return;}panel.querySelector('#pillBagCount').textContent=e.pills.length?e.pills.length+' 件':'';
   updateLeaseOffer(c);
   if(!e.pills.some(p=>p.id===selected))selected=null;
-  const cards=e.pills.map(p=>'<button class="pill-bag-card quality-'+p.quality+'" data-pill-id="'+p.id+'" aria-pressed="'+(selected===p.id)+'" aria-label="查看'+p.turn+'转'+quality[p.quality]+nature[p.nature]+'灵丹，药力'+Math.round(p.value)+'">'+UX.art(p)+'<span>'+p.turn+'转 · '+quality[p.quality]+'</span>'+'</button>');
+  const cards=e.pills.map(p=>'<button class="pill-bag-card quality-'+p.quality+'" data-pill-id="'+p.id+'" aria-pressed="'+(selected===p.id)+'" aria-label="查看'+p.turn+'转'+(p.craftKind?window.AlchemyCrafts.name(p):quality[p.quality]+nature[p.nature]+'灵丹')+'，估值'+Math.round(p.value)+'">'+UX.art(p)+'<span>'+p.turn+'转 · '+(p.craftKind?window.AlchemyCrafts.name(p):quality[p.quality])+'</span>'+'</button>');
   if(vacancy)cards.splice(Math.min(vacancy.index,cards.length),0,'<div tabindex="-1" class="pill-bag-card empty-pill-place" data-focus-key="sold-place" aria-label="刚售出丹药的空丹位">空位</div>');
-  const occupied=cards.length;while(cards.length<Math.max(6,Math.ceil(occupied/3)*3))cards.push('<div class="pill-bag-place" aria-hidden="true"></div>');UX.html(list,(occupied?'':'<p class="pill-bag-empty">丹匣尚空</p>')+cards.join(''));
+  const occupied=cards.length;while(cards.length<Math.max(6,Math.ceil(occupied/3)*3))cards.push('<div class="pill-bag-place" aria-hidden="true"></div>');UX.html(list,(occupied?'':'<p class="pill-bag-empty">收纳匣尚空</p>')+cards.join(''));
   const p=e.pills.find(p=>p.id===selected);detail.hidden=!p;if(!p){detail.replaceChildren();return;}
   const preview=UX.submissionSummary(api.previewSubmission(p.id));
   const purchase=lease.purchaseQuote(c,p.id);
   const blocked=s.busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy||window.AlchemyScene2D?.held;
   const purchaseAction=purchase?'<button type="button" class="pill-bag-action pill-bag-lease-purchase" data-lease-purchase="'+UX.esc(p.id)+'" '+(blocked?'disabled':'')+'>药铺收购 · '+purchase.payout+' 铜钱</button>':'';
-  UX.html(detail,UX.art(p)+'<h3>'+p.turn+'转 · '+quality[p.quality]+'灵丹</h3><p>'+nature[p.nature]+' · 药力 '+Math.round(p.value)+' · 第 '+p.day+' 天收丹</p>'
+  UX.html(detail,UX.art(p)+'<h3>'+p.turn+'转 · '+(p.craftKind?window.AlchemyCrafts.name(p):quality[p.quality]+'灵丹')+'</h3><p>'+(p.craftKind?'自购器料 · 成本 '+p.craftCost+' 文 · 估值 ':nature[p.nature]+' · 药力 ')+Math.round(p.value)+' · 第 '+p.day+' 天收取</p>'
    +(p.materialAdvance?'<p>交易报价已抵客料款，最多24文。</p>':'')+(preview?'<p class="pill-bag-submit-preview">'+preview+'</p>':'')+'<div class="pill-bag-detail-actions" aria-label="丹药处理动作">'
    +(preview?'<button data-submit-pill="'+p.id+'" '+(s.busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy||window.AlchemyScene2D?.held?'disabled':'')+'>提交委托</button>':'')
    +'<button data-sell-pill="'+p.id+'" '+(s.busy||window.AlchemyInteractionBusy||window.AlchemyScene2D?.busy?'disabled':'')+'>出售 · '+E.saleValue(c,p)+' 铜钱</button>'+purchaseAction+'</div>');

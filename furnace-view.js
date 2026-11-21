@@ -238,6 +238,8 @@
     }
     controls.dataset.held = held ? 'true' : 'false';
     pill.disabled = blocked;
+    heading.querySelector('.furnace-inspect').textContent=s.craftKind?'看物':'看丹';
+    pill.setAttribute('aria-label',s.craftKind?'拿起炉内造物，收取入匣':'拿起炉内丹药，收丹入匣');
     pill.setAttribute('aria-disabled', String(blocked || held));
     fire.disabled = blocked || held || s.turn >= 100;
     tray.disabled = locked || (!collected && (!held || blocked));

@@ -22,7 +22,7 @@
   return progress + ' · 可交齐 · 到账 ' + quote.reward + ' 铜钱';
  }
  function restore(key,fallback){const el=key&&document.querySelector(key);(el?.checkVisibility()?el:fallback)?.focus?.({preventScroll:true});}
- function art(p){const a=window.AlchemyPillArt,d=a.describe(p),state={appearance:d.appearance,nature:d.nature,turn:d.turn,quality:d.quality};return '<span class="ux-pill-art" data-pill-art-state="'+esc(JSON.stringify(state))+'" data-pill-art-key="'+esc(d.key)+'"><img src="'+a.image(state)+'" alt=""></span>';}
+ function art(p){const a=window.AlchemyPillArt,d=a.describe(p),state={...(p.craftKind?{craftKind:p.craftKind}:{}),appearance:d.appearance,nature:d.nature,turn:d.turn,quality:d.quality};return '<span class="ux-pill-art" data-pill-art-state="'+esc(JSON.stringify(state))+'" data-pill-art-key="'+esc(d.key)+'"><img src="'+a.image(state)+'" alt=""></span>';}
  let blocked='',blockScope='',noticeTimer;
  function scope(){const s=api.snapshot(),c=api.campaign();return [c?.day,c?.phase,s.orderId,s.attempt,s.turn,s.pillEnded,s.roundEnded,s.busy,c?.economy?.coins].join('|');}
  function tell(message){blocked=message;blockScope=scope();const el=document.getElementById('workInstruction');if(el){el.hidden=false;el.textContent=message;}window.dispatchEvent(new Event('alchemy:ux-layout'));}

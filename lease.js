@@ -62,7 +62,7 @@
   function purchaseQuote(campaign, id) {
     if (!canOffer(campaign)) return null;
     const pill = campaign.economy?.pills?.find(item => item.id === id);
-    if (!pill || !Number.isFinite(pill.value) || pill.value < procurement.minimum ||
+    if (!pill || pill.craftKind || !Number.isFinite(pill.value) || pill.value < procurement.minimum ||
         !Number.isInteger(pill.turn) || pill.turn < 1 || pill.turn > 100) return null;
     const premium = pill.turn >= procurement.featuredTurn ? procurement.featuredPremium : procurement.premium;
     return {pill, premium, payout:E.saleValue(campaign,pill) + premium};

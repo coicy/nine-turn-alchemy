@@ -31,9 +31,11 @@
     merchant_question:'什么价？',
     merchant_price:'{{price}}文。摊上还有几样，要不要过去瞧瞧？',
     merchant_market:'去坊市看看',merchant_later:'改日再说',
-    merchant_equipment:'开炉前把它安置好，才管用。',merchant_arrange:'回丹房布置'
+    merchant_equipment:'开炉前把它安置好，才管用。',merchant_arrange:'回丹房布置',
+    buyer_request:'{{buyerReason}}掌柜这里可有{{need}}？我要一件至少{{minTurn}}转的成品，按市价加二成五收。',buyer_inspect:'看看匣里的成品',buyer_decline:'暂不出售'
   };
   const graphs={
+    craftBuyer:{id:'craftBuyer',version:1,title:'成品求购',start:'request',kind:'buyer',nodes:{request:{speaker:'visitor',line:'buyer_request',scene:'orders',set:{craftBuyerDecision:'pending'},choices:[{id:'inspect',text:'buyer_inspect',to:'inspect'},{id:'decline',text:'buyer_decline',to:'decline'}]},inspect:{end:true,set:{craftBuyerDecision:'inspect'}},decline:{end:true,set:{craftBuyerDecision:'decline'}}}},
     merchant:{id:'merchant',version:1,title:'法器商来访',start:'hello',kind:'merchant',nodes:{
       hello:{speaker:'merchant',line:'merchant_hello',scene:'orders',next:'offer'},
       offer:{speaker:'merchant',line:'merchant_offer',scene:'orders',next:'question'},

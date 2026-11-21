@@ -54,11 +54,11 @@
     const near=v.workMode==='furnace',live=!s.pillEnded&&!s.roundEnded;
     let target=null,rect=null,text='';
     if(held==='pill'){
-      target=document.querySelector('.furnace-tray');rect=layout.objects.tray;text='收丹入匣';
+      target=document.querySelector('.furnace-tray');rect=layout.objects.tray;text=s.craftKind?'收取入匣':'收丹入匣';
     }else if(held==='herbs'){
       target=document.getElementById('alchemyScene');rect=layout.mouth;text='投入炉口';
     }else if(near&&live&&s.turn>=100){
-      target=document.querySelector('.furnace-tray');rect=layout.objects.tray;text='百转成丹，点击收丹。';
+      target=document.querySelector('.furnace-tray');rect=layout.objects.tray;text=s.craftKind?'百转已成，收取入匣。':'百转成丹，点击收丹。';
     }else if(!enabled){window.AlchemyFeedback.setGuide('');return;}
 
     else if(near&&live&&!flags.refine&&s.turn<100){

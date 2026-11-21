@@ -1,0 +1,17 @@
+.market-craft-goods{position:absolute;z-index:3}
+.craft-picker{display:flex;gap:12px;overflow-x:auto;max-width:100%;padding:8px 2px;scrollbar-width:thin}
+.craft-picker>button{flex:0 0 92px;min-height:125px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;background:#eee0c1e8!important;color:#493526!important;font-size:13px}
+.craft-picker .ux-pill-art{width:76px;height:76px;display:block}.craft-picker img{width:100%;height:100%;object-fit:contain}
+.craft-picker small{display:block}.craft-picker>button[aria-pressed=true]{outline:2px solid #934d35;outline-offset:-2px}
+.economy-board[data-market-tab=craft] [data-market-group]:not([data-market-group=craft]),.economy-board:not([data-market-tab=craft]) [data-market-group=craft]{display:none!important}
+.object-world .economy-board[data-market-tab=craft] .market-stalls>.market-craft-goods{display:block!important;min-height:0;overflow:visible;border:0;background:none;padding:0}
+.world-price-tag>.ux-pill-art{float:right;width:85px;height:85px}.world-price-tag>.ux-pill-art img{width:100%;height:100%;object-fit:contain}
+.craft-sale-guide{font-size:12px;clear:both}
+.craft-buyer-goods{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;padding:12px 0}
+.craft-offer-card{padding:16px;border:1px solid #baa07d;background:#f8edd6}.craft-offer-card>.ux-pill-art{display:block;width:130px;height:130px}.craft-offer-card img{width:100%;height:100%;object-fit:contain}.craft-offer-card h3{font-size:17px}.craft-offer-card button{min-height:44px}
+body[data-craft-buyer=counter] .counter-board :is(#counterNote,#counterLetter,#counterParcels,#counterParcelHint,#counterReceipt,#counterConversation,.browse-customers,.counter-waiting){display:none!important}
+body[data-craft-buyer=counter] .counter-board>.visitor-dialogue{display:none!important}
+body[data-craft-buyer=counter] .counter-sign{visibility:hidden}
+body:has(#gameDialogue[open]) #craftBuyerConversation{visibility:hidden!important}
+#gameDialogue[data-kind=buyer]:has(#dialogueChoices button) #dialogueLeave{display:none}
+@media(max-width:650px){.craft-picker>button{flex-basis:82px;min-height:115px}.craft-picker{gap:8px}.craft-buyer-goods{grid-template-columns:1fr}.craft-trade-panel{padding:14px!important}.craft-trade-panel .pill-bag-heading{align-items:flex-start;gap:10px}.craft-trade-panel h2{font-size:18px}.craft-trade-panel header>button{flex-shrink:0;min-height:44px}}

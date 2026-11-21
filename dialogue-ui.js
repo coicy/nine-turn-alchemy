@@ -59,7 +59,7 @@
     clearTimers();setView('conversation');token=p.token;chars=0;$('dialogueStatus').textContent=runtime.error;
     $('dialogueSpeaker').textContent=p.speaker.name;$('dialogueRole').textContent=p.speaker.role||'';$('dialogueTitle').textContent=p.title;updatePortrait(p);facts(p);
     $('dialogueAccessible').textContent=p.speaker.name+'：'+p.text;$('dialogueText').textContent='';
-    $('dialogueLeave').textContent=p.kind==='opening'?'跳过开场':p.kind==='commission'?'离开':p.kind==='merchant'?(p.graph==='merchant'?'改日再说':'回丹房布置'):'暂别';$('dialogueLeave').title=p.kind==='opening'?'确认后跳过开场':p.kind==='commission'?'回到柜台':p.kind==='merchant'?'结束本次交谈':'保留当前句，稍后继续';$('dialogueNext').textContent=p.kind==='opening'?(node.next==='end'?'开始经营':'继续'):p.nextText;
+    $('dialogueLeave').textContent=p.kind==='opening'?'跳过开场':p.kind==='commission'?'离开':p.kind==='buyer'?'暂不出售':p.kind==='merchant'?(p.graph==='merchant'?'改日再说':'回丹房布置'):'暂别';$('dialogueLeave').title=p.kind==='opening'?'确认后跳过开场':p.kind==='commission'?'回到柜台':p.kind==='merchant'?'结束本次交谈':'保留当前句，稍后继续';$('dialogueNext').textContent=p.kind==='opening'?(node.next==='end'?'开始经营':'继续'):p.nextText;
     $('dialogueSkip').disabled=!p.wasSeen;$('dialogueSkip').hidden=p.kind==='opening'&&!p.wasSeen;paintChoices();$('dialogueNext').disabled=true;
     $('dialogueAdvance').setAttribute('aria-label','显示完整对白');$('dialogueProgress').textContent='';
     modes();if(skipping&&!p.wasSeen){skipping=false;modes();$('dialogueStatus').textContent='来到未读对白，快进已停止。';}
@@ -82,7 +82,7 @@
   $('dialogueAdvance').onclick=advance;$('dialogueNext').onclick=()=>{if(!runtime.present()?.read)reveal();else advance();};
   $('dialogueAuto').onclick=()=>{automatic=!automatic;skipping=false;modes();if(runtime.present()?.read)scheduleAuto();};
   $('dialogueSkip').onclick=()=>{if(!current?.wasSeen)return;skipping=!skipping;automatic=false;modes();if(skipping)reveal();else clearTimeout(autoTimer);};
-  function leave(){if(current?.kind==='opening')setView('confirm');else if(['commission','merchant'].includes(current?.kind)){if(!runtime.end(false))runtime.suspend();}else runtime.suspend();}
+  function leave(){if(current?.kind==='opening')setView('confirm');else if(['commission','merchant','buyer'].includes(current?.kind)){if(!runtime.end(false))runtime.suspend();}else runtime.suspend();}
   $('dialogueLeave').onclick=leave;
   function resumeReading(){setView('conversation');continueTyping();$('dialogueAdvance').focus({preventScroll:true});}
   $('dialogueKeep').onclick=resumeReading;$('dialogueConfirmSkip').onclick=()=>runtime.end(true);

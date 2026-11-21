@@ -42,7 +42,10 @@
       }
     });
   }
+  const craftFrames={"a":[[[31,133,233,178],[305,95,290,222],[606,83,291,239],[910,29,321,289],[1244,7,350,310]],[[50,419,177,194],[330,377,201,232],[606,362,266,254],[924,342,295,277],[1257,318,356,294]],[[12,704,243,208],[283,699,294,224],[595,654,303,281],[913,646,336,300],[1264,622,348,332]]],"b":[[[21,121,246,183],[302,88,260,215],[591,51,276,254],[894,19,306,286],[1208,0,313,320]],[[30,368,197,271],[293,344,221,301],[557,364,292,275],[867,360,319,275],[1197,338,338,292]],[[11,712,209,277],[260,683,250,309],[525,681,281,309],[831,657,332,338],[1180,654,345,351]]]};
   function describe(p={}){
+    const craft=window.AlchemyCrafts?.get(p.craftKind);if(craft){const turn=Math.max(1,Math.min(100,Number(p.turn)||1));return {craftKind:craft.id,appearance:'craft-'+craft.id,nature:'neutral',quality:p.quality||0,turn,key:craft.id+'/'+window.AlchemyCrafts.stage(turn)}}
+
     const nature=p.nature||p.order?.nature||'neutral';
     const appearance=palettes.resolve(nature,p.appearance);
     const turn=Math.max(1,Math.min(100,Number(p.turn)||1));
@@ -51,6 +54,12 @@
   }
   function make(p) {
     const d=describe(p);if(cache.has(d.key)){const hit=cache.get(d.key);cache.delete(d.key);cache.set(d.key,hit);return {...hit,description:d};}
+    if(d.craftKind){
+      const def=window.AlchemyCrafts.get(d.craftKind),source=window.AlchemyCrafts.atlas(def.atlas),im=window.AlchemyAssets.getImage(source);
+      if(!im){loadAppearance(source);const c=document.createElement('canvas');c.width=c.height=SIZE;return {canvas:c,url:c.toDataURL(),description:d};}
+      const index=window.AlchemyCrafts.stage(d.turn),[x,y,w,h]=craftFrames[def.atlas][def.row][index];
+      const c=document.createElement('canvas');c.width=c.height=SIZE;const ctx=c.getContext('2d'),scale=Math.min(236/w,236/h),dw=w*scale,dh=h*scale;ctx.drawImage(im,x,y,w,h,(SIZE-dw)/2,(SIZE-dh)/2,dw,dh);const entry={canvas:c,url:c.toDataURL(),description:d};cache.set(d.key,entry);return entry;
+    }
     const source = palettes.sources[d.appearance];
     const im = window.AlchemyAssets.getImage(source);
     if (!im) {
@@ -71,7 +80,7 @@
     const motion=window.AlchemyGameFeel?.sample();
     ctx.save();
     if(motion){ctx.translate(x+size/2,y+size/2+motion.lift*size);ctx.scale(motion.sx,motion.sy);ctx.translate(-x-size/2,-y-size/2);}
-    const performanceActive=window.AlchemyRefinePerformance?.drawPill(ctx,rendered.canvas,x,y,size);
+    const performanceActive=!d.craftKind&&window.AlchemyRefinePerformance?.drawPill(ctx,rendered.canvas,x,y,size);
     if(!performanceActive)ctx.drawImage(rendered.canvas,x,y,size,size);
     const elapsed=feedback&&performance.now()-feedback.start;
     const animating=!!(feedback&&feedback.key===d.key&&elapsed<650&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!window.AlchemyGameFeel?.reduced);

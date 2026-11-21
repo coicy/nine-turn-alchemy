@@ -26,7 +26,7 @@
       result || (guide ? {title:'',message:guide,delta:'',kind:'neutral'} : null);
     // Targets name these actions already; retain their accessible description.
     // Results, ritual steps and nonredundant guidance still use the visible strip.
-    box.dataset.presentation=!ritualText&&!result&&['点火门催炼','收丹入匣'].includes(guide)?'assistive':'visible';
+    box.dataset.presentation=!ritualText&&!result&&['点火门催炼','收丹入匣','收取入匣'].includes(guide)?'assistive':'visible';
     box.hidden=!entry;
     if (!entry) return;
     for(const [node,value] of [[titleNode,entry.title],[messageNode,entry.message],[deltaNode,entry.delta]]) {
@@ -47,7 +47,7 @@
   }
   window.addEventListener('alchemy:fanning',()=>{clearResult();unlock();pulse('fanning');rush(0);rush(.23);});
   const names={big:'大成功',success:'炼化成功',hold:'火候维持',damage:'丹体受损',explode:'炸丹 · 本炉结束',complete:'百转成丹',collect:'收丹完成',submit:'丹药已提交',win:'委托完成',loss:'本单结束'};
-  window.addEventListener('alchemy:feedback',e=>{const d=e.detail,k=d.event;if(k==='start'){if(window.AlchemyGame.snapshot().pillEnded){clearResult();return;}pulse('loaded');tone(180,.13);return;}if(k==='ritual-complete'){show('步罡已成',d.message,'','good',1800);tone(392,.17);tone(588,.25,.08);return;}if(!names[k])return;if(['collect','win','loss'].includes(k)&&window.AlchemyGame.snapshot().roundEnded){clearResult();tone(740,.24);return;}const bad=['explode','damage','loss'].includes(k),good=['success','big','complete','win'].includes(k);const value=typeof d.value==='number'?(d.value===0?'药力未变':`药力 ${d.value>0?'+':'−'}${Math.round(Math.abs(d.value))}`):String(d.value||'');show(names[k],d.autoStep ? `自动催炼 ${d.autoStep} / 7` : '',value,bad?'bad':good?'good':'neutral',1800);pulse(bad?'damaged':'result');
+  window.addEventListener('alchemy:feedback',e=>{const d=e.detail,k=d.event;if(k==='start'){if(window.AlchemyGame.snapshot().pillEnded){clearResult();return;}pulse('loaded');tone(180,.13);return;}if(k==='ritual-complete'){show('步罡已成',d.message,'','good',1800);tone(392,.17);tone(588,.25,.08);return;}if(!names[k])return;if(['collect','win','loss'].includes(k)&&window.AlchemyGame.snapshot().roundEnded){clearResult();tone(740,.24);return;}const bad=['explode','damage','loss'].includes(k),good=['success','big','complete','win'].includes(k);const craft=!!window.AlchemyGame.snapshot().craftKind,label=craft?'估值':'药力';const value=typeof d.value==='number'?(d.value===0?label+'未变':`${label} ${d.value>0?'+':'−'}${Math.round(Math.abs(d.value))}`):String(d.value||'');show(craft?({damage:'造物受损',explode:'炸炉 · 本炉结束',complete:'百转造物',collect:'收取完成'}[k]||names[k]):names[k],d.autoStep ? `自动催炼 ${d.autoStep} / 7` : '',value,bad?'bad':good?'good':'neutral',1800);pulse(bad?'damaged':'result');
     if(k==='explode'){rush(0,.25,220,.2);tone(90,.28);}else if(bad){rush(0,.12,420,.09);tone(155,.14,0,.045);}else if(k==='hold'){tone(240,.2,.02,.045);}else if(['collect','win'].includes(k)){tone(740,.24);tone(990,.3,.08);}else if(['big','fusion','complete'].includes(k)){tone(392,.24,0,.08);tone(588,.3,.045,.065);tone(784,.38,.10,.055);}else{tone(520,.14,0,.045);tone(780,.18,.055,.035);}
   });
   window.addEventListener('alchemy:feel',e=>{
