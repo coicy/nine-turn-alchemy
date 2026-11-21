@@ -40,6 +40,7 @@ function renderLeaseSlip(c) {
   if (leaseSlip.innerHTML !== html) leaseSlip.innerHTML = html;
 }
 
+window.addEventListener('alchemy:merchant-return-work',()=>{awaitingReception=null;});
 const labels={pending:'待接单',active:'已接',completed:'已完成',failed:'未完成',skipped:'未接' };
 const note=document.createElement('button');note.type='button';note.id='counterNote';note.className='counter-note';note.hidden=true;note.setAttribute('aria-controls','counterLetter');board.querySelector('.counter-desk').append(note);
 let noteImage;

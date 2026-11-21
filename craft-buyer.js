@@ -22,7 +22,7 @@
  function sync(){queued=false;const o=offer(),menu=document.getElementById('mainMenu');document.body.dataset.craftBuyer=atCounter()?'counter':'';entry.hidden=!atCounter();if(!api.snapshot().started||!menu?.hidden)return;
   if(!restored){restored=true;if(o?.status==='waiting'&&o.phase==='trade'){window.AlchemyViewState.navigate('orders',{internal:true});renderTrade();window.AlchemyViewState.navigate('craftTrade',{internal:true});return;}}
   if(!safe()||D.blocking||document.querySelector('dialog[open]'))return;
-  if(['counter','market','equip'].includes(window.AlchemyMerchantVisit?.snapshot().phase))return;
+  if(window.AlchemyMerchantVisit?.busy)return;
   if(!o||o.status!=='waiting')return;
   if(o.phase==='trade'){if(window.AlchemyViewState.snapshot().current==='craftTrade')renderTrade();else dismiss();return;}
   if(atCounter()){

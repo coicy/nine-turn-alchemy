@@ -218,6 +218,7 @@
     }
     if (campaign && state.started && (!state.busy || state.pill.ritualSafe > 0)) {
       window.AlchemyEconomy?.ensure(campaign);
+      window.AlchemyCounterTrade?.ensure(campaign, campaign.sellers ? null : window.AlchemySaves?.preference('merchant-visit-v205'));
       persistProgress();
     }
     window.dispatchEvent?.(new Event("alchemy:render"));
@@ -692,6 +693,13 @@
     state.roundEnded = true; telemetry?.finish(playtestSnapshot(), "abandoned");
     setFeedback("本单已终止，未用本单料已退还，丹匣丹药保留。", "", "loss"); window.AlchemyGameFeel?.emit('loss',{tier:'medium'}); render(); return true;
   }
+  function merchantAction(action,index) {
+    if (!campaign || !state.started || state.busy || window.AlchemyInteractionBusy || window.AlchemyScene2D?.held || window.AlchemyScene2D?.busy || window.AlchemyDialogue?.blocking) return false;
+    if (['arrive','recall','call'].includes(action) && (!state.pillEnded || window.AlchemyCraftBuyer?.atCounter)) return false;
+    if (!window.AlchemyCounterTrade.change(campaign,action,index)) return false;
+    render();
+    return true;
+  }
   function economyAction(kind,id,nature='neutral'){
     if(window.AlchemyDialogue?.blocking)return false;if(!campaign||state.busy||window.AlchemyInteractionBusy)return false;window.AlchemyEconomy.ensure(campaign);let ok=false;
     if(kind==='submit')return submitPill(id);
@@ -710,7 +718,12 @@
     }
     else if(kind==='equip'){const e=campaign.economy;if(!state.pillEnded||(!e.tools.includes(id)&&id!==null))return false;const ids=window.AlchemyEconomy.equippedIds(e.equipped);if(id===null)e.equipped=[];else if(ids.includes(id))e.equipped=ids.filter(t=>t!==id);else{if(ids.length>=window.AlchemyEconomy.EQUIP_SLOTS)return false;e.equipped=[...ids,id];}ok=true;}
     else if(kind==='reservePack'||kind==='reserveHerb'){if(campaign.phase!=='open'||campaignRules.active(campaign)||!state.pillEnded)return false;const e=campaign.economy;if(kind==='reserveHerb'){nature=id;if(!['warm','cool','neutral'].includes(nature)||!e.herbs[nature])return false;e.herbs[nature]--;id=0;}else{if(!Number.isInteger(id)||id<0||id>=window.AlchemyEconomy.PRICES.length||!e.stock[id])return false;e.stock[id]--;}ORDER_TARGET=0;MAX_PILLS=1;state=createState();state.started=true;state.roundEnded=false;state.pillEnded=true;state.pillEndReason='waiting';state.orderId=null;state.materialTier=kind==='reservePack'?id:0;state.materialNature=nature;window.dispatchEvent?.(new Event('alchemy:order'));ok=true;}
-    else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded))ok=window.AlchemyEconomy.buy(campaign,kind,id);
+    else if(campaign.phase==='open'&&(kind!=='furnace'||state.pillEnded)){
+      const trade=window.AlchemyCounterTrade;
+      if (trade && (!trade.offered(campaign,kind,id) || window.AlchemyScene2D?.held || window.AlchemyScene2D?.busy)) return false;
+      ok=window.AlchemyEconomy.buy(campaign,kind,id);
+      if (ok) trade?.bought(campaign,kind,id);
+    }
     if(ok){state.riskResult=randomRisk();render();if(['material','tool','furnace','craftMaterial'].includes(kind)&&typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:purchase',{detail:{kind}}));if(ok)window.AlchemyGameFeel?.emit(kind==='equip'?'equipment':kind==='reservePack'||kind==='reserveHerb'?'material':'purchase',{kind,id,tier:kind==='furnace'||kind==='equip'?'medium':'small'});}return ok;
   }
   function canReplaceEquipment(oldId,newId){
@@ -761,7 +774,7 @@
       return false;
     }
   }
-  window.AlchemyGame = { successValuePreview, submit:submitPill,previewSubmission,previewConsignment,canReplaceEquipment, replaceEquipment, canLeave:canLeaveMainMenu, saveNow, refinementProbabilities, valueForBase, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
+  window.AlchemyGame = { merchantAction, successValuePreview, submit:submitPill,previewSubmission,previewConsignment,canReplaceEquipment, replaceEquipment, canLeave:canLeaveMainMenu, saveNow, refinementProbabilities, valueForBase, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
     snapshot: () => ({ ...playtestSnapshot(), ...(state.pill.craftKind?{craftKind:state.pill.craftKind,craftCost:state.pill.craftCost}:{}), materialAdvance:state.pill.materialAdvance||0, nature:state.pill.nature||(campaign?campaignRules.active(campaign)?.nature:null)||'neutral',tier:state.pill.tier||0,pillId:state.pill.id||null,commission:activeCommission(), ...(state.pill.appearance?{appearance:state.pill.appearance}:{}), started: state.started,
     busy: state.busy, ritualActive: !!state.pill.ritualActive, ritualRemaining: state.pill.ritualSafe || 0, pillEnded: state.pillEnded, roundEnded: state.roundEnded,

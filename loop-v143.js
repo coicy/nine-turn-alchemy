@@ -27,7 +27,7 @@
    if(!card&&!sell&&!submit&&!consign&&!inspect&&!clear)return;e.preventDefault();e.stopImmediatePropagation();const s=game.snapshot();if(busy(s)){UX.tell('先处理或放回手中物件。');return;}
    if(card){selected=card.dataset.stockPill;revealSelected=true;notice='';}else if(clear)selected=null;else if(submit)trade('submit',submit.dataset.loopSubmit);else if(consign)trade('consign',consign.dataset.loopConsign);else if(sell)trade('sell',sell.dataset.loopSell);else if(inspect){if(route.navigate('bag',{anchor:inspect}))requestAnimationFrame(()=>document.querySelector('.pill-bag-card[data-pill-id="'+CSS.escape(selected)+'"]')?.click());}schedule();
  },true);
- next.addEventListener('click',e=>{if(e.target.closest('[data-loop-close-day]'))route.navigate('orders');if(e.target.closest('[data-loop-stop]'))terminate();if(e.target.closest('[data-loop-market]'))route.navigate('shop');});
+ next.addEventListener('click',e=>{if(e.target.closest('[data-loop-close-day]'))route.navigate('orders');if(e.target.closest('[data-loop-stop]'))terminate();if(e.target.closest('[data-loop-market]'))window.AlchemyMerchantVisit.call();});
  back.onclick=()=>{window.AlchemyScene2D.cancel();UX.clearInstruction();schedule();if(origin?.isConnected&&origin.checkVisibility())origin.focus({preventScroll:true});};
  function render(){
   queued=false;const s=game.snapshot(),c=game.campaign(),v=route.snapshot();if(!c)return;const atWork=v.current==='work'&&!window.AlchemyOpening?.active,pills=c.economy.pills;
@@ -51,7 +51,7 @@
     +(consignPreview?'<p class="loop-consignment-note">'+consignPreview+(cq.ok?'':' · '+UX.esc(cq.reason))+'</p>':''));
   }
   else html(selection,notice?'<p class="loop-notice" role="status">'+UX.esc(notice)+'</p>':'');
-  const pending=c.orders.some(o=>o.status==='pending');let footer='';if(c.phase==='open'&&!s.commission){if(!pending)footer='<button data-loop-close-day'+(locked?' disabled':'')+'>回柜台收工</button>';if(!s.order||s.order.status!=='active')footer+=(c.economy.stock.some(n=>n>0)||Object.values(c.economy.herbs).some(n=>n>0)||Object.values(c.economy.craftStock||{}).some(n=>n>0))?'':'<button data-loop-market'+disabled+'>购置材料</button>';}
+  const pending=c.orders.some(o=>o.status==='pending');let footer='';if(c.phase==='open'&&!s.commission){if(!pending)footer='<button data-loop-close-day'+(locked?' disabled':'')+'>回柜台收工</button>';if(!s.order||s.order.status!=='active')footer+=c.economy.stock[0]<=1?'<button data-loop-market'+disabled+'>请何采药送药</button>':'';}
   else if(s.commission&&s.pillEnded&&s.remaining===0)footer='<span>本单料已尽 · 还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'</span><button data-loop-stop'+disabled+'>终止本单</button>';
   html(next,footer);next.hidden=!footer;
   back.hidden=!atWork||!['herbs','pill'].includes(window.AlchemyScene2D.held);if(!back.hidden){const sr=stock.getBoundingClientRect(),vr=viewport.getBoundingClientRect();back.style.left=Math.max(8,Math.min(vr.width-80,sr.left-vr.left+8))+'px';back.style.top=Math.max(8,sr.top-vr.top-52)+'px';}

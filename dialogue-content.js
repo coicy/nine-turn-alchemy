@@ -20,17 +20,17 @@
     visitor_greeting:'{{greeting}}',visitor_intro:'我是{{visitor}}，做的是{{role}}的营生。{{request}}',
     visitor_terms:'药材{{materials}}包，都是{{nature}}的。丹药得有{{target}}药力，工钱{{fee}}文，纸笺上也写明白了。',
     visitor_active:'我在柜边候着。掌柜先照看炉里的丹，不必为了说话耽误守炉。',
-    visitor_talk:'{{smalltalk}}',visitor_market:'坊市的药材、炉具和法器各有用途。先看清货物和价钱，留足铺租，再决定添置什么。',
+    visitor_talk:'{{smalltalk}}',visitor_market:'行商会带法器和器料上门。普通药包快用完时，捎口信给何采药，他会送到柜上。',
     visitor_end:'那就劳烦掌柜了。纸笺留在柜上，随时可以再看。',
-    opt_intro:'初次见面，怎么称呼？',opt_chat:'聊聊近况',opt_market:'问问坊市',opt_market_locked:'第二日开门后可聊',opt_letter:'打开原委托纸笺',opt_back:'还有一事',opt_goodbye:'先去忙了',opt_close:'结束交谈',
+    opt_intro:'初次见面，怎么称呼？',opt_chat:'聊聊近况',opt_market:'打听行商',opt_market_locked:'第二日开门后可聊',opt_letter:'打开原委托纸笺',opt_back:'还有一事',opt_goodbye:'先去忙了',opt_close:'结束交谈',
     visitor_return:'掌柜，我们又见面了。这回还是先把手头这一单说清楚。',
     commission_notice:'掌柜，我带了药料来，有一份代炼委托。详情都在这张纸笺上。',
     opt_read_commission:'查看委托',
-    merchant_hello:'听说这儿新开了间丹坊，过来认个门。我在坊市卖些护炉的法器。',
+    merchant_hello:'听说这儿新开了间丹坊，过来认个门。带了两件护炉的法器，借掌柜的柜面摆一摆。',
     merchant_offer:'这枚{{toolName}}，能压一压炸炉的险。掌柜刚开张，可要添一件？',
     merchant_question:'什么价？',
-    merchant_price:'{{price}}文。摊上还有几样，要不要过去瞧瞧？',
-    merchant_market:'去坊市看看',merchant_later:'改日再说',
+    merchant_price:'{{price}}文。旁边这方镇炉印也带来了。钱没凑齐，能替你留一件到今儿收市。',
+    merchant_market:'看看柜上的法器',merchant_later:'改日再说',
     merchant_equipment:'开炉前把它安置好，才管用。',merchant_arrange:'回丹房布置',
     buyer_request:'{{buyerReason}}掌柜这里可有{{need}}？我要一件至少{{minTurn}}转的成品，按市价加二成五收。',buyer_inspect:'看看匣里的成品',buyer_decline:'暂不出售'
   };
@@ -44,7 +44,7 @@
       market:{end:true,set:{merchantDecision:'market'}},later:{end:true,set:{merchantDecision:'declined'}}
     }},
     merchant_equipment:{id:'merchant_equipment',version:1,title:'法器入手',start:'arrange',kind:'merchant',nodes:{
-      arrange:{speaker:'merchant',line:'merchant_equipment',scene:'shop',next:'end',nextText:'merchant_arrange'},
+      arrange:{speaker:'merchant',line:'merchant_equipment',scene:'orders',next:'end',nextText:'merchant_arrange'},
       end:{end:true,set:{merchantEquipmentRead:true}}
     }},
     commission:{id:'commission',version:2,title:'来客委托',start:'notice',kind:'commission',nodes:{
@@ -84,5 +84,5 @@
       end:{end:true,set:{'met.{{customerId}}':true}}
     }}
   };
-  window.AlchemyDialogueContent={locale:'zh-CN',strings:{'zh-CN':strings},graphs,speakers:{merchant:{name:'法器商',role:'坊市法器摊主',seal:'商'},narrator:{name:'旁白',seal:'叙'},landlady:{name:'邵四娘',role:'铺契交接',seal:'邵'},player:{name:'我',role:'丹坊掌柜',seal:'我'},visitor:{name:'{{visitor}}',role:'{{role}}',seal:'客'}}};
+  window.AlchemyDialogueContent={locale:'zh-CN',strings:{'zh-CN':strings},graphs,speakers:{merchant:{name:'法器商',role:'走街售器',seal:'商'},narrator:{name:'旁白',seal:'叙'},landlady:{name:'邵四娘',role:'铺契交接',seal:'邵'},player:{name:'我',role:'丹坊掌柜',seal:'我'},visitor:{name:'{{visitor}}',role:'{{role}}',seal:'客'}}};
 })();

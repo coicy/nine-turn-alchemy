@@ -1,7 +1,7 @@
 (() => {
   const game = window.AlchemyGame;
   const economy = window.AlchemyEconomy;
-  const board = document.querySelector('.economy-board');
+  const board = document.querySelector('.order-panel .journal-page:last-child');
   if (!game || !economy || !board) return;
   const panel = document.createElement('section');
   panel.className = 'consignment-board-v158';
@@ -23,7 +23,7 @@
   }
   layout();
   phone.addEventListener('change', layout);
-  disclosure.addEventListener('toggle', () => window.AlchemyMarketLayout?.fit());
+
 
   function render() {
     const campaign = game.campaign();
