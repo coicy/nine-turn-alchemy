@@ -68,7 +68,7 @@
   viewport.dataset.rite=near&&v.current==='work'?(s.ritualActive?'trace':s.ritualRemaining?'sealed':''):'';
   const minimum=(r,min=44/scale)=>{const nw=Math.max(r.w,min),nh=Math.max(r.h,min);return{x:r.x-(nw-r.w)/2,y:r.y-(nh-r.h)/2,w:nw,h:nh};};
   Object.assign(L.mouth,minimum(project(data.mouth)));Object.assign(L.firebox,minimum(project(data.fire)));
-  const center=point(data.pill),diameter=data.pillDiameter*width*(s.craftKind?(near?2.6:1.5):1),size=Math.max(48/scale,diameter);Object.assign(L.objects.pill,{x:center.x-size/2,y:center.y-size/2,w:size,h:size,visualDiameter:diameter});L.cutaway.source=null;
+  const center=point(data.pill),diameter=data.pillDiameter*width*(s.craftKind?(near?2.6:1.5):1),size=Math.max(48/scale,diameter);if(s.craftKind)center.y-=diameter*.15;Object.assign(L.objects.pill,{x:center.x-size/2,y:center.y-size/2,w:size,h:size,visualDiameter:diameter});L.cutaway.source=null;
   // Only the painted lip crossing the pill can occlude it. Leave the furnace body on the shared backdrop.
   foreground.style.clipPath='circle('+(diameter/2+2)+'px at '+center.x+'px '+center.y+'px)';
   rect(document.querySelector('.furnace-pill'),L.objects.pill);rect(document.querySelector('.furnace-fire'),L.firebox);rect(document.getElementById('fireResponse'),L.firebox);if(!near){

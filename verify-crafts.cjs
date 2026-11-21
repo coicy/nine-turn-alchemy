@@ -1,4 +1,14 @@
 const assert=require('node:assert/strict'),C=require('./crafts.js'),E=require('./economy.js'),Campaign=require('./campaign.js'),Lease=require('./lease.js');
+const fs=require('node:fs'),P=require('./pill-palette.js'),turns=[1,3,5,9,10,15,30,45,60,80,100],frames=JSON.parse(fs.readFileSync('./assets/crafts-v207/frames.json','utf8'));
+assert.deepEqual(C.turns,turns);
+for(const d of C.defs){
+ assert.equal(d.forms.length,11);assert.equal(new Set(d.forms).size,11);assert.equal(frames[d.atlas].length,11);assert(fs.existsSync(C.atlas(d.atlas)));
+ for(let turn=1;turn<=100;turn++){
+  const expected=P.frame('tin-white',turn);assert.equal(C.stage(turn),expected);assert.equal(C.name({craftKind:d.id,turn}),d.forms[expected]);
+  if(turn>1)assert(C.stage(turn)-C.stage(turn-1)<=1);
+ }
+ for(const rect of frames[d.atlas])assert(rect.length===4&&rect.every(Number.isInteger)&&rect[0]>=0&&rect[1]>=0&&rect[2]>0&&rect[3]>0);
+}
 for(const d of C.defs){
  const c=Campaign.create(),e=E.ensure(c);e.coins=5000;const orders=JSON.stringify(c.orders);
  assert(E.buy(c,'craftMaterial',d.id));assert.equal(e.coins,5000-d.price);assert.equal(e.craftStock[d.id],1);
