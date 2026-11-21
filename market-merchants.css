@@ -97,8 +97,7 @@ body.object-world .world-market > .market-foot { grid-row: 5; }
     max-width: min(72%, 18em); min-width: 0; padding: 0 4px; font-size: 16px; font-weight: 650;
     border: 0; border-radius: 0; background: transparent; color: #452e20;
   }
-  body.object-world .world-market > .world-market-tabs .stall-menu-toggle,
-  body.object-world .world-market .world-price-tag .stall-back {
+  body.object-world .world-market > .world-market-tabs .stall-menu-toggle {
     flex: none; background: transparent; box-shadow: none; color: #6d5037; border: 0;
     min-height: 44px; min-width: 44px; padding: 0 6px; font-size: 15px;
   }
@@ -106,6 +105,13 @@ body.object-world .world-market > .market-foot { grid-row: 5; }
   .world-market > .consignment-board-v158 summary { line-height: 44px; min-height: 44px; font-size: 14px; }
   .world-market > .consignment-board-v158 ul { padding-bottom: 8px; }
   body.object-world .world-market[data-inspecting=true] :is(.stall-shelves,.consignment-board-v158) { display: none; }
+  body.object-world .world-market .market-stage,
+  body.object-world .world-market .market-stage .market-foreground { background-position-x: var(--market-camera-left, center); }
+  body.object-world .world-market .market-stage .stall-back {
+    position: absolute; z-index: 4; top: 8px; right: 12px; margin: 0;
+    min-height: 44px; padding: 0 12px; color: #563e29; background: #f5e8ce;
+    border: 1px solid #aa8961; border-radius: 4px; font-size: 15px;
+  }
   .world-market .market-stage .craft-picker { gap: 14px; padding: 6px 3px; }
   .world-market .market-stage .craft-picker > button {
     flex: 0 0 clamp(102px,35%,156px); min-height: 116px; padding: 6px 4px;
@@ -126,22 +132,39 @@ body.object-world .world-market > .market-foot { grid-row: 5; }
     padding: 8px 12px; background: #e9d6b2!important; border: 1px solid #aa8050; transform: rotate(-6deg);
   }
   body.object-world .world-market > .world-price-tag {
-    max-height: 46dvh; padding: 14px 20px 12px; border-top: 2px solid #a78052;
+    max-height: 46dvh; padding: 10px 16px 14px; border-top: 2px solid #a78052;
     background: #f8efd9; overflow-y: auto; scrollbar-width: thin;
   }
-  .world-market > .world-price-tag h3 { font-size: 21px; line-height: 1.4; margin: 4px 0 8px; }
-  .world-market > .world-price-tag p { font-size: 15px; line-height: 1.5; margin: 5px 0 9px; }
-  .world-market > .world-price-tag .stall-stock { color: #6c5238; font-size: 14px; }
-  body.object-world .world-market .world-price-tag .stall-back { float: right; margin: -4px -4px 0 8px; }
-  body.object-world .world-market .world-price-tag .stall-buy { margin-top: 4px; padding: 8px 14px; font-size: 15px; }
-  body.object-world .world-market .world-price-tag [data-craft-home] {
-    min-height: 44px; padding: 6px; border: 0; background: none; color: #734426; font-size: 14px;
+  .world-market .stall-slip { position: relative; }
+  .world-market .stall-slip header { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 10px; padding: 6px 0; }
+  .world-market .stall-slip:has(.stall-guide) header { padding-right: 58px; min-height: 44px; box-sizing: border-box; }
+  body.object-world .world-market .stall-slip h3 { margin: 0; font-size: 21px; line-height: 1.4; }
+  body.object-world .world-market .stall-slip p { margin: 0; font-size: 15px; line-height: 1.5; }
+  .world-market .stall-stock { font-size: 14px; color: #6c5238; }
+  .world-market .trade-check { color: #436239; }
+  .world-market .stall-guide { font-size: 14px; color: #694d34; }
+  .world-market .stall-guide summary {
+    position: absolute; top: 0; right: 0; min-width: 48px; min-height: 44px; line-height: 44px; cursor: pointer;
   }
-  .world-market .stall-guide { clear: both; font-size: 14px; color: #694d34; }
-  .world-market .stall-guide summary { cursor: pointer; min-height: 44px; line-height: 44px; }
+  .world-market .stall-guide[open] { border-top: 1px solid #d0bc9d; margin-top: 10px; padding-top: 10px; }
+  body.object-world .world-market .world-price-tag [data-craft-home] {
+    min-height: 44px; padding: 0 4px; margin: 4px 0 0; border: 0; background: none; color: #734426; font-size: 15px;
+  }
   body.object-world .world-market > .market-foot {
     min-height: 54px; padding: 4px 16px max(4px,env(safe-area-inset-bottom));
     background: #eadeca; border-top: 1px solid #c8b397;
   }
   body.object-world .world-market .market-foot .passage-home { background: transparent; border: 0; box-shadow: none; color: #623e27; font-size: 15px; }
+  body.object-world .world-market > .market-foot[data-checkout] {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    min-height: 60px; padding: 7px 16px max(7px,env(safe-area-inset-bottom));
+  }
+  .world-market .market-foot[data-checkout] .merchant-wallet { min-width: 0; overflow-wrap: anywhere; color: #5a422f; font-size: 14px; }
+  body.object-world .world-market .market-foot[data-checkout] > :is(.stall-buy,[data-world-return-tools]) {
+    flex: 0 1 auto; min-height: 44px; margin: 0; padding: 8px 14px; font-size: 15px;
+    line-height: 1.35; color: #fff6df; background: #78432e; border: 1px solid #633723; border-radius: 4px;
+  }
+  body.object-world .world-market .market-foot[data-checkout] .stall-buy:disabled { opacity: 1; color: #695844; background: #e1d3ba; border-color: #b49f83; }
+  body.object-world .world-market .market-foot[data-checkout] > :is(.passage-home,.world-books) { display: none!important; }
+  .world-market[data-inspecting=true] .market-receipt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 }

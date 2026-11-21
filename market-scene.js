@@ -65,6 +65,17 @@
 
   function details(s, e, blocked) {
     const id = selection;
+    function ticket(name, state, description, primary, {extra = '', art = '', note = ''} = {}) {
+      if (!phone.matches) {
+        return {body: art + '<h3>' + name + '</h3><p>' + description + '</p>' +
+          (state ? '<p>' + state + '</p>' : '') + primary + note + extra, checkout: ''};
+      }
+      const mark = notice ? '<span class="trade-check" aria-hidden="true">✓ </span>' : '';
+      const guide = extra ? '<details class="stall-guide"><summary data-focus-key="craft-guide">详情</summary>' + extra + '</details>' : '';
+      return {body: '<div class="stall-slip"><header><h3>' + name + '</h3>' +
+        (state ? '<span class="stall-stock">' + mark + state + '</span>' : '') + '</header><p>' +
+        description + '</p>' + note + guide + '</div>', checkout: primary};
+    }
     function purchase(action, price, label, reason = '') {
       const short = e.coins < price;
       const unavailable = reason || (blocked ? '暂不可交易' : short ? '铜钱不足' : '');
@@ -79,39 +90,34 @@
         (unavailable || label) + '</button>' + (short && !reason ? '<p>还差 ' + (price - e.coins) + ' 铜钱</p>' : '');
     }
     if (kind === 'material') {
-      return '<h3>' + packNames[id] + '</h3><p>' + packEffects[id] + ' · 持有 ' + e.stock[id] + ' 包</p>' +
-        purchase('material', E.PRICES[id], '购入一包');
+      return ticket(packNames[id], '库存 ' + e.stock[id] + ' 包', packEffects[id], purchase('material', E.PRICES[id], '购入一包'));
     }
     if (kind === 'craft') {
       const d = window.AlchemyCrafts.get(id), stock = e.craftStock[id], free = !s.order && s.pillEnded && !blocked;
       const guide = '一转收取约售 ' + Math.round(24*d.multiplier) + ' 文；继续催炼可提高售价，也会承担炉险。求购客人不供料。';
-      const intro = phone.matches ? '<h3>' + d.material + '</h3><p>一份炼一件' + d.name + '，炸炉损失器料。</p><p class="stall-stock">库存 ' + stock + ' 份</p>' :
-        UX.art({craftKind: id, turn: 1}) + '<h3>' + d.material + '</h3><p>一份开一炉' + d.name +
-        ' · 自费炼制，炸炉损失本份器料。</p><p>库存 ' + stock + ' 份</p>';
-      return intro +
-        purchase('craftMaterial', d.price, '购入一份', stock >= 999 ? '库存已满' : '') +
-        (stock ? '<button data-craft-home data-focus-key="craft-home"' + (free ? '' : ' disabled') + '>回丹房取器料</button>' : '') +
-        (!free && stock ? '<p>' + (s.order ? '先结清炼丹委托，再取器料。' : !s.pillEnded ? '炉内有物，先收取。' : '当前操作完成后再取料。') + '</p>' : '') +
-        (phone.matches ? '<details class="stall-guide"><summary data-focus-key="craft-guide">估价与求购</summary><p>' + guide + '</p></details>' :
-          '<p class="craft-sale-guide">' + guide + '</p>');
+      const collect = (stock ? '<button data-craft-home data-focus-key="craft-home"' + (free ? '' : ' disabled') + '>回丹房取器料</button>' : '') +
+        (!free && stock ? '<p>' + (s.order ? '先结清炼丹委托，再取器料。' : !s.pillEnded ? '炉内有物，先收取。' : '当前操作完成后再取料。') + '</p>' : '');
+      const terms = '<p class="craft-sale-guide">' + guide + '</p>';
+      return ticket(d.material, '库存 ' + stock + ' 份', '一份炼一件' + d.name + '，炸炉损失器料。',
+        purchase('craftMaterial', d.price, '购入一份', stock >= 999 ? '库存已满' : ''),
+        {extra: phone.matches ? terms + collect : collect + terms, art: UX.art({craftKind: id, turn: 1})});
     }
     if (kind === 'furnace') {
-      return '<h3>陶炉改良</h3><p>当前：' + ['原胆','护胆改良','凝丹改良'][e.furnace] + '</p><p>' +
-        ['改良炉胆：每炉首次受损的价值扣减减半。','改良凝丹部件：每次受损保住当前转数，药力扣减减半。','两项改良均已完成。'][e.furnace] + '</p>' +
-        (e.furnace < 2 ? purchase('furnace', E.UPGRADES[e.furnace + 1], '改良炉具', s.pillEnded ? '' : '收丹后改良') : '<button disabled>已完成</button>');
+      return ticket('陶炉改良', '当前：' + ['原胆','护胆改良','凝丹改良'][e.furnace],
+        ['改良炉胆：每炉首次受损的价值扣减减半。','改良凝丹部件：每次受损保住当前转数，药力扣减减半。','两项改良均已完成。'][e.furnace],
+        e.furnace < 2 ? purchase('furnace', E.UPGRADES[e.furnace + 1], '改良炉具', s.pillEnded ? '' : '收丹后改良') : '');
     }
     const tool = E.TOOL_DEFS.find(t => t.id === id), owned = e.tools.includes(id), equipped = E.equippedIds(e.equipped);
-    let action = purchase('tool', tool.price, '购入法器');
     if (owned) {
       const placed = equipped.includes(id);
-      action = '<p>' + (placed ? '已在案上' : '已持有') + '</p>';
-      if (!placed && [null, ...equipped].some(old => api.canReplaceEquipment(old, id).ok))
-        action += '<button data-world-return-tools data-focus-key="arrange-tool">回炉布置</button>';
-      else if (!placed && !s.pillEnded) action += '<p>收丹后可回炉布置</p>';
-    } else if (e.coins < tool.price && window.AlchemyMerchantVisit?.snapshot().phase === 'market' && merchantId === 'artificer') {
-      action += '<p class="merchant-sales-line">法器商：先认认货，攒够了再来。</p>';
+      const arrange = !placed && [null, ...equipped].some(old => api.canReplaceEquipment(old, id).ok);
+      return ticket(tool.name, placed ? '已在案上' : '已持有', tool.description,
+        arrange ? '<button data-world-return-tools data-focus-key="arrange-tool">回炉布置</button>' : '',
+        {note: !arrange && !placed && !s.pillEnded ? '<p>收丹后可回炉布置</p>' : ''});
     }
-    return '<h3>' + tool.name + '</h3><p>' + tool.description + '</p>' + action;
+    const invited = e.coins < tool.price && window.AlchemyMerchantVisit?.snapshot().phase === 'market' && merchantId === 'artificer';
+    return ticket(tool.name, '', tool.description, purchase('tool', tool.price, '购入法器'),
+      {note: invited ? '<p class="merchant-sales-line">法器商：先认认货，攒够了再来。</p>' : ''});
   }
 
   function paint(content) {
@@ -148,14 +154,16 @@
     section.dataset.marketTab = kind;
     section.dataset.item = String(selection);
     section.dataset.inspecting = String(inspecting);
+    const item = selection === null ? {body:'', checkout:''} : details(s, e, blocked);
     paint(navigation(stalls, stall) +
       '<div class="market-stage">' +
+      (inspecting ? '<button class="stall-back" type="button" data-back-to-wares data-focus-key="stall-back">‹ 货架</button>' : '') +
       shelfNavigation(stall) + '<img class="market-merchant" loading="lazy" src="' + UX.esc(stall.portrait) +
       '" alt="' + UX.esc(stall.name) + '"><div class="market-foreground" aria-hidden="true"></div><div class="market-stalls"' + (inspecting ? ' inert' : '') + '>' +
       wares(shelf, e) + '</div></div><aside class="world-price-tag" aria-label="当前货物详情"' +
-      (selection === null ? ' hidden></aside>' : '>' + (inspecting ? '<button class="stall-back" type="button" data-back-to-wares data-focus-key="stall-back">‹ 货架</button>' : '') + details(s, e, blocked) + '</aside>') +
-      '<footer class="market-foot"><span class="merchant-wallet">现有 ' + e.coins + ' 铜钱</span>' +
-      '<span class="market-receipt" role="status">' + UX.esc(notice) + '</span></footer>');
+      (selection === null ? ' hidden' : '') + '>' + item.body + '</aside>' +
+      '<footer class="market-foot"' + (item.checkout ? ' data-checkout' : '') + '><span class="merchant-wallet">现有 ' + e.coins + ' 铜钱</span>' +
+      '<span class="market-receipt" role="status">' + UX.esc(notice) + '</span>' + item.checkout + '</footer>');
     window.AlchemyWorldUI?.decorateTools(section);
     if (guideOpen) section.querySelector('.stall-guide').open = true;
     section.querySelector('.stall-wares').scrollLeft = scroll;
@@ -170,13 +178,20 @@
       section.style.setProperty('--market-top', Math.max(64, shellNav.getBoundingClientRect().bottom + 4) + 'px');
     const w = stage.clientWidth, h = stage.clientHeight;
     if (!w || !h || !merchantId) return;
-    const mobile = innerWidth <= 650, scale = Math.max(w / 1672, h / 941);
-    const left = (w - 1672*scale)/2, top = (h - 941*scale)/2, table = 550*scale + top;
+    const mobile = phone.matches, scale = Math.max(w / 1672, h / 941);
+    // In the stall painting, the wooden rack starts at x=716 and the tabletop at y=556.
+    const rackX = 716 * scale;
+    const left = mobile ? Math.max(w - 1672*scale, Math.min(0, w*.43 - rackX)) : (w - 1672*scale)/2;
+    const top = (h - 941*scale)/2, table = (mobile ? 556 : 550)*scale + top;
+    stage.style.setProperty('--market-camera-left', left + 'px');
     stage.style.setProperty('--market-table-y', table + 'px');
     const merchant = stage.querySelector('.market-merchant');
-    const personH = mobile ? h*.667 : Math.min(h*.94, 460*scale);
-    const personTop = mobile ? h*.048 : Math.max(4, table - personH*.86);
-    for (const [name, value] of Object.entries({left:mobile ? 0 : Math.max(4, 170*scale + left), top:personTop, height:personH, width:personH*2/3}))
+    const margin = Math.min(12, w*.032), rackLeft = left + rackX;
+    const personH = mobile ? Math.max(0, Math.min(h*.65, (rackLeft - 2*margin)*1.5)) : Math.min(h*.94, 460*scale);
+    const personW = personH*2/3;
+    const personLeft = mobile ? rackLeft - margin - personW : Math.max(4, 170*scale + left);
+    const personTop = Math.max(0, table - personH*(mobile ? .84 : .86));
+    for (const [name, value] of Object.entries({left:personLeft, top:personTop, height:personH, width:personW}))
       merchant.style.setProperty(name, value + 'px', 'important');
     const group = stage.querySelector('[data-market-group]'), list = group.querySelector('.stall-wares');
     const sample = section.dataset.inspecting === 'true';
@@ -200,6 +215,7 @@
     notice = '';
     const label = section.querySelector('.market-receipt');
     if (label) label.textContent = '';
+    section.querySelector('.trade-check')?.remove();
   }
 
   function visit(id) {
@@ -298,8 +314,10 @@
     clearNotice();
     notice = {material:'已入药匣', tool:'法器已购入', furnace:'陶炉已改良', craftMaterial:'器料已购入'}[event.detail.kind];
     render();
-    if (window.AlchemyViewState.snapshot().current === 'shop' && document.activeElement === document.body)
-      section.querySelector(phone.matches ? '.stall-back' : '.stall-wares [aria-pressed=true]')?.focus({preventScroll:true});
+    if (window.AlchemyViewState.snapshot().current === 'shop' && document.activeElement === document.body) {
+      const next = phone.matches && section.querySelector('.market-foot[data-checkout] button:not(:disabled):is([data-kind],[data-world-return-tools])');
+      (next || section.querySelector(phone.matches ? '.stall-back' : '.stall-wares [aria-pressed=true]'))?.focus({preventScroll:true});
+    }
     noticeTimer = setTimeout(clearNotice, 1800);
   });
   window.AlchemyMarketLayout = {fit, inspectTool};
