@@ -1,5 +1,7 @@
 # V207 十一档造物素材来源
 
+运行同名WebP为无损格式编码；解码RGBA逐像素等于以下内置imagegen原PNG，保留全部原PNG。仅转换文件编码，不缩放、不裁图、不改色、不改alpha。验证记录见本机Evidence/CraftingV207/encoding.json。
+
 使用内置 imagegen，参考本项目 V206 同品类图集，新生成每类十一档图集；真实透明通道保留，未跨游戏复制。图集仅按 alpha 分析标定取图矩形，运行时绘制，不改写原像素。
 
 ## bird
