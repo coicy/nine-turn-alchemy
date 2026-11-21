@@ -4,25 +4,40 @@
   const merchants = {
     artificer: {name:'法器商', portrait:'assets/scene-props-v42/merchant.webp'},
     trader: {name:'周掌柜', portrait:'assets/customers-v61/merchant.png',fromDay:2,
-      pack:()=>pickTwo(window.AlchemyCrafts.defs.map(d=>d.id)).map(id=>item('craftMaterial',id))},
+      pack:()=>sample(window.AlchemyCrafts.defs.map(d=>d.id),2).map(id=>item('craftMaterial',id))},
     herbalist: {name:'何采药', portrait:'assets/customers-v61/herbalist.png',fromDay:2,
       pack:()=>[item('material',1),item('material',0)]}
   };
   const closed = c => c.orders.filter(o => ['completed','failed'].includes(o.status)).length;
   const item = (kind,id) => ({kind,id});
   const tools = ids => ids.map(id => item('tool',id));
+  const firstTools = ['ward','seal','stone','lucky'];
+  const maxVisitingTools = 5;
   function firstVisit(phase) {
-    return {seller:'artificer',source:'first',phase,goods:tools(['ward','seal']),selected:0};
+    return {seller:'artificer',source:'first',phase,goods:tools(firstTools),selected:0};
   }
-  function pickTwo(ids) {
+  function sample(ids,limit) {
     const pool = [...ids], result = [];
-    while (pool.length && result.length < 2) result.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);
+    while (pool.length && result.length < limit) result.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);
     return result;
+  }
+  function extraTools(c,existing) {
+    const eligible=window.AlchemyEconomy.TOOL_DEFS.filter(t=>t.day<=c.day && !c.economy.tools.includes(t.id) && !existing.includes(t.id));
+    return sample(eligible.map(t=>t.id),maxVisitingTools-existing.length);
+  }
+  // Top up an older, already rolled visit once. Keep the selected object, including a furnace plan.
+  function expandSavedVisit(c,offer) {
+    if (offer?.seller!=='artificer' || offer.source==='held' || ['bought','equip'].includes(offer.phase)) return;
+    const goods=offer.goods, existing=goods.filter(g=>g.kind==='tool').map(g=>g.id);
+    const selected=goods[offer.selected], upgrade=goods.findIndex(g=>g.kind==='furnace');
+    const added=offer.source==='first'?firstTools.filter(id=>!existing.includes(id)):extraTools(c,existing);
+    goods.splice(upgrade<0?goods.length:upgrade,0,...tools(added));
+    if (selected) offer.selected=goods.indexOf(selected);
   }
   function ensure(c,legacy) {
     if (!c.sellers) {
       const phase = legacy?.phase;
-      c.sellers = {day:0, introduced:['market','equip','done'].includes(phase), nextTools:0};
+      c.sellers = {day:0, stockVersion:2, introduced:['market','equip','done'].includes(phase), nextTools:0};
       if (['counter','market','equip'].includes(phase)) {
         c.sellers.day = c.day;
         const received=phase==='market' && c.economy.tools.includes('ward') && !c.economy.equipped.length;
@@ -32,14 +47,17 @@
     }
     const s = c.sellers;
     if (c.phase !== 'open') { s.active=null; s.held=null; s.plan=null; return s; }
+    if (!s.stockVersion) {
+      if (s.day===c.day) { expandSavedVisit(c,s.active); expandSavedVisit(c,s.plan); }
+      s.stockVersion=2;
+    }
     if (s.day === c.day) return s;
     s.day=c.day; s.active=null; s.held=null; s.plan=null;
     if (c.day === 1 || !s.introduced) return s;
     let seller, goods;
     if (c.day >= (s.nextTools || 3)) {
       seller='artificer';
-      const available=window.AlchemyEconomy.TOOL_DEFS.filter(t=>t.day<=c.day && !c.economy.tools.includes(t.id));
-      goods=tools(pickTwo(available.map(t=>t.id)));
+      goods=tools(extraTools(c,[]));
       if (c.economy.furnace<2) goods.push(item('furnace','upgrade'));
       s.nextTools=c.day+2+Math.floor(Math.random()*2);
     } else {

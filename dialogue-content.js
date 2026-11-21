@@ -26,7 +26,7 @@
     visitor_return:'掌柜，我们又见面了。这回还是先把手头这一单说清楚。',
     commission_notice:'掌柜，我带了药料来，有一份代炼委托。详情都在这张纸笺上。',
     opt_read_commission:'查看委托',
-    merchant_hello:'听说这儿新开了间丹坊，过来认个门。带了两件护炉的法器，借掌柜的柜面摆一摆。',
+    merchant_hello:'听说这儿新开了间丹坊，过来认个门。掌柜，借点柜面？我带了四件法器。',
     merchant_offer:'这枚{{toolName}}，能压一压炸炉的险。掌柜刚开张，可要添一件？',
     merchant_question:'什么价？',
     merchant_price:'{{price}}文。旁边这方镇炉印也带来了。钱没凑齐，能替你留一件到今儿收市。',

@@ -30,8 +30,13 @@
     const w=stage.clientWidth,h=stage.clientHeight;
     if (!w||!h) return;
     const scale=Math.max(w/1672,h/941), edge=(h-941*scale)/2+523*scale;
+    const count=wares.children.length, depth=h-edge;
+    const twoRows=count>=4 && w<=650 && (w<count*84+24 || depth>=170);
+    const size=twoRows?Math.min(94,w/(count===4?2:3)*.76,(depth-18)/2-42):Math.min(104,w/(count+1)*.77,h*.22);
+    wares.dataset.count=String(count);
+    wares.classList.toggle('sale-two-rows',twoRows);
     stage.style.setProperty('--desk-edge',edge+'px');
-    stage.style.setProperty('--size',Math.round(Math.min(104,w/(wares.children.length+1)*.77,h*.22))+'px');
+    stage.style.setProperty('--size',Math.max(28,Math.round(size))+'px');
   }
   new ResizeObserver(fit).observe(stage);
   function render() {

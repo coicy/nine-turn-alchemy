@@ -4,8 +4,8 @@ const Crafts=root.AlchemyCrafts||(typeof require==='function'?require('./crafts.
 const TOOL_DEFS=[
 {id:'seal',name:'镇炉印',price:240,day:1,description:'每炉首次炸炉改为受损。'},
 {id:'ward',name:'避火佩',price:180,day:1,description:'本炉基础炸炉概率降低10%（相对值）。'},
-{id:'stone',name:'调息盘',price:220,day:2,description:'非炸炉权重：维持5→3，成功12→14。'},
-{id:'lucky',name:'鸣金铃',price:320,day:3,description:'非炸炉大成功权重2→4，不直接降低炸炉率。'},
+{id:'stone',name:'调息盘',price:220,day:1,description:'非炸炉权重：维持5→3，成功12→14。'},
+{id:'lucky',name:'鸣金铃',price:320,day:1,description:'非炸炉大成功权重2→4，不直接降低炸炉率。'},
 {id:'chain',name:'双仪环',price:420,day:4,description:'每连续两次成功或大成功，额外升一转；维持与受损打断连续。'},
 {id:'repair',name:'淬火盏',price:480,day:5,description:'每次真实受损使本炉炸炉概率相对降低15%，最多降低60%；换炉清零。'},
 {id:'phoenix',name:'返生鼎符',price:650,day:6,description:'每炉抵挡一次炸炉，维持转数但药力损失40%；此损值系数持续到收丹。'}];
