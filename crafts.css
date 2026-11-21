@@ -8,6 +8,8 @@
 .world-price-tag>.ux-pill-art{float:right;width:85px;height:85px}.world-price-tag>.ux-pill-art img{width:100%;height:100%;object-fit:contain}
 .craft-sale-guide{font-size:12px;clear:both}
 .craft-buyer-goods{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;padding:12px 0}
+body.object-world.engine-shell .craft-trade-panel.engine-panel{display:block;padding:20px!important;background:#f5e8d0!important;overflow-y:auto}
+.craft-trade-panel .pill-bag-heading>div{min-width:0}.craft-trade-panel .pill-bag-heading h2{font-size:21px;overflow-wrap:anywhere}
 .craft-offer-card{padding:16px;border:1px solid #baa07d;background:#f8edd6}.craft-offer-card>.ux-pill-art{display:block;width:130px;height:130px}.craft-offer-card img{width:100%;height:100%;object-fit:contain}.craft-offer-card h3{font-size:17px}.craft-offer-card button{min-height:44px}
 body[data-craft-buyer=counter] .counter-board :is(#counterNote,#counterLetter,#counterParcels,#counterParcelHint,#counterReceipt,#counterConversation,.browse-customers,.counter-waiting){display:none!important}
 body[data-craft-buyer=counter] .counter-board>.visitor-dialogue{display:none!important}
