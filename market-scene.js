@@ -7,6 +7,8 @@
   const packNames = ['普通药包', '精选药包'];
   const packEffects = ['基础起炉材料', '起炉至少良品'];
   let merchantId, kind, selection, notice = '', noticeTimer;
+  const traySize = 3, remembered = new Map();
+  let tray = 0;
   const phone = matchMedia('(max-width: 650px)');
   const shellNav = document.querySelector('.engine-nav');
   if (!shellNav.id) shellNav.id = 'danfangNavigation';
@@ -35,32 +37,32 @@
       catalog.labels[shelf.kind] + '</button>').join('') + '</nav>';
   }
 
-  function wares(shelf, economy) {
-    const buttons = shelf.ids.map(id => {
-      const pressed = ' aria-pressed="' + (id === selection) + '"';
-      if (shelf.kind === 'material') {
-        return '<button class="world-parcel tier-' + id + '" data-material-inspect="' + id + '"' + pressed +
-          '><img src="assets/runtime-v10/herb-parcel-v1.webp" alt=""><span class="parcel-seal">' + ['普', '精'][id] +
-          '</span><span>' + packNames[id] + '</span><small>' + E.PRICES[id] + ' 铜钱</small></button>';
-      }
-      if (shelf.kind === 'tool') {
-        const tool = E.TOOL_DEFS.find(t => t.id === id);
-        return '<button data-inspect="' + id + '"' + pressed + '><span data-tool-art="' + id + '"></span><span>' +
-          tool.name + '</span><small>' + (economy.tools.includes(id) ? '已持有' : tool.price + ' 铜钱') + '</small></button>';
-      }
-      if (shelf.kind === 'craft') {
-        const craft = window.AlchemyCrafts.get(id);
-        return '<button data-craft-inspect="' + id + '" data-focus-key="ware-' + id + '"' + pressed + '>' +
-          UX.art({craftKind: id, turn: 1}) + '<span>' + craft.name + '</span><small>' + craft.price + ' 铜钱</small></button>';
-      }
-      return '<button class="world-upgrade-plan" data-upgrade-inspect data-focus-key="upgrade-plan"' + pressed +
-        '><span class="world-stove-diagram" aria-hidden="true"></span><span>陶炉改良图样</span></button>';
-    });
-    const classes = {material: ['market-goods','package-display'], tool: ['market-artifacts','artifact-picker'],
-      furnace: ['market-upgrade','plan-display'], craft: ['market-craft-goods','craft-picker']};
-    const [area, list] = classes[shelf.kind];
-    return '<section class="' + area + '" data-market-group="' + shelf.kind + '" aria-label="' + catalog.labels[shelf.kind] +
-      '陈列"><div class="' + list + ' stall-wares">' + buttons.join('') + '</div></section>';
+  function ware(id, economy) {
+    const parcel = '<img class="counter-parcel" src="assets/runtime-v10/herb-parcel-v1.webp" alt="">';
+    let action, art, name, price;
+    if (kind === 'material') {
+      action = 'data-material-inspect="' + id + '"';
+      art = parcel + '<i class="counter-seal tier-' + id + '" aria-hidden="true">' + ['普','精'][id] + '</i>';
+      name = packNames[id]; price = E.PRICES[id];
+    } else if (kind === 'tool') {
+      const tool = E.TOOL_DEFS.find(t => t.id === id);
+      action = 'data-inspect="' + id + '"';
+      art = '<span class="tool-art" data-tool-art="' + id + '"></span>';
+      name = tool.name; price = economy.tools.includes(id) ? '已持有' : tool.price;
+    } else if (kind === 'craft') {
+      const craft = window.AlchemyCrafts.get(id);
+      action = 'data-craft-inspect="' + id + '"';
+      art = UX.art({craftKind: id, turn: 1}) + parcel;
+      name = craft.material; price = craft.price;
+    } else {
+      action = 'data-upgrade-inspect';
+      art = '<span class="counter-blueprint"><span class="world-stove-diagram" aria-hidden="true"></span></span>';
+      name = '改炉图样'; price = E.UPGRADES[economy.furnace + 1] ?? '已完成';
+    }
+    return '<button type="button" class="counter-ware" ' + action + ' data-focus-key="ware-' + kind + '-' + id +
+      '" aria-pressed="' + (id === selection) + '"><span class="counter-figure">' + art +
+      '</span><span class="counter-tag"><b>' + name + '</b><small>' +
+      (typeof price === 'number' ? price + ' 铜钱' : price) + '</small></span></button>';
   }
 
   function details(s, e, blocked) {
@@ -138,6 +140,7 @@
       delete section.dataset.marketTab;
       paint((phone.matches ? '<nav class="world-market-tabs">' + menuToggle() + '</nav>' : '') +
         '<div class="market-stage empty-market"><p>今日尚无商人出摊</p></div><footer class="market-foot"></footer>');
+      observeStage();
       requestAnimationFrame(fit);
       return;
     }
@@ -146,7 +149,11 @@
     merchantId = stall.id;
     kind = shelf.kind;
     const sameShelf = section.dataset.merchant === merchantId && section.dataset.marketTab === kind;
-    const scroll = sameShelf ? section.querySelector('.stall-wares')?.scrollLeft || 0 : 0;
+    if (!sameShelf) { tray = 0; remembered.clear(); }
+    const trays = Math.ceil(shelf.ids.length / traySize);
+    tray = selection === null ? Math.min(tray, trays - 1) : Math.floor(shelf.ids.indexOf(selection) / traySize);
+    remembered.set(tray, selection);
+    const ids = shelf.ids.slice(tray * traySize, (tray + 1) * traySize);
     const blocked = s.busy || window.AlchemyInteractionBusy || window.AlchemyScene2D?.busy || c.phase !== 'open';
     const inspecting = phone.matches && selection !== null;
     const guideOpen = inspecting && sameShelf && section.dataset.item === String(selection) && section.querySelector('.stall-guide')?.open;
@@ -154,26 +161,73 @@
     section.dataset.marketTab = kind;
     section.dataset.item = String(selection);
     section.dataset.inspecting = String(inspecting);
-    const item = selection === null ? {body:'', checkout:''} : details(s, e, blocked);
+    const item = selection === null ? {body:'<p class="stall-prompt">点柜上的货物看用途</p>', checkout:''} : details(s, e, blocked);
+    const switchTray = trays > 1 ? '<button type="button" data-next-tray data-pages="' + trays + '" data-focus-key="tray">换一盘 ' +
+      (tray + 1) + '/' + trays + ' ›</button>' : '';
     paint(navigation(stalls, stall) +
-      '<div class="market-stage">' +
-      (inspecting ? '<button class="stall-back" type="button" data-back-to-wares data-focus-key="stall-back">‹ 货架</button>' : '') +
-      shelfNavigation(stall) + '<img class="market-merchant" loading="lazy" src="' + UX.esc(stall.portrait) +
-      '" alt="' + UX.esc(stall.name) + '"><div class="market-foreground" aria-hidden="true"></div><div class="market-stalls"' + (inspecting ? ' inert' : '') + '>' +
-      wares(shelf, e) + '</div></div><aside class="world-price-tag" aria-label="当前货物详情"' +
-      (selection === null ? ' hidden' : '') + '>' + item.body + '</aside>' +
+      '<div class="counter-window"><div class="market-stage"><div class="counter-controls">' + shelfNavigation(stall) + switchTray +
+      '</div><img class="market-merchant" loading="lazy" src="' + UX.esc(stall.portrait) +
+      '" alt="' + UX.esc(stall.name) + '"><div class="market-foreground" aria-hidden="true"></div>' +
+      '<div class="counter-stock" data-market-group="' + kind + '" role="group" aria-label="' + catalog.labels[kind] + '陈列">' +
+      ids.map(id => ware(id, e)).join('') + '</div></div></div><aside class="world-price-tag" aria-label="当前货物详情">' + item.body + '</aside>' +
       '<footer class="market-foot"' + (item.checkout ? ' data-checkout' : '') + '><span class="merchant-wallet">现有 ' + e.coins + ' 铜钱</span>' +
       '<span class="market-receipt" role="status">' + UX.esc(notice) + '</span>' + item.checkout + '</footer>');
     window.AlchemyWorldUI?.decorateTools(section);
     if (guideOpen) section.querySelector('.stall-guide').open = true;
-    section.querySelector('.stall-wares').scrollLeft = scroll;
+    observeStage();
+    if (section.dataset.shellActive === 'true') fit();
     requestAnimationFrame(fit);
+  }
+
+  let observedStage;
+  const stageObserver = new ResizeObserver(fit);
+  function observeStage() {
+    const stage = section.querySelector('.market-stage');
+    if (stage === observedStage) return;
+    stageObserver.disconnect();
+    if (stage) stageObserver.observe(stage);
+    observedStage = stage;
+  }
+
+  function placeStock(stage, w, h, scale, top, rack) {
+    const stock = stage.querySelector('.counter-stock');
+    const buttons = [...stock.children];
+    function place(button, x, base, size) {
+      button.style.left = x + 'px';
+      button.style.top = Math.min(base - size, h - size - 44) + 'px';
+      button.style.setProperty('--ware-size', size + 'px');
+    }
+    const mobile = phone.matches;
+    const front = Math.min(w*.26, h*.22, mobile ? 108 : 128);
+    const left = mobile ? w*.23 : rack - 64*scale;
+    const right = mobile ? Math.min(w-44,w*.82) : Math.min(w-58, rack+385*scale);
+    const onTable = sourceY => top + sourceY*scale;
+    const ward = stock.querySelector('[data-inspect="ward"]');
+    const back = ward || (buttons.length === 3 ? buttons[0] : null);
+    if (back) {
+      const hanging = back === ward;
+      const size = Math.min(w*(hanging ? .24 : .20), (hanging ? 130 : 123)*scale, hanging ? 105 : 90);
+      let x = Math.min(w-54,rack+(hanging ? Math.min(190*scale,(w-rack)*.65) : Math.min(w*.13,80*scale)));
+      if (mobile && buttons.length === 3) {
+        const gap = (Math.max(80,size) + Math.max(80,front))/2 + 5;
+        x = Math.max(left+gap,Math.min(right-gap,x));
+      }
+      place(back, x, hanging ? onTable(392)+size : onTable(532), size);
+      if (hanging) back.style.setProperty('--cord', 16*scale+'px');
+    }
+    const near = buttons.filter(button => button !== back);
+    near.forEach((button,i) => {
+      const x = near.length === 1 ? (back ? left + w*.07 : (left+right)/2) : i ? right : left;
+      place(button, x, onTable(i ? 750 : 718), Math.min(front,(i ? 165 : 150)*scale));
+    });
   }
 
   function fit() {
     const stage = section.querySelector('.market-stage'), foot = section.querySelector('.market-foot');
     if (!stage || !foot) return;
     for (const el of section.querySelectorAll(':scope>.world-books,:scope>.passage-home')) foot.append(el);
+    const home = section.querySelector('.passage-home'), tabs = section.querySelector('.world-market-tabs');
+    if (phone.matches && home && tabs && home.parentElement !== tabs) tabs.prepend(home);
     if (section.dataset.shellActive === 'true')
       section.style.setProperty('--market-top', Math.max(64, shellNav.getBoundingClientRect().bottom + 4) + 'px');
     const w = stage.clientWidth, h = stage.clientHeight;
@@ -181,7 +235,8 @@
     const mobile = phone.matches, scale = Math.max(w / 1672, h / 941);
     // In the stall painting, the wooden rack starts at x=716 and the tabletop at y=556.
     const rackX = 716 * scale;
-    const left = mobile ? Math.max(w - 1672*scale, Math.min(0, w*.43 - rackX)) : (w - 1672*scale)/2;
+    const rackStart = Math.max(w*.40, w-478*scale-w*.025);
+    const left = mobile ? Math.max(w - 1672*scale, Math.min(0, rackStart-rackX)) : (w - 1672*scale)/2;
     const top = (h - 941*scale)/2, table = (mobile ? 556 : 550)*scale + top;
     stage.style.setProperty('--market-camera-left', left + 'px');
     stage.style.setProperty('--market-table-y', table + 'px');
@@ -193,21 +248,7 @@
     const personTop = Math.max(0, table - personH*(mobile ? .84 : .86));
     for (const [name, value] of Object.entries({left:personLeft, top:personTop, height:personH, width:personW}))
       merchant.style.setProperty(name, value + 'px', 'important');
-    const group = stage.querySelector('[data-market-group]'), list = group.querySelector('.stall-wares');
-    const sample = section.dataset.inspecting === 'true';
-    if (sample) stage.style.setProperty('--stall-sample-size', Math.min(86, Math.max(48, h*.24)) + 'px');
-    const x = sample ? Math.round(w*.55) : mobile ? 12 : Math.round(w*.40);
-    const width = sample ? Math.round(w*.40) : mobile ? w-24 : Math.round(w*.55);
-    group.style.left = x + 'px';
-    group.style.width = width + 'px';
-    const shelfTop = sample ? table + h*.18 - list.offsetHeight : table + (mobile ? 12 : 0);
-    group.style.top = Math.max(0, Math.min(shelfTop, h - list.offsetHeight - 4)) + 'px';
-    const chosen = list.querySelector('[aria-pressed=true]');
-    if (chosen && list.clientWidth && list.scrollWidth > list.clientWidth) {
-      const a = chosen.getBoundingClientRect(), b = list.getBoundingClientRect();
-      if (a.right > b.right) list.scrollLeft += a.right - b.right;
-      else if (a.left < b.left) list.scrollLeft += a.left - b.left;
-    }
+    placeStock(stage, w, h, scale, top, rackLeft);
   }
 
   function clearNotice() {
@@ -233,7 +274,7 @@
   }
 
   function browse() {
-    const key = UX.focusKey(section.querySelector('.stall-wares [aria-pressed=true]'));
+    const key = UX.focusKey(section.querySelector('.counter-ware[aria-pressed=true]'));
     selection = null;
     clearNotice();
     render();
@@ -287,7 +328,11 @@
       fit();
       return;
     }
-    if (data.backToWares !== undefined) return browse();
+    if (data.nextTray !== undefined) {
+      tray = (tray + 1) % Number(data.pages);
+      selection = remembered.get(tray) ?? null;
+      clearNotice(); closeMenu(); render(); return;
+    }
     if (data.merchant) return visit(data.merchant);
     if (data.marketTab) {
       if (data.marketTab === kind) return;
@@ -306,9 +351,9 @@
       if (window.AlchemyViewState.navigate('work')) requestAnimationFrame(() => window.AlchemyEquipmentView.inspect(null));
       return;
     } else return;
+    clearNotice();
     closeMenu();
     render();
-    if (selection !== null) focusDetails();
   });
   window.addEventListener('alchemy:purchase', event => {
     clearNotice();
@@ -316,7 +361,7 @@
     render();
     if (window.AlchemyViewState.snapshot().current === 'shop' && document.activeElement === document.body) {
       const next = phone.matches && section.querySelector('.market-foot[data-checkout] button:not(:disabled):is([data-kind],[data-world-return-tools])');
-      (next || section.querySelector(phone.matches ? '.stall-back' : '.stall-wares [aria-pressed=true]'))?.focus({preventScroll:true});
+      (next || section.querySelector('.counter-ware[aria-pressed=true]'))?.focus({preventScroll:true});
     }
     noticeTimer = setTimeout(clearNotice, 1800);
   });

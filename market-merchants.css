@@ -46,17 +46,44 @@ body.object-world .world-market .stall-shelves button[aria-pressed=true] {
   color: #fff5dd; background: #79442f; font-weight: bold;
 }
 .world-market .market-receipt { margin-right: auto; color: #513920; font-size: 13px; }
-body.object-world .world-market .market-stage .market-stalls > section { min-height: 0; }
-.world-market .plan-display { display: flex; justify-content: center; }
-.world-market .stall-wares { box-sizing: border-box; }
 .world-market .empty-market p { width: fit-content; margin: 12px; padding: 8px; background: #f7ecd4; }
-body.object-world .world-market .market-stage .artifact-picker { justify-content: safe center; }
 .world-market .market-foot .merchant-wallet { font-weight: bold; font-variant-numeric: tabular-nums; }
 @media (min-width: 900px) {
   .world-market .market-foot .merchant-wallet { display: none; }
 }
 body.object-world .world-market > .world-price-tag { grid-row: 4; }
 body.object-world .world-market > .market-foot { grid-row: 5; }
+.world-market .counter-window { grid-row: 3; overflow: auto; min-height: 0; overscroll-behavior: contain; }
+body.object-world .world-market .counter-window > .market-stage { min-height: 312px; height: 100%; }
+.world-market .counter-controls { position: absolute; z-index: 5; top: 8px; right: 10px; left: 10px; display: flex; justify-content: flex-end; gap: 8px; pointer-events: none; }
+.world-market .counter-controls > * { pointer-events: auto; }
+.world-market .counter-controls .stall-shelves { position: static; }
+.world-market .counter-controls [data-next-tray] { min-height: 44px; padding: 0 9px; margin: 0; border: 1px solid #957449; border-radius: 3px; background: #f3e6cc; color: #593d26; font-size: 14px; }
+.world-market .counter-stock { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+body.object-world .world-market .counter-stock .counter-ware {
+  position: absolute; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;
+  pointer-events: auto; width: max(80px,var(--ware-size)); padding: 0; margin: 0; min-height: 44px;
+  color: #463220; border: 0; border-radius: 0; background: none; box-shadow: none; touch-action: manipulation;
+}
+.counter-figure { position: relative; display: block; width: var(--ware-size); height: var(--ware-size); }
+.counter-figure::before { content: ''; position: absolute; left: 13%; bottom: -2%; width: 80%; height: 12%; background: radial-gradient(ellipse,#3c260d88,transparent 73%); }
+.counter-figure > :is(.tool-art,.ux-pill-art,.counter-parcel,.counter-blueprint) { display: block; width: 100%; height: 100%; position: relative; object-fit: contain; object-position: center bottom; filter: drop-shadow(1px 2px 1px #40261155); }
+.counter-figure .ux-pill-art img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
+.counter-stock[data-market-group=craft] .counter-parcel { position: absolute; left: -3%; bottom: 0; width: 35%; height: 35%; }
+.counter-ware[data-inspect=ward] .counter-figure::before { left: 54%; top: calc(0px - var(--cord)); bottom: auto; height: calc(var(--cord) + 10%); width: 2px; background: #6e452e; }
+.counter-seal { position: absolute; top: 55%; left: 41%; padding: 0 2px; font: bold 13px/1.2 serif; color: #62432c; background: #e7c99a; border: 1px solid #8a674c; transform: rotate(-6deg); }
+.counter-seal.tier-1 { color: #fff2cc; background: #874531; }
+.counter-figure > .counter-blueprint { display: grid; place-content: center; width: 92%; height: 78%; top: 20%; background: #ebd5a9; border: 2px solid #997346; transform: rotate(-6deg); }
+.counter-blueprint .world-stove-diagram { max-width: 75%; margin: auto; }
+.counter-tag { display: flex; flex-direction: column; align-items: center; min-width: 64px; padding: 3px 7px; margin-top: 3px; position: relative; transform: rotate(-2deg); background: linear-gradient(150deg,#f8e8c5,#dec399); border: 1px solid #94754e; border-radius: 1px; box-shadow: 1px 2px 2px #36220f63; }
+.counter-ware:nth-child(2) .counter-tag { transform: rotate(2deg); }
+.counter-tag b { font: bold 14px/1.2 "Songti SC","SimSun",serif; white-space: nowrap; }
+.counter-tag small { font-size: 12px; line-height: 1.25; font-variant-numeric: tabular-nums; }
+.counter-ware[aria-pressed=true] .counter-tag { border-color: #913d2d; background: #fff0ce; }
+.counter-ware[aria-pressed=true] .counter-tag::after { content: '✓'; position: absolute; right: -5px; top: -5px; width: 15px; line-height: 15px; border-radius: 2px; font-size: 12px; color: #fff6da; background: #943e2d; }
+.counter-ware:focus-visible .counter-tag { outline: 3px solid #34626b; outline-offset: 2px; }
+body.object-world .world-market > .world-price-tag { height: clamp(116px,20dvh,172px); }
+.world-market .stall-prompt { margin: 0; color: #66523c; }
 @media (max-width: 650px) {
   body.object-world[data-world-location=shop] .engine-nav .furnace-heading,
   body.object-world[data-world-location=shop] .engine-nav #engineWallet { display: none!important; }
@@ -70,16 +97,8 @@ body.object-world .world-market > .market-foot { grid-row: 5; }
   }
   body.object-world .world-market > .world-market-tabs button { flex: 1; }
   body.object-world .world-market > .market-foot { min-height: 52px; padding: 4px 8px; }
-  body.object-world .world-market .market-stage .market-stalls > [data-market-group] { display: block; }
-}
-@media (max-width: 650px) and (max-height: 650px) {
-  body.object-world .world-market > .world-price-tag { max-height: 32dvh; padding: 6px 10px; }
-  .world-market > .world-price-tag p { margin: 3px 0; }
-  .world-market .craft-picker { padding: 2px; }
-  .world-market .craft-picker > button { min-height: 82px; padding: 2px 3px; gap: 1px; }
-  .world-market .craft-picker .ux-pill-art { width: 44px; height: 44px; }
-}
 
+}
 .world-market .consignment-board-v158 summary { cursor: pointer; color: #70492d; font-weight: 600; }
 @media (max-width: 650px) {
   body[data-screen=playing][data-world-location=shop][data-world-surface=""]:not([data-market-menu=open]) .engine-nav { display: none!important; }
@@ -104,33 +123,8 @@ body.object-world .world-market > .market-foot { grid-row: 5; }
   .world-market > .consignment-board-v158 { border: 0; border-bottom: 1px solid #cbb695; padding: 0 16px; border-radius: 0; background: #eee1c7; max-height: 26dvh; }
   .world-market > .consignment-board-v158 summary { line-height: 44px; min-height: 44px; font-size: 14px; }
   .world-market > .consignment-board-v158 ul { padding-bottom: 8px; }
-  body.object-world .world-market[data-inspecting=true] :is(.stall-shelves,.consignment-board-v158) { display: none; }
   body.object-world .world-market .market-stage,
-  body.object-world .world-market .market-stage .market-foreground { background-position-x: var(--market-camera-left, center); }
-  body.object-world .world-market .market-stage .stall-back {
-    position: absolute; z-index: 4; top: 8px; right: 12px; margin: 0;
-    min-height: 44px; padding: 0 12px; color: #563e29; background: #f5e8ce;
-    border: 1px solid #aa8961; border-radius: 4px; font-size: 15px;
-  }
-  .world-market .market-stage .craft-picker { gap: 14px; padding: 6px 3px; }
-  .world-market .market-stage .craft-picker > button {
-    flex: 0 0 clamp(102px,35%,156px); min-height: 116px; padding: 6px 4px;
-    font-size: 15px; gap: 2px; background: #f3e7cf!important;
-  }
-  .world-market .market-stage .craft-picker .ux-pill-art { width: 62px; height: 62px; }
-  body.object-world .world-market[data-inspecting=true] .market-stage .stall-wares {
-    display: flex; justify-content: center; align-items: center; padding: 0; gap: 0; overflow: visible; height: auto; max-height: none;
-  }
-  body.object-world .world-market[data-inspecting=true] .stall-wares > button:not([aria-pressed=true]),
-  body.object-world .world-market[data-inspecting=true] .stall-wares > button > :not(:first-child) { display: none!important; }
-  body.object-world .world-market[data-inspecting=true] .market-stage .stall-wares > button[aria-pressed=true] {
-    flex: none; height: auto; min-height: 0; width: auto; min-width: 0; margin: 0; padding: 0;
-    border: 0; outline: 0; background: transparent!important; box-shadow: none;
-  }
-  body.object-world .world-market[data-inspecting=true] .market-stage .stall-wares .ux-pill-art { width: var(--stall-sample-size); height: var(--stall-sample-size); }
-  body.object-world .world-market[data-inspecting=true] .market-stage .plan-display.stall-wares > .world-upgrade-plan[aria-pressed=true] {
-    padding: 8px 12px; background: #e9d6b2!important; border: 1px solid #aa8050; transform: rotate(-6deg);
-  }
+  body.object-world .world-market .market-stage .market-foreground { background-position-x: var(--market-camera-left,center); }
   body.object-world .world-market > .world-price-tag {
     max-height: 46dvh; padding: 10px 16px 14px; border-top: 2px solid #a78052;
     background: #f8efd9; overflow-y: auto; scrollbar-width: thin;
@@ -167,4 +161,13 @@ body.object-world .world-market > .market-foot { grid-row: 5; }
   body.object-world .world-market .market-foot[data-checkout] .stall-buy:disabled { opacity: 1; color: #695844; background: #e1d3ba; border-color: #b49f83; }
   body.object-world .world-market .market-foot[data-checkout] > :is(.passage-home,.world-books) { display: none!important; }
   .world-market[data-inspecting=true] .market-receipt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  body.object-world .world-market > .world-price-tag { height: clamp(92px,16dvh,110px); max-height: none; }
+  body.object-world .world-market > .world-price-tag:has(.stall-guide[open]) { height: auto; max-height: 43dvh; }
+  body.object-world .world-market > .market-foot { min-height: 60px; }
+  body.object-world .world-market > .world-market-tabs { gap: 6px; padding-inline: 8px; }
+  .world-market .merchant-list select { max-width: calc(100% - 36px); }
+  body.object-world .world-market .world-market-tabs > .passage-home {
+    position: static!important; inset: auto!important; flex: none; min-width: 44px; min-height: 44px;
+    margin: 0; padding: 4px 2px; color: #63462e; background: transparent; border: 0; box-shadow: none; font-size: 14px;
+  }
 }
