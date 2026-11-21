@@ -7,6 +7,23 @@
   panel.className = 'consignment-board-v158';
   panel.setAttribute('aria-live', 'polite');
   board.prepend(panel);
+  const phone = matchMedia('(max-width: 650px)');
+  const disclosure = document.createElement('details');
+  const summary = document.createElement('summary');
+  const list = document.createElement('ul');
+  const heading = document.createElement('div');
+  heading.className = 'consignment-heading';
+  disclosure.append(summary);
+  function layout() {
+    if (phone.matches) {
+      disclosure.open = false;
+      disclosure.append(list);
+      panel.replaceChildren(disclosure);
+    } else panel.replaceChildren(heading, list);
+  }
+  layout();
+  phone.addEventListener('change', layout);
+  disclosure.addEventListener('toggle', () => window.AlchemyMarketLayout?.fit());
 
   function render() {
     const campaign = game.campaign();
@@ -18,9 +35,10 @@
     const rows = listed.map(x => `<li><strong>${x.pillSnapshot.turn}转 · 药力 ${Math.round(x.pillSnapshot.value)}</strong><span>${x.tierName} · 第${x.settleDay}天回款 ${x.guaranteedPayout} 铜钱</span></li>`).join('');
     const paidRows = paid.map(x => `<li><strong>第${x.paidDay}天已到账</strong><span>${x.guaranteedPayout} 铜钱 · ${x.tierName}</span></li>`).join('');
     panel.hidden = !listed.length && !paid.length;
-    panel.innerHTML = listed.length
-      ? `<div class="consignment-heading"><strong>寄售中 ${listed.length}/3</strong><span>回款按丹药快照结算</span></div><ul>${rows}</ul>`
-      : `<div class="consignment-heading"><strong>最近寄售回款</strong><span>可继续查看丹匣</span></div><ul>${paidRows}</ul>`;
+    summary.textContent = listed.length ? `寄售中 ${listed.length}/3` : '最近寄售回款';
+    heading.innerHTML = '<strong>' + summary.textContent + '</strong><span>' +
+      (listed.length ? '回款按丹药快照结算' : '可继续查看丹匣') + '</span>';
+    list.innerHTML = listed.length ? rows : paidRows;
 
   }
 
