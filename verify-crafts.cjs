@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict'),C=require('./crafts.js'),E=require('./economy.js'),Campaign=require('./campaign.js'),Lease=require('./lease.js');
-const fs=require('node:fs'),P=require('./pill-palette.js'),turns=[1,3,5,9,10,15,30,45,60,80,100],frames=JSON.parse(fs.readFileSync('./assets/crafts-v207/frames.json','utf8'));
+const fs=require('node:fs'),P=require('./pill-palette.js'),turns=[1,3,5,9,10,15,30,45,60,80,100],frames=JSON.parse(fs.readFileSync('./assets/crafts-v208/frames.json','utf8'));
 assert.deepEqual(C.turns,turns);
 for(const d of C.defs){
  assert.equal(d.forms.length,11);assert.equal(new Set(d.forms).size,11);assert.equal(frames[d.atlas].length,11);assert(fs.existsSync(C.atlas(d.atlas)));

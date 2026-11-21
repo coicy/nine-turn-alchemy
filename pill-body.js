@@ -42,7 +42,7 @@
       }
     });
   }
-  const craftFrames={"bird":[[49,122,231,192],[342,99,255,217],[643,97,275,220],[960,89,272,229],[31,488,259,242],[335,485,267,244],[641,474,286,260],[944,479,293,280],[25,878,264,290],[326,873,279,305],[625,864,303,328]],"lion":[[81,142,166,198],[358,108,198,233],[664,79,226,258],[953,65,278,277],[20,458,280,290],[332,455,279,301],[645,444,285,315],[960,438,276,324],[20,834,292,367],[329,831,296,371],[633,825,348,389]],"home":[[28,113,261,240],[342,113,257,236],[642,104,277,251],[954,93,284,267],[18,476,282,287],[335,493,273,265],[632,477,303,291],[959,488,276,276],[19,899,284,254],[322,867,294,300],[629,862,307,320]],"beast":[[25,85,276,230],[342,86,271,227],[651,76,271,240],[956,55,279,263],[13,418,290,290],[328,418,289,294],[640,415,287,301],[952,408,287,305],[15,840,286,303],[329,827,286,320],[642,801,286,353]],"tower":[[82,120,169,259],[376,126,188,250],[688,64,188,318],[998,48,201,336],[40,448,241,335],[330,472,281,300],[641,470,283,295],[953,489,284,272],[15,907,282,262],[318,880,298,303],[631,868,307,315]],"spring":[[49,48,232,334],[345,50,245,331],[644,49,253,331],[938,47,285,333],[25,459,279,311],[338,447,271,322],[632,472,275,289],[936,446,299,325],[21,862,300,304],[344,861,256,322],[624,855,310,333]]};
+  const craftFrames={"bird":[[43,173,220,187],[320,120,275,239],[639,71,272,289],[953,131,287,229],[27,446,264,321],[321,518,320,231],[650,455,284,315],[961,472,284,271],[27,860,272,344],[311,844,304,358],[622,870,412,325]],"lion":[[90,158,160,188],[347,92,211,257],[640,93,260,256],[956,90,270,260],[34,443,256,281],[317,484,306,220],[652,426,225,290],[942,442,288,277],[15,888,273,253],[315,861,286,275],[623,811,321,345]],"home":[[8,175,300,245],[324,165,295,258],[637,157,282,277],[942,168,303,261],[18,494,283,268],[318,508,302,242],[629,528,307,220],[955,472,283,299],[15,841,294,237],[313,840,313,235],[626,824,308,259]],"beast":[[21,133,259,222],[313,105,291,249],[632,92,299,262],[946,103,305,250],[9,448,297,307],[305,500,298,255],[624,492,318,261],[955,501,271,231],[14,884,293,286],[307,895,304,269],[624,879,321,294]],"tower":[[52,117,223,289],[353,135,236,269],[672,91,226,316],[1005,60,194,352],[13,498,285,259],[320,483,297,281],[624,549,313,202],[945,492,303,257],[4,904,305,283],[311,878,315,311],[624,874,320,315]],"spring":[[37,126,231,264],[304,153,309,235],[631,84,271,319],[915,148,329,242],[11,476,279,280],[294,556,330,190],[626,518,310,212],[946,448,295,314],[4,926,314,238],[319,847,298,310],[623,884,344,291]]};
   function describe(p={}){
     const craft=window.AlchemyCrafts?.get(p.craftKind);if(craft){const turn=Math.max(1,Math.min(100,Number(p.turn)||1));return {craftKind:craft.id,appearance:'craft-'+craft.id,nature:'neutral',quality:p.quality||0,turn,key:craft.id+'/'+window.AlchemyCrafts.stage(turn)}}
 
@@ -74,6 +74,7 @@
     const entry={canvas:c,url:c.toDataURL('image/png'),description:d};cache.set(d.key,entry);if(cache.size>48)cache.delete(cache.keys().next().value);return entry;
   }
   const image=p=>make(p).url;
+  function geometry(p){const d=describe(p);if(!d.craftKind)return null;const def=window.AlchemyCrafts.get(d.craftKind),rect=craftFrames[def.atlas][window.AlchemyCrafts.stage(d.turn)],scale=236/Math.max(rect[2],rect[3]);return {w:rect[2]*scale/SIZE,h:rect[3]*scale/SIZE};}
   let current=null,previous=null,feedback=null;
   function draw(ctx,x,y,size,p){
     const rendered=make(p),d=rendered.description;
@@ -94,7 +95,7 @@
   }
   function selection(nature,quality){return {body:image({nature,quality,turn:60}),cracks:[],q:describe({quality}).quality};}
   function hydrate(scope=document){scope.querySelectorAll('[data-pill-art-state]').forEach(el=>{const p=JSON.parse(el.dataset.pillArtState);el.querySelector('img').src=image(p);el.dataset.pillArtKey=describe(p).key;});}
-  window.AlchemyPillArt={image,draw,describe,selection,hydrate,bodySource:BODY,bodySources:BODIES,paletteSources:palettes.sources,hues:['#D5DEE1','#91B78B','#74A9D4','#B091CC','#DFB87C'],get cacheSize(){return cache.size;},get feedback(){return feedback;}};
+  window.AlchemyPillArt={image,draw,describe,geometry,selection,hydrate,bodySource:BODY,bodySources:BODIES,paletteSources:palettes.sources,hues:['#D5DEE1','#91B78B','#74A9D4','#B091CC','#DFB87C'],get cacheSize(){return cache.size;},get feedback(){return feedback;}};
   window.addEventListener('alchemy:assets-ready',()=>{cache.clear();});
   window.addEventListener('alchemy:render',()=>{const d=describe(window.AlchemyGame.snapshot());if(current?.key!==d.key){previous=current;current=d;}});
   window.addEventListener('alchemy:refine-result',e=>{const d=describe(window.AlchemyGame.snapshot());feedback={key:d.key,start:performance.now(),outcome:e.detail.outcome,previous:previous?.key||null};window.dispatchEvent(new Event('alchemy:pill-surface'));});
