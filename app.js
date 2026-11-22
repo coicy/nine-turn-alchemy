@@ -110,7 +110,9 @@
   function randomRisk(turn=state?.pill?.turn||1) {const base=BREAK_CURVE[Math.max(0,Math.min(30,Math.floor(turn)-1))];return {explode:base*(window.AlchemyEconomy?.toolRisk(campaign?.economy?.equipped,state?.pill)||1)};}
 
   function freshPill() {
-    return { turn: 1, quality: 0, value: 24, bestTurn: 1, yuanHigh: 24, yuanPool: 0, yuanBonus: 0, yuanNode: 0, ritualSafe: 0, ritualActive: false, ritualStep: 0, toolUsed:false, damageSoftened:false };
+    const carry=campaign?.economy?.ashPool||0;
+    if(campaign?.economy)campaign.economy.ashPool=0;
+    return { turn: 1, quality: 0, value: 24, bestTurn: 1, yuanHigh: 24, yuanPool: carry, yuanBonus: 0, yuanNode: 0, ritualSafe: 0, ritualActive: false, ritualStep: 0, toolUsed:false, damageSoftened:false };
   }
 
   function createState() {
@@ -316,6 +318,10 @@
       outcome=protection.outcome;
       if(protection.source==='seal'){useTool('seal');triggerLog('镇炉印挡下炸炉，改为丹体受损。','good');}
       if(protection.source==='phoenix'){ensurePricing();useTool('phoenix');state.pill.valueFactor=(state.pill.valueFactor??1)*.6;state.pill.baseValue*=.6;repricePill();triggerLog('返生鼎符挡下炸炉：本炉药力持续折损40%。','good');}
+    }
+    if(outcome==='explode'&&hasTool('ash_box')){
+      campaign.economy.ashPool=Math.round((campaign.economy.ashPool||0)+state.pill.baseValue*.25);
+      triggerLog('灰烬匣：部分基础药力留存到下一炉。','good');
     }
     if(hasTool('chain')){state.pill.successChain=['big','success'].includes(outcome)?(state.pill.successChain||0)+1:((hasTool('broken_link')&&outcome==='hold')?(state.pill.successChain||0):0);if(state.pill.successChain>0&&state.pill.successChain%2===0){state.pill.toolTurnBonus=1;triggerLog('双仪环：连续两次成丹，额外提升一转。','good');}}
     if(hasTool('repair')&&outcome==='damage'&&!protectedByTool){state.pill.scars=Math.min(4,(state.pill.scars||0)+1);triggerLog('淬火盏：本炉炸炉率相对降低'+(state.pill.scars*15)+'%。','good');}
