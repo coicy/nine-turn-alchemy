@@ -6,7 +6,7 @@ const outer={require,__dirname,console};vm.createContext(outer);vm.runInContext(
 function reset(tool){c.economy.equipped=tool;Object.assign(s,{pill:a.freshPill(),pillEnded:false,roundEnded:false,attempt:1});s.pill.turn=5;s.pill.value=100;s.riskResult={explode:w.AlchemyGame.riskAtTurn(5)};}
 function result(x,y){let seq=[x,y];testMath.random=()=>seq.length?seq.shift():.9;a.resolveRefine();timers.clear();}
 assert.deepEqual(E.TOOL_DEFS.filter(t=>t.day===1).map(t=>t.id).sort(),['lucky','seal','stone','ward']);
-c.economy.coins=9999;assert.equal(w.AlchemyGame.economyAction('tool','phoenix'),false,'day gating');
+c.economy.coins=99999;assert.equal(w.AlchemyGame.economyAction('tool','phoenix'),false,'day gating');
 reset('ward');assert.ok(Math.abs(s.riskResult.explode-.248*.9)<1e-10);
 reset('stone');result(.9,.7);assert.equal(s.pill.turn,6,'hold tickets become success');
 reset('lucky');result(.9,.12);assert.equal(s.pill.turn,7,'greater chance weight');
@@ -16,5 +16,5 @@ reset('phoenix');result(0,.5);assert.equal(s.pillEnded,false);assert.equal(s.pil
 reset('phoenix');result(0,.5);result(.9,.5);const reduced=s.pill.value;reset(null);result(.9,.5);assert.ok(Math.abs(reduced-s.pill.value*.6)<=1,'phoenix penalty persists through success');
 reset('seal');result(0,.5);assert.equal(s.pillEnded,false);assert.equal(s.pill.toolUsed,true);result(0,.5);assert.equal(s.pillEnded,true);
 reset('repair');assert.equal(s.pill.scars,undefined,'new pill resets stacks');
-c.day=6;for(const t of E.TOOL_DEFS){if(!c.economy.tools.includes(t.id))assert.ok(w.AlchemyGame.economyAction('tool',t.id));}assert.equal(c.economy.tools.length,E.TOOL_DEFS.length);assert.equal(w.AlchemyGame.economyAction('equip','ward'),false,'cannot change equipment on live pill');
+c.day=13;for(const t of E.TOOL_DEFS){if(!c.economy.tools.includes(t.id))assert.ok(w.AlchemyGame.economyAction('tool',t.id));}assert.equal(c.economy.tools.length,E.TOOL_DEFS.length);assert.equal(w.AlchemyGame.economyAction('equip','ward'),false,'cannot change equipment on live pill');
 console.log('PASS: first-day availability, full catalogue, effective risk, weighted outcomes, streak reset, capped scars, once-only protections, persistent value penalty, equipment lock');

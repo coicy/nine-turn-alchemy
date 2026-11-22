@@ -2,20 +2,47 @@
 'use strict';
 const Crafts=root.AlchemyCrafts||(typeof require==='function'?require('./crafts.js'):null);
 const TOOL_DEFS=[
-{id:'seal',name:'镇炉印',price:240,day:1,description:'每炉首次炸炉改为受损。'},
-{id:'ward',name:'避火佩',price:180,day:1,description:'本炉基础炸炉概率降低10%（相对值）。'},
-{id:'stone',name:'调息盘',price:220,day:1,description:'非炸炉权重：维持5→3，成功12→14。'},
-{id:'lucky',name:'鸣金铃',price:320,day:1,description:'非炸炉大成功权重2→4，不直接降低炸炉率。'},
-{id:'chain',name:'双仪环',price:420,day:4,description:'每连续两次成功或大成功，额外升一转；维持与受损打断连续。'},
-{id:'repair',name:'淬火盏',price:480,day:5,description:'每次真实受损使本炉炸炉概率相对降低15%，最多降低60%；换炉清零。'},
-{id:'phoenix',name:'返生鼎符',price:650,day:6,description:'每炉抵挡一次炸炉，维持转数但药力损失40%；此损值系数持续到收丹。'}];
+{id:'seal',name:'镇炉印',price:240,day:1,description:'每炉首次炸炉改为受损。',school:'shared'},
+{id:'ward',name:'避火佩',price:180,day:1,description:'本炉基础炸炉概率降低10%（相对值）。',school:'shared'},
+{id:'stone',name:'调息盘',price:220,day:1,description:'非炸炉权重：维持5→3，成功12→14。',school:'shared'},
+{id:'lucky',name:'鸣金铃',price:320,day:1,description:'非炸炉大成功权重2→4，不直接降低炸炉率。',school:'shared'},
+{id:'chain',name:'双仪环',price:420,day:4,description:'每连续两次成功或大成功，额外升一转；维持与受损打断连续。',school:'shared'},
+{id:'repair',name:'淬火盏',price:480,day:5,description:'每次真实受损使本炉炸炉概率相对降低15%，最多降低60%；换炉清零。',school:'shared'},
+{id:'phoenix',name:'返生鼎符',price:650,day:6,description:'每炉抵挡一次炸炉，维持转数但药力损失40%；此损值系数持续到收丹。',school:'shared'},
+{id:'breath_pearl',name:'纳息珠',price:380,day:3,description:'收丹前将少量未兑现炉险转为基础药力。',school:'shared'},
+{id:'guard_casket',name:'护胆匣',price:360,day:2,description:'每炉第一次受损时，转数损失减半。',school:'stable'},
+{id:'still_incense',name:'定息香',price:400,day:3,description:'维持后，下一次炼制的风险增长降低。',school:'stable'},
+{id:'hearth_pin',name:'安炉钉',price:420,day:4,description:'新炉前几次炼制的风险增长降低。',school:'stable'},
+{id:'cooling_tag',name:'收火签',price:460,day:5,description:'达到委托目标后收丹，获得稳定报酬加成。',school:'stable'},
+{id:'quiet_lamp',name:'静火盏',price:500,day:6,description:'连续安全结果后，下一次炸炉权重降低。',school:'stable'},
+{id:'pulse_ring',name:'守脉环',price:540,day:7,description:'九转前不发生风险突增。',school:'stable'},
+{id:'steady_talisman',name:'稳元符',price:580,day:8,description:'九转归元前保留一次最低药力保障。',school:'stable'},
+{id:'slow_plate',name:'缓升盘',price:620,day:9,description:'炉险增长变慢，但高转数药力倍率略低。',school:'stable'},
+{id:'pressure_plate',name:'炉压盘',price:420,day:6,description:'提高炸炉权重，并提高风险药力积累。',school:'overload'},
+{id:'red_nail',name:'赤焰钉',price:460,day:7,description:'达到指定转数后进一步提高炸炉权重。',school:'overload'},
+{id:'fissure_cone',name:'裂炉锥',price:500,day:8,description:'炉险超过阈值后，成功结果获得额外药力。',school:'overload'},
+{id:'reverse_lamp',name:'逆命灯',price:560,day:9,description:'炸炉被保护或转为受损时，保留部分风险倍率。',school:'overload'},
+{id:'scorch_seal',name:'焦痕印',price:600,day:10,description:'每次受损提高下一次九转归元收益。',school:'overload'},
+{id:'ignite_pearl',name:'引爆珠',price:640,day:11,description:'连续安全结果越多，下一次风险爆发越强。',school:'overload'},
+{id:'risk_ruler',name:'归险尺',price:700,day:12,description:'将部分炸炉概率转为归元药力倍率，达到上限后失效。',school:'overload'},
+{id:'ash_contract',name:'灰烬契',price:760,day:13,description:'高炉险收丹时，超额药力获得额外报酬。',school:'overload'}];
 const PRICES=[18,42],TOOLS=Object.fromEntries(TOOL_DEFS.map(t=>[t.id,t.price])),UPGRADES=[0,360,480];
 const CONSIGNMENT_MAX_DAY=30;
 const CONSIGNMENT_TIERS=[{id:'cabinet',name:'普通药柜',bonusRate:.10,waitDays:2,minDay:6},{id:'premium',name:'精品药柜',bonusRate:.18,waitDays:3,minDay:6},{id:'rare',name:'稀珍药柜',bonusRate:.28,waitDays:4,minDay:6},{id:'town',name:'镇坊展柜',bonusRate:.50,waitDays:7,minDay:6}];
 const EQUIP_SLOTS=3;
 function equippedIds(value){return [...new Set(Array.isArray(value)?value:value?[value]:[])].filter(id=>TOOL_DEFS.some(tool=>tool.id===id)).slice(0,EQUIP_SLOTS);}
 function hasTool(value,id){return equippedIds(value).includes(id);}
-function toolRisk(value,pill){let factor=1;if(hasTool(value,'ward'))factor*=.9;if(hasTool(value,'repair'))factor*=Math.max(.4,1-.15*Math.min(4,pill?.scars||0));return factor;}
+function toolRisk(value,pill){
+ let factor=1,turn=Number(pill?.turn)||1;
+ if(hasTool(value,'ward'))factor*=.9;
+ if(hasTool(value,'repair'))factor*=Math.max(.4,1-.15*Math.min(4,pill?.scars||0));
+ if(hasTool(value,'pressure_plate'))factor*=1.18;
+ if(hasTool(value,'red_nail')&&turn>=6)factor*=1.22;
+ if(hasTool(value,'fissure_cone')&&turn>=9)factor*=1.12;
+ if(hasTool(value,'quiet_lamp')&&turn>=3&&turn%3===0)factor*=.9;
+ if(hasTool(value,'slow_plate'))factor*=.92;
+ return Math.max(.35,Math.min(1.8,factor));
+}
 function outcomeWeights(value){return {big:hasTool(value,'lucky')?4:2,success:hasTool(value,'stone')?14:12,hold:hasTool(value,'stone')?3:5,damage:2};}
 function ensure(c){if(!c.economy)c.economy={coins:80,earned:0,spent:0,stock:[0,0],tools:[],equipped:null,furnace:0,sold:0,last:'开坊本金 80 铜钱'};if(!c.economy.herbs)c.economy.herbs={warm:0,cool:0,neutral:0};if(c.economy.pills===undefined)c.economy.pills=[];if(!Array.isArray(c.economy.consignments))c.economy.consignments=[];if(!Number.isInteger(c.economy.consignmentSeq))c.economy.consignmentSeq=1;if(c.selfOrder!==undefined)delete c.selfOrder;delete c.economy.selfCount;if(Array.isArray(c.economy.pills))for(const pill of c.economy.pills){if(!pill||typeof pill!=='object')continue;delete pill.self;delete pill.source;delete pill.owner;}c.economy.equipped=equippedIds(c.economy.equipped);Crafts.ensure(c);return c.economy;}
 function feel(event,detail={}){if(typeof window!=='undefined')window.AlchemyGameFeel?.emit(event,detail);}
