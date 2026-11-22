@@ -19,7 +19,7 @@
    e.craftMarket={day:c.day,offer:c.day>=3&&c.phase==='open'&&chance<28?{kind:d.id,customerId:d.customerId,minTurn:3,bonusRate:.25,status:'waiting'}:null};
   }if(c.phase!=='open'&&e.craftMarket.offer?.status==='waiting')e.craftMarket.offer.status='expired';return e;
  }
- function quote(c,id){const o=c.economy?.craftMarket?.offer,p=c.economy?.pills?.find(p=>p.id===id);if(c.phase!=='open'||!o||o.status!=='waiting'||c.economy.craftMarket.day!==c.day||!p||p.craftKind!==o.kind||!Number.isFinite(p.value)||p.value<=0||!Number.isInteger(p.turn)||p.turn>100||!Number.isFinite(p.yuanBonus||0)||p.turn<o.minTurn)return {ok:false};return {ok:true,pill:p,payout:Math.ceil((p.value+(p.yuanBonus||0))*(1+o.bonusRate)),offer:o};}
+ function quote(c,id){const o=c.economy?.craftMarket?.offer,p=c.economy?.pills?.find(p=>p.id===id);if(c.phase!=='open'||!o||o.status!=='waiting'||c.economy.craftMarket.day!==c.day||!p||p.craftKind!==o.kind||!Number.isFinite(p.value)||p.value<=0||!Number.isInteger(p.turn)||p.turn>100||!Number.isFinite(p.yuanBonus||0)||p.turn<o.minTurn)return {ok:false};const mold=c.economy?.equipped?.includes('craft_mold')?1.12:1;return {ok:true,pill:p,payout:Math.ceil((p.value+(p.yuanBonus||0))*(1+o.bonusRate)*mold),offer:o};}
  const api={defs,turns,get,stage,name,ensure,quote,atlas:id=>'assets/crafts-v208/'+id+'.webp'};
  if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.AlchemyCrafts=api;
 })(typeof window!=='undefined'?window:globalThis);
