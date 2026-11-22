@@ -317,8 +317,13 @@
       if(protection.source==='seal'){useTool('seal');triggerLog('镇炉印挡下炸炉，改为丹体受损。','good');}
       if(protection.source==='phoenix'){ensurePricing();useTool('phoenix');state.pill.valueFactor=(state.pill.valueFactor??1)*.6;state.pill.baseValue*=.6;repricePill();triggerLog('返生鼎符挡下炸炉：本炉药力持续折损40%。','good');}
     }
-    if(hasTool('chain')){state.pill.successChain=['big','success'].includes(outcome)?(state.pill.successChain||0)+1:0;if(state.pill.successChain>0&&state.pill.successChain%2===0){state.pill.toolTurnBonus=1;triggerLog('双仪环：连续两次成丹，额外提升一转。','good');}}
+    if(hasTool('chain')){state.pill.successChain=['big','success'].includes(outcome)?(state.pill.successChain||0)+1:((hasTool('broken_link')&&outcome==='hold')?(state.pill.successChain||0):0);if(state.pill.successChain>0&&state.pill.successChain%2===0){state.pill.toolTurnBonus=1;triggerLog('双仪环：连续两次成丹，额外提升一转。','good');}}
     if(hasTool('repair')&&outcome==='damage'&&!protectedByTool){state.pill.scars=Math.min(4,(state.pill.scars||0)+1);triggerLog('淬火盏：本炉炸炉率相对降低'+(state.pill.scars*15)+'%。','good');}
+    if(outcome==='damage'&&!protectedByTool){
+      if(hasTool('crack_bowl'))state.pill.yuanPool=(state.pill.yuanPool||0)+6;
+      if(hasTool('reverse_fire'))state.pill.toolTurnBonus=1;
+      if(hasTool('scar_ruler'))state.pill.yuanPool=(state.pill.yuanPool||0)+3*(state.pill.scars||1);
+    }
     if(outcome!=='explode'){const nextTurn=['big','success'].includes(outcome)?Math.min(100,state.pill.turn+(outcome==='big'?2:1)+turnBonus(outcome)):outcome==='damage'&&campaign?.economy?.furnace!==2?Math.max(1,state.pill.turn-1):state.pill.turn;state.pill.quality=Math.max(state.pill.qualityFloor||0,qualityAtTurn(nextTurn));}
 
     let feedback = "";
