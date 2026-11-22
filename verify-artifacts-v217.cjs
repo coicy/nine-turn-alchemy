@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict'),E=require('./economy.js');
+const ids=E.TOOL_DEFS.map(t=>t.id);
+assert.equal(E.TOOL_DEFS.length,40);
+for(const school of ['shared','stable','overload','scar','business'])assert.equal(E.TOOL_DEFS.filter(t=>t.school===school).length,school==='shared'?8:8);
+const c={day:13,economy:{coins:99999,tools:ids,equipped:['pressure_plate'],stock:[0,0],craftStock:{},pills:[],consignments:[]}};
+assert(E.toolRisk(c.economy.equipped,{turn:1})>1);
+assert(E.toolRisk(['red_nail'],{turn:5})<E.toolRisk(['red_nail'],{turn:6}));
+assert(E.saleValue(c,{value:100,yuanBonus:0,turn:15})===100);
+c.economy.equipped=['market_tag'];
+assert(E.saleValue(c,{value:100,yuanBonus:0,turn:15})>100);
+c.economy.equipped=['consign牌'];
+assert(E.consignmentQuote(c,{value:100,yuanBonus:0,turn:15}).guaranteedPayout>110);
+console.log('PASS: 40-artifact catalogue, school partitions, overload scaling, business value hooks');
