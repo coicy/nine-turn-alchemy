@@ -2,7 +2,7 @@
 
 2026-11-01。按制作人要求放弃独立装饰贴图的运行方案，以原柜台背景为编辑母图，使用内置imagegen直接将药罐、药碟、铜秤、账册、印章和笔砚绘入桌面。完整提示词与生成编号保存在Art/CounterSceneV71/prompts.json；原图保存在该目录counter.png。
 
-运行背景为assets/counter-scene-v71/counter.png。painted-scenes.css及启动预载共同指向此图；index.html移除counter-decor.js，删除counter-ui-state.css中的V69/V70装饰布局。旧独立图与脚本保留作历史资源，不再加载。不会出现背景先到、装饰后到的双层加载。
+运行背景为assets/counter-scene/counter.png。painted-scenes.css及启动预载共同指向此图；index.html移除counter-decor.js，删除counter-ui-state.css中的V69/V70装饰布局。旧独立图与脚本保留作历史资源，不再加载。不会出现背景先到、装饰后到的双层加载。
 
 陈设与柜面共同接受生成模型的画面处理，统一局部软硬边、暖光、接触阴影与木色反射，不再用清晰透明图叠在柔化背景上。保持柜台后沿、房间及街景构图；中央来笺、药包和前缘按钮区域留空。纸条与药包仍为可变化的游戏物件，不绘入背景。
 

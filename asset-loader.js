@@ -43,7 +43,7 @@
   }
 
   function roomImages(size) {
-    const room = (size === 'desktop' ? 'assets/scene-entry-v190/' : 'assets/scene-illustrated-v128/') + 'room-' + size;
+    const room = (size === 'desktop' ? 'assets/scene-entry/' : 'assets/scene-illustrated/') + 'room-' + size;
     return [room + '-open.webp', room + '-closed.webp'];
   }
 
@@ -54,7 +54,7 @@
   function entryImages(size) {
     // The first room and immediately reachable furnace are the entry contract on both platforms.
     // Customer art and later scenes already load through their own renderers.
-    const directory = size === 'desktop' ? 'assets/scene-entry-v190/' : 'assets/scene-illustrated-v128/';
+    const directory = size === 'desktop' ? 'assets/scene-entry/' : 'assets/scene-illustrated/';
     return ['room', 'furnace'].flatMap(scene => ['open', 'closed', 'front'].map(layer =>
       directory + scene + '-' + size + '-' + layer + '.webp'));
   }

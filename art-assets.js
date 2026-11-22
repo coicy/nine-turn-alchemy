@@ -1,8 +1,8 @@
 (() => {
   const assets = [
-    ['.herb-object > svg','assets/runtime-v10/herb-parcel-v1.webp','raster-prop'],
-    ['.tray-object > svg','assets/runtime-v10/delivery-tray-v1.webp','raster-prop'],
-    ['svg.hand-fan','assets/runtime-v10/alchemy-fan-v1.webp','hand-fan raster-fan']
+    ['.herb-object > svg','assets/runtime/herb-parcel-v1.webp','raster-prop'],
+    ['.tray-object > svg','assets/runtime/delivery-tray-v1.webp','raster-prop'],
+    ['svg.hand-fan','assets/runtime/alchemy-fan-v1.webp','hand-fan raster-fan']
   ];
   for (const [selector,src,classes] of assets) {
     const original=document.querySelector(selector);

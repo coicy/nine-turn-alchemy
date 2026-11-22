@@ -30,5 +30,5 @@ function run(){cancelAnimationFrame(raf);last=performance.now();draw(t);if(playi
 function seek(v){t=Math.max(0,Math.min(D,v));playing=false;run();}
 document.getElementById('play').onclick=()=>{playing=!playing;if(t>=D)t=0;run();};document.getElementById('replay').onclick=()=>{t=0;playing=true;run();};document.getElementById('timeline').oninput=e=>seek(+e.target.value);document.querySelectorAll('[data-time]').forEach(b=>b.onclick=()=>seek(+b.dataset.time));document.addEventListener('visibilitychange',()=>{if(document.hidden){playing=false;run();}});
 window.MerchantAnimation={seek,snapshot:()=>info};
-Promise.all([load('../../assets/scenes-v41/counter.png'),load('../customer-animation-v52/body-arm-parcel.png'),load('../customer-animation-v52/expressions.png'),load('arm-two-joint.png')]).then(v=>{images=v;loaded=true;if(!playing)t=1;run();}).catch(e=>{document.getElementById('phase').textContent='加载失败 '+e.message;});
+Promise.all([load('../../assets/scenes/counter.png'),load('../customer-animation-v52/body-arm-parcel.png'),load('../customer-animation-v52/expressions.png'),load('arm-two-joint.png')]).then(v=>{images=v;loaded=true;if(!playing)t=1;run();}).catch(e=>{document.getElementById('phase').textContent='加载失败 '+e.message;});
 })();

@@ -1,47 +1,47 @@
-# 目录索引：Prototypes\nine-turn-alchemy-github\assets
+# 目录索引：assets
 
 ## 本目录功能
 
-- 本文件记录本目录下直接子目录和文件的用途索引；具体规则以更深层目录的 `AGENTS.md` 为准。
-- 本目录内容属于九转丹坊项目，修改时保持路径、引用和交付边界稳定。
+- 本文件记录本目录下直接子目录和文件的用途索引；具体历史版本信息以 `docs/` 和归档记录为准。
+- 当前运行资源使用稳定用途路径，不在目录名称中追加产品版本号。
 
 ## 子目录
 
-- alchemy/：子目录；其用途和文件索引见 alchemy/AGENTS.md。
-- counter-decor-v69/：子目录；其用途和文件索引见 counter-decor-v69/AGENTS.md。
-- counter-decor-v70/：子目录；其用途和文件索引见 counter-decor-v70/AGENTS.md。
-- counter-note-v66/：子目录；其用途和文件索引见 counter-note-v66/AGENTS.md。
-- counter-props-v72/：子目录；其用途和文件索引见 counter-props-v72/AGENTS.md。
-- counter-scene-v71/：子目录；其用途和文件索引见 counter-scene-v71/AGENTS.md。
-- counter-tools-v216/：子目录；其用途和文件索引见 counter-tools-v216/AGENTS.md。
-- crafts-v206/：子目录；其用途和文件索引见 crafts-v206/AGENTS.md。
-- crafts-v207/：子目录；其用途和文件索引见 crafts-v207/AGENTS.md。
-- crafts-v208/：子目录；其用途和文件索引见 crafts-v208/AGENTS.md。
-- customers-v12/：子目录；其用途和文件索引见 customers-v12/AGENTS.md。
-- customers-v61/：子目录；其用途和文件索引见 customers-v61/AGENTS.md。
-- furnace-view-v102/：子目录；其用途和文件索引见 furnace-view-v102/AGENTS.md。
-- herb-cabinet-v38/：子目录；其用途和文件索引见 herb-cabinet-v38/AGENTS.md。
-- notes-v67/：子目录；其用途和文件索引见 notes-v67/AGENTS.md。
-- object-world-v86/：子目录；其用途和文件索引见 object-world-v86/AGENTS.md。
-- pill-growth/：子目录；其用途和文件索引见 pill-growth/AGENTS.md。
-- pill-layers/：子目录；其用途和文件索引见 pill-layers/AGENTS.md。
-- pill-mineral-v136/：子目录；其用途和文件索引见 pill-mineral-v136/AGENTS.md。
-- pill-mineral-v138/：子目录；其用途和文件索引见 pill-mineral-v138/AGENTS.md。
-- pill-runes-v103/：子目录；其用途和文件索引见 pill-runes-v103/AGENTS.md。
-- pill-styles/：子目录；其用途和文件索引见 pill-styles/AGENTS.md。
-- props/：子目录；其用途和文件索引见 props/AGENTS.md。
-- ritual/：子目录；其用途和文件索引见 ritual/AGENTS.md。
-- room-v25/：子目录；其用途和文件索引见 room-v25/AGENTS.md。
-- runtime-v10/：子目录；其用途和文件索引见 runtime-v10/AGENTS.md。
-- scene-art-v126/：子目录；其用途和文件索引见 scene-art-v126/AGENTS.md。
-- scene-continuity-v122/：子目录；其用途和文件索引见 scene-continuity-v122/AGENTS.md。
-- scene-entry-v190/：子目录；其用途和文件索引见 scene-entry-v190/AGENTS.md。
-- scene-illustrated-v128/：子目录；其用途和文件索引见 scene-illustrated-v128/AGENTS.md。
-- scene-props-v42/：子目录；其用途和文件索引见 scene-props-v42/AGENTS.md。
-- scene-spatial-v124/：子目录；其用途和文件索引见 scene-spatial-v124/AGENTS.md。
-- scenes-v41/：子目录；其用途和文件索引见 scenes-v41/AGENTS.md。
-- uiux-v158/：子目录；其用途和文件索引见 uiux-v158/AGENTS.md。
-- workbench-v92/：子目录；其用途和文件索引见 workbench-v92/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\alchemy.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\alchemy.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-decor.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-decor.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-decor-v69.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-decor-v69.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-note-v66.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-note-v66.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-props.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-props.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-scene.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-scene.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-tools.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-tools.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts-v206.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts-v206.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts-v207.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts-v207.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\customers.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\customers.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\customers-market.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\customers-market.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\furnace-view.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\furnace-view.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\herb-cabinet.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\herb-cabinet.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\notes-v67.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\notes-v67.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\object-world.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\object-world.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-growth.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-growth.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-layers.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-layers.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-mineral.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-mineral.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-mineral-v138.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-mineral-v138.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-runes-v103.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-runes-v103.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-styles.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-styles.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\props.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\props.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\ritual.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\ritual.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\room.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\room.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-art.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-art.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-continuity-v122.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-continuity-v122.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-entry.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-entry.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-props.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-props.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-spatial-v124.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-spatial-v124.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scenes.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scenes.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\ui.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\ui.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\workbench.Name)/：子目录；用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\workbench.Name)/AGENTS.md。
 
 ## 文件索引
 

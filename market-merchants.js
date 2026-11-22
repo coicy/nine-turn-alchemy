@@ -2,10 +2,10 @@
 (() => {
   'use strict';
   const merchants = {
-    artificer: {name:'法器商', portrait:'assets/scene-props-v42/merchant.webp'},
-    trader: {name:'周掌柜', portrait:'assets/customers-v61/merchant.png',fromDay:2,
+    artificer: {name:'法器商', portrait:'assets/scene-props/merchant.webp'},
+    trader: {name:'周掌柜', portrait:'assets/customers-market/merchant.png',fromDay:2,
       pack:()=>sample(window.AlchemyCrafts.defs.map(d=>d.id),2).map(id=>item('craftMaterial',id))},
-    herbalist: {name:'何采药', portrait:'assets/customers-v61/herbalist.png',fromDay:2,
+    herbalist: {name:'何采药', portrait:'assets/customers-market/herbalist.png',fromDay:2,
       pack:()=>[item('material',1),item('material',0)]}
   };
   const closed = c => c.orders.filter(o => ['completed','failed'].includes(o.status)).length;

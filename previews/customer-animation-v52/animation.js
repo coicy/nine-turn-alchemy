@@ -39,5 +39,5 @@ function seek(time){playing=false;t=Math.max(0,Math.min(duration,time));start();
 document.getElementById('play').onclick=()=>{playing=!playing;if(t>=duration)t=0;start();};document.getElementById('replay').onclick=()=>{t=0;playing=true;start();};document.getElementById('timeline').oninput=e=>seek(+e.target.value);document.querySelectorAll('[data-time]').forEach(b=>b.onclick=()=>seek(+b.dataset.time));
 document.addEventListener('visibilitychange',()=>{if(document.hidden){playing=false;cancelAnimationFrame(raf);document.getElementById('play').textContent='播放';}});
 window.MerchantAnimation={seek,play:()=>{playing=true;start();},snapshot:()=>({time:t,phase,playing,loaded,packetOnTable})};
-Promise.all([load('../../assets/scenes-v41/counter.png'),load('body-arm-parcel.png'),load('expressions.png')]).then(images=>{[bg,rig,faces]=images;loaded=true;if(!playing)t=1.5;draw(t);start();}).catch(e=>{document.getElementById('phase').textContent=e.message;});
+Promise.all([load('../../assets/scenes/counter.png'),load('body-arm-parcel.png'),load('expressions.png')]).then(images=>{[bg,rig,faces]=images;loaded=true;if(!playing)t=1.5;draw(t);start();}).catch(e=>{document.getElementById('phase').textContent=e.message;});
 })();

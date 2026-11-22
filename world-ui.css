@@ -8,7 +8,7 @@
 .object-world .engine-viewport{inset:0!important}
 .object-world .engine-viewport>.forge-panel,.object-world .pill-stage{width:var(--world-width,1600px)!important;height:var(--world-height,900px)!important}
 .object-world #alchemyScene{width:100%!important;height:100%!important}
-.object-world .pill-stage{background-image:url('assets/object-world-v86/room-desktop.webp');background-size:1600px 900px;background-position:left top}
+.object-world .pill-stage{background-image:url('assets/object-world/room-desktop.webp');background-size:1600px 900px;background-position:left top}
 .object-world .world-readout{position:absolute;left:20px;top:20px;width:310px;z-index:24;color:var(--ink);background:#f7ecd4ed;border-left:3px solid #947047;padding:12px 16px;box-sizing:border-box}
 .object-world #roomFacts{display:flex;gap:24px;padding:0!important;min-height:0!important;font-size:14px!important;line-height:1.2}
 .object-world #roomFacts>div{display:flex;flex-direction:column;gap:6px;margin:0}.object-world #roomFacts strong{font-size:24px}
@@ -66,7 +66,7 @@
 @media(max-width:650px){
  .object-world .engine-nav{min-height:48px;gap:4px;padding:4px 8px}.object-world .engine-nav>button{font-size:12px!important;min-height:40px;padding:5px 9px}.object-world #engineWallet{font-size:12px!important}
  .world-mobile.object-world .engine-viewport>.forge-panel{width:var(--world-width)!important;height:var(--world-height)!important;transform:none!important;left:0!important;top:68px!important}
- .world-mobile.object-world .pill-stage{background-image:url('assets/object-world-v86/room-mobile.webp');background-size:100% 100%;background-position:center}
+ .world-mobile.object-world .pill-stage{background-image:url('assets/object-world/room-mobile.webp');background-size:100% 100%;background-position:center}
  .world-mobile.object-world .world-readout{top:0;left:0;right:0;width:auto;height:66px;display:grid;grid-template-columns:100px 1fr;gap:2px 8px;padding:6px 10px;border:0;background:#f5e8cf}
  .world-mobile.object-world #roomFacts{grid-row:1/3;gap:12px;font-size:12px!important}.world-mobile.object-world #roomFacts strong{font-size:18px}.world-mobile.object-world #roomDecision{font-size:12px;margin:0;padding:0;border:0;line-height:1.4}.world-mobile.object-world #roomStock{font-size:12px;margin:0}.world-mobile.object-world .observation-details{position:absolute;right:8px;top:48px;font-size:12px;background:#f7ecd4;z-index:25}.world-mobile.object-world .observation-details[open]{top:64px;left:8px;padding:10px;max-height:200px;border:1px solid #ad8d65}
  .world-mobile.object-world .room-observation{width:102px!important;height:104px!important;border-width:6px}.world-mobile.object-world .observation-pill{width:64px!important;height:64px!important;left:13px!important;top:12px!important}.world-mobile .world-section-caption{bottom:-22px;line-height:18px;font-size:10px}
@@ -127,7 +127,7 @@
  .object-world .counter-board .counter-lease-slip{top:48px}
 }
 /* Painted same-material cutaway replaces the temporary geometry used for layout checking. */
-.object-world .room-observation{width:210px!important;height:170px!important;background:url('assets/object-world-v86/cutaway.webp') center/100% 100% no-repeat;border:0;border-radius:0;box-shadow:none}
+.object-world .room-observation{width:210px!important;height:170px!important;background:url('assets/object-world/cutaway.webp') center/100% 100% no-repeat;border:0;border-radius:0;box-shadow:none}
 .object-world .room-observation:before{inset:5px 15px 10px;border-radius:50%;border-color:#e9dbbd99}
 .object-world .observation-pill{left:58px!important;top:38px!important}
 .object-world .world-section-caption{left:50px;right:50px;bottom:-5px;font-size:12px}
@@ -140,7 +140,7 @@
 .world-mobile.object-world .world-books{top:80%;right:95px}
 .object-world .refine-feedback{pointer-events:none}
 .object-world .world-herb-source{position:absolute;left:3px;bottom:1px;max-width:75%;font-size:12px;font-style:normal;color:#f6e7c2;line-height:16px}
-.object-world.engine-shell .counter-board.engine-panel{background-image:url('assets/object-world-v86/counter.webp')!important}
+.object-world.engine-shell .counter-board.engine-panel{background-image:url('assets/object-world/counter.webp')!important}
 .object-world .counter-board .world-counter-door{display:none}
 @media(max-width:650px){.world-mobile.object-world .herb-slot{height:62px;min-height:62px}.world-mobile.object-world .herb-slot img{height:43px;width:43px}.object-world .world-herb-source{font-size:12px}}
 
@@ -155,7 +155,7 @@
 .object-world.info-choosing .refine-odds,.object-world.info-choosing .refine-odds-toggle{visibility:hidden}
 @media(max-width:650px){.object-world .world-market .world-books{bottom:12px}}
 .object-world .world-day-bell{position:relative;display:block;min-width:128px;min-height:80px;padding:57px 5px 3px;background:#f4e6c7cc!important;border:0!important;font-size:12px;color:#4f3928}
-.object-world .world-day-bell:before{content:'';position:absolute;left:calc(50% - 30px);top:0;width:60px;height:60px;background:url('assets/scene-props-v42/tools.webp') 80% 0/600% 300% no-repeat;filter:drop-shadow(1px 4px 2px #392a2055)}
+.object-world .world-day-bell:before{content:'';position:absolute;left:calc(50% - 30px);top:0;width:60px;height:60px;background:url('assets/scene-props/tools.webp') 80% 0/600% 300% no-repeat;filter:drop-shadow(1px 4px 2px #392a2055)}
 .object-world [data-world-order-source=commission] .commission-slip:after{content:'已接';position:absolute;right:10px;top:10px;border:2px solid #964832;padding:4px;font-size:14px;color:#964832;transform:rotate(9deg)}
 @media(max-width:650px){.object-world .world-day-bell{min-width:105px;min-height:75px;padding-top:52px;font-size:12px}.object-world .world-day-bell:before{width:54px;height:54px;left:calc(50% - 27px)}}
 @media(max-width:650px){
@@ -174,6 +174,6 @@
 .object-world .world-day-bell{color:#49382a!important}
 
 .world-mobile.object-world:not(.odds-expanded) #roomStock{display:none}
-.object-world.engine-shell .world-market.engine-panel{background-image:url('assets/object-world-v86/market.webp')!important}
+.object-world.engine-shell .world-market.engine-panel{background-image:url('assets/object-world/market.webp')!important}
 .object-world .world-market .passage-home{right:8%;top:24%;background:#f7ecd4e8;color:#49382a}
 @media(max-width:650px){.object-world .world-market .passage-home{right:10px;top:10px}}

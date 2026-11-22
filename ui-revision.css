@@ -93,7 +93,7 @@ body.object-world .ledger-day{font-size:14px;line-height:1.6;border-top:1px soli
 body.object-world dialog{box-sizing:border-box;max-width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 32px);overflow:auto;background:#f7ecd4;color:#49382a;border:1px solid #9f794f;padding:20px;border-radius:4px}
 body.object-world dialog::backdrop{background:#382b1c80}body.object-world dialog h2{font-size:24px;margin:0}body.object-world dialog header{display:flex;align-items:center;justify-content:space-between;gap:16px}body.object-world dialog p{font-size:14px;line-height:1.6}body.object-world dialog button{min-height:44px;font-size:14px}body.object-world .ux-confirm{width:420px}.ux-confirm>div{display:flex;gap:12px;margin-top:16px}.ux-data-settings .telemetry-option{display:flex;align-items:center;min-height:44px}.ux-data-settings .policy-link{display:flex;align-items:center}.ux-data-settings .deferred-note{font-size:14px}.ux-data-settings #uxDataSettingsSource{display:block}
 body.object-world .save-picker{width:520px}.save-slot-list{display:grid;gap:10px}.save-slot{padding:12px}.save-slot h3{font-size:18px;margin:0 0 6px}.save-slot p{margin:4px 0}.save-slot small{font-size:12px}.save-actions,.save-reset-confirm{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.save-reset-confirm>p{width:100%}.save-reset-confirm button:first-of-type{background:#914e35;color:#fff0d4}
-body.object-world .opening-screen{background:#e9dcc0 url('assets/object-world-v86/room-desktop.webp') center/cover no-repeat;padding:24px;box-sizing:border-box}
+body.object-world .opening-screen{background:#e9dcc0 url('assets/object-world/room-desktop.webp') center/cover no-repeat;padding:24px;box-sizing:border-box}
 body.object-world .opening-content{background:#f7ecd4ed;padding:28px;width:min(510px,100%);gap:12px;border:1px solid #b8a07a;border-radius:3px;box-sizing:border-box;margin:auto}
 body.object-world .opening-launch{width:100%;max-width:none;display:grid;gap:8px}
 body.object-world .opening-story h1{font-size:44px;margin:0}.opening-tagline{font-size:14px}
@@ -140,7 +140,7 @@ body.object-world .opening-launch>.ux-data-open,body.object-world .opening-launc
  body.object-world #pillBagSelected{position:static;margin-top:12px;padding:12px;background:#f7ecd4bb}body.object-world #pillBagSelected>.ux-pill-art{width:90px;height:90px;float:left;margin-right:12px}
  body.object-world .rune-atlas{grid-template-columns:1fr;gap:0}.rune-atlas .ux-pill-art{width:64px;height:64px}.rune-atlas article{gap:10px;padding:8px 0}.rune-atlas h3{font-size:18px}.rune-atlas p{font-size:14px}
  body.object-world .journal-heading{padding:12px 76px 10px 12px}.journal-tabs{gap:5px}.journal-tabs button{font-size:14px;padding:6px 9px}
- body.object-world .opening-screen{background-image:url('assets/object-world-v86/room-mobile.webp');padding:16px;display:flex;align-items:center}body.object-world .opening-content{padding:24px;gap:8px}body.object-world .opening-story h1{font-size:40px}
+ body.object-world .opening-screen{background-image:url('assets/object-world/room-mobile.webp');padding:16px;display:flex;align-items:center}body.object-world .opening-content{padding:24px;gap:8px}body.object-world .opening-story h1{font-size:40px}
  body.object-world .engine-close{min-height:44px;top:59px;right:10px}
 }
 @media(prefers-reduced-motion:reduce){body.object-world *,body.object-world *:before,body.object-world *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
@@ -259,8 +259,8 @@ body.object-world.engine-shell .world-market.engine-panel[data-shell-active=true
 body.object-world .world-market>.world-market-tabs{position:static;display:flex;gap:8px;padding:8px 12px;min-height:60px;box-sizing:border-box;z-index:4;background:#e9d8b6}
 body.object-world .world-market>.world-market-tabs button{min-height:44px;font-size:14px;margin:0}
 body.object-world .world-market>.market-heading{position:absolute;left:12px;right:auto;top:66px;z-index:8;pointer-events:none}
-body.object-world .world-market .market-stage{position:relative;min-height:260px;overflow:hidden;background:url('assets/object-world-v86/market.webp') center/cover no-repeat}
-body.object-world .world-market .market-stage .market-foreground{position:absolute;inset:0;background:url('assets/object-world-v86/market.webp') center/cover no-repeat;clip-path:inset(var(--market-table-y,58.45%) 0 0);pointer-events:none;z-index:2}
+body.object-world .world-market .market-stage{position:relative;min-height:260px;overflow:hidden;background:url('assets/object-world/market.webp') center/cover no-repeat}
+body.object-world .world-market .market-stage .market-foreground{position:absolute;inset:0;background:url('assets/object-world/market.webp') center/cover no-repeat;clip-path:inset(var(--market-table-y,58.45%) 0 0);pointer-events:none;z-index:2}
 body.object-world .world-market .market-stage .market-merchant{position:absolute;bottom:auto;max-width:none;object-fit:contain;z-index:1;pointer-events:none}
 body.object-world .world-market .market-stage .market-stalls{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible;pointer-events:none;z-index:3}
 body.object-world .world-market .market-stage .market-stalls>section{position:absolute;right:auto;bottom:auto;display:block;max-height:none;padding:0;background:none!important;border:0!important;box-shadow:none;overflow:visible;pointer-events:auto}

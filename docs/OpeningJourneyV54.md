@@ -21,7 +21,7 @@
 - verify-theme-transitions：完整六页面与三种屏幕尺寸，折叠来客后的展开、切换锁定、取消切换与减少动画检查。
 - 截图：Evidence/OnboardingV54。自动检查证明流程与显示规则可达，尚需新玩家试玩判断认知负担是否下降。
 
-发布副本检查补齐当前柜台所需的 customer-catalog.js、customers.js、customer-view.js、customers.css；仅使用已有 customers-v12 图集，不引入人物动画预览资源。
+发布副本检查补齐当前柜台所需的 customer-catalog.js、customers.js、customer-view.js、customers.css；仅使用已有 customers 图集，不引入人物动画预览资源。
 
 ## 发布
 

@@ -53,7 +53,7 @@
       b.title = media.matches ? '已跟随系统减少动态效果' : '减少丹体弹动、飞入丹匣与粒子效果';
     }
   }
-  for (const selector of ['#worldSettings', '#mainMenuSettingsPanel .main-menu-v157__settings-actions']) {
+  for (const selector of ['#worldSettings', '#mainMenuSettingsPanel .main-menu__settings-actions']) {
     const host = document.querySelector(selector);
     if (!host) continue;
     const b = document.createElement('button');

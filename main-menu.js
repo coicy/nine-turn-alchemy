@@ -10,8 +10,8 @@
   const settingsBack = document.getElementById('mainMenuSettingsBack');
   const dataButton = document.getElementById('mainMenuDataSettings');
   const rulesButton = document.getElementById('mainMenuRules');
-  const label = primary.querySelector('.main-menu-v157__button-label');
-  const context = primary.querySelector('.main-menu-v157__button-context');
+  const label = primary.querySelector('.main-menu__button-label');
+  const context = primary.querySelector('.main-menu__button-context');
   const status = document.getElementById('mainMenuStatus');
   const intro = document.getElementById('introModal');
   const start = document.getElementById('startButton');

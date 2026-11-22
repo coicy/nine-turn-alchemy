@@ -5,9 +5,9 @@
   if (!game || !economy || !detail) return;
 
   const icons = {
-    submit: 'submit-mark-v158.svg',
-    sell: 'sale-mark-v158.svg',
-    consign: 'consign-mark-v158.svg'
+    submit: 'submit-mark.svg',
+    sell: 'sale-mark.svg',
+    consign: 'consign-mark.svg'
   };
 
   function setActionContent(button, kind, label) {
@@ -15,7 +15,7 @@
     button.classList.add('pill-bag-action', `pill-bag-action-${kind}`);
     button.replaceChildren();
     const icon = document.createElement('img');
-    icon.src = `assets/uiux-v158/${icons[kind]}`;
+    icon.src = `assets/ui/${icons[kind]}`;
     icon.alt = '';
     icon.setAttribute('aria-hidden', 'true');
     const text = document.createElement('span');

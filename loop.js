@@ -3,7 +3,7 @@
  'use strict';
  const game=window.AlchemyGame,E=window.AlchemyEconomy,UX=window.AlchemyUX,route=window.AlchemyViewState;
  const stock=document.querySelector('.herb-tray'),viewport=document.querySelector('.engine-viewport');
- document.body.classList.add('loop-v143');
+ document.body.classList.add('loop');
  const selection=document.createElement('section');selection.className='loop-selection';selection.setAttribute('aria-label','选中丹药');selection.hidden=true;stock.append(selection);
  const next=document.createElement('div');next.className='loop-next';stock.append(next);
  const back=document.createElement('button');back.type='button';back.className='loop-return';back.textContent='放回';back.setAttribute('aria-keyshortcuts','Escape');back.hidden=true;viewport.append(back);
@@ -11,9 +11,9 @@
  let selected=null,queued=false,revealSelected=false,origin=null,notice='',noticeUntil=0,noticeTimer;
  function html(el,s){if(el.innerHTML!==s)UX.html(el,s);}
  function actionButton(kind,id,label,extra=''){
-  const icons={submit:'submit-mark-v158.svg',sell:'sale-mark-v158.svg',consign:'consign-mark-v158.svg'};
+  const icons={submit:'submit-mark.svg',sell:'sale-mark.svg',consign:'consign-mark.svg'};
   const icon=icons[kind];
-  return '<button class="loop-action-button loop-action-'+kind+'" data-loop-'+kind+'="'+UX.esc(id)+'"'+extra+'><img src="assets/uiux-v158/'+icon+'" alt="" aria-hidden="true"><span>'+label+'</span></button>';
+  return '<button class="loop-action-button loop-action-'+kind+'" data-loop-'+kind+'="'+UX.esc(id)+'"'+extra+'><img src="assets/ui/'+icon+'" alt="" aria-hidden="true"><span>'+label+'</span></button>';
  }
  function busy(s){return s.busy||window.AlchemyScene2D.busy||!!window.AlchemyScene2D.held||!!window.AlchemyInteractionBusy;}
  function terminate(){UX.confirm({title:'终止本单',message:'未用本单料退还，本单记为未完成。丹匣丹药保留，免赔。',confirmLabel:'终止并退还',onConfirm:()=>game.abandonOrder()});}

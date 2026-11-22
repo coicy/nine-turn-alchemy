@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const BODIES = Object.freeze({warm:'assets/pill-mineral-v136/warm.webp',neutral:'assets/pill-mineral-v136/neutral.webp',cool:'assets/pill-mineral-v136/cool.webp'});
+  const BODIES = Object.freeze({warm:'assets/pill-mineral/warm.webp',neutral:'assets/pill-mineral/neutral.webp',cool:'assets/pill-mineral/cool.webp'});
   const BODY = BODIES.neutral;
   const palettes = window.AlchemyPillPalette;
   const SIZE = 256;

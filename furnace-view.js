@@ -8,7 +8,7 @@
   const viewport = document.querySelector('.engine-viewport');
   const forge = document.querySelector('.forge-panel');
   const nav = document.querySelector('.engine-nav');
-  const root = 'assets/furnace-view-v102/';
+  const root = 'assets/furnace-view/';
   const controls = document.createElement('div');
   controls.className = 'furnace-controls';
   controls.innerHTML = '<img class="furnace-cover" alt="" draggable="false"><button class="furnace-pill" aria-label="拿起炉内丹药，放到收丹盘" data-focus-key="furnace-pill"></button><button class="furnace-fire" data-focus-key="furnace-fire">催炼</button><button class="furnace-tray" data-focus-key="furnace-tray">收丹盘</button><button class="furnace-resume" data-focus-key="furnace-resume">回到本炉</button>';

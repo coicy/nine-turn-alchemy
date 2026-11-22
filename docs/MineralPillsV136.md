@@ -35,4 +35,4 @@
 
 采用已选B版哑光丹体；炉内、持物、库存与看丹同源。六类丹纹、生长、计价、概率和存档规则保持。原资源保留，三图为关键预加载并可失败重试。当前外观只按已有药性选择，不新增配方或材料玩法。
 
-完整内置图像生成提示词见[资源记录](../assets/pill-mineral-v136/PROMPTS.md)与[提示词JSON](../assets/pill-mineral-v136/prompts.json)。
+完整内置图像生成提示词见[资源记录](../assets/pill-mineral/PROMPTS.md)与[提示词JSON](../assets/pill-mineral/prompts.json)。

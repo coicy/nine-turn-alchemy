@@ -1,5 +1,5 @@
 /* Shared spatial scene. Text stays at screen size while the illustrated room scales. */
-body.scene-continuity.object-world #pillStage{background-image:var(--scene-v122-image)!important;background-size:var(--room-base-width) var(--room-base-height)!important;background-position:var(--room-camera-left) 0!important;background-repeat:no-repeat;background-color:#c6b7a0}
+body.scene-continuity.object-world #pillStage{background-image:var(--scene-image)!important;background-size:var(--room-base-width) var(--room-base-height)!important;background-position:var(--room-camera-left) 0!important;background-repeat:no-repeat;background-color:#c6b7a0}
 body.scene-continuity .furnace-cover,body.scene-continuity .world-book-rest,body.scene-continuity .world-empty-readout,body.scene-continuity .world-readout,body.scene-continuity .world-delivery-seals{display:none!important}
 body.scene-continuity[data-work-mode=furnace] .world-tool-row{display:none!important}
 body.scene-continuity .world-placed-tool .tool-art{translate:none!important;filter:drop-shadow(0 2px 1px #38281866)}
@@ -189,7 +189,7 @@ body.art-repair[data-work-mode=furnace] .furnace-tray:after{font-size:15px;lette
 body.art-repair .furnace-tray:hover{filter:brightness(1.08)}
 body.art-repair .furnace-tray:active{filter:brightness(.93)}
 body.art-repair .furnace-tray:disabled{filter:grayscale(.45);opacity:.7}
-body.art-repair .tool-art{background-image:url('assets/scene-art-v126/tools.webp')!important}
+body.art-repair .tool-art{background-image:url('assets/scene-art/tools.webp')!important}
 body.art-repair .world-placed-tool .tool-art{filter:drop-shadow(0 1px 1px #49392945)}
 body.art-repair .world-book-stack:after{background:#ece0c2d9;color:#4d4233;border-bottom:1px solid #9c825b;width:52px;left:50%;right:auto;transform:translateX(-50%);font-size:12px;line-height:20px;opacity:0;transition:opacity .12s}
 body.art-repair .world-book-stack:hover:after,body.art-repair .world-book-stack:focus-within:after{opacity:1}

@@ -2,7 +2,7 @@
 #counterSale[hidden],#counterServices[hidden],#counterSale button[hidden],#counterServices button[hidden]{display:none!important}
 body.object-world .counter-board.selling-goods > :not(#counterSale){visibility:hidden!important;pointer-events:none!important}
 #counterSale{position:absolute;inset:0;z-index:32;display:grid;grid-template-rows:minmax(145px,1fr) auto;overflow:auto;background:#f4e7cd;color:#483522}
-.sale-stage{position:relative;min-width:0;overflow:hidden;isolation:isolate;background:url('assets/counter-scene-v71/counter.webp') center/cover no-repeat}
+.sale-stage{position:relative;min-width:0;overflow:hidden;isolation:isolate;background:url('assets/counter-scene/counter.webp') center/cover no-repeat}
 .sale-stage .sale-person{position:absolute;left:50%;top:var(--desk-edge,55%);transform:translate(-50%,-73%);height:clamp(100px,75%,490px);max-width:60%;object-fit:contain;object-position:center bottom;pointer-events:none}
 .sale-desk{position:absolute;inset:0;clip-path:inset(var(--desk-edge,55%) 0 0);background:inherit;pointer-events:none}
 .sale-stage header{position:absolute;z-index:2;top:8px;left:12px;right:12px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}

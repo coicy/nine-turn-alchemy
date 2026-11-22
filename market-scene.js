@@ -9,7 +9,7 @@
   board.append(sale);
   const stage=sale.querySelector('.sale-stage'), person=sale.querySelector('img'), wares=sale.querySelector('.sale-wares');
   const hold=sale.querySelector('[data-sale-hold]'),buy=sale.querySelector('[data-sale-buy]'),leave=sale.querySelector('[data-sale-leave]');
-  const parcel='<img class="sale-parcel" src="assets/runtime-v10/herb-parcel-v1.webp" alt="">';
+  const parcel='<img class="sale-parcel" src="assets/runtime/herb-parcel-v1.webp" alt="">';
   const detail=sale.querySelector('.sale-description');
   const facts=detail.querySelector('.sale-facts'), useButton=detail.querySelector('[data-sale-use]');
   const framed=g=>g.kind==='tool'||g.kind==='furnace';
@@ -23,7 +23,7 @@
     const e=c.economy;
     if (g.kind==='tool') {
       const d=E.TOOL_DEFS.find(t=>t.id===g.id),owned=e.tools.includes(g.id);
-      return {name:d.name,price:d.price,description:d.description,status:owned?'已持有':'',disabled:owned,art:'<img class="sale-tool" src="assets/counter-tools-v216/'+d.id+'.webp" alt="" draggable="false">'};
+      return {name:d.name,price:d.price,description:d.description,status:owned?'已持有':'',disabled:owned,art:'<img class="sale-tool" src="assets/counter-tools/'+d.id+'.webp" alt="" draggable="false">'};
     }
     if (g.kind==='craftMaterial') {
       const d=window.AlchemyCrafts.get(g.id);

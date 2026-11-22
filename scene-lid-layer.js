@@ -3,7 +3,7 @@
 (() => {
   'use strict';
 
-  const directory = key => key.endsWith('desktop') ? 'assets/scene-entry-v190/' : 'assets/scene-illustrated-v128/';
+  const directory = key => key.endsWith('desktop') ? 'assets/scene-entry/' : 'assets/scene-illustrated/';
   const patches = {
     'room-desktop': {
       size: [1600, 1600], feather: 4,
