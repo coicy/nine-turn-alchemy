@@ -1,6 +1,6 @@
 # 丹炉与丹纹素材 V02
 
-2026-10-28。使用内置 image_gen 生成八张透明 PNG，完整提示词见 prompts.json。原生成文件保留在 Codex generated_images，项目副本放在 `../../Prototypes/九转丹坊MVP/assets/alchemy/`；不复用其他游戏资源。
+2026-10-28。使用内置 image_gen 生成八张透明 PNG，完整提示词见 prompts.json。原生成文件保留在 Codex generated_images，项目副本放在 `../../Prototypes/legacy-mvp/assets/alchemy/`；不复用其他游戏资源。
 
 | 文件 | 角色 | 表现与已有玩法对应 |
 | --- | --- | --- |

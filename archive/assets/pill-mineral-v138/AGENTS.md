@@ -7,9 +7,9 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\pill-mineral-v138\copper-red.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\pill-mineral-v138\lead-yellow.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\pill-mineral-v138\ochre-violet.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\pill-mineral-v138\prompts.json.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\pill-mineral-v138\PROMPTS.md.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\pill-mineral-v138\tin-white.webp.Name)：历史资源、来源记录或版本说明。
+- copper-red.webp：历史资源、来源记录或版本说明。
+- lead-yellow.webp：历史资源、来源记录或版本说明。
+- ochre-violet.webp：历史资源、来源记录或版本说明。
+- prompts.json：历史资源、来源记录或版本说明。
+- PROMPTS.md：历史资源、来源记录或版本说明。
+- tin-white.webp：历史资源、来源记录或版本说明。

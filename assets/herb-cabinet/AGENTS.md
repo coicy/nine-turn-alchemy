@@ -11,6 +11,6 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\herb-cabinet\cubby.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\herb-cabinet\cubby.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\herb-cabinet\README.md.Name)：资源配置、来源或说明。
+- cubby.png：运行视觉素材。
+- cubby.webp：运行视觉素材。
+- README.md：资源配置、来源或说明。

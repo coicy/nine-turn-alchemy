@@ -7,11 +7,11 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-continuity-v122\furnace-desktop-closed.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-continuity-v122\furnace-desktop-open.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-continuity-v122\furnace-mobile-closed.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-continuity-v122\furnace-mobile-open.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-continuity-v122\room-desktop-closed.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-continuity-v122\room-desktop-open.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-continuity-v122\room-mobile-closed.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-continuity-v122\room-mobile-open.webp.Name)：历史资源、来源记录或版本说明。
+- furnace-desktop-closed.webp：历史资源、来源记录或版本说明。
+- furnace-desktop-open.webp：历史资源、来源记录或版本说明。
+- furnace-mobile-closed.webp：历史资源、来源记录或版本说明。
+- furnace-mobile-open.webp：历史资源、来源记录或版本说明。
+- room-desktop-closed.webp：历史资源、来源记录或版本说明。
+- room-desktop-open.webp：历史资源、来源记录或版本说明。
+- room-mobile-closed.webp：历史资源、来源记录或版本说明。
+- room-mobile-open.webp：历史资源、来源记录或版本说明。

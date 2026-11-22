@@ -11,17 +11,17 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\alchemy-fan-v1.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\color-04-brown.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\color-06-olive.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\color-07-slate.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\crack-01-single.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\crack-02-fork.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\crack-03-opposed.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\crack-04-arc.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\crack-05-fragments.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\crack-06-traverse.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\delivery-tray-v1.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\furnace-v1.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\herb-parcel-v1.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\runtime\manifest.json.Name)：资源配置、来源或说明。
+- alchemy-fan-v1.webp：运行视觉素材。
+- color-04-brown.webp：运行视觉素材。
+- color-06-olive.webp：运行视觉素材。
+- color-07-slate.webp：运行视觉素材。
+- crack-01-single.webp：运行视觉素材。
+- crack-02-fork.webp：运行视觉素材。
+- crack-03-opposed.webp：运行视觉素材。
+- crack-04-arc.webp：运行视觉素材。
+- crack-05-fragments.webp：运行视觉素材。
+- crack-06-traverse.webp：运行视觉素材。
+- delivery-tray-v1.webp：运行视觉素材。
+- furnace-v1.webp：运行视觉素材。
+- herb-parcel-v1.webp：运行视觉素材。
+- manifest.json：资源配置、来源或说明。

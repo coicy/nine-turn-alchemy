@@ -7,9 +7,9 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\notes-v67\courier.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\notes-v67\guard.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\notes-v67\herbal.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\notes-v67\merchant.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\notes-v67\recluse.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\notes-v67\scholar.png.Name)：历史资源、来源记录或版本说明。
+- courier.png：历史资源、来源记录或版本说明。
+- guard.png：历史资源、来源记录或版本说明。
+- herbal.png：历史资源、来源记录或版本说明。
+- merchant.png：历史资源、来源记录或版本说明。
+- recluse.png：历史资源、来源记录或版本说明。
+- scholar.png：历史资源、来源记录或版本说明。

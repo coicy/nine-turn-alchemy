@@ -11,5 +11,5 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\room\room.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\room\room.webp.Name)：运行视觉素材。
+- room.png：运行视觉素材。
+- room.webp：运行视觉素材。

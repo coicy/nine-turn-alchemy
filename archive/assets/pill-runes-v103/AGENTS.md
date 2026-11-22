@@ -7,5 +7,5 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\pill-runes-v103\body.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\pill-runes-v103\PROMPTS.md.Name)：历史资源、来源记录或版本说明。
+- body.webp：历史资源、来源记录或版本说明。
+- PROMPTS.md：历史资源、来源记录或版本说明。

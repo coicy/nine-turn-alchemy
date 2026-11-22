@@ -1,6 +1,6 @@
 # 九转丹坊：当前制作阶段
 
-更新日期：2026-10-31。阶段依据：制作人明确确认本游戏循环已经闭合，可以进行下一步优化制作；当前不再按 MVP 制作定位约束后续方案。
+更新日期：2026-11-22。当前交付基线：`V219`，版本唯一来源为根目录 `VERSION`；阶段依据：制作人明确确认本游戏循环已经闭合，可以进行下一步优化制作；当前不再按 MVP 制作定位约束后续方案。
 
 规则修订入口：2026-11-16 起，所有成丹统一进入玩家丹匣；储备药材只作为无委托炉次的备料来源，不生成独立自炼订单。详见 [V156 统一丹匣交付](../../Docs/UnifiedPillsV156/Delivery.md)。
 
@@ -34,7 +34,7 @@
 - 美术与界面基线：UnifiedInterfaceDesignV22.md。
 - 客人表现调研：CustomerPresentationResearchV47.md。
 - 已保存的生成计划：CustomerSpawnPlanV01.md；外貌具体组织仍为建议，未完成实装。
-- 当前运行入口：../Prototypes/九转丹坊MVP/index.html。
+- 当前运行入口：`index.html`。
 - 线上发布副本：../Prototypes/nine-turn-alchemy-github。
 
 历史设计和验证记录继续保留；发生阶段定位冲突时，以本记录和项目 AGENTS.md 为准。

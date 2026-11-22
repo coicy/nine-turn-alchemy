@@ -11,9 +11,9 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-entry\furnace-desktop-closed.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-entry\furnace-desktop-front.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-entry\furnace-desktop-open.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-entry\room-desktop-closed.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-entry\room-desktop-front.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-entry\room-desktop-open.webp.Name)：运行视觉素材。
+- furnace-desktop-closed.webp：运行视觉素材。
+- furnace-desktop-front.webp：运行视觉素材。
+- furnace-desktop-open.webp：运行视觉素材。
+- room-desktop-closed.webp：运行视觉素材。
+- room-desktop-front.webp：运行视觉素材。
+- room-desktop-open.webp：运行视觉素材。

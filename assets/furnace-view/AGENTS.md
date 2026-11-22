@@ -11,9 +11,9 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\furnace-view\desktop.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\furnace-view\lid-closed.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\furnace-view\lid-standing.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\furnace-view\mobile-v2.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\furnace-view\mobile.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\furnace-view\PROMPTS.md.Name)：资源配置、来源或说明。
+- desktop.webp：运行视觉素材。
+- lid-closed.webp：运行视觉素材。
+- lid-standing.webp：运行视觉素材。
+- mobile-v2.webp：运行视觉素材。
+- mobile.webp：运行视觉素材。
+- PROMPTS.md：资源配置、来源或说明。

@@ -11,10 +11,10 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-tools\chain.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-tools\lucky.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-tools\phoenix.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-tools\repair.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-tools\seal.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-tools\stone.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-tools\ward.webp.Name)：运行视觉素材。
+- chain.webp：运行视觉素材。
+- lucky.webp：运行视觉素材。
+- phoenix.webp：运行视觉素材。
+- repair.webp：运行视觉素材。
+- seal.webp：运行视觉素材。
+- stone.webp：运行视觉素材。
+- ward.webp：运行视觉素材。

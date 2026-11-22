@@ -11,17 +11,17 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\beast.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\beast.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\bird.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\bird.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\frames.json.Name)：资源配置、来源或说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\home.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\home.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\lion.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\lion.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\provenance.md.Name)：资源配置、来源或说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\spring.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\spring.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\tower.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\crafts\tower.webp.Name)：运行视觉素材。
+- beast.png：运行视觉素材。
+- beast.webp：运行视觉素材。
+- bird.png：运行视觉素材。
+- bird.webp：运行视觉素材。
+- frames.json：资源配置、来源或说明。
+- home.png：运行视觉素材。
+- home.webp：运行视觉素材。
+- lion.png：运行视觉素材。
+- lion.webp：运行视觉素材。
+- provenance.md：资源配置、来源或说明。
+- spring.png：运行视觉素材。
+- spring.webp：运行视觉素材。
+- tower.png：运行视觉素材。
+- tower.webp：运行视觉素材。

@@ -11,12 +11,12 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-props\courier.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-props\guard.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-props\herb-parcel.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-props\herb-parcel.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-props\herbal.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-props\merchant.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-props\merchant.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-props\recluse.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\counter-props\scholar.png.Name)：运行视觉素材。
+- courier.png：运行视觉素材。
+- guard.png：运行视觉素材。
+- herb-parcel.png：运行视觉素材。
+- herb-parcel.webp：运行视觉素材。
+- herbal.png：运行视觉素材。
+- merchant.png：运行视觉素材。
+- merchant.webp：运行视觉素材。
+- recluse.png：运行视觉素材。
+- scholar.png：运行视觉素材。

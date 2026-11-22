@@ -11,9 +11,9 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\object-world\casket.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\object-world\counter.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\object-world\cutaway.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\object-world\market.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\object-world\room-desktop.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\object-world\room-mobile.webp.Name)：运行视觉素材。
+- casket.webp：运行视觉素材。
+- counter.webp：运行视觉素材。
+- cutaway.webp：运行视觉素材。
+- market.webp：运行视觉素材。
+- room-desktop.webp：运行视觉素材。
+- room-mobile.webp：运行视觉素材。

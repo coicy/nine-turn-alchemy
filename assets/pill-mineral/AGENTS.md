@@ -11,8 +11,8 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-mineral\cool.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-mineral\neutral.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-mineral\prompts.json.Name)：资源配置、来源或说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-mineral\PROMPTS.md.Name)：资源配置、来源或说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\pill-mineral\warm.webp.Name)：运行视觉素材。
+- cool.webp：运行视觉素材。
+- neutral.webp：运行视觉素材。
+- prompts.json：资源配置、来源或说明。
+- PROMPTS.md：资源配置、来源或说明。
+- warm.webp：运行视觉素材。

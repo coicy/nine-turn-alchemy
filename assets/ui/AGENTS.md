@@ -6,9 +6,9 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\ui\consign-mark.svg.Name)：正式界面图标或品牌素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\ui\danfang-wordmark.svg.Name)：正式界面图标或品牌素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\ui\risk-mark.svg.Name)：正式界面图标或品牌素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\ui\sale-mark.svg.Name)：正式界面图标或品牌素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\ui\submit-mark.svg.Name)：正式界面图标或品牌素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\ui\success-mark.svg.Name)：正式界面图标或品牌素材。
+- consign-mark.svg：正式界面图标或品牌素材。
+- danfang-wordmark.svg：正式界面图标或品牌素材。
+- risk-mark.svg：正式界面图标或品牌素材。
+- sale-mark.svg：正式界面图标或品牌素材。
+- submit-mark.svg：正式界面图标或品牌素材。
+- success-mark.svg：正式界面图标或品牌素材。

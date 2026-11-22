@@ -11,6 +11,6 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scenes\counter.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scenes\market.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scenes\market.webp.Name)：运行视觉素材。
+- counter.png：运行视觉素材。
+- market.png：运行视觉素材。
+- market.webp：运行视觉素材。

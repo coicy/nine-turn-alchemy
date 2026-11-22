@@ -11,4 +11,4 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\customers\customers.webp.Name)：运行视觉素材。
+- customers.webp：运行视觉素材。

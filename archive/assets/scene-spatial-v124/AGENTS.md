@@ -7,15 +7,15 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-spatial-v124\furnace-desktop-closed.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-spatial-v124\furnace-desktop-front.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-spatial-v124\furnace-desktop-open.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-spatial-v124\furnace-mobile-closed.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-spatial-v124\furnace-mobile-front.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-spatial-v124\furnace-mobile-open.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-spatial-v124\room-desktop-closed.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-spatial-v124\room-desktop-front.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-spatial-v124\room-desktop-open.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-spatial-v124\room-mobile-closed.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-spatial-v124\room-mobile-front.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\scene-spatial-v124\room-mobile-open.webp.Name)：历史资源、来源记录或版本说明。
+- furnace-desktop-closed.webp：历史资源、来源记录或版本说明。
+- furnace-desktop-front.webp：历史资源、来源记录或版本说明。
+- furnace-desktop-open.webp：历史资源、来源记录或版本说明。
+- furnace-mobile-closed.webp：历史资源、来源记录或版本说明。
+- furnace-mobile-front.webp：历史资源、来源记录或版本说明。
+- furnace-mobile-open.webp：历史资源、来源记录或版本说明。
+- room-desktop-closed.webp：历史资源、来源记录或版本说明。
+- room-desktop-front.webp：历史资源、来源记录或版本说明。
+- room-desktop-open.webp：历史资源、来源记录或版本说明。
+- room-mobile-closed.webp：历史资源、来源记录或版本说明。
+- room-mobile-front.webp：历史资源、来源记录或版本说明。
+- room-mobile-open.webp：历史资源、来源记录或版本说明。

@@ -11,7 +11,7 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\workbench\folio.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\workbench\PROMPTS.md.Name)：资源配置、来源或说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\workbench\room-desktop.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\workbench\room-mobile.png.Name)：运行视觉素材。
+- folio.png：运行视觉素材。
+- PROMPTS.md：资源配置、来源或说明。
+- room-desktop.png：运行视觉素材。
+- room-mobile.png：运行视觉素材。

@@ -7,7 +7,7 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v206\atlas-a.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v206\atlas-b.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v206\frames.json.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v206\provenance.md.Name)：历史资源、来源记录或版本说明。
+- atlas-a.png：历史资源、来源记录或版本说明。
+- atlas-b.png：历史资源、来源记录或版本说明。
+- frames.json：历史资源、来源记录或版本说明。
+- provenance.md：历史资源、来源记录或版本说明。

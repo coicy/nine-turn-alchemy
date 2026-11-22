@@ -7,5 +7,5 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\counter-decor-v69\jars.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\counter-decor-v69\tools.png.Name)：历史资源、来源记录或版本说明。
+- jars.png：历史资源、来源记录或版本说明。
+- tools.png：历史资源、来源记录或版本说明。

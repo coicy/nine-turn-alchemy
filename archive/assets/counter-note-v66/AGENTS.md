@@ -7,4 +7,4 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\counter-note-v66\note.png.Name)：历史资源、来源记录或版本说明。
+- note.png：历史资源、来源记录或版本说明。

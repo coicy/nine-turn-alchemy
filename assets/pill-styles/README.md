@@ -10,6 +10,6 @@
 
 三者不对应不同品质等级，不把材质光泽与品质混绑。后续仍以丹体颜色区分药性、凝纹颜色区分品质，沿用用户已确定的规则。
 
-预览：../../Prototypes/九转丹坊MVP/pill-style-preview.html，包含放大图及现有丹炉旁 118px 尺寸对照。原图位于 ../../Prototypes/九转丹坊MVP/assets/pill-styles/，点击预览可打开各源图。
+预览：../../Prototypes/legacy-mvp/pill-style-preview.html，包含放大图及现有丹炉旁 118px 尺寸对照。原图位于 ../../Prototypes/legacy-mvp/assets/pill-styles/，点击预览可打开各源图。
 
 来源：内置 image_gen；完整提示词、生成路径与透明通道信息分别见 prompts.json、sources.json、technical-checks.json。保留原生成文件与项目副本，未重绘或修改像素。三案已查看源图；预览页是排版对照，不等于完成真实游戏试玩验收。本轮仅新增预览，不替换正在运行的游戏素材。

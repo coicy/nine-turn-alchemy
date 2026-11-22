@@ -7,17 +7,17 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\beast.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\beast.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\bird.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\bird.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\frames.json.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\home.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\home.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\lion.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\lion.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\provenance.md.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\spring.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\spring.webp.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\tower.png.Name)：历史资源、来源记录或版本说明。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive\assets\crafts-v207\tower.webp.Name)：历史资源、来源记录或版本说明。
+- beast.png：历史资源、来源记录或版本说明。
+- beast.webp：历史资源、来源记录或版本说明。
+- bird.png：历史资源、来源记录或版本说明。
+- bird.webp：历史资源、来源记录或版本说明。
+- frames.json：历史资源、来源记录或版本说明。
+- home.png：历史资源、来源记录或版本说明。
+- home.webp：历史资源、来源记录或版本说明。
+- lion.png：历史资源、来源记录或版本说明。
+- lion.webp：历史资源、来源记录或版本说明。
+- provenance.md：历史资源、来源记录或版本说明。
+- spring.png：历史资源、来源记录或版本说明。
+- spring.webp：历史资源、来源记录或版本说明。
+- tower.png：历史资源、来源记录或版本说明。
+- tower.webp：历史资源、来源记录或版本说明。

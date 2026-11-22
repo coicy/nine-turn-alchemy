@@ -11,8 +11,8 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\customers-market\clothier.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\customers-market\clothier.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\customers-market\herbalist.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\customers-market\merchant.png.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\customers-market\scholar.png.Name)：运行视觉素材。
+- clothier.png：运行视觉素材。
+- clothier.webp：运行视觉素材。
+- herbalist.png：运行视觉素材。
+- merchant.png：运行视觉素材。
+- scholar.png：运行视觉素材。

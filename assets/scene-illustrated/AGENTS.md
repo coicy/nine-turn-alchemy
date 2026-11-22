@@ -11,15 +11,15 @@
 
 ## 文件索引
 
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated\furnace-desktop-closed.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated\furnace-desktop-front.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated\furnace-desktop-open.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated\furnace-mobile-closed.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated\furnace-mobile-front.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated\furnace-mobile-open.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated\room-desktop-closed.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated\room-desktop-front.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated\room-desktop-open.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated\room-mobile-closed.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated\room-mobile-front.webp.Name)：运行视觉素材。
-- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets\scene-illustrated\room-mobile-open.webp.Name)：运行视觉素材。
+- furnace-desktop-closed.webp：运行视觉素材。
+- furnace-desktop-front.webp：运行视觉素材。
+- furnace-desktop-open.webp：运行视觉素材。
+- furnace-mobile-closed.webp：运行视觉素材。
+- furnace-mobile-front.webp：运行视觉素材。
+- furnace-mobile-open.webp：运行视觉素材。
+- room-desktop-closed.webp：运行视觉素材。
+- room-desktop-front.webp：运行视觉素材。
+- room-desktop-open.webp：运行视觉素材。
+- room-mobile-closed.webp：运行视觉素材。
+- room-mobile-front.webp：运行视觉素材。
+- room-mobile-open.webp：运行视觉素材。

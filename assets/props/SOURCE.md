@@ -2,7 +2,7 @@
 
 2026-10-28，使用内置 image_gen 生成，未使用 CLI/API。沿用本项目的深青丹房、暖纸与旧铜配色，不引用其他游戏资源。
 
-运行文件位于 `../../Prototypes/九转丹坊MVP/assets/props/`：
+运行文件位于 `../../Prototypes/legacy-mvp/assets/props/`：
 - herb-parcel-v1.png：药材纸包，1312×1199，RGBA；常规展示框 85×80，底部中心落位。
 - alchemy-fan-v1.png：催炼羽扇，1235×1274，RGBA；展示框 85×125，随原有挥扇动画转动。
 - delivery-tray-v1.png：青瓷交付盘，1536×1024，RGBA；展示框 120×80，成丹仍由程序叠加。
