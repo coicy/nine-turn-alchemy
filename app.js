@@ -379,7 +379,13 @@
         state.pill.yuanBonus *= ratio;
       }
       if (state.pill.value > (state.pill.yuanHigh ?? 24)) {
-        state.pill.yuanPool += before.value * profile.explode;
+        let riskYield=profile.explode;
+        if(hasTool('pressure_plate'))riskYield*=1.18;
+        if(hasTool('red_nail')&&before.value>=120)riskYield*=1.22;
+        if(hasTool('fissure_cone')&&before.value>=180)riskYield*=1.15;
+        if(hasTool('scorch_seal')&&state.pill.scars)riskYield*=1+.08*Math.min(4,state.pill.scars);
+        if(hasTool('risk_ruler'))riskYield*=1.12;
+        state.pill.yuanPool += before.value * riskYield;
         state.pill.yuanHigh = state.pill.value;
       } else state.pill.yuanHigh = Math.max(state.pill.yuanHigh ?? 24, state.pill.value);
       const reachedNode = Math.floor(state.pill.turn / 9);
