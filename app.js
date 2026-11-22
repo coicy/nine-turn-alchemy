@@ -675,7 +675,11 @@
 
   function settleOrder() {
     if(!campaign)return;const o=campaignRules.active(campaign);if(!o)return;
-    campaignRules.resolve(campaign,state.delivered,state.attempt);window.AlchemyEconomy?.commission(campaign,o,state.collected);
+    campaignRules.resolve(campaign,state.delivered,state.attempt);
+    if(o.status==='failed'&&window.AlchemyEconomy?.hasTool(campaign.economy.equipped,'failed_contract')){
+      const refund=Math.max(0,Math.floor((o.returned||0)*4));campaign.economy.coins+=refund;campaign.economy.failedContractRelief=(campaign.economy.failedContractRelief||0)+1;
+    }
+    window.AlchemyEconomy?.commission(campaign,o,state.collected);
   }
   function chooseOrder(id) {
     if(window.AlchemyDialogue?.blocking)return false;
