@@ -157,7 +157,7 @@ for (const event of ['alchemy:interaction','alchemy:carry','alchemy:view-ready']
   window.addEventListener(event, () => { if (awaitingReception) queueMicrotask(advanceReception); });
 }
 function render(){const c=api.campaign();if(!c)return;observeQueue(c);const s=api.snapshot(),completed=c.orders.filter(o=>o.status==='completed').length,resolved=c.orders.filter(o=>['completed','failed'].includes(o.status)).length,active=!!c.orders.some(o=>o.status==='active');
- $('dayTitle').textContent='';
+  $('dayTitle').textContent=`第 ${c.day} 天 / ${window.AlchemyCampaign?.DAYS||30} 天`;
  $('careerTotal').textContent=`今日完成 ${completed} / ${c.orders.length} 单`;
  $('dailyHint').textContent=c.phase==='finished'?`三十日累计收入 ${c.economy?.earned||0} 铜钱，余额 ${c.economy?.coins||0} 铜钱。经营结束。查看总评，或重新经营。`:c.phase==='settled'?'今日已结清，准备迎接下一天。':`今日 ${completed} / ${c.orders.length} 单完成 · ${resolved} / ${c.orders.length} 单已处理。一次只接一单，明确提交后结单；成功余药赠留，失败退回且免赔。`;
  const focused=false;board.classList.remove('counter-focused');if(c.phase!=='open')browseAll=false;board.classList.toggle('counter-book-open',browseAll);browse.hidden=c.phase!=='open';browse.textContent=browseAll?'收起委托簿':'委托簿';browse.setAttribute('aria-expanded',String(browseAll));$('dailyOrders').hidden=!browseAll;$('dailyHint').hidden=c.phase==='open';

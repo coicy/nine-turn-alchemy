@@ -9,8 +9,7 @@
   max-width: calc(100% - 36px);
 }
 
-.counter-lease-slip[hidden],
-.opening-in-scene .counter-lease-slip { display: none !important; }
+.counter-lease-slip[hidden] { display: none !important; }
 .counter-letter-open > .counter-lease-slip { visibility: hidden; }
 
 .object-world .counter-lease-slip button {

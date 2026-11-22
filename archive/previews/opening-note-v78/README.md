@@ -8,4 +8,4 @@
 
 验证verify-opening-note-v78.cjs：1440与390视口的真实纸笺门槛、详情可见、关后重开、三幕完成、钱料以外的首单ID/材料/尝试数保持、完成后继续不重播、跳过解除输入锁、无脚本错误。verify-counter-note-v64.cjs回归常规来笺/换客/接单/回炉通过。Evidence/OpeningNoteV78保存实景截图。
 
-旧verify-opening-scenes-browser.cjs假设第二幕直接点下一步、不展开纸笺，已不符合本次交互，不能将其旧通过记录作为V78验收。主游戏仍沿用原有首次订单初始化；这次不改变接单与经济规则。
+旧版三幕验证脚本已归档于 `archive/opening-story-legacy/verify-opening-scenes-browser.cjs`；它假设第二幕直接点下一步、不展开纸笺，已不符合本次交互，不能将其旧通过记录作为V78验收。主游戏仍沿用原有首次订单初始化；这次不改变接单与经济规则。

@@ -19,7 +19,7 @@
 
 ## 验证
 
-- verify-opening-scenes-browser.cjs：真实丹房→柜台→丹房、首单姓名、三包药、输入锁、幕中刷新恢复、结束后真实点击投药、正常进度不重播、切换中Escape跳过、三幕跳过、390宽与减少动画。
+- `archive/opening-story-legacy/verify-opening-scenes-browser.cjs`：真实丹房→柜台→丹房、首单姓名、三包药、输入锁、幕中刷新恢复、结束后真实点击投药、正常进度不重播、切换中Escape跳过、三幕跳过、390宽与减少动画。该脚本仅用于 V01 历史追溯。
 - verify-onboarding-browser.cjs、verify-save-slots-browser.cjs、verify-theme-transitions.cjs、verify-loop-flow-browser.cjs：开局、三槽位新开局与恢复、六页面/三尺寸、收丹与丹纹流程回归。
 - verify-mvp / verify-simulation / verify-campaign / verify-economy / verify-telemetry / verify-save-slots：原单炉、30天、经济、匿名记录和存档隔离检查通过。
 - 截图与线上核查：Evidence/OpeningScenesV01。新玩家的模拟感与阅读负担仍需试玩评价。

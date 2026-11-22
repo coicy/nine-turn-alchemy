@@ -15,6 +15,7 @@
 
 - .qa/AGENTS.md。
 - archive/AGENTS.md。
+- archive/opening-story-legacy/AGENTS.md。
 - assets/AGENTS.md。
 - character-style/AGENTS.md。
 - docs/AGENTS.md。
@@ -41,7 +42,6 @@
 - consignment-bag.js：运行逻辑或验证脚本。
 - consignment-ui.css：界面样式。
 - consignment-ui.js：运行逻辑或验证脚本。
-- counter-decor.js：运行逻辑或验证脚本。
 - counter-people.css：界面样式。
 - counter-people.js：运行逻辑或验证脚本。
 - counter-ui-state.css：界面样式。
@@ -103,8 +103,6 @@
 - onboarding.css：界面样式。
 - onboarding.js：运行逻辑或验证脚本。
 - opening-load.css：界面样式。
-- opening-story.css：界面样式。
-- opening-story.js：运行逻辑或验证脚本。
 - painted-scenes.css：界面样式。
 - pill-bag.css：界面样式。
 - pill-bag.js：运行逻辑或验证脚本。
@@ -176,7 +174,6 @@
 - verify-onboarding-browser.cjs：运行逻辑或验证脚本。
 - verify-online.cjs：运行逻辑或验证脚本。
 - verify-opening-note-v78.cjs：运行逻辑或验证脚本。
-- verify-opening-scenes-browser.cjs：运行逻辑或验证脚本。
 - verify-painted-scenes.cjs：运行逻辑或验证脚本。
 - verify-pill-shape-browser.cjs：运行逻辑或验证脚本。
 - verify-progression.cjs：运行逻辑或验证脚本。

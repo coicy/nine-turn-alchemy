@@ -250,8 +250,7 @@ body.object-world .counter-board #nextDay{min-height:44px}
 .world-empty-readout{display:none}
 @media(max-width:650px){
  body.world-mobile.object-world .world-empty-readout:not([hidden]){position:absolute;left:0;right:0;top:0;display:grid;gap:4px;padding:10px;box-sizing:border-box;background:#f5e8cf;color:#49382a;font-size:14px;z-index:24;line-height:1.5}
- body.world-mobile.object-world:not(.opening-in-scene) #pillStage>.commission-slip{display:none!important}
- body.opening-in-scene .world-empty-readout{display:none!important}
+ body.world-mobile.object-world #pillStage>.commission-slip{display:none!important}
 }
 
 /* V91 round 2: the painted countertop and all goods share one camera. */

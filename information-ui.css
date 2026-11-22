@@ -21,7 +21,7 @@
  .engine-nav{flex:0 0 auto;min-height:64px;gap:4px;padding:6px;box-sizing:border-box}.engine-nav button{font-size:12px!important;min-height:32px;padding:5px 8px}.engine-nav #engineWallet{font-size:12px!important;display:block;margin-left:auto}
  .engine-viewport{top:var(--work-reserve,0px)}
  .mobile-info{position:fixed!important;left:8px!important;right:8px!important;top:var(--info-top)!important;bottom:auto!important;width:auto!important;box-sizing:border-box;z-index:44!important;transform:none!important}
- body:not(.info-at-work) .mobile-info,.opening-in-scene .mobile-info{display:none!important}
+ body:not(.info-at-work) .mobile-info{display:none!important}
  .info-choosing .room-observation.mobile-info,.info-choosing .refine-odds.mobile-odds,.info-choosing .refine-odds-toggle.mobile-odds{display:none!important}
  .canvas-room .room-observation.mobile-info{padding:10px;min-height:0;max-height:210px;overflow:auto;background:#f7ecd4;border-radius:5px}
  .canvas-room .room-observation.mobile-info h2{display:none}
