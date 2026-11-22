@@ -25,7 +25,23 @@ const TOOL_DEFS=[
 {id:'scorch_seal',name:'焦痕印',price:600,day:10,description:'每次受损提高下一次九转归元收益。',school:'overload'},
 {id:'ignite_pearl',name:'引爆珠',price:640,day:11,description:'连续安全结果越多，下一次风险爆发越强。',school:'overload'},
 {id:'risk_ruler',name:'归险尺',price:700,day:12,description:'将部分炸炉概率转为归元药力倍率，达到上限后失效。',school:'overload'},
-{id:'ash_contract',name:'灰烬契',price:760,day:13,description:'高炉险收丹时，超额药力获得额外报酬。',school:'overload'}];
+{id:'ash_contract',name:'灰烬契',price:760,day:13,description:'高炉险收丹时，超额药力获得额外报酬。',school:'overload'},
+{id:'crack_bowl',name:'裂纹钵',price:390,day:4,description:'受损时积累额外药力。',school:'scar'},
+{id:'reverse_fire',name:'逆火符',price:430,day:5,description:'受损后下一次成功获得额外转数。',school:'scar'},
+{id:'broken_link',name:'断续索',price:470,day:6,description:'受损后的维持结果不会清除成功连段。',school:'scar'},
+{id:'scar_ruler',name:'伤痕尺',price:520,day:7,description:'受损次数越多，后续成功收益越高。',school:'scar'},
+{id:'ash_box',name:'灰烬匣',price:560,day:8,description:'炸炉后保留部分基础药力到下一炉。',school:'scar'},
+{id:'ember_tray',name:'余火盘',price:600,day:9,description:'带受损记录的丹药出售或寄售时提高价值。',school:'scar'},
+{id:'failed_contract',name:'败炉契',price:640,day:10,description:'委托失败时返还部分未用材料，并降低下一单目标。',school:'scar'},
+{id:'pattern_tray',name:'回纹托',price:680,day:11,description:'受损后收丹，下一炉获得一次风险缓冲。',school:'scar'},
+{id:'market_tag',name:'市价签',price:360,day:4,description:'自有丹药出售价格提高。',school:'business'},
+{id:'medicine_seal',name:'药商印',price:420,day:5,description:'委托超额药力的报酬提高。',school:'business'},
+{id:'余料囊',name:'余料囊',price:460,day:6,description:'委托结算时返还部分未用材料。',school:'business'},
+{id:'consign牌',name:'寄售牌',price:500,day:7,description:'寄售保底价和溢价提高。',school:'business'},
+{id:'craft_mold',name:'造物模',price:540,day:8,description:'其他产物的成品基础价值提高。',school:'business'},
+{id:'material_scale',name:'工料秤',price:580,day:9,description:'购买造物原料时降低成本。',school:'business'},
+{id:'client_contract',name:'客契册',price:620,day:10,description:'满足指定药力或药性要求时提高报酬。',school:'business'},
+{id:'stock_talisman',name:'进货符',price:660,day:11,description:'商人来访时增加商品或提高高价值商品出现率。',school:'business'}];
 const PRICES=[18,42],TOOLS=Object.fromEntries(TOOL_DEFS.map(t=>[t.id,t.price])),UPGRADES=[0,360,480];
 const CONSIGNMENT_MAX_DAY=30;
 const CONSIGNMENT_TIERS=[{id:'cabinet',name:'普通药柜',bonusRate:.10,waitDays:2,minDay:6},{id:'premium',name:'精品药柜',bonusRate:.18,waitDays:3,minDay:6},{id:'rare',name:'稀珍药柜',bonusRate:.28,waitDays:4,minDay:6},{id:'town',name:'镇坊展柜',bonusRate:.50,waitDays:7,minDay:6}];
