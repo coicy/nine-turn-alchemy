@@ -23,7 +23,8 @@
   }
   function extraTools(c,existing) {
     const eligible=window.AlchemyEconomy.TOOL_DEFS.filter(t=>t.day<=c.day && !c.economy.tools.includes(t.id) && !existing.includes(t.id));
-    return sample(eligible.map(t=>t.id),maxVisitingTools-existing.length);
+    const extra=window.AlchemyEconomy.hasTool(c.economy.equipped,'stock_talisman')?1:0;
+    return sample(eligible.map(t=>t.id),maxVisitingTools+extra-existing.length);
   }
   // Top up an older, already rolled visit once. Keep the selected object, including a furnace plan.
   function expandSavedVisit(c,offer) {
