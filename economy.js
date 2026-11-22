@@ -70,17 +70,26 @@ function credit(c,n,label,reference){const e=ensure(c);n=Math.max(0,Math.round(n
 function fee(o){return 30+Math.round(o.target*.15);}
 function excessValue(o,pills){return Math.max(0,Math.round(pills.reduce((n,p)=>n+grossValue(p),0)-o.target));}
 function commissionReward(o,pills){return fee(o)+excessValue(o,pills);}
-function commission(c,o,pills){if(o.paid)return 0;o.paid=true;if(o.status!=='completed')return 0;const e=ensure(c);const leftover=Math.max(0,o.returned||0);const nature=['warm','cool'].includes(o.nature)?o.nature:'neutral';e.herbs[nature]+=leftover;o.gifted=leftover;o.returned=0;o.excess=excessValue(o,pills);o.reward=commissionReward(o,pills);return credit(c,o.reward,'委托工钱与超额补价',o.id);}
+function commissionRewardWithTools(c,o,pills){
+ let reward=commissionReward(o,pills);
+ const e=ensure(c);
+ if(hasTool(e.equipped,'medicine_seal'))reward=Math.round(reward*1.12);
+ if(hasTool(e.equipped,'client_contract')&&pills.reduce((n,p)=>n+grossValue(p),0)>=o.target)reward=Math.round(reward*1.08);
+ return reward;
+}
+function commission(c,o,pills){if(o.paid)return 0;o.paid=true;if(o.status!=='completed')return 0;const e=ensure(c);const leftover=Math.max(0,o.returned||0);const nature=['warm','cool'].includes(o.nature)?o.nature:'neutral';e.herbs[nature]+=leftover;o.gifted=leftover;o.returned=0;o.excess=excessValue(o,pills);o.reward=commissionRewardWithTools(c,o,pills);return credit(c,o.reward,'委托工钱与超额补价',o.id);}
 function grossValue(pill){
   return Math.round(pill.value + (Number.isFinite(pill.yuanBonus) ? pill.yuanBonus : 0));
 }
 function saleValue(c,pill){
-  return Math.max(0, grossValue(pill) - (pill.materialAdvance || 0));
+  const e=ensure(c),rate=hasTool(e.equipped,'market_tag')?.08:0;
+  const scarBonus=hasTool(e.equipped,'ember_tray')&&pill?.scars? .08:0;
+  return Math.max(0, Math.round(grossValue(pill)*(1+rate+scarBonus) - (pill.materialAdvance || 0)));
 }
 function storePill(c,p,order){const e=ensure(c),id=p.id;if(typeof id!=='string'||!id||!Array.isArray(e.pills)||e.pills.some(x=>x?.id===id)||!Number.isFinite(p.value)||p.value<=0||!Number.isInteger(p.turn)||p.turn<1||p.turn>100)return false;if(p.craftKind&&!Crafts.get(p.craftKind))return false;e.pills.push({...(p.craftKind?{craftKind:p.craftKind,craftCost:p.craftCost||Crafts.get(p.craftKind).price}:{}),...(typeof p.appearance==='string'?{appearance:p.appearance}:{}),id,...(p.materialAdvance ? {materialAdvance:p.materialAdvance} : {}),day:c.day,value:p.value,yuanBonus:Number.isFinite(p.yuanBonus)?p.yuanBonus:0,turn:p.turn,quality:p.quality,...(Number.isFinite(p.baseValue)?{baseValue:p.baseValue}:{}),nature:p.nature||order?.nature||'neutral'});e.last=p.craftKind?'造物已收纳，可保留、出售或等待求购':'丹药已收入丹匣，可保留、提交或处理';return true;}
 function sale(c,id){const e=ensure(c);if(typeof id!=='string'||!Array.isArray(e.pills))return false;const index=e.pills.findIndex(p=>p?.id===id);if(index<0)return false;const p=e.pills[index];if(!Number.isFinite(p.value)||p.value<=0||!Number.isInteger(p.turn)||p.turn<1||p.turn>100)return false;const n=saleValue(c,p);e.pills.splice(index,1);e.sold++;const ok=credit(c,n,p.craftKind?'造物出售':'丹匣成丹出售',id);if(ok)feel('sell',{id,value:n,tier:'medium'});return ok;}
 function consignmentTier(p){const turn=Number(p?.turn)||1;return CONSIGNMENT_TIERS[turn>=60?3:turn>=30?2:turn>=15?1:0];}
-function consignmentQuote(c,p){const tier=consignmentTier(p),base=saleValue(c,p),gross=base*(1+tier.bonusRate);return {tier:tier.id,tierName:tier.name,bonusRate:tier.bonusRate,waitDays:tier.waitDays,basePayout:base,guaranteedPayout:Math.ceil(gross-1e-9),settleDay:(Number(c?.day)||1)+tier.waitDays};}
+function consignmentQuote(c,p){const tier=consignmentTier(p),base=saleValue(c,p),e=ensure(c),bonus=hasTool(e.equipped,'consign牌')?.10:0,gross=base*(1+tier.bonusRate+bonus);return {tier:tier.id,tierName:tier.name,bonusRate:tier.bonusRate+bonus,waitDays:tier.waitDays,basePayout:base,guaranteedPayout:Math.ceil(gross-1e-9),settleDay:(Number(c?.day)||1)+tier.waitDays};}
 function consignmentEligibility(c,p){const e=ensure(c),q=consignmentQuote(c,p),listed=e.consignments.filter(x=>x?.status==='listed');if(q.basePayout===0)return {ok:false,reason:'抵清料款后无余款可寄售。',quote:q};if((Number(c?.day)||1)<6)return {ok:false,reason:'第6天开放寄售柜。',quote:q};if(listed.length>=3)return {ok:false,reason:'寄售柜已满，最多同时寄售3颗丹药。',quote:q};if(q.settleDay>CONSIGNMENT_MAX_DAY)return {ok:false,reason:'回款日超过本局经营结束，当前不能寄售。',quote:q};return {ok:true,reason:'',quote:q};}
 function consign(c,id){const e=ensure(c),index=e.pills.findIndex(p=>p?.id===id);if(index<0)return false;const p=e.pills[index],eligibility=consignmentEligibility(c,p);if(!eligibility.ok)return false;const q=eligibility.quote,snapshot={...p},entry={id:'consignment-'+(e.consignmentSeq++),pillSnapshot:snapshot,listedDay:c.day,settleDay:q.settleDay,tier:q.tier,tierName:q.tierName,bonusRate:q.bonusRate,guaranteedPayout:q.guaranteedPayout,status:'listed'};e.pills.splice(index,1);e.consignments.push(entry);e.last='已寄售，'+q.waitDays+'天后回款 '+q.guaranteedPayout+' 铜钱';feel('consign',{id,pill:p,quote:q,tier:'medium'});return entry;}
 function settleConsignments(c){const e=ensure(c),paid=[];for(const entry of e.consignments){if(entry?.status!=='listed'||entry.settleDay>(Number(c?.day)||1))continue;entry.status='paid';entry.paidDay=c.day;credit(c,entry.guaranteedPayout,'寄售回款',entry.id);paid.push(entry);}if(paid.length)feel('paid',{count:paid.length,total:paid.reduce((n,x)=>n+x.guaranteedPayout,0),tier:'medium'});return paid;}
