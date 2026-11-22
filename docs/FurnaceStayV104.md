@@ -41,7 +41,7 @@
 
 ## 验证与发布记录
 
-证据在 `Evidence/FurnaceStayV104`。`Local/report.json`覆盖六种尺寸的本炉停留、部分交付、委托结算、末包炸丹、自炼、重复结算保护、键盘取放、触摸模拟、阅读返回及显式离开；截图与当次业务快照保存在同一报告。
+证据在 `Evidence/history/FurnaceStayV104`。`Local/report.json`覆盖六种尺寸的本炉停留、部分交付、委托结算、末包炸丹、自炼、重复结算保护、键盘取放、触摸模拟、阅读返回及显式离开；截图与当次业务快照保存在同一报告。
 
 `Compatibility/report.json`覆盖完整三幕、减少动态、触摸收丹和关键素材加载失败/恢复。`core.json`复用九组业务与30天检查。`Preview/report.json`仅验证待审图例的交互与尺寸，不代表新引导、概率布局已接入游戏。
 

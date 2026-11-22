@@ -23,13 +23,13 @@
 
 最终运行文件保存于本项目发布目录 `archive/assets/crafts-v207/`：`bird.webp`、`lion.webp`、`home.webp`、`beast.webp`、`tower.webp`、`spring.webp`；`frames.json`记录66个实际轮廓矩形。内置imagegen生成的同名PNG与V206原图均保留。
 
-WebP仅为无损格式编码；逐像素验证解码后的RGBA与生成PNG完全一致，未缩放、改色、裁图或改透明通道。运行六图由约11MB降至约7.5MB，编码报告见本机Evidence/CraftingV207/encoding.json。网络加载超时仍以线上检查记录为准，不能把文件变小视为网络验收通过。
+WebP仅为无损格式编码；逐像素验证解码后的RGBA与生成PNG完全一致，未缩放、改色、裁图或改透明通道。运行六图由约11MB降至约7.5MB，编码报告见本机Evidence/history/CraftingV207/encoding.json。网络加载超时仍以线上检查记录为准，不能把文件变小视为网络验收通过。
 
 使用**内置 imagegen**生成，沿用本项目V206图集作为视觉参考。每张四列三行、前十一格为成长形态。按透明轮廓标定，运行时取图，不改写生成图像像素。完整提示集及生成源文件见同目录 `provenance.md`。没有跨游戏复用资源、没有植物产出。
 
 ## 审查与验证
 
-本机游戏项目 Evidence/CraftingV207/review.html 包括同一运行绘制器输出的66形态总览、六类百转炉内与收纳、受损退档、器料市场及求购画面。
+本机游戏项目 Evidence/history/CraftingV207/review.html 包括同一运行绘制器输出的66形态总览、六类百转炉内与收纳、受损退档、器料市场及求购画面。
 
 - 600个“六类×1到100转”图像键与品名映射、66幅唯一渲染。
 - 六类受控99转存档分别实际催炼到100转并收纳；80转实际受损到79转，回到60转起始档。

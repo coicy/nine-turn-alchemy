@@ -1,9 +1,9 @@
 # V103丹体与丹纹来源
 
 - 生成方式：内置 `image_gen.imagegen`，透明背景；无外部素材下载。
-- 生产源图：`Art/PillRunesV103/body-source.png`，原生成文件 `exec-e74d7654-4e34-4bf1-8c69-b7a957c7836e.png`。
-- 已审纹样参考：`Art/PillRunesV103/approved-rune-language.png`。
-- 已审生长参考：`Art/PillRunesV103/approved-growth-language.png`。
+- 生产源图：`Art/history/PillRunesV103/body-source.png`，原生成文件 `exec-e74d7654-4e34-4bf1-8c69-b7a957c7836e.png`。
+- 已审纹样参考：`Art/history/PillRunesV103/approved-rune-language.png`。
+- 已审生长参考：`Art/history/PillRunesV103/approved-growth-language.png`。
 - 运行图 `body.webp`只做512px尺寸归一与WebP编码，保留透明背景；未从示意纸面中抠取成品。
 - 六纹曲线、排列、生长与色彩由 `pill-runes.js`编辑维护，按已审形状语言制作；不宣称来自古代符箓，也不赋予新的业务效果。
 

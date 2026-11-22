@@ -6,4 +6,4 @@
 
 未改经营、概率、计价、装备或存档；委托收丹自动计入等现行业务仍存在，不能将本次画风修订当作统一入库／主动提交业务完成。旧素材保留。源稿、提示词及内部截图保存在项目Art／Tools／Evidence的StylizedRenderV128目录。
 
-制作人最终美术审查、真实设备和新玩家体验尚未纳入自动通过结论。发布与验证状态以项目Evidence/StylizedRenderV128/release.json为准。
+制作人最终美术审查、真实设备和新玩家体验尚未纳入自动通过结论。发布与验证状态以项目Evidence/history/StylizedRenderV128/release.json为准。

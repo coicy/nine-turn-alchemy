@@ -17,7 +17,7 @@
 
 材料、概率、成丹、法器次数、丹值和报酬仍由既有业务状态提供。本次只新增当前槽位的引导偏好，不改变经营存档版本，不改计价、六纹与三装备位规则。
 
-`Evidence/FurnaceSideV105`保存同次输入、状态与截图：
+`Evidence/history/FurnaceSideV105`保存同次输入、状态与截图：
 
 - `Local`／`Online`：六尺寸判断位置、完整文字、真实概率、展开收起、物件引导、键盘取放、旧偏好、三件法器及收丹停留。
 - `StayRegression`／`OnlineStayRegression`：委托累计、成功与失败、自炼入匣、重复结算保护、阅读返回和主动离开。
@@ -27,4 +27,4 @@
 
 尺寸为1440×900、1280×720、390×900、360×800、1920×1080、2560×1440。图例和真实游戏分别记录，原图例见 `FurnaceSideV105/README.md`。
 
-发布副本与线上资源按同一清单逐字节核查，准确部署提交与结果见 `Evidence/FurnaceSideV105/release.json`、`deployment.json`、`online-assets.json`。真机触控和新玩家理解尚未验收，浏览器模拟不替代这两项。
+发布副本与线上资源按同一清单逐字节核查，准确部署提交与结果见 `Evidence/history/FurnaceSideV105/release.json`、`deployment.json`、`online-assets.json`。真机触控和新玩家理解尚未验收，浏览器模拟不替代这两项。

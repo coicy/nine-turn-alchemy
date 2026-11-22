@@ -25,7 +25,7 @@
 
 运行游戏已移除“自炼／自有丹药”概念。所有成丹统一进入丹匣；当前委托只提供提交目标和结算条件，玩家也可以把储备药材投入炉口，成丹仍进入同一丹匣，随后保留、提交或出售。运行入口仍为 `index.html`，本地直接打开即可。
 
-[本轮交付与核查范围](../../Docs/UnifiedPillsV156/Delivery.md)
+[本轮交付与核查范围](../../Docs/history/UnifiedPillsV156/Delivery.md)
 
 本地审查页：`http://127.0.0.1:8767/游戏调研/九转丹坊/Prototypes/nine-turn-alchemy-github/index.html?unified-pills=20261116`
 
@@ -101,7 +101,7 @@ V89完成逐页业务整改；后续基础画面复查发现的错位、比例�
 
 ## 角色制作样例 V55
 
-[打开行商骨骼与蒙皮预览](https://coicy.github.io/nine-turn-alchemy/previews/customer-rig-v55/preview.html)：单一完整母稿、连续网格、骨骼权重，以及静候/招呼/小幅点头。可查看原图复原和权重，不包含递药或游戏接入。[固定流程](previews/customer-rig-v55/workflow.md)与[本轮审查](previews/customer-rig-v55/ACCEPTANCE.md)分别保存，V52/V53 原拼接方案已撤回视觉通过结论。
+[打开行商骨骼与蒙皮预览](https://coicy.github.io/nine-turn-alchemy/archive/previews/customer-rig-v55/preview.html)：单一完整母稿、连续网格、骨骼权重，以及静候/招呼/小幅点头。可查看原图复原和权重，不包含递药或游戏接入。[固定流程](archive/previews/customer-rig-v55/workflow.md)与[本轮审查](archive/previews/customer-rig-v55/ACCEPTANCE.md)分别保存，V52/V53 原拼接方案已撤回视觉通过结论。
 
 ## 角色画风规范 V57
 

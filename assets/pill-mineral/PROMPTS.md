@@ -1,6 +1,6 @@
 # B版氧化矿色丹体 V136
 
-内置image_gen编辑已选V135-B母稿，三次独立调用，透明背景。原稿与完整提示词在项目`Art/MineralPillsV136`；512pxWebP只归一和压缩，旧素材保留。未使用CLI或外部API备用路径。
+内置image_gen编辑已选V135-B母稿，三次独立调用，透明背景。原稿与完整提示词在项目`Art/history/MineralPillsV136`；512pxWebP只归一和压缩，旧素材保留。未使用CLI或外部API备用路径。
 
 - warm.webp：铅丹橘赤，现代Pb3O4颜料颜色参考；温性是游戏配色映射。
 - neutral.webp：代赭赭褐，土状赤铁矿Fe2O3颜色参考；平性是游戏配色映射。
