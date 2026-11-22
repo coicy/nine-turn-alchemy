@@ -2,13 +2,13 @@
 
 > V74更新：法器匣改为炉旁可见法器，以VisibleArtifactsV74.md为准。侧匣相关条目仅作历史记录。
 
-日期：2026-11-02。状态：设计提案，待制作人审查；布局样稿不代表主游戏已改造。先定义交互和状态，演出见../../../Docs/ScenePerformanceV73.md。
+日期：2026-11-02。状态：设计提案，待制作人审查；布局样稿不代表主游戏已改造。先定义交互和状态，演出见../../../Docs/reviews/ScenePerformanceV73.md。
 
 ## 1. 目标与依据
 
 玩家完成接客、炼丹、结算、购置的循环时，始终知道身处何处、当前处理哪一单、下一步可做什么。保留单炉、三槽自动法器、同一药匣内区分本单与自有材料、每日7–8单、30天主动日结。收丹仍按现有规则自动记入本单或自炼出售，不增加柜台手动递丹、实际称量、逐味投料或走路操作。
 
-依据：Docs/UnifiedInterfaceDesignV22.md、CounterUIStatesV63.md、CounterDeskNoteV64.md、CounterSceneV71.md、CounterPropsV72.md及现有game-shell.js。V73提出替代V46的导航/切换方式，未覆盖既有业务数值。现有游戏以鼠标与键盘、横屏Web为主要输入；触屏为后续专项验收范围。没有独立player-journey文件，本稿以内文操作循环补足本次旅程；未宣称完整无障碍认证。
+依据：Docs/visual/UnifiedInterfaceDesignV22.md、CounterUIStatesV63.md、CounterDeskNoteV64.md、CounterSceneV71.md、CounterPropsV72.md及现有game-shell.js。V73提出替代V46的导航/切换方式，未覆盖既有业务数值。现有游戏以鼠标与键盘、横屏Web为主要输入；触屏为后续专项验收范围。没有独立player-journey文件，本稿以内文操作循环补足本次旅程；未宣称完整无障碍认证。
 
 ## 2. 导航位置与返回关系
 
