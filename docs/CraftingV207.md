@@ -21,7 +21,7 @@
 
 ## 素材与来源
 
-最终运行文件保存于本项目发布目录 `assets/crafts-v207/`：`bird.webp`、`lion.webp`、`home.webp`、`beast.webp`、`tower.webp`、`spring.webp`；`frames.json`记录66个实际轮廓矩形。内置imagegen生成的同名PNG与V206原图均保留。
+最终运行文件保存于本项目发布目录 `archive/assets/crafts-v207/`：`bird.webp`、`lion.webp`、`home.webp`、`beast.webp`、`tower.webp`、`spring.webp`；`frames.json`记录66个实际轮廓矩形。内置imagegen生成的同名PNG与V206原图均保留。
 
 WebP仅为无损格式编码；逐像素验证解码后的RGBA与生成PNG完全一致，未缩放、改色、裁图或改透明通道。运行六图由约11MB降至约7.5MB，编码报告见本机Evidence/CraftingV207/encoding.json。网络加载超时仍以线上检查记录为准，不能把文件变小视为网络验收通过。
 

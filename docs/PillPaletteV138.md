@@ -18,4 +18,4 @@ RGB、亮暗比例及物体的哑光质感是游戏美术取舍，不是矿物�
 
 沿用现有三色并加入四张已审配色，按药性在同色系中分配；新丹在开炉时固定外观，炼制、收丹、库存与刷新不换色。配色不增加药性、品质、价格或稀有度。旧档无外观字段时保留V136原色，不自动重抽。外观选择不消耗玩法随机数。
 
-完整提示词：[JSON](../assets/pill-mineral-v138/prompts.json)，[资源说明](../assets/pill-mineral-v138/PROMPTS.md)。
+完整提示词：[JSON](../archive/assets/pill-mineral-v138/prompts.json)，[资源说明](../archive/assets/pill-mineral-v138/PROMPTS.md)。

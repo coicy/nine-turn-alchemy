@@ -2,12 +2,13 @@
 
 ## 本目录功能
 
-- 本文件记录正式发布副本的直接子目录和文件用途；历史规则以 `docs/` 和 `archive/` 中的记录为准。
-- 当前产品版本由根目录 `VERSION` 统一声明，完整变化记录见 `CHANGELOG.md`。
+- 本文件记录正式发布副本的直接子目录和文件用途；历史资源集中在 `archive/`。
+- 当前产品版本由根目录 `VERSION` 统一声明，变化记录见 `CHANGELOG.md`。
 
 ## 子目录
 
 - $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\.qa.Name)/：目录；其用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\.qa.Name)/AGENTS.md。
+- $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive.Name)/：目录；其用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\archive.Name)/AGENTS.md。
 - $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets.Name)/：目录；其用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\assets.Name)/AGENTS.md。
 - $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\character-style.Name)/：目录；其用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\character-style.Name)/AGENTS.md。
 - $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\docs.Name)/：目录；其用途和文件索引见 $(D:\TapTapMaker\游戏项目\九转丹坊\Prototypes\nine-turn-alchemy-github\docs.Name)/AGENTS.md。
