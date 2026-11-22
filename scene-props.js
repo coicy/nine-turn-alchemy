@@ -1,7 +1,7 @@
 (() => {
  const drawer=document.getElementById('equipmentDrawer'),board=document.querySelector('.counter-board');
- const ids=['seal',null,'ward','stone','lucky','chain','repair','phoenix'];
- function decorateTool(el,id){const i=ids.indexOf(id);if(i<0)return null;el.classList.add('tool-art');el.setAttribute('aria-hidden','true');el.style.backgroundPosition=`${(i%6)*20}% ${Math.floor(i/6)*50}%`;return el;}
+ const ids=['seal',null,'ward','stone','lucky','chain','repair','phoenix','breath_pearl','guard_casket','still_incense','hearth_pin','cooling_tag','quiet_lamp','pulse_ring','steady_talisman','slow_plate','pressure_plate','red_nail','fissure_cone','reverse_lamp','scorch_seal','ignite_pearl','risk_ruler','ash_contract','crack_bowl','reverse_fire','broken_link','scar_ruler','ash_box','ember_tray','failed_contract','pattern_tray','market_tag','medicine_seal','余料囊','consign牌','craft_mold','material_scale','client_contract','stock_talisman'];
+  function decorateTool(el,id){const i=ids.indexOf(id);if(i<0)return null;el.classList.add('tool-art');el.setAttribute('aria-hidden','true');const sprite=i%8;el.style.backgroundPosition=`${(sprite%6)*20}% ${Math.floor(sprite/6)*50}%`;return el;}
  function icon(id){return decorateTool(document.createElement('i'),id);}
  window.AlchemyDecorateTool=decorateTool;
  function decorate(){
