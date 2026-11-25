@@ -8,6 +8,7 @@
   stage.append(canvas);
   const ctx = canvas.getContext('2d');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const painted = document.body.classList.contains('warm-cinnabar-experiment');
   const durations = {load:620, fan:560, success:760, big:1100, hold:600, damage:800, explode:1250, shield:900, fusion:1150, complete:1400, collect:720};
   let phase = null;
   let raf = 0;
@@ -50,6 +51,10 @@
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(rx, ry);
+    if(painted){
+      ctx.globalAlpha=alpha*.45;ctx.fillStyle=color;
+      ctx.beginPath();ctx.moveTo(-1,.2);ctx.bezierCurveTo(-.8,-.5,.2,-.8,.8,-.2);ctx.bezierCurveTo(1,.1,.6,.5,-.2,.5);ctx.closePath();ctx.fill();ctx.restore();return;
+    }
     const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
     gradient.addColorStop(0, color);
     gradient.addColorStop(1, 'transparent');
@@ -60,6 +65,7 @@
   }
 
   function flecks(x, y, radius, progress, count, color, falling = false) {
+    if(painted)count=Math.ceil(count*.55);
     ctx.fillStyle = color;
     for (let i = 0; i < count; i++) {
       const angle = scatter(i + 1) * Math.PI * 2;

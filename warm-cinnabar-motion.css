@@ -1,0 +1,22 @@
+/* Warm painted feedback: short material responses, no full-scene brightness flash. */
+body.warm-cinnabar-experiment #pillStage[data-feel-tier],
+body.warm-cinnabar-experiment #pillStage:is(.feel-loaded,.feel-protection,.feel-ritual,.feel-auto){animation:none}
+body.warm-cinnabar-experiment :is(.feel-refine,.feel-stroke){animation:warm-ink-settle .24s ease-out}
+body.warm-cinnabar-experiment :is(.feel-submit,.feel-purchase,.feel-equipment,.feel-win,.feel-settle,.feel-paid,.feel-campaign){animation:warm-paper-settle .3s ease-out}
+body.warm-cinnabar-experiment .refine-feedback:not([hidden]){animation:warm-paper-settle .18s ease-out;background:#f3e5c7;color:#382b20;border:1px solid #927049;box-shadow:0 3px 8px #3e271d30}
+body.warm-cinnabar-experiment .refine-feedback[data-kind=bad]{border-color:#9a4936}
+body.warm-cinnabar-experiment .refine-feedback[data-kind=good]{border-color:#61715a}
+body.warm-cinnabar-experiment .rite-ink{fill:#943f2e;filter:none}
+body.warm-cinnabar-experiment .rite-lead{stroke:#977439;filter:none}
+body.warm-cinnabar-experiment .rite-paper{fill:#ecd19c;stroke:#927049}
+body.warm-cinnabar-experiment .engine-viewport[data-rite=sealed]::after{display:none}
+body.warm-cinnabar-experiment .rite-tip.is-ready circle:first-child{animation:warm-ink-settle 1.45s ease-in-out infinite alternate}
+@keyframes warm-ink-settle{from{opacity:.8}to{opacity:1}}
+@keyframes warm-paper-settle{from{transform:translateY(2px);opacity:.8}to{transform:translateY(0);opacity:1}}
+body.warm-cinnabar-experiment.reduced-feedback :is(.feel-picked,.feel-dropped,.feel-loaded,.feel-refine,.feel-protection,.feel-ritual,.feel-stroke,.feel-auto,.feel-submit,.feel-purchase,.feel-equipment,.feel-win,.feel-settle,.feel-paid,.feel-campaign),
+body.warm-cinnabar-experiment.reduced-feedback .refine-feedback{animation:none!important}
+body.warm-cinnabar-experiment.reduced-feedback .rite-tip circle{animation:none!important}
+body.warm-cinnabar-experiment.reduced-feedback #ritualGrid{animation:none!important}
+@media(prefers-reduced-motion:reduce){
+  body.warm-cinnabar-experiment :is(.feel-refine,.feel-stroke,.feel-submit,.feel-purchase,.feel-equipment,.feel-win,.feel-settle,.feel-paid,.feel-campaign,.refine-feedback){animation:none!important}
+}

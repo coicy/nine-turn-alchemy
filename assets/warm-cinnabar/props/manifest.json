@@ -1,0 +1,1058 @@
+{
+  "tools": {
+    "seal": {
+      "src": "assets/warm-cinnabar/props/tool-seal.webp",
+      "bounds": {
+        "l": 0.10121681415929207,
+        "t": 0.0625,
+        "r": 0.8987831858407079,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        79,
+        70,
+        309,
+        339
+      ],
+      "count": 74167,
+      "edge": 0
+    },
+    "ward": {
+      "src": "assets/warm-cinnabar/props/tool-ward.webp",
+      "bounds": {
+        "l": 0.11022727272727273,
+        "t": 0.0625,
+        "r": 0.8897727272727273,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        498,
+        34,
+        343,
+        385
+      ],
+      "count": 80034,
+      "edge": 0
+    },
+    "stone": {
+      "src": "assets/warm-cinnabar/props/tool-stone.webp",
+      "bounds": {
+        "l": 0.06250000000000006,
+        "t": 0.2293814432989691,
+        "r": 0.9375,
+        "b": 0.7706185567010309
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        913,
+        135,
+        388,
+        240
+      ],
+      "count": 69828,
+      "edge": 0
+    },
+    "lucky": {
+      "src": "assets/warm-cinnabar/props/tool-lucky.webp",
+      "bounds": {
+        "l": 0.1835835509138381,
+        "t": 0.0625,
+        "r": 0.8164164490861618,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        1408,
+        34,
+        277,
+        383
+      ],
+      "count": 64086,
+      "edge": 0
+    },
+    "chain": {
+      "src": "assets/warm-cinnabar/props/tool-chain.webp",
+      "bounds": {
+        "l": 0.0625,
+        "t": 0.17820247933884298,
+        "r": 0.9375,
+        "b": 0.821797520661157
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        47,
+        519,
+        363,
+        267
+      ],
+      "count": 62931,
+      "edge": 0
+    },
+    "repair": {
+      "src": "assets/warm-cinnabar/props/tool-repair.webp",
+      "bounds": {
+        "l": 0.0625,
+        "t": 0.07247557003257332,
+        "r": 0.9375,
+        "b": 0.9275244299674267
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        514,
+        519,
+        307,
+        300
+      ],
+      "count": 63547,
+      "edge": 0
+    },
+    "phoenix": {
+      "src": "assets/warm-cinnabar/props/tool-phoenix.webp",
+      "bounds": {
+        "l": 0.125,
+        "t": 0.0625,
+        "r": 0.875,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        935,
+        480,
+        300,
+        350
+      ],
+      "count": 79470,
+      "edge": 0
+    },
+    "breath_pearl": {
+      "src": "assets/warm-cinnabar/props/tool-breath_pearl.webp",
+      "bounds": {
+        "l": 0.13616838487972505,
+        "t": 0.0625,
+        "r": 0.863831615120275,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        1422,
+        527,
+        242,
+        291
+      ],
+      "count": 54756,
+      "edge": 0
+    },
+    "guard_casket": {
+      "src": "assets/warm-cinnabar/props/tool-guard_casket.webp",
+      "bounds": {
+        "l": 0.0625,
+        "t": 0.1779692082111437,
+        "r": 0.9375,
+        "b": 0.8220307917888563
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        56,
+        120,
+        341,
+        251
+      ],
+      "count": 69923,
+      "edge": 0
+    },
+    "still_incense": {
+      "src": "assets/warm-cinnabar/props/tool-still_incense.webp",
+      "bounds": {
+        "l": 0.0693359375,
+        "t": 0.0625,
+        "r": 0.9306640625,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        512,
+        78,
+        315,
+        320
+      ],
+      "count": 57769,
+      "edge": 0
+    },
+    "hearth_pin": {
+      "src": "assets/warm-cinnabar/props/tool-hearth_pin.webp",
+      "bounds": {
+        "l": 0.20128398791540786,
+        "t": 0.0625,
+        "r": 0.7987160120845922,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        993,
+        69,
+        226,
+        331
+      ],
+      "count": 41944,
+      "edge": 0
+    },
+    "cooling_tag": {
+      "src": "assets/warm-cinnabar/props/tool-cooling_tag.webp",
+      "bounds": {
+        "l": 0.15591216216216214,
+        "t": 0.0625,
+        "r": 0.8440878378378378,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        1423,
+        44,
+        291,
+        370
+      ],
+      "count": 42627,
+      "edge": 0
+    },
+    "quiet_lamp": {
+      "src": "assets/warm-cinnabar/props/tool-quiet_lamp.webp",
+      "bounds": {
+        "l": 0.0625,
+        "t": 0.08010835913312692,
+        "r": 0.9375,
+        "b": 0.9198916408668731
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        60,
+        514,
+        323,
+        310
+      ],
+      "count": 57811,
+      "edge": 0
+    },
+    "pulse_ring": {
+      "src": "assets/warm-cinnabar/props/tool-pulse_ring.webp",
+      "bounds": {
+        "l": 0.06250000000000006,
+        "t": 0.12441037735849059,
+        "r": 0.9375,
+        "b": 0.8755896226415094
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        505,
+        532,
+        318,
+        273
+      ],
+      "count": 59806,
+      "edge": 0
+    },
+    "steady_talisman": {
+      "src": "assets/warm-cinnabar/props/tool-steady_talisman.webp",
+      "bounds": {
+        "l": 0.06656346749226005,
+        "t": 0.0625,
+        "r": 0.93343653250774,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        929,
+        507,
+        320,
+        323
+      ],
+      "count": 74603,
+      "edge": 0
+    },
+    "slow_plate": {
+      "src": "assets/warm-cinnabar/props/tool-slow_plate.webp",
+      "bounds": {
+        "l": 0.06250000000000006,
+        "t": 0.2478217158176944,
+        "r": 0.9375,
+        "b": 0.7521782841823056
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        1362,
+        560,
+        373,
+        215
+      ],
+      "count": 61609,
+      "edge": 0
+    },
+    "pressure_plate": {
+      "src": "assets/warm-cinnabar/props/tool-pressure_plate.webp",
+      "bounds": {
+        "l": 0.062499999999999944,
+        "t": 0.12354651162790697,
+        "r": 0.9375,
+        "b": 0.876453488372093
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        74,
+        106,
+        344,
+        296
+      ],
+      "count": 79813,
+      "edge": 0
+    },
+    "red_nail": {
+      "src": "assets/warm-cinnabar/props/tool-red_nail.webp",
+      "bounds": {
+        "l": 0.1986914600550964,
+        "t": 0.0625,
+        "r": 0.8013085399449036,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        550,
+        63,
+        250,
+        363
+      ],
+      "count": 27212,
+      "edge": 0
+    },
+    "fissure_cone": {
+      "src": "assets/warm-cinnabar/props/tool-fissure_cone.webp",
+      "bounds": {
+        "l": 0.17100923482849606,
+        "t": 0.0625,
+        "r": 0.8289907651715039,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        978,
+        47,
+        285,
+        379
+      ],
+      "count": 28257,
+      "edge": 0
+    },
+    "reverse_lamp": {
+      "src": "assets/warm-cinnabar/props/tool-reverse_lamp.webp",
+      "bounds": {
+        "l": 0.2072115384615385,
+        "t": 0.06250000000000006,
+        "r": 0.7927884615384615,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        1413,
+        43,
+        261,
+        390
+      ],
+      "count": 55879,
+      "edge": 0
+    },
+    "scorch_seal": {
+      "src": "assets/warm-cinnabar/props/tool-scorch_seal.webp",
+      "bounds": {
+        "l": 0.0625,
+        "t": 0.10812883435582821,
+        "r": 0.9375,
+        "b": 0.8918711656441718
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        70,
+        518,
+        326,
+        292
+      ],
+      "count": 68194,
+      "edge": 0
+    },
+    "ignite_pearl": {
+      "src": "assets/warm-cinnabar/props/tool-ignite_pearl.webp",
+      "bounds": {
+        "l": 0.11265923566878983,
+        "t": 0.06250000000000006,
+        "r": 0.8873407643312101,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        535,
+        496,
+        278,
+        314
+      ],
+      "count": 64441,
+      "edge": 0
+    },
+    "risk_ruler": {
+      "src": "assets/warm-cinnabar/props/tool-risk_ruler.webp",
+      "bounds": {
+        "l": 0.29473860589812334,
+        "t": 0.06250000000000006,
+        "r": 0.7052613941018766,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        1010,
+        460,
+        175,
+        373
+      ],
+      "count": 32268,
+      "edge": 0
+    },
+    "ash_contract": {
+      "src": "assets/warm-cinnabar/props/tool-ash_contract.webp",
+      "bounds": {
+        "l": 0.0625,
+        "t": 0.0876712328767123,
+        "r": 0.9375,
+        "b": 0.9123287671232877
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        1335,
+        481,
+        365,
+        344
+      ],
+      "count": 72088,
+      "edge": 0
+    },
+    "crack_bowl": {
+      "src": "assets/warm-cinnabar/props/tool-crack_bowl.webp",
+      "bounds": {
+        "l": 0.0625,
+        "t": 0.1381172839506173,
+        "r": 0.9375,
+        "b": 0.8618827160493827
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        86,
+        117,
+        324,
+        268
+      ],
+      "count": 65188,
+      "edge": 0
+    },
+    "reverse_fire": {
+      "src": "assets/warm-cinnabar/props/tool-reverse_fire.webp",
+      "bounds": {
+        "l": 0.0943181818181818,
+        "t": 0.0625,
+        "r": 0.9056818181818183,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        509,
+        69,
+        306,
+        330
+      ],
+      "count": 54673,
+      "edge": 0
+    },
+    "broken_link": {
+      "src": "assets/warm-cinnabar/props/tool-broken_link.webp",
+      "bounds": {
+        "l": 0.06511194029850748,
+        "t": 0.0625,
+        "r": 0.9348880597014926,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        915,
+        73,
+        333,
+        335
+      ],
+      "count": 29033,
+      "edge": 0
+    },
+    "scar_ruler": {
+      "src": "assets/warm-cinnabar/props/tool-scar_ruler.webp",
+      "bounds": {
+        "l": 0.20442708333333337,
+        "t": 0.0625,
+        "r": 0.7955729166666666,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        1445,
+        72,
+        227,
+        336
+      ],
+      "count": 30118,
+      "edge": 0
+    },
+    "ash_box": {
+      "src": "assets/warm-cinnabar/props/tool-ash_box.webp",
+      "bounds": {
+        "l": 0.0625,
+        "t": 0.18515173410404623,
+        "r": 0.9375,
+        "b": 0.8148482658959537
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        51,
+        531,
+        346,
+        249
+      ],
+      "count": 69656,
+      "edge": 0
+    },
+    "ember_tray": {
+      "src": "assets/warm-cinnabar/props/tool-ember_tray.webp",
+      "bounds": {
+        "l": 0.062499999999999944,
+        "t": 0.24117867867867865,
+        "r": 0.9375,
+        "b": 0.7588213213213213
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        500,
+        566,
+        333,
+        197
+      ],
+      "count": 50489,
+      "edge": 0
+    },
+    "failed_contract": {
+      "src": "assets/warm-cinnabar/props/tool-failed_contract.webp",
+      "bounds": {
+        "l": 0.11022727272727273,
+        "t": 0.0625,
+        "r": 0.8897727272727273,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        929,
+        481,
+        294,
+        330
+      ],
+      "count": 74753,
+      "edge": 0
+    },
+    "pattern_tray": {
+      "src": "assets/warm-cinnabar/props/tool-pattern_tray.webp",
+      "bounds": {
+        "l": 0.06250000000000006,
+        "t": 0.18298796791443855,
+        "r": 0.9375,
+        "b": 0.8170120320855614
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        1350,
+        530,
+        374,
+        271
+      ],
+      "count": 68180,
+      "edge": 0
+    },
+    "market_tag": {
+      "src": "assets/warm-cinnabar/props/tool-market_tag.webp",
+      "bounds": {
+        "l": 0.13164511494252873,
+        "t": 0.0625,
+        "r": 0.8683548850574713,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        110,
+        61,
+        293,
+        348
+      ],
+      "count": 64111,
+      "edge": 0
+    },
+    "medicine_seal": {
+      "src": "assets/warm-cinnabar/props/tool-medicine_seal.webp",
+      "bounds": {
+        "l": 0.1655890804597701,
+        "t": 0.0625,
+        "r": 0.8344109195402298,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        533,
+        56,
+        266,
+        348
+      ],
+      "count": 59566,
+      "edge": 0
+    },
+    "余料囊": {
+      "src": "assets/warm-cinnabar/props/tool-surplus-pouch.webp",
+      "bounds": {
+        "l": 0.12698699421965315,
+        "t": 0.0625,
+        "r": 0.8730130057803469,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        950,
+        61,
+        295,
+        346
+      ],
+      "count": 70915,
+      "edge": 0
+    },
+    "consign牌": {
+      "src": "assets/warm-cinnabar/props/tool-consignment-plaque.webp",
+      "bounds": {
+        "l": 0.20914127423822715,
+        "t": 0.06250000000000006,
+        "r": 0.7908587257617729,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        1413,
+        46,
+        240,
+        361
+      ],
+      "count": 60673,
+      "edge": 0
+    },
+    "craft_mold": {
+      "src": "assets/warm-cinnabar/props/tool-craft_mold.webp",
+      "bounds": {
+        "l": 0.0625,
+        "t": 0.1807432432432432,
+        "r": 0.9375,
+        "b": 0.8192567567567568
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        62,
+        531,
+        370,
+        270
+      ],
+      "count": 81719,
+      "edge": 0
+    },
+    "material_scale": {
+      "src": "assets/warm-cinnabar/props/tool-material_scale.webp",
+      "bounds": {
+        "l": 0.07704293628808867,
+        "t": 0.06250000000000006,
+        "r": 0.9229570637119113,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        493,
+        475,
+        349,
+        361
+      ],
+      "count": 54912,
+      "edge": 0
+    },
+    "client_contract": {
+      "src": "assets/warm-cinnabar/props/tool-client_contract.webp",
+      "bounds": {
+        "l": 0.09114583333333337,
+        "t": 0.0625,
+        "r": 0.9088541666666666,
+        "b": 0.9375
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        931,
+        498,
+        314,
+        336
+      ],
+      "count": 84047,
+      "edge": 0
+    },
+    "stock_talisman": {
+      "src": "assets/warm-cinnabar/props/tool-stock_talisman.webp",
+      "bounds": {
+        "l": 0.0625,
+        "t": 0.09844192634560905,
+        "r": 0.9375,
+        "b": 0.9015580736543909
+      },
+      "size": [
+        256,
+        256
+      ],
+      "sourceRect": [
+        1365,
+        500,
+        353,
+        324
+      ],
+      "count": 67496,
+      "edge": 0
+    }
+  },
+  "props": {
+    "fan": {
+      "src": "assets/warm-cinnabar/props/fan.webp",
+      "bounds": {
+        "l": 0.08652998236331572,
+        "t": 0.015625,
+        "r": 0.9134700176366843,
+        "b": 0.984375
+      },
+      "size": [
+        512,
+        512
+      ],
+      "sourceRect": [
+        75,
+        34,
+        484,
+        567
+      ],
+      "count": 130626,
+      "edge": 0
+    },
+    "tray": {
+      "src": "assets/warm-cinnabar/props/tray.webp",
+      "bounds": {
+        "l": 0.015625,
+        "t": 0.020377728360190965,
+        "r": 0.984375,
+        "b": 0.979622271639809
+      },
+      "size": [
+        512,
+        397
+      ],
+      "sourceRect": [
+        692,
+        133,
+        478,
+        367
+      ],
+      "count": 139657,
+      "edge": 0
+    },
+    "parcel": {
+      "src": "assets/warm-cinnabar/props/parcel.webp",
+      "bounds": {
+        "l": 0.015625,
+        "t": 0.02103701117318435,
+        "r": 0.984375,
+        "b": 0.9789629888268156
+      },
+      "size": [
+        512,
+        512
+      ],
+      "sourceRect": [
+        40,
+        680,
+        537,
+        531
+      ],
+      "count": 173092,
+      "edge": 0
+    },
+    "casket": {
+      "src": "assets/warm-cinnabar/props/casket.webp",
+      "bounds": {
+        "l": 0.015625000000000056,
+        "t": 0.016475294253072044,
+        "r": 0.984375,
+        "b": 0.983524705746928
+      },
+      "size": [
+        512,
+        486
+      ],
+      "sourceRect": [
+        650,
+        669,
+        572,
+        542
+      ],
+      "count": 237781,
+      "edge": 0
+    }
+  },
+  "notes": {
+    "merchant": {
+      "src": "assets/warm-cinnabar/props/note-merchant.webp",
+      "bounds": {
+        "l": 0.011111111111111112,
+        "t": 0.02407650896822043,
+        "r": 0.9888888888888889,
+        "b": 0.9759234910317797
+      },
+      "size": [
+        720,
+        346
+      ],
+      "sourceRect": [
+        31,
+        171,
+        466,
+        218
+      ],
+      "count": 83731,
+      "edge": 0
+    },
+    "herbal": {
+      "src": "assets/warm-cinnabar/props/note-herbal.webp",
+      "bounds": {
+        "l": 0.011111111111111112,
+        "t": 0.025564442644527664,
+        "r": 0.9888888888888889,
+        "b": 0.9744355573554724
+      },
+      "size": [
+        720,
+        332
+      ],
+      "sourceRect": [
+        528,
+        175,
+        476,
+        213
+      ],
+      "count": 84005,
+      "edge": 0
+    },
+    "scholar": {
+      "src": "assets/warm-cinnabar/props/note-scholar.webp",
+      "bounds": {
+        "l": 0.011111111111111112,
+        "t": 0.02439905734485468,
+        "r": 0.9888888888888889,
+        "b": 0.9756009426551454
+      },
+      "size": [
+        720,
+        335
+      ],
+      "sourceRect": [
+        1035,
+        173,
+        475,
+        215
+      ],
+      "count": 84895,
+      "edge": 0
+    },
+    "courier": {
+      "src": "assets/warm-cinnabar/props/note-courier.webp",
+      "bounds": {
+        "l": 0.011111111111111112,
+        "t": 0.024250849552054348,
+        "r": 0.9888888888888889,
+        "b": 0.9757491504479456
+      },
+      "size": [
+        720,
+        332
+      ],
+      "sourceRect": [
+        26,
+        641,
+        468,
+        210
+      ],
+      "count": 82148,
+      "edge": 0
+    },
+    "guard": {
+      "src": "assets/warm-cinnabar/props/note-guard.webp",
+      "bounds": {
+        "l": 0.011111111111111112,
+        "t": 0.026181181854892994,
+        "r": 0.9888888888888889,
+        "b": 0.973818818145107
+      },
+      "size": [
+        720,
+        323
+      ],
+      "sourceRect": [
+        524,
+        641,
+        483,
+        210
+      ],
+      "count": 86605,
+      "edge": 0
+    },
+    "recluse": {
+      "src": "assets/warm-cinnabar/props/note-recluse.webp",
+      "bounds": {
+        "l": 0.011111111111111112,
+        "t": 0.02509444144630324,
+        "r": 0.9888888888888889,
+        "b": 0.9749055585536968
+      },
+      "size": [
+        720,
+        327
+      ],
+      "sourceRect": [
+        1034,
+        641,
+        476,
+        210
+      ],
+      "count": 84547,
+      "edge": 0
+    }
+  }
+}

@@ -24,11 +24,12 @@ api().chooseOrder('D2-2');click('herbObject');click('fireObject');flush(720);
 assert.ok(api().economyAction('material',0));const saved=JSON.parse(store.get('alchemy-days-v1'));assert.equal(saved.campaign.day,2);assert.equal(saved.state.attempt,1);
 e=environment();e.el('startButton').emit('click',{currentTarget:e.el('startButton')});assert.equal(api().campaign().day,2);assert.equal(api().campaign().economy.coins,saved.campaign.economy.coins,'resume preserves money');assert.equal(api().campaign().economy.stock[0],1,'resume preserves purchased material');assert.equal(state().attempt,1);assert.equal(state().orderId,'D2-2');assert.equal(state().delivered,0);assert.equal(state().remaining,2,'resume does not reissue materials');
 click('pillVisual');click('trayObject');flush(320);assert.equal(api().abandonOrder(),true);
-for(let day=2;day<=30;day++){
- for(const o of api().campaign().orders.filter(o=>o.status==='pending')){assert.equal(api().chooseOrder(o.id),true);assert.equal(api().abandonOrder(),true)}
+for(let day=2;day<=30&&api().campaign().phase!=='finished';day++){
+ for(const o of api().campaign().orders.filter(o=>o.status==='pending')){if(api().campaign().phase==='finished')break;assert.equal(api().chooseOrder(o.id),true);assert.equal(api().abandonOrder(),true)}
+ if(api().campaign().phase==='finished'){assert.equal(api().endDay(),false);break;}
  assert.equal(api().endDay(),true);assert.equal(api().endDay(),false);
- if(day<30)assert.equal(api().nextDay(),true);
+ if(api().campaign().phase==='settled')assert.equal(api().nextDay(),true);
 }
-const c=api().campaign();assert.equal(c.phase,'finished');assert.equal(c.day,30);assert.equal(c.history.length,30);assert.equal(c.history.reduce((n,d)=>n+d.completed+d.failed,0),240);assert.equal(api().nextDay(),false);assert.equal(api().chooseOrder('D30-1'),false);
-console.log('Campaign integration passed: daily random orders, isolated materials/value, success/failure/abandon, interaction locks, explicit settlement, resume, all 30 days and final summary.');
+const c=api().campaign();assert.equal(c.phase,'finished');assert.equal(c.endReason,'reputation');assert.equal(c.reputation,0);assert.ok(c.history.length<30);assert.equal(c.orders.length,0);assert.equal(api().nextDay(),false);assert.equal(api().chooseOrder('D30-1'),false);assert.equal(api().economyAction('material',0),false,'failed game cannot purchase');assert.equal(api().merchantAction('arrive'),false,'failed game cannot trade');
+console.log('Campaign integration passed: daily random orders, isolated materials/value, success/failure/abandon, interaction locks, explicit settlement, resume, reputation decline, customer reduction and reputation game over.');
 

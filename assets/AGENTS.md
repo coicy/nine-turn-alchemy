@@ -32,6 +32,7 @@
 - scenes/AGENTS.md。
 - ui/AGENTS.md。
 - workbench/AGENTS.md。
+- warm-cinnabar/AGENTS.md：实验人物与器物资源边界。
 
 ## 文件索引
 

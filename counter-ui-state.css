@@ -20,6 +20,9 @@
 .counter-note strong{font-weight:400;border-bottom:1px solid #bca27b;padding-bottom:4px}.counter-note span{font-size:20px}.counter-note small{font:11px system-ui;color:#8b6648}.counter-note:hover{filter:brightness(1.04);outline:1px solid #9e7651}.counter-note:focus-visible{outline:3px solid #945438;outline-offset:4px}
 .counter-board .letter-close{float:right;font:13px system-ui;padding:4px 10px;margin:-5px -6px 6px 8px;position:relative;z-index:2;color:#75442f;background:#eee0c3;border:1px solid #ad9067;cursor:pointer}
 .counter-board .counter-letter{z-index:10}.counter-letter-open .counter-note{visibility:hidden}
+body:has(.counter-board.counter-letter-open) .engine-nav,body:has(.counter-board.counter-letter-open) .engine-viewport{pointer-events:none!important;cursor:default!important}
+body:has(.counter-board.counter-letter-open) .engine-nav *,body:has(.counter-board.counter-letter-open) .engine-viewport *{cursor:default!important}
+body:has(.counter-board.counter-letter-open) .counter-board button:not(.letter-close):not(.accept-stamp){cursor:default!important}
 @media(max-width:800px){.counter-board .counter-note{left:7%;top:73%;width:145px;min-height:80px;padding:9px 12px}.counter-note span{font-size:17px}.counter-board .counter-letter{width:min(430px,94%);left:3%;bottom:8%;max-height:75%;font-size:14px;overflow:auto}}
 @media(prefers-reduced-motion:no-preference){.counter-note:not([hidden]){animation:note-place .18s ease-out}@keyframes note-place{from{opacity:0;translate:0 -8px}to{opacity:1;translate:0 0}}}
 .counter-board .letter-close{float:none;display:block;margin:12px 0 0 auto}

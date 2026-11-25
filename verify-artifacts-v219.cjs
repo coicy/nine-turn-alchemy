@@ -4,7 +4,7 @@ const Campaign=require('./campaign.js');
 
 const c=Campaign.create();
 const e=E.ensure(c);
-e.coins=1000;e.tools=['material_scale','client_contract','余料囊','cooling_tag','ash_contract'];
+e.coins=1000;e.tools=['material_scale','client_contract','material_pouch','cooling_tag','ash_contract'];
 e.equipped=['material_scale'];c.day=9;
 assert(E.buy(c,'craftMaterial','bird'));
 assert.equal(e.coins,1000-Math.round(90*.85));
@@ -16,7 +16,7 @@ const withMatch=E.commissionRewardWithTools(c,matching,[{value:140,yuanBonus:0,n
 const withoutMatch=E.commissionRewardWithTools(c,matching,[{value:140,yuanBonus:0,nature:'cool'}]);
 assert(withMatch>withoutMatch);
 
-e.equipped=['余料囊'];
+e.equipped=['material_pouch'];
 const payout={target:100,nature:'neutral',status:'completed',returned:2,id:'pouch'};
 const beforeNeutral=e.herbs.neutral;
 E.commission(c,payout,[{value:120,yuanBonus:0,nature:'neutral'}]);

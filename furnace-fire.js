@@ -13,6 +13,12 @@
   const fx = field.getContext('2d'), pixels = fx.createImageData(112, 88);
   const media = matchMedia('(prefers-reduced-motion: reduce)');
   const menu = document.getElementById('mainMenu');
+  const painted = document.body.classList.contains('warm-cinnabar-experiment');
+  const fireSource = 'assets/warm-cinnabar/motion/fire.webp';
+  // The atlas includes a painted stone bed below this row. The scene provides its own coals.
+  const flameRows = 186;
+  if (painted) window.AlchemyAssets.load(fireSource).then(() => { delete canvas.dataset.state; });
+  canvas.dataset.style = painted ? 'painted' : 'procedural';
   let impulse = -2000, last = 0, frame = 0, running = false, geometry = '', flow = 0, wasBusy = false;
   const clamp = x => Math.max(0, Math.min(1, x));
   const hash = (x,y) => {let n = Math.imul(x,374761393) + Math.imul(y,668265263); n = Math.imul(n ^ n >>> 13,1274126177); return ((n ^ n >>> 16) >>> 0) / 4294967295;};
@@ -30,6 +36,25 @@
     ctx.beginPath(); ctx.moveTo(.035,.91); ctx.lineTo(.035,.43);
     ctx.bezierCurveTo(.035,.04,.83,-.04,.955,.40);
     ctx.lineTo(.975,.91);ctx.closePath();ctx.clip();
+    if (painted) {
+      // Alpha artwork only: the scene already supplies the dark firebox and iron rim.
+      const atlas = window.AlchemyAssets.getImage(fireSource);
+      if (atlas) {
+        const index = quiet ? 0 : Math.floor(t / 95) % 8;
+        const height = .66 + .28 * clamp(power / 1.35);
+        ctx.imageSmoothingEnabled = true;
+        ctx.drawImage(atlas, index * 256, 0, 256, flameRows, .02, .91 - height, .96, height);
+        ctx.globalCompositeOperation = 'destination-in';
+        const fade=ctx.createLinearGradient(0,.82,0,.91);
+        fade.addColorStop(0,'#fff');
+        fade.addColorStop(1,'transparent');
+        ctx.fillStyle=fade;
+        ctx.fillRect(0,0,1,1);
+        canvas.dataset.frame = String(index);
+        canvas.dataset.source = fireSource;
+      }
+      ctx.restore(); frame++; return;
+    }
     const shade=ctx.createLinearGradient(0,0,0,1);
     shade.addColorStop(0,'rgba(47,25,14,.92)');shade.addColorStop(.62,'rgba(67,28,12,.86)');shade.addColorStop(1,'rgba(56,24,12,0)');
     ctx.fillStyle=shade;ctx.fillRect(0,0,1,1);
@@ -70,7 +95,8 @@
     const width=parseFloat(stage.style.getPropertyValue('--room-base-width'));
     const height=parseFloat(stage.style.getPropertyValue('--room-base-height'));
     const top=parseFloat(stage.style.getPropertyValue('--scene-image-top'))||0;
-    const r={left:p.fire.x*width,top:top+p.fire.y*height,width:p.fire.w*width,height:p.fire.h*height};
+    const fire=(painted&&window.AlchemyWarmFireProjection[key])||p.fire;
+    const r={left:fire.x*width,top:top+fire.y*height,width:fire.w*width,height:fire.h*height};
     const next=JSON.stringify(r);if(next!==geometry){geometry=next;for(const k in r)canvas.style[k]=r[k]+'px';}
     const quiet=media.matches||window.AlchemyGameFeel?.reduced;
     const busy=!s.pillEnded && (s.busy || window.AlchemyScene2D?.busy);

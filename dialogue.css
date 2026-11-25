@@ -49,6 +49,9 @@
 .counter-conversation{position:absolute;z-index:7;right:24px;top:90px;min-height:44px;padding:9px 16px;background:#f0dfbb;color:#6d432c;border:1px solid #a98659;border-radius:3px;font:15px "Microsoft YaHei",sans-serif}
 .counter-conversation[hidden]{display:none!important}
 body:has(#gameDialogue[open][data-view=conversation]) :is(.engine-nav,.visitor-dialogue,.counter-conversation,.counter-note,.counter-letter,.counter-lease-slip,.counter-receipt,.counter-board .daily-actions,.daily-heading,.browse-customers,.world-passage,.world-books,.world-day-bell,.herb-tray,.furnace-judgment,.furnace-tray){visibility:hidden!important}
+/* Native dialog blocks the page visually, and this makes the same boundary explicit for hit testing. */
+body:has(#gameDialogue[open]) .engine-viewport{pointer-events:none!important;cursor:default!important}
+body:has(#gameDialogue[open]) :is(.engine-nav,.engine-panel,.world-passage,.world-books,.herb-tray,.furnace-judgment,.furnace-tray){cursor:default!important}
 @media(max-width:650px){
  #gameDialogue.game-dialogue{--dialogue-bottom:50px;--dialogue-gutter:12px;font-size:14px}
  #gameDialogue .dialogue-main{min-height:136px;padding:20px 17px 10px}
@@ -58,9 +61,9 @@ body:has(#gameDialogue[open][data-view=conversation]) :is(.engine-nav,.visitor-d
  #gameDialogue #dialogueChoices{right:16px;width:min(320px,calc(100vw - 32px));gap:6px;bottom:calc(var(--dialogue-bottom) + var(--dialogue-box-height) + 14px);max-height:max(100px,calc(100dvh - var(--dialogue-box-height) - 116px))}
  #gameDialogue #dialogueChoices button{min-height:44px;padding:8px 14px 8px 20px;font-size:14px}
  #gameDialogue .dialogue-choice-key{display:none}
- #gameDialogue footer{gap:13px;bottom:3px;justify-content:center}
+ #gameDialogue footer{gap:13px;bottom:3px;justify-content:center;padding-bottom:max(16px,env(safe-area-inset-bottom))}
  #gameDialogue footer button{font-size:11px}
- #gameDialogue #dialogueNext{position:fixed;right:26px;bottom:calc(var(--dialogue-bottom) + 3px);margin:0;font-size:11px;min-width:44px;min-height:44px;color:#865036!important;text-shadow:none}
+ #gameDialogue #dialogueNext{position:fixed;right:26px;bottom:calc(var(--dialogue-bottom) + 3px + env(safe-area-inset-bottom));margin:0;font-size:11px;min-width:44px;min-height:44px;color:#865036!important;text-shadow:none}
  #gameDialogue #dialogueFacts{gap:4px 14px;padding-top:5px;font-size:12px}
  #gameDialogue .dialogue-main:has(#dialogueFacts:not([hidden])){padding-bottom:48px}
  #gameDialogue dt{font-size:11px}

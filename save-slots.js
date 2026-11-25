@@ -6,7 +6,7 @@
   function get(key){try{return localStorage.getItem(key);}catch{error='浏览器未允许读取存档。';return null;}}
   function put(key,value){try{localStorage.setItem(key,value);error='';return true;}catch{error='存档未能保存，请检查浏览器存储空间或隐私设置。';return false;}}
   function valid(d){return !!(d?.version===1&&Number.isInteger(d.campaign?.day)&&d.campaign.day>=1&&d.campaign.day<=30
-    &&['open','settled','finished'].includes(d.campaign.phase)&&Array.isArray(d.campaign.orders)&&[3,7,8].includes(d.campaign.orders.length)
+    &&['open','settled','finished'].includes(d.campaign.phase)&&Array.isArray(d.campaign.orders)&&[0,3,4,5,6,7,8].includes(d.campaign.orders.length)
     &&Array.isArray(d.campaign.history)&&d.campaign.orders.every(o=>o&&typeof o.id==='string'&&Number.isFinite(o.target)&&['pending','active','completed','failed','skipped'].includes(o.status))
     &&Number.isFinite(d.target)&&(d.target>0||(d.target===0&&d.materials===1))&&[1,3].includes(d.materials)&&d.state?.started&&d.state.pill
     &&Number.isFinite(d.state.delivered)&&Number.isInteger(d.state.attempt)&&d.state.attempt>=0&&d.state.attempt<=3

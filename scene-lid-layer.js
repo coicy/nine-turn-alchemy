@@ -1,9 +1,15 @@
-/* Keep the open painting as the static room. The closed painting supplies only
-   the lid on the furnace and the uncovered area of the lid rest. */
+/* Keep the open painting as the static room where the two lid patches align.
+   The experiment's mobile paintings have different silhouettes and swap as a whole. */
 (() => {
   'use strict';
 
-  const directory = key => key.endsWith('desktop') ? 'assets/scene-entry/' : 'assets/scene-illustrated/';
+  const directory = key => {
+    return document.body.classList.contains('warm-cinnabar-experiment')
+      ? 'assets/scene-entry/warm-cinnabar/'
+      : key.endsWith('desktop') ? 'assets/scene-entry/' : 'assets/scene-illustrated/';
+  };
+  const usesFullPlate = key => key.endsWith('mobile') &&
+    document.body.classList.contains('warm-cinnabar-experiment');
   const patches = {
     'room-desktop': {
       size: [1600, 1600], feather: 4,
@@ -55,6 +61,11 @@
 
     let currentKey, currentLid;
     return (key, lid) => {
+      if (usesFullPlate(key)) {
+        layer.style.visibility = 'hidden';
+        currentLid = null;
+        return;
+      }
       if (key !== currentKey) {
         const {size: [width, height], feather, lid: lidPath, rest} = patches[key];
         layer.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
@@ -74,5 +85,8 @@
     };
   }
 
-  window.AlchemySceneLidLayer = {mount, baseImage: key => directory(key) + key + '-open.webp'};
+  window.AlchemySceneLidLayer = {
+    mount,
+    baseImage: (key, lid) => directory(key) + key + (usesFullPlate(key) && lid === 'closed' ? '-closed.webp' : '-open.webp')
+  };
 })();

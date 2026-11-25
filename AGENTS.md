@@ -81,6 +81,8 @@
 - herb-tray.css：界面样式。
 - herb-tray.js：运行逻辑或验证脚本。
 - index.html：正式浏览器入口。
+- index-warm-cinnabar.html：温暖金石版本的兼容预览入口；正式入口为 `index.html`。
+- scene-anchor-reference.html：正式场景物件描边与实验场景校准参考页。
 - information-ui.css：界面样式。
 - information-ui.js：运行逻辑或验证脚本。
 - journal-ui.css：界面样式。
@@ -117,6 +119,7 @@
 - refine-odds.css：界面样式。
 - refine-odds.js：运行逻辑或验证脚本。
 - refine-performance.js：运行逻辑或验证脚本。
+- reputation-review.html：浏览器页面、预览或运行入口。
 - risk-curve-order-estimate.json：结构化数据或配置。
 - ritual-brush.js：运行逻辑或验证脚本。
 - room-ui.css：界面样式。
@@ -138,6 +141,13 @@
 - simulation.css：界面样式。
 - simulation.js：运行逻辑或验证脚本。
 - styles.css：界面样式。
+- warm-cinnabar-experiment.css：温暖金石正式视觉皮肤，由正式入口和兼容预览入口加载。
+- warm-cinnabar-experiment.md：温暖金石版本、场景素材和验收说明。
+- warm-cinnabar-assets.js：温暖金石人物与丹药重绘图集映射。
+- warm-cinnabar-growth.js：温暖金石造物重绘图集与帧边界。
+- warm-cinnabar-ui.css、warm-cinnabar-ui.js：温暖金石界面组件样式与导航布局测量。
+- warm-cinnabar-props.js：温暖金石法器身份、交互物件与纸笺来源映射。
+- warm-cinnabar-visitors.js：温暖金石售货来客的独立人物映射。
 - telemetry.js：运行逻辑或验证脚本。
 - ui-revision.css：界面样式。
 - ui-runtime.js：运行逻辑或验证脚本。
@@ -166,6 +176,7 @@
 - verify-identity-notes-v67.cjs：运行逻辑或验证脚本。
 - verify-information-v84.cjs：运行逻辑或验证脚本。
 - verify-journal-browser.cjs：运行逻辑或验证脚本。
+- verify-logic-fixes.cjs：核心逻辑、法器联动、预览结算一致性与运行时兼容性回归验证脚本。
 - verify-loop-flow-browser.cjs：运行逻辑或验证脚本。
 - verify-mvp.cjs：运行逻辑或验证脚本。
 - verify-new-customer-v62.cjs：运行逻辑或验证脚本。
@@ -177,6 +188,8 @@
 - verify-painted-scenes.cjs：运行逻辑或验证脚本。
 - verify-pill-shape-browser.cjs：运行逻辑或验证脚本。
 - verify-progression.cjs：运行逻辑或验证脚本。
+- verify-reputation.cjs：运行逻辑或验证脚本。
+- verify-reputation-browser.cjs：运行逻辑或验证脚本。
 - verify-room-browser.cjs：运行逻辑或验证脚本。
 - verify-rune-combos.cjs：运行逻辑或验证脚本。
 - verify-save-slots-browser.cjs：运行逻辑或验证脚本。
@@ -184,6 +197,7 @@
 - verify-scene2d-browser.cjs：运行逻辑或验证脚本。
 - verify-shell.cjs：运行逻辑或验证脚本。
 - verify-simulation.cjs：运行逻辑或验证脚本。
+- verify-special-customers.cjs：特殊顾客四幕多轮剧情、特质打赏、第四幕捎信与来客旧闻验证脚本。
 - verify-telemetry.cjs：运行逻辑或验证脚本。
 - verify-theme-transitions.cjs：运行逻辑或验证脚本。
 - verify-tools.cjs：运行逻辑或验证脚本。
@@ -197,3 +211,10 @@
 - world-layout.js：运行逻辑或验证脚本。
 - world-ui.css：界面样式。
 - world-ui.js：运行逻辑或验证脚本。
+
+- warm-cinnabar-motion.css：温暖金石动作及结果反馈样式。
+
+- local-image-sources.js：生成的按需本地图片数据加载入口，仅供实验页文件协议兼容。
+
+- warm-cinnabar-stock.css、warm-cinnabar-stock.js：温暖金石药匣筛选、侧栏与丹药拖放。
+

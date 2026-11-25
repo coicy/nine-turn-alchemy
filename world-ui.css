@@ -42,11 +42,33 @@
 .object-world .refine-feedback{left:805px;top:320px;width:310px;font-size:14px}.object-world .refine-feedback strong{font-size:18px}.object-world .refine-feedback p,.object-world .refine-feedback small{font-size:14px}
 .object-world .work-instruction{left:25%;right:25%;bottom:12px;font-size:14px;min-height:0}
 .object-world .herb-tray{left:30px;top:430px;width:220px!important;max-height:280px;background:linear-gradient(105deg,#715334ed,#4c3527ed);border:6px solid #a08055;box-shadow:5px 8px 8px #33271e44;transform:perspective(650px) rotateY(9deg);z-index:16;overflow:auto}
+/* Potion Craft pattern: ingredients are a dedicated lab-side workbench. */
+@media(min-width:651px){
+ body.object-world[data-work-mode="furnace"] .herb-tray{left:auto!important;right:24px!important;top:112px!important;width:360px!important;max-height:calc(100dvh - 150px);padding:14px!important;transform:none;background:linear-gradient(180deg,#f3e7cdF5,#e4d2adF5);border:2px solid #9f8059;box-shadow:0 8px 22px #3d2b1d38;color:#49382a}
+ body.object-world[data-work-mode="furnace"] .herb-tray h2{font-size:22px;margin:0 0 4px;padding-bottom:8px;border-bottom:1px solid #b59a70}
+ body.object-world[data-work-mode="furnace"] .herb-tray>p{font-size:13px;line-height:1.5;margin:4px 0 10px;color:#6b5942}
+ body.object-world[data-work-mode="furnace"] .herb-tray .herb-slots{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px;max-height:none;overflow:visible}
+ body.object-world[data-work-mode="furnace"] .herb-slot{width:auto;height:96px;min-height:96px;background:#fff8e8;border:1px solid #b8a078;border-radius:3px;box-shadow:0 2px 5px #4b382522}
+ body.object-world[data-work-mode="furnace"] .herb-slot img{width:66px;height:66px}
+ body.object-world[data-work-mode="furnace"] .herb-slot strong{right:5px;bottom:5px;font-size:14px;background:#8e5a3d;color:#fff5dc;padding:1px 5px;border-radius:10px}
+}
 .object-world .herb-tray h2{font-size:18px}.object-world .herb-tray .herb-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:4px;max-height:170px;overflow:auto}.object-world .herb-slot{position:relative;width:78px;height:78px;min-height:78px;box-sizing:border-box;margin:0;background:#3c2b20;border:1px solid #af8554}.object-world .herb-slot img{width:60px;height:60px}.object-world .herb-slot.is-held img{visibility:hidden}.object-world .herb-slot strong{right:3px;bottom:2px;font-size:14px}.object-world .herb-slot span{display:none!important}.object-world .herb-slot:focus-visible span,.object-world .herb-slot:hover span{display:block!important;position:absolute;background:#f7ecd4;color:#49382a;z-index:4;bottom:100%;min-width:130px;font-size:12px}.object-world .herb-slot[aria-disabled=true]{opacity:.55}
 .object-world .refine-odds{left:auto!important;right:25px;top:25px!important;width:355px;z-index:24;font-size:14px}.object-world .refine-odds dl{gap:4px}.object-world .refine-odds h2{font-size:18px}.object-world .refine-odds dd{font-size:18px}.object-world .refine-odds details{font-size:12px}.object-world .refine-odds-toggle{left:auto;right:25px;top:25px;font-size:14px;min-height:44px}
 .object-world .engine-close{top:64px;right:30px;z-index:85;font-size:14px;min-height:44px}
 .object-world .engine-panel{top:64px!important;bottom:12px!important}
 .object-world .equipment-drawer.engine-panel{position:fixed!important;inset:100px 25px auto auto!important;width:340px!important;max-height:calc(100dvh - 130px);height:auto;display:block;padding:16px!important;border:2px solid #a7885d;box-shadow:0 7px 20px #46302633;animation:none}
+/* Desktop reading scale: the material drawer is a primary work surface, not a toast. */
+@media(min-width:651px){
+ .object-world .equipment-drawer.engine-panel{width:460px!important;max-height:calc(100dvh - 150px);padding:24px!important}
+ .object-world .equipment-heading h2{font-size:24px}
+ .object-world .equipment-drawer p{font-size:16px;line-height:1.7}
+ .object-world .equipment-drawer .equipment-library{max-height:46dvh}
+ .object-world .equipment-card{gap:14px;margin:12px 0;padding:14px;font-size:16px}
+ .object-world .equipment-card small{font-size:14px}
+ .object-world .world-tool-portrait{width:88px;height:88px;margin:8px 16px 8px 0}
+ .object-world .equipment-actions{gap:12px}
+ .object-world .equipment-actions button{min-height:48px;font-size:16px}
+}
 .object-world.equipment-open .engine-viewport{right:0;bottom:0}.object-world .equipment-heading h2{font-size:18px}.object-world .equipment-drawer p{font-size:14px;line-height:1.6}.object-world .equipment-drawer .equipment-library{max-height:38dvh;overflow:auto}.object-world .equipment-card{display:flex;gap:8px;flex-wrap:wrap;width:100%;text-align:left;margin:8px 0;padding:10px}.equipment-card small{font-size:12px;display:block;width:100%}.world-tool-portrait{float:left;margin:8px 12px 8px 0;width:68px;height:68px}.equipment-actions{display:flex;gap:8px}.object-world .equipment-actions button{min-height:44px}
 .object-world .pill-bag-panel{background:linear-gradient(90deg,#684a30 0 14px,#a18155 14px 22px,#e5d2a7 22px calc(100% - 22px),#a18155 calc(100% - 22px) calc(100% - 14px),#684a30 calc(100% - 14px))!important;border:4px solid #6e5035;border-radius:4px;padding:25px!important;color:#49382a}
 .object-world #pillBagList{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;align-content:start;max-width:55%;max-height:65%;overflow:auto;padding:14px;background:#6f735c;border:8px solid #9c784f;box-shadow:inset 0 0 16px #332a2544}
@@ -177,3 +199,5 @@
 .object-world.engine-shell .world-market.engine-panel{background-image:url('assets/object-world/market.webp')!important}
 .object-world .world-market .passage-home{right:8%;top:24%;background:#f7ecd4e8;color:#49382a}
 @media(max-width:650px){.object-world .world-market .passage-home{right:10px;top:10px}}
+
+

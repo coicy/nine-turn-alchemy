@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>九转丹坊 · 声望循环验收</title>
+  <style>
+    :root{color-scheme:light;background:#eadbbd;color:#432b22;font-family:"Noto Serif SC","Microsoft YaHei",serif}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;padding:30px;background:linear-gradient(135deg,#f5e8ca,#d8c098)}
+    main{max-width:1320px;margin:auto}.mast{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px}.mast h1{margin:0;font-size:32px;color:#8c3f2e}.mast p{margin:6px 0 0;color:#6b5040}.stamp{padding:10px 14px;border:1px solid #a76a4d;background:#f4e4c6;color:#8c3f2e;letter-spacing:.08em}
+    .states{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.card{position:relative;min-height:430px;overflow:hidden;border:1px solid #9b684c;background:#7b5b4a;box-shadow:0 8px 22px #6c4c3122}.card:before{content:"";position:absolute;inset:0;background-image:linear-gradient(#2e1e18a8,#2e1e1855 45%,#2e1e18cc),url("assets/scene-entry/room-desktop-open.webp");background-size:cover;background-position:center}.card.mid:before{filter:saturate(.82) brightness(.94)}.card.end:before{filter:saturate(.58) brightness(.7)}.card-content{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:space-between;min-height:430px;padding:22px;color:#fff7e8}.card-top{display:flex;justify-content:space-between;align-items:center}.day{font-size:14px;opacity:.9}.badge{padding:7px 11px;border:1px solid #e8bd8a;background:#6f2e26e8;color:#ffe8c5;font-weight:700}.mid .badge{background:#805b29e8}.end .badge{background:#4e3934ed}.card h2{margin:8px 0 0;font-size:27px}.customer-count{font-size:18px;margin:4px 0}.customer-count strong{font-size:38px;color:#ffd59c}.card-note{margin:0 0 12px;line-height:1.65;color:#fff1dc}.bar{height:10px;border:1px solid #eed2a7;background:#302019aa}.bar i{display:block;height:100%;background:#d15b3e}.mid .bar i{width:50%;background:#d39b46}.end .bar i{width:0;background:#886c5d}.result{padding-top:14px;border-top:1px solid #ffffff55;font-size:15px}.result strong{color:#ffd39b}.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}.rule{padding:14px;border:1px solid #b48a62;background:#f5e6c9}.rule strong{display:block;color:#8c3f2e;font-size:20px}.rule span{display:block;margin-top:4px;color:#725544}.checks{margin-top:20px;padding:18px 20px;border:1px solid #b48a62;background:#f8ebd0}.checks h2{margin:0 0 10px;font-size:19px;color:#8c3f2e}.checks ul{margin:0;padding-left:22px;line-height:1.75}.checks li::marker{color:#bd5a3e}
+    @media(max-width:900px){body{padding:18px}.states{grid-template-columns:1fr}.card{min-height:360px}.card-content{min-height:360px}.rules{grid-template-columns:repeat(2,1fr)}.mast{display:block}.stamp{display:inline-block;margin-top:12px}}
+  </style>
+</head>
+<body>
+  <main>
+    <header class="mast"><div><h1>九转丹坊 · 声望循环验收</h1><p>失败会让来客变少；声望一旦归零，立即触发游戏失败事件，丹坊提前结业。</p></div><div class="stamp">实验入口状态对比</div></header>
+    <section class="states" aria-label="声望状态对比">
+      <article class="card"><div class="card-content"><div><div class="card-top"><span class="day">开局 · 第 1 天</span><span class="badge">声望 10 / 10</span></div><h2>客流稳定</h2><p class="customer-count">今日来客 <strong>7–8</strong> 位</p><p class="card-note">新开丹坊，柜台会生成完整的日常委托。完成委托恢复2点，最高10点；一次成功可抵消两次失败。</p><div class="bar"><i style="width:100%"></i></div></div><div class="result">成功交付：<strong>声望 +2</strong></div></div></article>
+      <article class="card mid"><div class="card-content"><div><div class="card-top"><span class="day">示例 · 声望降至5点</span><span class="badge">声望 5 / 10</span></div><h2>客流收缩</h2><p class="customer-count">今日来客 <strong>5–6</strong> 位</p><p class="card-note">连续未完成或主动终止会降低声望，下一日委托数量随之减少，经营压力开始显现。</p><div class="bar"><i></i></div></div><div class="result">未完成 / 终止：<strong>声望 −1</strong></div></div></article>
+      <article class="card end"><div class="card-content"><div><div class="card-top"><span class="day">声望耗尽 · 提前结业</span><span class="badge">声望 0 / 10</span></div><h2>丹坊结业</h2><p class="customer-count">今日来客 <strong>0</strong> 位</p><p class="card-note">柜台不再生成来笺，存档保留结业原因和经营历史，页面进入结业状态。</p><div class="bar"><i></i></div></div><div class="result">结业原因：<strong>声望耗尽</strong></div></div></article>
+    </section>
+    <section class="rules" aria-label="声望区间规则"><div class="rule"><strong>7–10</strong><span>7–8 位客人</span></div><div class="rule"><strong>4–6</strong><span>5–6 位客人</span></div><div class="rule"><strong>1–3</strong><span>3–4 位客人</span></div><div class="rule"><strong>0</strong><span>0 位客人 · 游戏结束</span></div></section>
+    <section class="checks"><h2>10点声望规则</h2><ul><li>初始10点；完成+2，已接未完成或主动终止−1，封顶10点、最低0点。</li><li>未接委托直接收工不扣声望；单颗炸丹不直接扣点，整单失败才扣1点。</li><li>失败与主动终止都会记录声望变化，并写入经营历史。</li><li>次日生成委托时依据当前声望决定客人数量。</li><li>声望降至0点时，立即触发游戏失败事件，结束本局经营。</li><li>正式入口仍使用同一套经营规则，实验入口继续使用暖色皮肤。</li></ul></section>
+  <section class="checks"><h2>规则说明与实际截图</h2><p><a href="docs/ReputationTen20261125.md">查看完整规则与旧档转换说明</a> · <a href="../../Evidence/ReputationZeroFailure20261125/index.html">查看本轮浏览器验证截图</a></p><p>声望一旦归零，立即游戏失败；不等待收工或次日开门，不允许通过后续委托恢复。30日上限沿用。</p></section></main>
+</body>
+</html>

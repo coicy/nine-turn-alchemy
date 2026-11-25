@@ -32,7 +32,7 @@
     const e = economy.ensure(campaign);
     const listed = (e.consignments || []).filter(x => x?.status === 'listed' && x.pillSnapshot);
     const paid = (e.consignments || []).filter(x => x?.status === 'paid' && x.pillSnapshot).slice(-3).reverse();
-    const rows = listed.map(x => `<li><strong>${x.pillSnapshot.turn}转 · 药力 ${Math.round(x.pillSnapshot.value)}</strong><span>${x.tierName} · 第${x.settleDay}天回款 ${x.guaranteedPayout} 铜钱</span></li>`).join('');
+    const rows = listed.map(x => `<li><strong>${x.pillSnapshot.turn}转 · 药力 ${economy.grossValue(x.pillSnapshot)}</strong><span>${x.tierName} · 第${x.settleDay}天回款 ${x.guaranteedPayout} 铜钱</span></li>`).join('');
     const paidRows = paid.map(x => `<li><strong>第${x.paidDay}天已到账</strong><span>${x.guaranteedPayout} 铜钱 · ${x.tierName}</span></li>`).join('');
     panel.hidden = !listed.length && !paid.length;
     summary.textContent = listed.length ? `寄售中 ${listed.length}/3` : '最近寄售回款';

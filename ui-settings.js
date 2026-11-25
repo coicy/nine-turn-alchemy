@@ -9,6 +9,6 @@
  document.querySelector('.opening-consent').hidden=true;document.querySelector('.opening-prose').hidden=true;document.querySelector('.opening-tagline').textContent='一炉烟火，百转成丹。';
  const help=document.querySelector('.opening-help');help.innerHTML='<summary>试炉要诀</summary><ol><li>取一包药。</li><li>投入炉口，点火门炼化。</li><li>收丹入匣，之后选择提交委托、立即出售或寄售。</li></ol><button data-title-rules data-focus-key="title-rules">查阅详细要诀</button>';
  const rules=document.createElement('dialog');rules.className='ux-title-rules';rules.innerHTML='<header><h2>试炉要诀</h2><button data-close-rules>关闭</button></header><div></div>';document.body.append(rules);
- help.querySelector('button').onclick=()=>{origin=UX.focusKey(document.activeElement);const page=document.querySelector('.side-panel .journal-page:nth-of-type(2)');rules.querySelector('div').innerHTML=page?.innerHTML||'';rules.showModal();rules.querySelector('button').focus();};
+ help.querySelector('button').onclick=()=>{origin=UX.focusKey(document.activeElement);const page=document.querySelector('.side-panel .journal-page:first-of-type');rules.querySelector('div').innerHTML=page?.innerHTML||'';rules.showModal();rules.querySelector('button').focus();};
  const closeRules=()=>{rules.close();UX.restore(origin,help.querySelector('summary'));};rules.querySelector('button').onclick=closeRules;rules.addEventListener('cancel',e=>{e.preventDefault();e.stopPropagation();closeRules();});rules.addEventListener('keydown',e=>{if(e.key==='Escape')e.stopPropagation();});
 })();

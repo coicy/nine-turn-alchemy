@@ -45,3 +45,5 @@
 - VisualCorrectionsV91.md：产品说明、规则、版本或交付记录。
 - VisualRepairV126.md：产品说明、规则、版本或交付记录。
 - WorkbenchV92.md：产品说明、规则、版本或交付记录。
+
+- ReputationTen20261125.md：十点声望的规则、旧档转换与体验预期。

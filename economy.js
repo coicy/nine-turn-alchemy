@@ -1,6 +1,21 @@
 (function(root){
 'use strict';
 const Crafts=root.AlchemyCrafts||(typeof require==='function'?require('./crafts.js'):null);
+const Catalog=root.AlchemyCustomerCatalog||(typeof require==='function'?require('./customer-catalog.js'):null);
+function evaluateSpecialTrait(o,pills){
+ if(!o?.arcId||!Array.isArray(pills)||!pills.length)return null;
+ const stage=Catalog?.specialArcs?.[o.arcId]?.stages?.[o.arcStage];
+ if(!stage?.traitRule)return null;
+ const rule=stage.traitRule;
+ let matched=false;
+ if(rule==='unscarred')matched=pills.every(p=>(Number(p?.scars)||0)===0);
+ else if(rule==='scarred')matched=pills.some(p=>(Number(p?.scars)||0)>0||(Number(p?.riskPeak)||0)>=.35);
+ else if(rule==='highRisk')matched=pills.some(p=>(Number(p?.riskPeak)||0)>=.35||p?.nature==='warm'||(Number(p?.turn)||1)>=7);
+ else if(rule==='excess')matched=excessValue(o,pills)>=24||pills.some(p=>(Number(p?.turn)||1)>=8);
+ else if(rule==='coolNature')matched=pills.some(p=>p?.nature==='cool')||excessValue(o,pills)<=36;
+ else if(rule==='highTurn')matched=pills.some(p=>(Number(p?.turn)||1)>=5);
+ return matched?{bonus:Number(stage.traitBonus)||20,label:stage.traitLabel||'投其所好赏钱'}:null;
+}
 const TOOL_DEFS=[
 {id:'seal',name:'镇炉印',price:240,day:1,description:'每炉首次炸炉改为受损。',school:'shared'},
 {id:'ward',name:'避火佩',price:180,day:1,description:'本炉基础炸炉概率降低10%（相对值）。',school:'shared'},
@@ -36,8 +51,8 @@ const TOOL_DEFS=[
 {id:'pattern_tray',name:'回纹托',price:680,day:11,description:'受损后收丹，下一炉获得一次风险缓冲。',school:'scar'},
 {id:'market_tag',name:'市价签',price:360,day:4,description:'自有丹药出售价格提高。',school:'business'},
 {id:'medicine_seal',name:'药商印',price:420,day:5,description:'委托超额药力的报酬提高。',school:'business'},
-{id:'余料囊',name:'余料囊',price:460,day:6,description:'委托结算时返还部分未用材料。',school:'business'},
-{id:'consign牌',name:'寄售牌',price:500,day:7,description:'寄售保底价和溢价提高。',school:'business'},
+{id:'material_pouch',name:'material_pouch',price:460,day:6,description:'委托结算时返还部分未用材料。',school:'business'},
+{id:'consign_plate',name:'寄售牌',price:500,day:7,description:'寄售保底价和溢价提高。',school:'business'},
 {id:'craft_mold',name:'造物模',price:540,day:8,description:'其他产物的成品基础价值提高。',school:'business'},
 {id:'material_scale',name:'工料秤',price:580,day:9,description:'购买造物原料时降低成本。',school:'business'},
 {id:'client_contract',name:'客契册',price:620,day:10,description:'满足指定药力或药性要求时提高报酬。',school:'business'},
@@ -62,7 +77,9 @@ function toolRisk(value,pill){
  return Math.max(.35,Math.min(1.8,factor));
 }
 function outcomeWeights(value){return {big:hasTool(value,'lucky')?4:2,success:hasTool(value,'stone')?14:12,hold:hasTool(value,'stone')?3:5,damage:2};}
-function ensure(c){if(!c.economy)c.economy={coins:80,earned:0,spent:0,stock:[0,0],tools:[],equipped:null,furnace:0,sold:0,last:'开坊本金 80 铜钱'};if(!c.economy.herbs)c.economy.herbs={warm:0,cool:0,neutral:0};if(c.economy.pills===undefined)c.economy.pills=[];if(!Array.isArray(c.economy.consignments))c.economy.consignments=[];if(!Number.isInteger(c.economy.consignmentSeq))c.economy.consignmentSeq=1;if(!Number.isFinite(c.economy.nextOrderTargetPenalty))c.economy.nextOrderTargetPenalty=0;if(c.selfOrder!==undefined)delete c.selfOrder;delete c.economy.selfCount;if(Array.isArray(c.economy.pills))for(const pill of c.economy.pills){if(!pill||typeof pill!=='object')continue;delete pill.self;delete pill.source;delete pill.owner;}c.economy.equipped=equippedIds(c.economy.equipped);Crafts.ensure(c);return c.economy;}
+const LEGACY_TOOL_IDS={'\u4f59\u6599\u56ca':'material_pouch','consign\u724c':'consign_plate'};
+function migrateToolIds(list){return Array.isArray(list)?[...new Set(list.map(id=>LEGACY_TOOL_IDS[id]||id))]:list;}
+function ensure(c){if(!c||typeof c!=='object')return null;if(!c.economy)c.economy={coins:80,earned:0,spent:0,stock:[0,0],tools:[],equipped:null,furnace:0,sold:0,last:'开坊本金 80 铜钱'};if(!c.economy.herbs)c.economy.herbs={warm:0,cool:0,neutral:0};if(c.economy.pills===undefined)c.economy.pills=[];if(!Array.isArray(c.economy.consignments))c.economy.consignments=[];if(!Number.isInteger(c.economy.consignmentSeq))c.economy.consignmentSeq=1;if(!Number.isFinite(c.economy.nextOrderTargetPenalty))c.economy.nextOrderTargetPenalty=0;if(c.selfOrder!==undefined)delete c.selfOrder;delete c.economy.selfCount;if(Array.isArray(c.economy.tools))c.economy.tools=migrateToolIds(c.economy.tools);if(typeof c.economy.equipped==='string')c.economy.equipped=[c.economy.equipped];c.economy.equipped=migrateToolIds(c.economy.equipped);if(Array.isArray(c.economy.pills))for(const pill of c.economy.pills){if(!pill||typeof pill!=='object')continue;delete pill.self;delete pill.source;delete pill.owner;if(Array.isArray(pill.refinement?.equipped))pill.refinement.equipped=migrateToolIds(pill.refinement.equipped);}c.economy.equipped=equippedIds(c.economy.equipped);Crafts?.ensure?.(c);return c.economy;}
 function feel(event,detail={}){if(typeof window!=='undefined')window.AlchemyGameFeel?.emit(event,detail);}
 function recordCash(c,kind,before,reference){
   root.AlchemyTelemetry?.cash?.(c,kind,before,reference);
@@ -83,23 +100,25 @@ function commissionRewardWithTools(c,o,pills){
  if(hasTool(e.equipped,'ash_contract')&&Number(o?.riskPeak||0)>=.45&&excess>0)reward+=Math.round(excess*.10);
  return reward;
 }
-function commission(c,o,pills){if(o.paid)return 0;o.paid=true;if(o.status!=='completed')return 0;const e=ensure(c);const leftover=Math.max(0,o.returned||0);const nature=['warm','cool'].includes(o.nature)?o.nature:'neutral';e.herbs[nature]+=leftover;o.gifted=leftover;if(hasTool(e.equipped,'余料囊')&&leftover>0){e.herbs.neutral+=Math.min(1,leftover);o.materialPouchBonus=Math.min(1,leftover);}o.riskPeak=Math.max(Number(o.riskPeak)||0,...pills.map(p=>Number(p?.riskPeak)||0));o.returned=0;o.excess=excessValue(o,pills);o.reward=commissionRewardWithTools(c,o,pills);return credit(c,o.reward,'委托工钱与超额补价',o.id);}
+function commission(c,o,pills){if(o.paid)return 0;o.paid=true;if(o.status!=='completed')return 0;const e=ensure(c);const leftover=Math.max(0,o.returned||0);const nature=['warm','cool'].includes(o.nature)?o.nature:'neutral';e.herbs[nature]+=leftover;o.gifted=leftover;if(hasTool(e.equipped,'material_pouch')&&leftover>0){e.herbs.neutral+=Math.min(1,leftover);o.materialPouchBonus=Math.min(1,leftover);}o.riskPeak=Math.max(Number(o.riskPeak)||0,...pills.map(p=>Number(p?.riskPeak)||0));o.returned=0;o.excess=excessValue(o,pills);const trait=evaluateSpecialTrait(o,pills);if(trait){o.specialMatched=true;o.specialBonus=trait.bonus;o.specialMatchNote=trait.label;const chron=Array.isArray(c?.specialChronicle)&&[...c.specialChronicle].reverse().find(x=>x.arcId===o.arcId&&x.stage===o.arcStage);if(chron){chron.matched=true;chron.bonusLabel=trait.label;}}o.reward=commissionRewardWithTools(c,o,pills)+(o.specialBonus||0);return credit(c,o.reward,'委托工钱与超额补价',o.id);}
+function claimPostscript(c,id){const p=Array.isArray(c?.specialPostscripts)&&c.specialPostscripts.find(x=>x.id===id);if(!p||p.claimed)return false;p.claimed=true;if(p.bonusCoins>0)credit(c,p.bonusCoins,p.title||'旧客捎信',p.id);return true;}
 function grossValue(pill){
   return Math.round(pill.value + (Number.isFinite(pill.yuanBonus) ? pill.yuanBonus : 0));
 }
 function saleValue(c,pill){
-  const e=ensure(c),rate=hasTool(e.equipped,'market_tag')?.08:0;
-  const scarBonus=hasTool(e.equipped,'ember_tray')&&pill?.scars? .08:0;
-  return Math.max(0, Math.round(grossValue(pill)*(1+rate+scarBonus) - (pill.materialAdvance || 0)));
+  const e=ensure(c),rate=e&&hasTool(e.equipped,'market_tag')&&!pill?.craftKind?.08:0;
+  const moldBonus=e&&hasTool(e.equipped,'craft_mold')&&pill?.craftKind?.12:0;
+  const scarBonus=e&&hasTool(e.equipped,'ember_tray')&&pill?.scars? .08:0;
+  return Math.max(0, Math.round(grossValue(pill)*(1+rate+moldBonus+scarBonus) - (pill.materialAdvance || 0)));
 }
 function storePill(c,p,order){const e=ensure(c),id=p.id;if(typeof id!=='string'||!id||!Array.isArray(e.pills)||e.pills.some(x=>x?.id===id)||!Number.isFinite(p.value)||p.value<=0||!Number.isInteger(p.turn)||p.turn<1||p.turn>100)return false;if(p.craftKind&&!Crafts.get(p.craftKind))return false;e.pills.push({...(p.craftKind?{craftKind:p.craftKind,craftCost:p.craftCost||Crafts.get(p.craftKind).price}:{}),...(typeof p.appearance==='string'?{appearance:p.appearance}:{}),id,...(p.materialAdvance ? {materialAdvance:p.materialAdvance} : {}),day:c.day,value:p.value,yuanBonus:Number.isFinite(p.yuanBonus)?p.yuanBonus:0,turn:p.turn,quality:p.quality,...(Number.isFinite(p.baseValue)?{baseValue:p.baseValue}:{}),...(Number.isFinite(p.riskPeak)?{riskPeak:p.riskPeak}:{}),...(Number.isInteger(p.scars)&&p.scars>0?{scars:p.scars}:{}),nature:p.nature||order?.nature||'neutral'});e.last=p.craftKind?'造物已收纳，可保留、出售或等待求购':'丹药已收入丹匣，可保留、提交或处理';return true;}
 function sale(c,id){const e=ensure(c);if(typeof id!=='string'||!Array.isArray(e.pills))return false;const index=e.pills.findIndex(p=>p?.id===id);if(index<0)return false;const p=e.pills[index];if(!Number.isFinite(p.value)||p.value<=0||!Number.isInteger(p.turn)||p.turn<1||p.turn>100)return false;const n=saleValue(c,p);e.pills.splice(index,1);e.sold++;const ok=credit(c,n,p.craftKind?'造物出售':'丹匣成丹出售',id);if(ok)feel('sell',{id,value:n,tier:'medium'});return ok;}
 function consignmentTier(p){const turn=Number(p?.turn)||1;return CONSIGNMENT_TIERS[turn>=60?3:turn>=30?2:turn>=15?1:0];}
-function consignmentQuote(c,p){const tier=consignmentTier(p),base=saleValue(c,p),e=ensure(c),bonus=hasTool(e.equipped,'consign牌')?.10:0,gross=base*(1+tier.bonusRate+bonus);return {tier:tier.id,tierName:tier.name,bonusRate:tier.bonusRate+bonus,waitDays:tier.waitDays,basePayout:base,guaranteedPayout:Math.ceil(gross-1e-9),settleDay:(Number(c?.day)||1)+tier.waitDays};}
-function consignmentEligibility(c,p){const e=ensure(c),q=consignmentQuote(c,p),listed=e.consignments.filter(x=>x?.status==='listed');if(q.basePayout===0)return {ok:false,reason:'抵清料款后无余款可寄售。',quote:q};if((Number(c?.day)||1)<6)return {ok:false,reason:'第6天开放寄售柜。',quote:q};if(listed.length>=3)return {ok:false,reason:'寄售柜已满，最多同时寄售3颗丹药。',quote:q};if(q.settleDay>CONSIGNMENT_MAX_DAY)return {ok:false,reason:'回款日超过本局经营结束，当前不能寄售。',quote:q};return {ok:true,reason:'',quote:q};}
+function consignmentQuote(c,p){const tier=consignmentTier(p),base=saleValue(c,p),e=ensure(c),bonus=hasTool(e.equipped,'consign_plate')?.10:0,gross=base*(1+tier.bonusRate+bonus);return {tier:tier.id,tierName:tier.name,bonusRate:tier.bonusRate+bonus,waitDays:tier.waitDays,basePayout:base,guaranteedPayout:Math.ceil(gross-1e-9),settleDay:(Number(c?.day)||1)+tier.waitDays};}
+function consignmentEligibility(c,p){const e=ensure(c),q=consignmentQuote(c,p),listed=e.consignments.filter(x=>x?.status==='listed');if(p?.craftKind)return {ok:false,reason:'寄售柜只收丹药。',quote:q};if(q.basePayout===0)return {ok:false,reason:'抵清料款后无余款可寄售。',quote:q};if((Number(c?.day)||1)<6)return {ok:false,reason:'第6天开放寄售柜。',quote:q};if(listed.length>=3)return {ok:false,reason:'寄售柜已满，最多同时寄售3颗丹药。',quote:q};if(q.settleDay>CONSIGNMENT_MAX_DAY)return {ok:false,reason:'回款日超过本局经营结束，当前不能寄售。',quote:q};return {ok:true,reason:'',quote:q};}
 function consign(c,id){const e=ensure(c),index=e.pills.findIndex(p=>p?.id===id);if(index<0)return false;const p=e.pills[index],eligibility=consignmentEligibility(c,p);if(!eligibility.ok)return false;const q=eligibility.quote,snapshot={...p},entry={id:'consignment-'+(e.consignmentSeq++),pillSnapshot:snapshot,listedDay:c.day,settleDay:q.settleDay,tier:q.tier,tierName:q.tierName,bonusRate:q.bonusRate,guaranteedPayout:q.guaranteedPayout,status:'listed'};e.pills.splice(index,1);e.consignments.push(entry);e.last='已寄售，'+q.waitDays+'天后回款 '+q.guaranteedPayout+' 铜钱';feel('consign',{id,pill:p,quote:q,tier:'medium'});return entry;}
 function settleConsignments(c){const e=ensure(c),paid=[];for(const entry of e.consignments){if(entry?.status!=='listed'||entry.settleDay>(Number(c?.day)||1))continue;entry.status='paid';entry.paidDay=c.day;credit(c,entry.guaranteedPayout,'寄售回款',entry.id);paid.push(entry);}if(paid.length)feel('paid',{count:paid.length,total:paid.reduce((n,x)=>n+x.guaranteedPayout,0),tier:'medium'});return paid;}
 function craftSale(c,id){const e=ensure(c),q=Crafts.quote(c,id);if(!q.ok)return false;const index=e.pills.findIndex(p=>p.id===id);if(index<0)return false;e.pills.splice(index,1);e.craftMarket.offer.status='sold';e.sold++;credit(c,q.payout,'造物求购',id);feel('sell',{id,value:q.payout,tier:'medium'});return true;}
 function dismissCraftOffer(c){const o=ensure(c).craftMarket.offer;if(!o||o.status!=='waiting')return false;o.status='declined';return true;}
-const api={craftSale,dismissCraftOffer,recordCash,excessValue,commissionReward,commissionRewardWithTools,saleValue,storePill,EQUIP_SLOTS,equippedIds,hasTool,TOOL_DEFS,toolRisk,outcomeWeights,PRICES,TOOLS,UPGRADES,ensure,buy,credit,fee,commission,sale,consignmentTier,consignmentQuote,consignmentEligibility,consign,settleConsignments};if(typeof module!=='undefined')module.exports=api;else root.AlchemyEconomy=api;
+const api={craftSale,dismissCraftOffer,recordCash,grossValue,excessValue,commissionReward,commissionRewardWithTools,evaluateSpecialTrait,claimPostscript,saleValue,storePill,EQUIP_SLOTS,equippedIds,hasTool,TOOL_DEFS,toolRisk,outcomeWeights,PRICES,TOOLS,UPGRADES,ensure,buy,credit,fee,commission,sale,consignmentTier,consignmentQuote,consignmentEligibility,consign,settleConsignments};if(typeof module!=='undefined')module.exports=api;else root.AlchemyEconomy=api;
 })(typeof window!=='undefined'?window:globalThis);

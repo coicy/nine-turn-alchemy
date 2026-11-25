@@ -19,7 +19,7 @@
     });
   }
   const oldFurnace=document.querySelector('.furnace');
-  if(oldFurnace)window.AlchemyAssets.load('assets/runtime/furnace-v1.webp').then(ok=>{if(ok){oldFurnace.style.backgroundImage='url("assets/runtime/furnace-v1.webp")';oldFurnace.classList.add('raster-furnace');}});
+  if(oldFurnace&&!window.AlchemyWarmStyle)window.AlchemyAssets.load('assets/runtime/furnace-v1.webp').then(ok=>{if(ok){oldFurnace.style.backgroundImage='url("assets/runtime/furnace-v1.webp")';oldFurnace.classList.add('raster-furnace');}});
   window.addEventListener('alchemy:render',updateSurface);
   window.addEventListener('alchemy:pill-art-ready', () => {
     last = '';

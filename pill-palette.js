@@ -17,7 +17,7 @@
   return Math.max(0,appearance==='plain'?Math.min(index,1):index);
  }
  const groups=Object.freeze({warm:Object.freeze(['lead-red','lead-yellow','copper-red']),neutral:Object.freeze(['ochre-brown','ochre-violet']),cool:Object.freeze(['magnetite-black','tin-white'])});
- function resolve(nature,appearance){return Object.hasOwn(sources,appearance)?appearance:'plain';}
+ function resolve(nature,appearance){return Object.prototype.hasOwnProperty.call(sources,appearance)?appearance:'plain';}
  function pick(nature,identity,attempt){const group=groups[nature]||groups.neutral;let hash=2166136261;for(const c of String(identity)+'/'+String(attempt))hash=Math.imul(hash^c.charCodeAt(0),16777619);return group[(hash>>>0)%group.length];}
  const api=Object.freeze({sources,groups,resolve,pick,frame});if(typeof module!=='undefined')module.exports=api;else root.AlchemyPillPalette=api;
 })(typeof window!=='undefined'?window:globalThis);

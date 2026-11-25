@@ -1,0 +1,92 @@
+{
+  "assets/warm-cinnabar/growth/craft-beast.webp": {
+    "script": "assets/warm-cinnabar/local-images/craft-beast.js",
+    "bytes": 233402,
+    "sha256": "87aada8505524c79541d8ce3fc9b6011b8c5955d7dd811973e2b8da49ba34458"
+  },
+  "assets/warm-cinnabar/growth/craft-bird.webp": {
+    "script": "assets/warm-cinnabar/local-images/craft-bird.js",
+    "bytes": 262562,
+    "sha256": "ff64f2fcf342c3455565af548cf8be2ebc010e999c04ca887ac711c3c178a0be"
+  },
+  "assets/warm-cinnabar/growth/craft-home.webp": {
+    "script": "assets/warm-cinnabar/local-images/craft-home.js",
+    "bytes": 210490,
+    "sha256": "f5b027a08a99e305e3c918fb5af9260fc792f1dbd2c46f322eb572a8e1c289ba"
+  },
+  "assets/warm-cinnabar/growth/craft-lion.webp": {
+    "script": "assets/warm-cinnabar/local-images/craft-lion.js",
+    "bytes": 330402,
+    "sha256": "5fe22c605b3ee7c5307edf3a02218cc3cc54f1e7731193db109148e35612babd"
+  },
+  "assets/warm-cinnabar/growth/craft-spring.webp": {
+    "script": "assets/warm-cinnabar/local-images/craft-spring.js",
+    "bytes": 251052,
+    "sha256": "08f4a0744d6704ee18faca4822c9c0e1f90bfc87ce08e81ca366eba84e317a5d"
+  },
+  "assets/warm-cinnabar/growth/craft-tower.webp": {
+    "script": "assets/warm-cinnabar/local-images/craft-tower.js",
+    "bytes": 332182,
+    "sha256": "2a85d2978cd0d3309a15c17cd3285143647443a8785d00e8786e904b752aeb7c"
+  },
+  "assets/warm-cinnabar/growth/pill-copper-red.webp": {
+    "script": "assets/warm-cinnabar/local-images/pill-copper-red.js",
+    "bytes": 340922,
+    "sha256": "4fef0ec79ba786d4251fd33f6642e0a182244870ae1c077f4f74c127fe0c177b"
+  },
+  "assets/warm-cinnabar/growth/pill-lead-red.webp": {
+    "script": "assets/warm-cinnabar/local-images/pill-lead-red.js",
+    "bytes": 292870,
+    "sha256": "ddbb022ba8ff0de3ba80c04caa1dd61b6887dcdb625fe29fcc29cd066e7c4258"
+  },
+  "assets/warm-cinnabar/growth/pill-lead-yellow.webp": {
+    "script": "assets/warm-cinnabar/local-images/pill-lead-yellow.js",
+    "bytes": 292470,
+    "sha256": "e9bbbfb5d38f754a1982471651b9a85ba1c51870eebb15b384aa46844e88d4b0"
+  },
+  "assets/warm-cinnabar/growth/pill-magnetite-black.webp": {
+    "script": "assets/warm-cinnabar/local-images/pill-magnetite-black.js",
+    "bytes": 273624,
+    "sha256": "b569f70689721be412486c23493ac42301355c710068c7b79325ac4b5d3b3914"
+  },
+  "assets/warm-cinnabar/growth/pill-ochre-brown.webp": {
+    "script": "assets/warm-cinnabar/local-images/pill-ochre-brown.js",
+    "bytes": 345342,
+    "sha256": "65e92b552cddf0ee2d5a6a0963a941b8672266c5483e3a9be80b983df046e1e5"
+  },
+  "assets/warm-cinnabar/growth/pill-ochre-violet.webp": {
+    "script": "assets/warm-cinnabar/local-images/pill-ochre-violet.js",
+    "bytes": 296614,
+    "sha256": "f6cbe4a57f0b979f365095ce2015908f59ff7d97c9c926a0e71c4865f9753d75"
+  },
+  "assets/warm-cinnabar/growth/pill-plain.webp": {
+    "script": "assets/warm-cinnabar/local-images/pill-plain.js",
+    "bytes": 57594,
+    "sha256": "22832d2ee68c8e990ea5256e1f221a242e98b300576be65e4de955c1e6c0abd6"
+  },
+  "assets/warm-cinnabar/growth/pill-tin-white.webp": {
+    "script": "assets/warm-cinnabar/local-images/pill-tin-white.js",
+    "bytes": 337688,
+    "sha256": "1729a10cfb3ee94fee73bcb305dc2dfb78b186cb7583f5a1ad6c960fad488249"
+  },
+  "assets/warm-cinnabar/props/fan.webp": {
+    "script": "assets/warm-cinnabar/local-images/fan.js",
+    "bytes": 82096,
+    "sha256": "920106138f55206efd649a67c60bf1cc52c01c8bd5e077366b4258f2259cfb7d"
+  },
+  "assets/warm-cinnabar/props/tray.webp": {
+    "script": "assets/warm-cinnabar/local-images/tray.js",
+    "bytes": 78576,
+    "sha256": "6798bb02b48dc1f434cd2a95f3f56ccb9c179c641e237f5b25be12d0d1ab92a7"
+  },
+  "assets/warm-cinnabar/props/parcel.webp": {
+    "script": "assets/warm-cinnabar/local-images/parcel.js",
+    "bytes": 109420,
+    "sha256": "fc85a1719efd9a09ba208a91d69069dfab863e67d0b54225a380967070d3f4da"
+  },
+  "assets/warm-cinnabar/props/casket.webp": {
+    "script": "assets/warm-cinnabar/local-images/casket.js",
+    "bytes": 116734,
+    "sha256": "f2b774292b7e039a8b0102a67d5154cecf71367425248524cc87942ccf0f0545"
+  }
+}

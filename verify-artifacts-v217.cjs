@@ -8,6 +8,6 @@ assert(E.toolRisk(['red_nail'],{turn:5})<E.toolRisk(['red_nail'],{turn:6}));
 assert(E.saleValue(c,{value:100,yuanBonus:0,turn:15})===100);
 c.economy.equipped=['market_tag'];
 assert(E.saleValue(c,{value:100,yuanBonus:0,turn:15})>100);
-c.economy.equipped=['consign牌'];
+c.economy.equipped=['consign_plate'];
 assert(E.consignmentQuote(c,{value:100,yuanBonus:0,turn:15}).guaranteedPayout>110);
 console.log('PASS: 40-artifact catalogue, school partitions, overload scaling, business value hooks');

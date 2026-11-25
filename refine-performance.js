@@ -7,6 +7,8 @@
   const ctx=layer.getContext('2d'),surface=document.createElement('canvas');surface.width=surface.height=256;
   const sc=surface.getContext('2d'),media=matchMedia('(prefers-reduced-motion: reduce)');
   const kinds=new Set(['success','big','hold','damage','explode','complete']);
+  const painted=document.body.classList.contains('warm-cinnabar-experiment');
+  layer.dataset.style=painted?'painted':'soft-light';
   let heating=-10000,result=null,last=0,busyBefore=false,lid=null,openedLid=null,frames=0;
   const quiet=()=>media.matches||window.AlchemyGameFeel?.reduced;
   const clamp=x=>Math.max(0,Math.min(1,x));
@@ -15,7 +17,13 @@
   function begin(){if(!quiet())heating=performance.now();}
   function visible(){return !document.hidden&&window.AlchemyViewState.snapshot().current==='work'&&document.getElementById('mainMenu').hidden;}
   function glow(x,y,rx,ry,color,alpha){ctx.save();ctx.translate(x,y);ctx.scale(rx,ry);const g=ctx.createRadialGradient(0,0,0,0,0,1);g.addColorStop(0,color);g.addColorStop(1,'transparent');ctx.globalAlpha=alpha;ctx.fillStyle=g;ctx.fillRect(-1,-1,2,2);ctx.restore();}
-  function puff(x,y,size,alpha,color){glow(x,y,size,size*.65,color,alpha);}
+  function puff(x,y,size,alpha,color){
+    if(!painted){glow(x,y,size,size*.65,color,alpha);return;}
+    // Tapered pigment strokes, leaving the original scene visible between curls.
+    ctx.save();ctx.translate(x,y);ctx.scale(size,size*.65);ctx.globalAlpha=alpha*.7;ctx.fillStyle=color;
+    ctx.beginPath();ctx.moveTo(-1,.3);ctx.bezierCurveTo(-.75,-.55,-.1,-.9,.44,-.52);ctx.bezierCurveTo(.84,-.34,.48,-.04,1,.16);ctx.bezierCurveTo(.35,.05,-.15,.76,-1,.3);ctx.fill();
+    ctx.strokeStyle=color;ctx.lineWidth=.055;ctx.globalAlpha=alpha;ctx.beginPath();ctx.moveTo(-.65,.1);ctx.bezierCurveTo(-.33,-.32,.09,-.5,.38,-.28);ctx.stroke();ctx.restore();
+  }
   function steam(m,t,strength){
     // Thin, soft puffs rise from the back-right lid seam, never from solid clay.
     for(let i=0;i<6;i++){
@@ -41,9 +49,13 @@
       ctx.bezierCurveTo(m.x-m.w*.05,f.y,m.x+m.w*.08,f.y+f.h,m.x+m.w*.40,f.y+f.h);
       ctx.lineTo(m.x+m.w*.95,f.y+f.h*.7);
       ctx.quadraticCurveTo(m.x+m.w*1.08,f.y,m.x+m.w,m.y+m.h*.55);ctx.closePath();ctx.clip();
-      ctx.globalCompositeOperation='soft-light';
-      glow(f.x+f.w*.48,f.y+f.h*.05,m.w*.58,Math.max(f.y-m.y,m.h)*.85,'#ffa14d',heat*.65);
-      glow(f.x+f.w*.5,f.y-f.h*.12,f.w*.85,f.h*1.2,'#ffc477',heat*.7);
+      if(painted){
+        ctx.globalAlpha=heat*.08;ctx.fillStyle='#c7773e';ctx.fillRect(m.x,m.y,m.w,f.y+f.h-m.y);
+      }else{
+        ctx.globalCompositeOperation='soft-light';
+        glow(f.x+f.w*.48,f.y+f.h*.05,m.w*.58,Math.max(f.y-m.y,m.h)*.85,'#ffa14d',heat*.65);
+        glow(f.x+f.w*.5,f.y-f.h*.12,f.w*.85,f.h*1.2,'#ffc477',heat*.7);
+      }
       ctx.restore();
       steam(m,elapsed,heat);
       if(lid&&stage.dataset.lidState==='closed')lid.style.transform=`translate(${Math.sin(elapsed*.044)*heat*.6}px,${Math.sin(elapsed*.061)*heat*.4}px)`;
@@ -69,7 +81,7 @@
       }else if(!concealed&&k==='hold'){
         puff(x,y-d*.35-t*d*.6,d*(.10+t*.16),fade*.16,'#d5cdbd');
       }else if(!concealed&&major){
-        for(let i=0;i<9;i++){
+        for(let i=0;i<(painted?5:9);i++){
           const angle=i*2.4,dist=d*(.28+t*.55);
           ctx.globalAlpha=fade*.65;ctx.fillStyle='#d3ae68';ctx.beginPath();ctx.ellipse(x+Math.cos(angle)*dist,y+Math.sin(angle)*dist*.6-t*d*.22,Math.max(.8,d*.014),Math.max(.8,d*.021),angle,0,Math.PI*2);ctx.fill();
         }ctx.globalAlpha=1;
@@ -100,10 +112,16 @@
       sc.clearRect(0,0,256,256);sc.globalCompositeOperation='source-over';sc.drawImage(body,0,0,256,256);sc.globalCompositeOperation='source-atop';
       if(k==='damage'){sc.fillStyle=`rgba(37,29,23,${fade*.44})`;sc.fillRect(0,0,256,256);}
       else{
+        if(painted){
+          // A restrained, flat pigment sweep across opaque material, without a glossy halo.
+          sc.fillStyle=`rgba(238,197,118,${fade*(major?.24:.14)})`;
+          sc.beginPath();sc.moveTo(-60+t*360,0);sc.lineTo(-24+t*360,0);sc.lineTo(96+t*360,256);sc.lineTo(60+t*360,256);sc.closePath();sc.fill();
+        }else{
         // A narrow glint crosses only the opaque pill material, with no circular halo.
         const sx=-100+t*450,g=sc.createLinearGradient(sx-55,0,sx+55,0);
         g.addColorStop(0,'transparent');g.addColorStop(.5,`rgba(255,234,181,${fade*(major?.64:.38)})`);g.addColorStop(1,'transparent');
         sc.fillStyle=g;sc.fillRect(0,0,256,256);
+        }
       }
       sc.globalCompositeOperation='source-over';
       target.save();const lift=k==='damage'?0:-Math.sin(t*Math.PI)*size*(major?.30:.18)*(1-t);

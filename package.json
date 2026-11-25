@@ -1,0 +1,13 @@
+{
+  "name": "nine-turn-alchemy-github",
+  "private": true,
+  "version": "220.0.0",
+  "description": "九转丹坊浏览器原型验证工具",
+  "scripts": {
+    "verify:painted-scenes": "node verify-painted-scenes.cjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.52.0"
+  }
+}
+

@@ -6,6 +6,7 @@ function load(){const window={};vm.runInNewContext(script,{window,localStorage:s
 const data={version:1,campaign:{day:4,phase:'open',history:[],orders:Array.from({length:7},(_,i)=>({id:'D4-'+i,target:120,status:'pending'}))},target:120,materials:3,state:{started:true,delivered:0,attempt:1,collected:[],logs:[],discoveredRunes:[],pill:{value:24,runes:[]},riskResult:{explode:0}}};
 store.set('alchemy-days-v1',JSON.stringify(data));store.set('alchemy-onboarding-expanded-v53','true');
 let saves=load();assert.equal(saves.read().campaign.day,4);assert.equal(saves.preference('expanded'),true);
+assert.equal(saves.valid({...data,campaign:{...data.campaign,day:7,phase:'finished',orders:[]}}),true,'reputation game-over saves with zero orders remain loadable');
 const original=store.get('alchemy-days-v1'),first=store.get('alchemy-slot-v2-1');
 assert.equal(saves.select(2),true);saves=load();assert.equal(saves.read(),null);assert.equal(saves.preference('expanded'),undefined);
 assert.equal(saves.write({...data,campaign:{...data.campaign,day:1}}),true);assert.equal(store.get('alchemy-slot-v2-1'),first);

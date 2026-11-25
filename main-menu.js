@@ -261,7 +261,11 @@
 
   function addReturnButton() {
     const nav = document.querySelector('.engine-nav');
-    if (!nav || nav.querySelector('.main-menu-return')) return;
+    const settings = document.body.classList.contains('warm-cinnabar-experiment')
+      ? nav?.querySelector('#worldSettings')
+      : null;
+    const host = settings || nav;
+    if (!host || nav.querySelector('.main-menu-return')) return;
     returnButton = document.createElement('button');
     returnButton.type = 'button';
     returnButton.className = 'main-menu-return';
@@ -286,6 +290,7 @@
         }
         returningFromGame = true;
         statusOverride = '已保存';
+        if (settings && !settings.hidden) nav.querySelector('.world-settings-toggle').click();
         setView('menu');
         refresh();
         status.textContent = '已保存';
@@ -294,7 +299,7 @@
         returnButton.textContent = '返回主菜单';
       });
     });
-    nav.append(returnButton);
+    host.append(returnButton);
   }
 
   setView('menu');

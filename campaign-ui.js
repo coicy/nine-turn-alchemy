@@ -1,7 +1,8 @@
 (() => {
 const api=window.AlchemyGame, header=document.querySelector('.game-layout');
+const parcelArt=window.AlchemyWarmProps?.props.parcel.src||'assets/counter-props/herb-parcel.webp';
 const board=document.createElement('section');board.className='daily-board counter-board';
-board.innerHTML=`<div class="daily-heading"><div><small>散修丹坊 · 三十日经营</small><h2 id="dayTitle">第 1 天 / 30 天</h2></div><strong id="careerTotal"></strong></div><p id="dailyHint" role="status"></p><div class="counter-scene"><div class="counter-sign">来客代炼 · 一笺一炉</div><div id="dailyOrders" class="counter-tickets" aria-label="今日客人来笺"></div><div class="counter-desk"><div id="counterLetter" class="counter-letter"></div><div class="counter-props"><div id="counterVisitor" class="counter-visitor" aria-live="polite"></div><div class="counter-parcels" id="counterParcels" aria-label="客人托付的三包药材"><img src="assets/counter-props/herb-parcel.webp" alt="药材包"/><img src="assets/counter-props/herb-parcel.webp" alt="药材包"/><img src="assets/counter-props/herb-parcel.webp" alt="药材包"/></div><p id="counterParcelHint">客料暂寄柜上<br>接下后移交炼丹台</p><div class="counter-receipt" id="counterReceipt"></div></div></div></div><div class="daily-actions"><button id="abandonOrder" type="button">终止本单 · 免赔</button><button id="settleDay" type="button">结束今日</button><button id="nextDay" type="button" hidden>次日开门</button></div><div id="dailySummary" role="status"></div>`;
+board.innerHTML=`<div class="daily-heading"><div><small>散修丹坊 · 三十日经营</small><h2 id="dayTitle">第 1 天 / 30 天</h2></div><div class="daily-heading-metrics"><span id="reputationBadge" class="reputation-badge">声望 10 / 10</span><strong id="careerTotal"></strong></div></div><p id="dailyHint" role="status"></p><div class="counter-scene"><div class="counter-sign">来客代炼 · 一笺一炉</div><div id="dailyOrders" class="counter-tickets" aria-label="今日客人来笺"></div><div class="counter-desk"><div id="counterLetter" class="counter-letter"></div><div class="counter-props"><div id="counterVisitor" class="counter-visitor" aria-live="polite"></div><div class="counter-parcels" id="counterParcels" aria-label="客人托付药材"><img src="${parcelArt}" alt="药材包"/><img src="${parcelArt}" alt="药材包"/><img src="${parcelArt}" alt="药材包"/></div><p id="counterParcelHint">客料暂寄柜上<br>接下后移交炼丹台</p><div class="counter-receipt" id="counterReceipt"></div></div></div></div><div class="daily-actions"><button id="abandonOrder" type="button">终止本单 · 免赔</button><button id="settleDay" type="button">结束今日</button><button id="nextDay" type="button" hidden>次日开门</button></div><div id="dailySummary" role="status"></div>`;
 header.prepend(board);
 const browse=document.createElement('button');browse.type='button';browse.className='browse-customers';browse.setAttribute('aria-controls','dailyOrders');board.querySelector('.counter-scene').prepend(browse);
 let dayConfirm=false;
@@ -16,6 +17,26 @@ leaseSlip.className = 'counter-lease-slip';
 leaseSlip.hidden = true;
 leaseSlip.setAttribute('aria-label', '铺契与药铺采购');
 board.append(leaseSlip);
+const specialEventBox = document.createElement('aside');
+specialEventBox.id = 'counterSpecialEvent';
+specialEventBox.className = 'counter-special-event';
+specialEventBox.hidden = true;
+specialEventBox.setAttribute('aria-label', '特殊来客回话与捎信');
+board.append(specialEventBox);
+specialEventBox.addEventListener('click', event => {
+  const claimBtn = event.target.closest('[data-claim-postscript]');
+  if (claimBtn) {
+    api.economyAction('claimPostscript', claimBtn.dataset.claimPostscript);
+    return;
+  }
+  const dismissBtn = event.target.closest('[data-dismiss-reaction]');
+  if (dismissBtn) {
+    api.economyAction('dismissReaction', dismissBtn.dataset.dismissReaction);
+    if (dismissBtn.dataset.openChronicle === 'true') {
+      window.AlchemyViewState?.navigate('record', {anchor: dismissBtn, chapter: 'chronicle'});
+    }
+  }
+});
 leaseSlip.addEventListener('click', event => {
   const button = event.target.closest('button');
   if (button?.dataset.leaseRoute === 'record') {
@@ -49,7 +70,12 @@ noteLabel.className = 'counter-note-label';
 noteLabel.textContent = '查看委托纸笺';
 note.append(noteLabel);
 
-let nextLetter=false;let noteId=null,noteStatus=null,noteReady=false,letterOpen=false,noteTimer=0,noteOrder=null,notePhase=null;
+let nextLetter=false;let noteId=null,noteStatus=null,noteReady=false,letterOpen=false,noteTimer=0,noteOrder=null,notePhase=null,letterLock=new Map();
+function setLetterLock(active){
+  const targets=[...document.querySelectorAll('.engine-nav,.engine-viewport'),...board.querySelectorAll('button,a,input,select,summary,[tabindex]')].filter(el=>!el.closest('#counterLetter'));
+  if(active){for(const el of targets){if(!letterLock.has(el))letterLock.set(el,el.inert);el.inert=true;}}
+  else{for(const [el,value] of letterLock){if(el.isConnected)el.inert=value;}letterLock.clear();}
+}
 function syncNote() {
   const canRead = !!noteOrder && notePhase === 'open' && board.dataset.shellActive === 'true' && noteReady;
   const wasHidden = note.hidden;
@@ -61,6 +87,7 @@ function syncNote() {
   note.setAttribute('aria-expanded', String(letterOpen));
   $('counterLetter').hidden = !canRead || !letterOpen;
   board.classList.toggle('counter-letter-open', canRead && letterOpen);
+  setLetterLock(canRead && letterOpen);
   if (note.hidden !== wasHidden) window.dispatchEvent(new Event('alchemy:counter-note-availability'));
 }
 function loadNoteArt(src) {
@@ -156,10 +183,17 @@ function observeQueue(c) {
 for (const event of ['alchemy:interaction','alchemy:carry','alchemy:view-ready']) {
   window.addEventListener(event, () => { if (awaitingReception) queueMicrotask(advanceReception); });
 }
-function render(){const c=api.campaign();if(!c)return;observeQueue(c);const s=api.snapshot(),completed=c.orders.filter(o=>o.status==='completed').length,resolved=c.orders.filter(o=>['completed','failed'].includes(o.status)).length,active=!!c.orders.some(o=>o.status==='active');
+let reputationFailureShown=false;
+function render(){const c=api.campaign();if(!c)return;
+ if(c.phase!=='finished')reputationFailureShown=false;
+ if(c.phase==='finished'&&c.endReason==='reputation'&&!reputationFailureShown){reputationFailureShown=true;window.setTimeout(()=>window.AlchemyUX?.confirm({title:'经营失败',message:'声望已降至0点，立即触发游戏失败。本局经营结束，丹坊提前结业。',confirmLabel:'查看经营簿',onConfirm:()=>window.AlchemyViewState.navigate('record')}),0);}
+observeQueue(c);const s=api.snapshot(),completed=c.orders.filter(o=>o.status==='completed').length,resolved=c.orders.filter(o=>['completed','failed'].includes(o.status)).length,active=!!c.orders.some(o=>o.status==='active'),reputation=Math.max(0,Math.min(10,Math.round(Number(c.reputation)||0)));
   $('dayTitle').textContent=`第 ${c.day} 天 / ${window.AlchemyCampaign?.DAYS||30} 天`;
+ $('reputationBadge').textContent=`声望 ${reputation} / 10`;
+ $('reputationBadge').title='声望上限10点；完成委托+2，未完成或主动终止−1。未接委托跳过不扣点；声望归零立即游戏失败；次日按声望生成来客。';
+ $('reputationBadge').dataset.level=reputation<=0?'empty':reputation<4?'low':reputation<7?'mid':'high';
  $('careerTotal').textContent=`今日完成 ${completed} / ${c.orders.length} 单`;
- $('dailyHint').textContent=c.phase==='finished'?`三十日累计收入 ${c.economy?.earned||0} 铜钱，余额 ${c.economy?.coins||0} 铜钱。经营结束。查看总评，或重新经营。`:c.phase==='settled'?'今日已结清，准备迎接下一天。':`今日 ${completed} / ${c.orders.length} 单完成 · ${resolved} / ${c.orders.length} 单已处理。一次只接一单，明确提交后结单；成功余药赠留，失败退回且免赔。`;
+ $('dailyHint').textContent=c.phase==='finished'&&c.endReason==='reputation'?`经营失败：声望耗尽，丹坊立即结业；累计收入 ${c.economy?.earned||0} 铜钱。`:c.phase==='finished'?`三十日累计收入 ${c.economy?.earned||0} 铜钱，余额 ${c.economy?.coins||0} 铜钱。经营结束。查看总评，或重新经营。`:c.phase==='settled'?`今日已结清，准备迎接下一天。当前声望 ${reputation}。`:`今日 ${completed} / ${c.orders.length} 单完成 · ${resolved} / ${c.orders.length} 单已处理。当前声望 ${reputation}；一次只接一单，明确提交后结单。`;
  const focused=false;board.classList.remove('counter-focused');if(c.phase!=='open')browseAll=false;board.classList.toggle('counter-book-open',browseAll);browse.hidden=c.phase!=='open';browse.textContent=browseAll?'收起委托簿':'委托簿';browse.setAttribute('aria-expanded',String(browseAll));$('dailyOrders').hidden=!browseAll;$('dailyHint').hidden=c.phase==='open';
  if(focused&&c.phase==='open')$('dailyHint').textContent=active?'先办妥手中的委托，再接待下一位客人。':'为你选好一份来笺。看清所求药力与工钱，再落印接下。';
  if(!c.orders.some(o=>o.id===selectedId)||focused&&!['active','pending'].includes(c.orders.find(o=>o.id===selectedId)?.status))selectedId=c.orders.find(o=>o.status==='active')?.id||c.orders.find(o=>o.status==='pending')?.id||c.orders[0]?.id;
@@ -168,11 +202,13 @@ function render(){const c=api.campaign();if(!c)return;observeQueue(c);const s=ap
  if(window.AlchemyMerchantVisit?.atCounter){window.AlchemyMerchantVisit.paintCounter();}
  else if(window.AlchemyCraftBuyer?.atCounter){window.AlchemyCraftBuyer.paintCounter();}
  else if(selected){const o=selected,delivered=Math.round(o.status==='active'?s.delivered:o.delivered||0),canAccept=!active&&c.phase==='open'&&o.status==='pending'&&!window.AlchemyInteractionBusy&&!s.busy;
-  $('counterLetter').innerHTML=`<header class="letter-top"><span class="letter-kicker">来客手书</span><button class="letter-close" type="button" data-close-letter aria-label="收起委托详情">收起</button></header><div class="letter-title-row"><h3>${o.name}</h3><div class="counter-seal ${o.status}">${labels[o.status]}</div></div><p>在下${o.client}，托付${o.materials}包${({warm:'温性',cool:'寒性',neutral:'平性'}[o.nature]||'平性')}药材，请代炼成丹。</p><dl><div><dt>所求药力</dt><dd>${o.target}</dd></div><div><dt>约定工钱</dt><dd>${window.AlchemyEconomy?.fee(o)||0} 铜钱</dd></div></dl><p class="letter-terms">提交丹药累计达标后结工钱；未成免赔，未用材料赠留。</p><p class="letter-signature">—— ${o.client}</p>${o.status==='pending'?`<button class="accept-stamp" type="button" data-order="${o.id}" ${canAccept?'':'disabled'}>${canAccept?'落印接下':active?'先办妥手中委托':'今日已收柜'}</button>`:o.status==='active'?'<button class="accept-stamp" type="button" data-return-forge>携料回炉 ›</button>':'<p class="letter-closed">此笺已归档，可翻看其他来笺。</p>'}`;
+  const customStory=customers.letterBody?.(o),hint=customers.traitHint?.(o),prof=customers.profile(o),sig=o.arcId||o.specialNoteId?`${prof.name}（${o.client}）`:o.client;
+  const storyHtml=customStory?`<p class="letter-story" style="white-space:pre-line">${customStory}</p>${hint?`<p class="letter-trait-hint" style="color:#8d4e36;font-size:13px;margin:6px 0 8px">【投其所好】${hint}</p>`:''}`:`<p>在下${o.client}，托付${o.materials}包${({warm:'温性',cool:'寒性',neutral:'平性'}[o.nature]||'平性')}药材，请代炼成丹。</p>`;
+  $('counterLetter').innerHTML=`<header class="letter-top"><span class="letter-kicker">${o.arcId?'特殊来客 · 第'+o.arcStage+'访':o.specialNoteId?'坊间奇笺':'来客手书'}</span><button class="letter-close" type="button" data-close-letter aria-label="收起委托详情">收起</button></header><div class="letter-title-row"><h3>${o.name}</h3><div class="counter-seal ${o.status}">${labels[o.status]}</div></div>${storyHtml}<dl><div><dt>所求药力</dt><dd>${o.target}</dd></div><div><dt>约定工钱</dt><dd>${window.AlchemyEconomy?.fee(o)||0} 铜钱</dd></div></dl><p class="letter-terms">提交丹药累计达标后结工钱；未成免赔，未用材料赠留。</p><p class="letter-signature">—— ${sig}</p>${o.status==='pending'?`<button class="accept-stamp" type="button" data-order="${o.id}" ${canAccept?'':'disabled'}>${canAccept?'落印接下':active?'先办妥手中委托':'今日已收柜'}</button>`:o.status==='active'?'<button class="accept-stamp" type="button" data-return-forge>携料回炉 ›</button>':'<p class="letter-closed">此笺已归档，可翻看其他来笺。</p>'}`;
  const away=['completed','failed','skipped'].includes(o.status),visitorKey=o.id+o.status;
  const visitor=$('counterVisitor');if(visitor.dataset.visitorKey!==visitorKey){visitor.dataset.visitorKey=visitorKey;visitor.classList.toggle('is-away',away);visitor.replaceChildren();if(away){const departed=document.createElement('div');departed.className='visitor-departed';departed.textContent='';visitor.append(departed);}else{const v=customers.visit(o),bubble=document.createElement('div'),title=document.createElement('strong'),speech=document.createElement('p');bubble.className='visitor-dialogue';title.textContent=v.name+' · '+v.role;speech.textContent=customers.line(o);bubble.append(title,speech);visitor.append(bubble,window.AlchemyCustomerView.portrait(o));}}
  board.dataset.counterState=c.phase==='open'?o.status:c.phase;
- const parcelCount=o.status==='pending'?o.materials:0;$('counterParcels').innerHTML=Array.from({length:parcelCount},()=>'<img src="assets/counter-props/herb-parcel.webp" alt="药材包"/>').join('');$('counterParcelHint').textContent=o.status==='pending'?'客料 · '+o.materials+' 包':'';$('counterParcelHint').hidden=o.status!=='pending';
+ const parcelCount=o.status==='pending'?o.materials:0;$('counterParcels').innerHTML=Array.from({length:parcelCount},()=>'<img src="'+parcelArt+'" alt="药材包"/>').join('');$('counterParcelHint').textContent=o.status==='pending'?'客料 · '+o.materials+' 包':'';$('counterParcelHint').hidden=o.status!=='pending';
  $('counterReceipt').hidden=o.status==='pending';$('counterReceipt').textContent=o.status==='pending'?'':o.status==='active'?`已接 · 客料已领至药匣 · 已交 ${delivered} / ${o.target}`:customers.settlement(o);
  }
 
@@ -187,14 +223,28 @@ function render(){const c=api.campaign();if(!c)return;observeQueue(c);const s=ap
  if(!$('counterLetter').querySelector('[data-close-letter]')){const close=document.createElement('button');close.type='button';close.className='letter-close';close.dataset.closeLetter='';close.textContent='收起';close.setAttribute('aria-label','收起委托详情');$('counterLetter').prepend(close);}
  updateNote(window.AlchemyMerchantVisit?.atCounter||window.AlchemyCraftBuyer?.atCounter?null:selected,c.phase);
  const skipped=c.orders.filter(o=>o.status==='skipped').length,failed=c.orders.filter(o=>o.status==='failed').length,income=c.orders.reduce((n,o)=>n+(o.reward||0),0),gifted=c.orders.reduce((n,o)=>n+(o.gifted||0),0);
- $('dailySummary').textContent=c.phase==='finished'?`三十日经营结束 · 完成 ${total} 单 · 未完成委托 ${totalOrders-total} 单` :c.phase==='settled'?`今日结清：完成 ${completed} 单 · 未完成委托 ${failed} 单 · 未接跳过 ${skipped} 单\n委托收入 ${income} 铜钱 · 赠药 ${gifted} 包`:'';
+ $('dailySummary').textContent=c.phase==='finished'&&c.endReason==='reputation'?`丹坊结业 · 声望耗尽 · 已经营 ${c.history.length} 天 · 完成 ${total} 单 · 未完成委托 ${totalOrders-total} 单` :c.phase==='finished'?`三十日经营结束 · 完成 ${total} 单 · 未完成委托 ${totalOrders-total} 单` :c.phase==='settled'?`今日结清：完成 ${completed} 单 · 未完成委托 ${failed} 单 · 未接跳过 ${skipped} 单\n委托收入 ${income} 铜钱 · 声望 ${reputation}`:'';
   renderLeaseSlip(c);
-  const receipt = c.history.at(-1);
+  const reactionOrder = c.orders.find(o => o.arcId && o.status === 'completed' && !o.reactionDismissed);
+  const pendingPostscript = Array.isArray(c.specialPostscripts) && c.specialPostscripts.find(p => !p.claimed);
+  if (reactionOrder) {
+    const p = customers.profile(reactionOrder);
+    const badge = reactionOrder.specialMatched && reactionOrder.specialMatchNote ? `<span class="special-match-badge">投其所好 · ${reactionOrder.specialMatchNote}</span>` : '';
+    specialEventBox.hidden = false;
+    specialEventBox.innerHTML = `<header><strong>交丹当面回话 · ${p.name}（第 ${reactionOrder.arcStage} 访）</strong>${badge}</header><p>${customers.line(reactionOrder)}</p><div class="special-event-actions"><button type="button" data-dismiss-reaction="${reactionOrder.id}">知悉收妥</button><button type="button" data-dismiss-reaction="${reactionOrder.id}" data-open-chronicle="true">翻阅来客旧闻</button></div>`;
+  } else if (pendingPostscript) {
+    specialEventBox.hidden = false;
+    specialEventBox.innerHTML = `<header><strong>旧客捎信 · ${pendingPostscript.title}</strong><span>${pendingPostscript.sender}</span></header><p style="white-space:pre-line">${pendingPostscript.body}</p><div class="special-event-actions"><button type="button" data-claim-postscript="${pendingPostscript.id}">收下遗物与铜钱（+${pendingPostscript.bonusCoins}文）</button></div>`;
+  } else {
+    specialEventBox.hidden = true;
+    specialEventBox.innerHTML = '';
+  }
+  const receipt = c.history[c.history.length - 1];
   if (c.phase !== 'open' && receipt?.day === c.day && receipt.rent) {
     $('dailySummary').textContent += '\n铺租已交 '+ receipt.rent.payment + ' 铜钱' +
       (receipt.rent.remaining ? ' · 尚欠 '+ receipt.rent.remaining + ' 铜钱' : '');
   }
-  if (c.phase === 'finished' && c.lease?.terms.length) {
+  if (c.phase === 'finished' && c.endReason !== 'reputation' && c.lease?.terms.length) {
     const late = c.lease.terms.some(term => term.paidDay > term.day + 2);
     $('dailySummary').textContent += lease.closingQuote(c).due ?
       '\n邵四娘：铺钱尚未结清，今日交还铺面。' :
@@ -205,7 +255,7 @@ function render(){const c=api.campaign();if(!c)return;observeQueue(c);const s=ap
 
 }
 board.addEventListener('click',e=>{const letter=e.target.closest('[data-letter]');if(letter){selectedId=letter.dataset.letter;browseAll=false;render();letterOpen=true;syncNote();$('counterLetter').querySelector('.accept-stamp,button')?.focus({preventScroll:true});return;}if(e.target.closest('[data-return-forge]')){window.dispatchEvent(new Event('alchemy:work'));return;}const target=e.target.closest('[data-order]');if(target&&!target.disabled){abandonConfirm=false;api.chooseOrder(target.dataset.order);}});
- $('abandonOrder').addEventListener('click',()=>window.AlchemyUX.confirm({title:'终止本单',message:'未用本单料退还，本单记为未完成，丹匣丹药保留，免赔。',confirmLabel:'终止并退还',onConfirm:()=>api.abandonOrder()}));
+ $('abandonOrder').addEventListener('click',()=>window.AlchemyUX.confirm({title:'终止本单',message:'未用本单料退还，本单记为未完成，声望减1点，丹匣丹药保留，免赔。',confirmLabel:'终止并退还',onConfirm:()=>api.abandonOrder()}));
 $('settleDay').addEventListener('click', () => {
   const c = api.campaign();
   const pending = c.orders.filter(order => order.status === 'pending').length;

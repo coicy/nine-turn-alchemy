@@ -7,7 +7,7 @@
 
 ## 子目录
 
-- 无。
+- warm-cinnabar/AGENTS.md：温暖金石实验入口专用桌面素材。
 
 ## 文件索引
 
@@ -17,3 +17,6 @@
 - room-desktop-closed.webp：运行视觉素材。
 - room-desktop-front.webp：运行视觉素材。
 - room-desktop-open.webp：运行视觉素材。
+- warm-cinnabar-room-desktop-open.png：温暖金石丹坊实验入口专用场景背景，不替代正式场景素材。
+- warm-cinnabar-room-desktop-open-v2.png：整图重绘实验版，保持工坊透视并强化木刻排线，不替代正式场景素材。
+

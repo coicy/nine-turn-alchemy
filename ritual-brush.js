@@ -102,7 +102,7 @@
     if (error>8) return;
     // Reaching the last sample slightly outside the finish radius must remain recoverable.
     // Returning to the nib can finish the stroke even when the cursor cannot advance.
-    const atEnd=best>=guide.length-2 && distance(point,guide.at(-1))<5;
+    const atEnd=best>=guide.length-2 && distance(point,guide[guide.length-1])<5;
     if (best===from && !atEnd) return;
     ink.cursor = best;
     ink.lines[step].push(point.map(round));
@@ -130,7 +130,7 @@
     const step=pill.ritualStep, ink=pill.ritualInk;
     const events=e.getCoalescedEvents?.() || [];
     for (const event of events.length ? events : [e]) {
-      const point=location(event), last=ink.lines[step].at(-1);
+      const point=location(event), last=ink.lines[step][ink.lines[step].length-1];
       const span=distance(last,point);
       if (span>85) continue;
       const parts=Math.ceil(span/2.5);

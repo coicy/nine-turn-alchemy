@@ -1,0 +1,719 @@
+/* 温暖金石丹坊实验皮肤
+ * 目标：保留现有暖色绘本底色，以轻度木刻线、宣纸卡片和朱砂状态建立识别层。
+ * 参考分辨率：1600 x 900；沿用原页面的响应式布局和安全区规则。
+ */
+
+body.warm-cinnabar-experiment {
+  --warm-paper: #f1e2c2;
+  --warm-paper-deep: #e4cfaa;
+  --warm-wood: #815431;
+  --warm-wood-dark: #4b3022;
+  --warm-ink: #3a2d25;
+  --warm-muted: #74624c;
+  --warm-cinnabar: #a64b36;
+  --warm-cinnabar-dark: #743526;
+  --warm-jade: #718879;
+  --warm-gold: #c99b52;
+  --warm-line: #9a7650;
+  background: #d9c5a4;
+  color: var(--warm-ink);
+  font-family: "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+}
+
+body.warm-cinnabar-experiment::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .16;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 21px, #7b58351a 22px, transparent 23px),
+    repeating-linear-gradient(90deg, transparent 0 31px, #fff4d51c 32px, transparent 33px);
+  mix-blend-mode: multiply;
+}
+
+body.warm-cinnabar-experiment button,
+body.warm-cinnabar-experiment summary,
+body.warm-cinnabar-experiment input {
+  font-family: inherit;
+}
+
+/* Second style pass: shared carved bronze, paper and cinnabar language. */
+body.warm-cinnabar-experiment .tool-art {
+  background-image: var(--warm-tool-image,url('assets/warm-cinnabar/tools.png')) !important;
+}
+body.warm-cinnabar-experiment .world-day-bell::before {
+  background-image: url('assets/warm-cinnabar/tools.png') !important;
+}
+body.warm-cinnabar-experiment .engine-nav {
+  background: linear-gradient(#f7ebd1,#e6cfaa);
+  border-bottom: 3px double #8b633d;
+  box-shadow: 0 3px 6px #40281b33;
+}
+body.warm-cinnabar-experiment .engine-nav>button,
+body.warm-cinnabar-experiment .main-menu-return,
+body.warm-cinnabar-experiment .browse-customers,
+body.warm-cinnabar-experiment .counter-conversation {
+  color: #503922;
+  background: linear-gradient(115deg,#fcf0d7,#ead4ad);
+  border: 1px solid #a67b49;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 3px #f6e6c177,0 2px 0 #593b2426;
+}
+body.warm-cinnabar-experiment .engine-nav>button[aria-expanded=true] {
+  color: #873b29;
+  border-color: #a64b36;
+  background: #f5d9b4;
+}
+body.warm-cinnabar-experiment :is(#worldLocationMenu,#worldCatalogMenu,#worldBooksMenu,#worldSettings,.equipment-drawer,.pill-bag-panel,.order-panel,.side-panel) {
+  color: var(--warm-ink);
+  background: linear-gradient(105deg,#f7ecd3,#ead4ad) !important;
+  border-color: #93693e !important;
+  box-shadow: inset 0 0 0 4px #f8ebd077,0 7px 20px #3e261b40;
+}
+body.warm-cinnabar-experiment :is(.equipment-heading,.pill-bag-heading,.journal-heading) {
+  border-bottom: 3px double #a27a50;
+}
+body.warm-cinnabar-experiment :is(.equipment-card,.equipment-slot,.bag-pill,.journal-entry) {
+  color: var(--warm-ink);
+  background-color: #f2e2bf;
+  border-color: #b08a5c;
+  border-radius: 2px;
+}
+body.warm-cinnabar-experiment .counter-board .counter-letter {
+  background: repeating-linear-gradient(0deg,transparent 0 27px,#8f694b0b 28px 29px),linear-gradient(110deg,#f9eed4,#ecd6af);
+  border: 1px solid #b48e5e;
+  box-shadow: inset 0 0 0 5px #f9ecd166,3px 6px 12px #3a241b44;
+}
+body.warm-cinnabar-experiment .counter-board .visitor-dialogue {
+  background: linear-gradient(105deg,#fbefd5,#efdbb6);
+  border: 1px solid #b18a56;
+  box-shadow: 2px 4px 7px #40291a2e;
+}
+body.warm-cinnabar-experiment .counter-note img {
+  filter: sepia(.24) saturate(.8) brightness(1.12) drop-shadow(1px 2px 1px #57361f55);
+}
+body.warm-cinnabar-experiment :is(.accept-stamp,.furnace-tray,.loop-trades button,.main-menu__button--primary) {
+  background: linear-gradient(115deg,#b76343,#94432f) !important;
+  color: #fff0d4 !important;
+  border: 3px double #6c3325 !important;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px #d59c70,0 2px 0 #5c332333 !important;
+}
+body.warm-cinnabar-experiment :is(.furnace-fire,.world-passage,.furnace-resume) {
+  color: #f8efd7;
+  background-color: #536d5a;
+  border-color: #334d3e;
+  border-radius: 2px;
+}
+body.warm-cinnabar-experiment :is(.furnace-judgment,.refine-odds,.furnace-facts) {
+  color: #493525;
+  border-color: #ab8555;
+}
+body.warm-cinnabar-experiment .furnace-judgment {
+  background: linear-gradient(105deg,#f8ebd0f2,#ead0a8f2) !important;
+  border: 1px solid #9b7245;
+  box-shadow: inset 0 0 0 4px #f8e9c77a,2px 5px 12px #4b2f2226;
+}
+body.warm-cinnabar-experiment .herb-slot {
+  background-color: #e5c89b;
+  border-color: #9b7041;
+  border-radius: 2px;
+}
+body.warm-cinnabar-experiment #gameDialogue {
+  color: #463121;
+  background: linear-gradient(110deg,#fbefd5,#e8cca2);
+  border-color: #91653e;
+  box-shadow: inset 0 0 0 4px #f8e8c499,0 8px 24px #34201466;
+}
+
+body.warm-cinnabar-experiment button:focus-visible,
+body.warm-cinnabar-experiment [role="button"]:focus-visible,
+body.warm-cinnabar-experiment summary:focus-visible {
+  outline: 2px solid var(--warm-cinnabar);
+  outline-offset: 3px;
+}
+
+/* 主菜单与开场：保持现有画面，只加宣纸、木刻边和朱砂入口 */
+body.warm-cinnabar-experiment .main-menu {
+  background:
+    linear-gradient(#6d432122, #6d432122),
+    radial-gradient(ellipse at 50% 42%, #fff3d01c, transparent 62%),
+    #a98a68;
+}
+
+body.warm-cinnabar-experiment .main-menu__scene {
+  background: linear-gradient(90deg,#45281d44,transparent 60%,#45281d33),url('assets/scene-entry/warm-cinnabar/room-desktop-open.webp') center/cover no-repeat;
+}
+
+body.warm-cinnabar-experiment .main-menu__scene::after {
+  background: linear-gradient(180deg, #5b32111a, transparent 30%, #2d180c2b);
+}
+
+body.warm-cinnabar-experiment .main-menu__layout {
+  gap: 22px;
+}
+
+body.warm-cinnabar-experiment .main-menu__brand {
+  filter: sepia(.14) saturate(.88);
+}
+
+body.warm-cinnabar-experiment .main-menu__brand::after {
+  height: 3px;
+  background: var(--warm-cinnabar);
+  box-shadow: 0 3px 0 #4b302255;
+}
+
+body.warm-cinnabar-experiment .main-menu__card,
+body.warm-cinnabar-experiment .main-menu__settings-card {
+  background:
+    repeating-linear-gradient(0deg, #ffffff0b 0 2px, transparent 3px 8px),
+    var(--warm-paper);
+  color: var(--warm-ink);
+  border: 1px solid var(--warm-line);
+  border-radius: 2px;
+  box-shadow: 0 14px 28px #3b241b3d, inset 0 0 0 5px #d2b48855;
+}
+
+body.warm-cinnabar-experiment .main-menu__card::before {
+  inset: 9px;
+  border: 1px solid #9b714a99;
+}
+
+body.warm-cinnabar-experiment .main-menu__button {
+  color: var(--warm-ink);
+  background: #fff5ddc9;
+  border-color: #b89161;
+  border-radius: 1px;
+  box-shadow: 0 2px 0 #8b5b3a44;
+}
+
+body.warm-cinnabar-experiment .main-menu__button.is-primary,
+body.warm-cinnabar-experiment #mainMenuPrimary {
+  color: #fff4dc;
+  background: var(--warm-cinnabar);
+  border-color: var(--warm-cinnabar-dark);
+  box-shadow: 0 3px 0 var(--warm-cinnabar-dark);
+  opacity: 1;
+}
+
+body.warm-cinnabar-experiment #mainMenuPrimary:not(:disabled) {
+  color: #fff4dc !important;
+  background: var(--warm-cinnabar) !important;
+  border-color: var(--warm-cinnabar-dark) !important;
+}
+
+body.warm-cinnabar-experiment .main-menu__button:hover,
+body.warm-cinnabar-experiment .main-menu__button:focus-visible {
+  border-color: var(--warm-cinnabar);
+  background: #f6dfb8;
+}
+
+body.warm-cinnabar-experiment .main-menu__button.is-primary:hover,
+body.warm-cinnabar-experiment .main-menu__button.is-primary:focus-visible,
+body.warm-cinnabar-experiment #mainMenuPrimary:hover,
+body.warm-cinnabar-experiment #mainMenuPrimary:focus-visible {
+  background: #b45a40;
+}
+
+body.warm-cinnabar-experiment .opening-screen {
+  background:
+    repeating-linear-gradient(0deg, #8c5c3510 0 2px, transparent 3px 10px),
+    radial-gradient(ellipse at 30% 35%, #fff4d8 0 12%, transparent 62%),
+    #ddc9a5;
+  color: var(--warm-ink);
+}
+
+body.warm-cinnabar-experiment .opening-screen::before {
+  opacity: .14;
+  background:
+    linear-gradient(140deg, transparent 48%, #8e5c3a28 49%, transparent 50%),
+    linear-gradient(220deg, transparent 57%, #8e5c3a22 58%, transparent 59%);
+}
+
+body.warm-cinnabar-experiment .opening-story h1,
+body.warm-cinnabar-experiment .opening-brand {
+  color: var(--warm-cinnabar-dark);
+  text-shadow: 1px 1px #f8e9c8;
+}
+
+body.warm-cinnabar-experiment .opening-letter,
+body.warm-cinnabar-experiment .opening-choice,
+body.warm-cinnabar-experiment .opening-help {
+  background: #f4e7cce8;
+  color: var(--warm-ink);
+  border-color: var(--warm-line);
+  box-shadow: 0 12px 25px #69442a24;
+}
+
+/* 游戏壳层：用宣纸导航承接现有空间 */
+body.warm-cinnabar-experiment.engine-shell .topbar,
+body.warm-cinnabar-experiment .engine-nav {
+  color: var(--warm-ink);
+  background:
+    repeating-linear-gradient(0deg, #ffffff0a 0 2px, transparent 3px 9px),
+    var(--warm-paper);
+  border-color: #9d7c5555;
+  box-shadow: 0 2px 6px #4c30221c;
+}
+
+body.warm-cinnabar-experiment.engine-shell .topbar h1,
+body.warm-cinnabar-experiment .engine-nav .furnace-heading > strong {
+  color: var(--warm-cinnabar-dark);
+  text-shadow: 1px 1px #fff0d4;
+}
+
+body.warm-cinnabar-experiment.engine-shell .topbar .eyebrow,
+body.warm-cinnabar-experiment .engine-nav span,
+body.warm-cinnabar-experiment .engine-nav .scene-demand {
+  color: var(--warm-muted);
+}
+
+body.warm-cinnabar-experiment.engine-shell .topbar .stat-chip,
+body.warm-cinnabar-experiment.engine-shell .topbar .ghost-button,
+body.warm-cinnabar-experiment .engine-nav button {
+  color: var(--warm-ink);
+  background: #f7ebd3;
+  border-color: #b4936a;
+  border-radius: 2px;
+  box-shadow: 0 1px 0 #8b603c44;
+}
+
+body.warm-cinnabar-experiment .engine-nav button[aria-pressed="true"] {
+  color: #fff4dc;
+  background: var(--warm-cinnabar);
+  border-color: var(--warm-cinnabar-dark);
+}
+
+body.warm-cinnabar-experiment .engine-nav button:hover {
+  background: #ebd5ad;
+  border-color: var(--warm-cinnabar);
+}
+
+body.warm-cinnabar-experiment .engine-nav {
+  position: relative;
+  border-bottom-width: 2px;
+}
+
+body.warm-cinnabar-experiment .engine-nav::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg, var(--warm-cinnabar) 0 28px, transparent 28px 46px, var(--warm-gold) 46px 58px, transparent 58px 82px);
+  opacity: .76;
+}
+
+/* 工坊主体：环境保留现有绘本，只加纸张调色和浅排线 */
+body.warm-cinnabar-experiment.scene-continuity .engine-viewport,
+body.warm-cinnabar-experiment.scene-spatial .engine-viewport {
+  background: #cbb597 !important;
+}
+
+body.warm-cinnabar-experiment.scene-continuity.object-world #pillStage,
+body.warm-cinnabar-experiment.scene-spatial.object-world #pillStage {
+  filter: saturate(.98) sepia(.08) contrast(1.02) brightness(.99);
+}
+
+body.warm-cinnabar-experiment.scene-spatial .scene-front-mask {
+  opacity: .92;
+}
+
+body.warm-cinnabar-experiment .scene-stock {
+  color: var(--warm-ink) !important;
+  background:
+    repeating-linear-gradient(0deg, #ffffff0a 0 2px, transparent 3px 10px),
+    #f0e0bf !important;
+  border: 1px solid #a17b51 !important;
+  border-left: 4px solid var(--warm-cinnabar) !important;
+  border-top: 3px solid var(--warm-wood) !important;
+  border-radius: 2px !important;
+  box-shadow: 0 5px 12px #452b1b2c, inset 0 1px #fff8e4 !important;
+}
+
+body.warm-cinnabar-experiment .scene-stock-nav {
+  border-bottom-color: #a9875f88;
+}
+
+body.warm-cinnabar-experiment .scene-stock-nav button,
+body.warm-cinnabar-experiment .scene-stock-nav strong {
+  color: var(--warm-ink);
+}
+
+body.warm-cinnabar-experiment .scene-stock-nav button[aria-pressed="true"],
+body.warm-cinnabar-experiment .scene-stock .herb-slot.is-held {
+  color: #fff5dc;
+  background: var(--warm-cinnabar);
+  border-color: var(--warm-cinnabar-dark);
+}
+
+body.warm-cinnabar-experiment .scene-stock .herb-slot {
+  color: var(--warm-ink);
+  border-bottom-color: #a9875f;
+}
+
+body.warm-cinnabar-experiment .scene-stock .herb-slot strong {
+  color: var(--warm-ink);
+  background: #e8c98f;
+}
+
+body.warm-cinnabar-experiment .furnace-judgment,
+body.warm-cinnabar-experiment .pill-detail-panel.engine-panel,
+body.warm-cinnabar-experiment .equipment-drawer.engine-panel,
+body.warm-cinnabar-experiment #roomSettlement {
+  color: var(--warm-ink) !important;
+  background:
+    repeating-linear-gradient(0deg, #ffffff0a 0 2px, transparent 3px 9px),
+    #f1e2c2 !important;
+  border-color: #a17b51 !important;
+  border-top-color: var(--warm-wood) !important;
+  border-radius: 2px !important;
+  box-shadow: 0 5px 14px #452b1b30 !important;
+}
+
+body.warm-cinnabar-experiment .furnace-judgment #refineOdds dt,
+body.warm-cinnabar-experiment .furnace-judgment #refineOdds dd,
+body.warm-cinnabar-experiment .furnace-judgment .furnace-facts span,
+body.warm-cinnabar-experiment .furnace-judgment .furnace-facts b {
+  color: var(--warm-ink) !important;
+}
+
+body.warm-cinnabar-experiment .furnace-judgment #refineOdds [data-outcome="explode"] dt,
+body.warm-cinnabar-experiment .furnace-judgment #refineOdds [data-outcome="explode"] dd {
+  color: var(--warm-cinnabar) !important;
+}
+
+body.warm-cinnabar-experiment .furnace-judgment #refineOdds [data-outcome="success"] dt,
+body.warm-cinnabar-experiment .furnace-judgment #refineOdds [data-outcome="success"] dd {
+  color: #55755e !important;
+}
+
+body.warm-cinnabar-experiment[data-work-mode="furnace"] .furnace-tray,
+body.warm-cinnabar-experiment[data-work-mode="furnace"] .furnace-tray:after {
+  color: #fff4dc !important;
+  background: var(--warm-cinnabar) !important;
+  border-color: var(--warm-cinnabar-dark) !important;
+}
+
+body.warm-cinnabar-experiment .furnace-tray[data-held="true"] {
+  outline-color: var(--warm-gold) !important;
+}
+
+body.warm-cinnabar-experiment[data-work-mode="furnace"] .furnace-fire:after {
+  color: var(--warm-cinnabar-dark) !important;
+  background: #f5e5c4 !important;
+  border-color: var(--warm-line) !important;
+}
+
+body.warm-cinnabar-experiment .furnace-heading .scene-demand:before,
+body.warm-cinnabar-experiment .engine-nav button:before,
+body.warm-cinnabar-experiment .scene-stock-nav button:before {
+  filter: sepia(.35) saturate(.9);
+}
+
+/* 炉前核心物件：把“版画”集中在丹炉、丹药和关键状态，不压住场景。 */
+body.warm-cinnabar-experiment #pillStage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  opacity: .17;
+  mix-blend-mode: multiply;
+  background:
+    repeating-linear-gradient(115deg, transparent 0 34px, #6f4b321c 35px 36px, transparent 37px 71px),
+    repeating-linear-gradient(8deg, transparent 0 47px, #fff5d516 48px 49px, transparent 50px 93px);
+}
+
+body.warm-cinnabar-experiment .stage-caption {
+  color: var(--warm-cinnabar-dark);
+  text-shadow: 1px 1px #f8e8c7;
+}
+
+body.warm-cinnabar-experiment .stage-caption .caption-line {
+  background: var(--warm-cinnabar);
+  opacity: .64;
+}
+
+body.warm-cinnabar-experiment .scene-inscription {
+  color: var(--warm-cinnabar-dark);
+  border-color: #a64b3677;
+  text-shadow: 1px 1px #f3dfbd;
+}
+
+body.warm-cinnabar-experiment .stage-ring {
+  border-color: #a64b365e;
+  border-style: dashed;
+}
+
+body.warm-cinnabar-experiment .pill-visual {
+  border-color: #f1d8a8;
+  filter: sepia(.12) saturate(.92);
+  box-shadow: inset 7px 7px 18px #fff0c855, inset -10px -12px 20px #4b2d1b44, 0 0 30px #b77a4550;
+}
+
+body.warm-cinnabar-experiment .pill-core {
+  border-color: #d0a76b;
+  background: #6c4b3548;
+}
+
+body.warm-cinnabar-experiment .pill-seal {
+  color: #fff0d1;
+  background: var(--warm-cinnabar);
+  border-color: #6f2f24;
+  border-radius: 1px;
+  transform: rotate(-7deg);
+}
+
+body.warm-cinnabar-experiment .risk-badge {
+  color: var(--warm-cinnabar-dark);
+  background: #e9c99a;
+  border-color: #a17b51;
+  border-radius: 1px;
+}
+
+body.warm-cinnabar-experiment .event-banner {
+  color: var(--warm-cinnabar-dark);
+  background: #f1e2c2d9;
+  border-block: 1px solid #a17b5166;
+  text-shadow: 1px 1px #fff0d4;
+}
+
+body.warm-cinnabar-experiment .pill-stage[data-outcome="explode"] .event-banner,
+body.warm-cinnabar-experiment .pill-stage[data-state="explode"] .stage-caption {
+  color: var(--warm-cinnabar-dark);
+}
+
+body.warm-cinnabar-experiment .pill-stage[data-outcome="explode"] .feedback-burst {
+  color: var(--warm-cinnabar);
+}
+
+/* 柜台、委托和对白：延续纸张与木牌语言 */
+body.warm-cinnabar-experiment .counter-board #counterParcels {
+  display: none !important;
+}
+
+body.warm-cinnabar-experiment .counter-board.engine-panel,
+body.warm-cinnabar-experiment .counter-board .counter-desk {
+  border-color: #5b3b27;
+}
+
+/* The counter and market now use dedicated experiment scene plates. */
+body.warm-cinnabar-experiment.engine-shell .counter-board.engine-panel {
+  /* Painting desk edge: 614 / 900, mapped into the shared 941-unit camera. */
+  --warm-counter-edge: calc(var(--counter-origin-y, 0px) + 642 * var(--counter-scale, 1px));
+  background-image: url('assets/scene-entry/warm-cinnabar/counter-desktop-open.webp') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-color: #9c7048 !important;
+}
+
+body.warm-cinnabar-experiment.engine-shell .world-market.engine-panel,
+body.warm-cinnabar-experiment.engine-shell .painted-market.engine-panel {
+  background-image: url('assets/scene-entry/warm-cinnabar/market-desktop-open.webp') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-color: #9c7048 !important;
+}
+
+body.warm-cinnabar-experiment .sale-stage {
+  background-image: url('assets/scene-entry/warm-cinnabar/market-desktop-open.webp') !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+body.warm-cinnabar-experiment.engine-shell .counter-board.engine-panel::after,
+body.warm-cinnabar-experiment.engine-shell .sale-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+body.warm-cinnabar-experiment.engine-shell .counter-board.engine-panel::after {
+  background-image: url('assets/scene-entry/warm-cinnabar/counter-desktop-front.webp');
+  /* Exclude the background strip above the painted wood edge. */
+  clip-path: inset(var(--warm-counter-edge) 0 0);
+}
+
+/* Keep the customer behind the dedicated counter front plate. */
+body.warm-cinnabar-experiment .counter-board .counter-visitor {
+  z-index: 1;
+}
+
+/* Keep the formal scene's 417-unit visible upper body, anchored to this desk. */
+body.warm-cinnabar-experiment .counter-board .counter-visitor {
+  top: calc(var(--warm-counter-edge) - 417 * var(--counter-scale, 1px)) !important;
+  width: calc(400 * var(--counter-scale, 1px)) !important;
+  height: calc(600 * var(--counter-scale, 1px)) !important;
+}
+
+body.warm-cinnabar-experiment .counter-board .counter-waiting {
+  top: calc(var(--warm-counter-edge) - 358 * var(--counter-scale, 1px)) !important;
+  height: calc(360 * var(--counter-scale, 1px)) !important;
+  left: max(12px, calc(var(--counter-origin-x, 0px) + 280 * var(--counter-scale, 1px)));
+}
+
+/* The experiment front plate is the occluder; do not pre-crop the portrait. */
+body.warm-cinnabar-experiment .counter-board .visitor-portrait[data-art-layout="native-v61"] {
+  clip-path: none !important;
+}
+
+body.warm-cinnabar-experiment .counter-board .counter-note {
+  top: calc(var(--warm-counter-edge) + 8 * var(--counter-scale, 1px)) !important;
+  z-index: 4;
+}
+
+body.warm-cinnabar-experiment .counter-board .visitor-dialogue {
+  left: auto !important;
+  right: 16px !important;
+  top: 154px !important;
+  width: min(220px, 52%) !important;
+  transform: none;
+}
+
+@media (max-width: 650px) {
+  body.warm-cinnabar-experiment .counter-board .visitor-dialogue {
+    left: 12px !important;
+    right: auto !important;
+    top: 180px !important;
+    width: 130px !important;
+  }
+}
+
+body.warm-cinnabar-experiment.engine-shell .sale-stage::after {
+  background-image: url('assets/scene-entry/warm-cinnabar/market-desktop-front.webp');
+  clip-path: inset(var(--desk-edge) 0 0);
+}
+
+body.warm-cinnabar-experiment .sale-stage .sale-person { z-index: 1; }
+body.warm-cinnabar-experiment .sale-stage .sale-desk { z-index: 2; }
+body.warm-cinnabar-experiment .sale-stage .sale-wares { z-index: 4; }
+body.warm-cinnabar-experiment .sale-stage header { z-index: 5; }
+
+
+body.warm-cinnabar-experiment .counter-board .daily-heading,
+body.warm-cinnabar-experiment .counter-board #dailyHint,
+body.warm-cinnabar-experiment .counter-board .counter-letter,
+body.warm-cinnabar-experiment .counter-board .counter-receipt,
+body.warm-cinnabar-experiment .visitor-dialogue,
+body.warm-cinnabar-experiment .counter-conversation {
+  color: var(--warm-ink);
+  background: #f1e2c2ed;
+  border-color: #a17b51;
+  border-radius: 2px;
+  box-shadow: 0 4px 10px #452b1b25;
+}
+
+body.warm-cinnabar-experiment .counter-board .counter-ticket {
+  color: var(--warm-ink);
+  background: #e7d0a5;
+  border-color: #a17b51;
+}
+
+body.warm-cinnabar-experiment .counter-board .counter-ticket.selected,
+body.warm-cinnabar-experiment .counter-board .accept-stamp,
+body.warm-cinnabar-experiment .counter-board .daily-actions button {
+  color: #fff4dc;
+  background: var(--warm-cinnabar);
+  border-color: var(--warm-cinnabar-dark);
+}
+
+body.warm-cinnabar-experiment .counter-seal {
+  color: var(--warm-cinnabar);
+  border-color: var(--warm-cinnabar);
+}
+
+/* 通用面板与移动端：不改变布局，只收紧视觉重量 */
+body.warm-cinnabar-experiment .panel {
+  color: var(--warm-ink);
+  background:
+    repeating-linear-gradient(0deg, #ffffff08 0 2px, transparent 3px 10px),
+    #ead9b7;
+  border-color: #a17b51;
+  border-radius: 2px;
+  box-shadow: 0 5px 14px #452b1b24;
+}
+
+body.warm-cinnabar-experiment .panel h2,
+body.warm-cinnabar-experiment .panel-kicker,
+body.warm-cinnabar-experiment .summary-item strong {
+  color: var(--warm-cinnabar-dark);
+}
+
+body.warm-cinnabar-experiment .primary-button,
+body.warm-cinnabar-experiment .primary-button:hover,
+body.warm-cinnabar-experiment .secondary-button:hover {
+  background: var(--warm-cinnabar);
+  border-color: var(--warm-cinnabar-dark);
+  color: #fff4dc;
+  border-radius: 2px;
+  box-shadow: 0 2px 0 #6f2f2444;
+}
+
+body.warm-cinnabar-experiment .secondary-button,
+body.warm-cinnabar-experiment .ghost-button {
+  color: var(--warm-ink);
+  background: #f6e8cb;
+  border-color: #a17b51;
+  border-radius: 2px;
+}
+
+body.warm-cinnabar-experiment .footer-note {
+  color: var(--warm-muted);
+}
+
+/* 保留正式场景的几何关系，只叠加实验风格的纸张与木刻纹理。 */
+body.warm-cinnabar-experiment.scene-continuity.object-world #pillStage::after,
+body.warm-cinnabar-experiment.scene-spatial.object-world #pillStage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 11;
+  background:
+    repeating-linear-gradient(116deg, transparent 0 14px, #6e3b2420 15px 16px, transparent 17px 29px),
+    repeating-linear-gradient(8deg, transparent 0 38px, #8c5b3810 39px 40px, transparent 41px 74px),
+    linear-gradient(90deg, #b23e2a18, transparent 28%, transparent 72%, #b23e2a12);
+  mix-blend-mode: multiply;
+}
+
+@media (max-width: 650px) {
+  body.warm-cinnabar-experiment.engine-shell .counter-board.engine-panel,
+  body.warm-cinnabar-experiment.engine-shell .world-market.engine-panel,
+  body.warm-cinnabar-experiment.engine-shell .painted-market.engine-panel,
+  body.warm-cinnabar-experiment .sale-stage {
+    background-position: center !important;
+  }
+  body.warm-cinnabar-experiment .main-menu__card {
+    box-shadow: 0 8px 18px #3b241b38, inset 0 0 0 4px #d2b48855;
+  }
+
+  body.warm-cinnabar-experiment .engine-nav {
+    box-shadow: 0 1px 4px #4c302224;
+  }
+
+  body.warm-cinnabar-experiment .scene-stock,
+  body.warm-cinnabar-experiment .furnace-judgment {
+    box-shadow: 0 3px 8px #452b1b25 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.warm-cinnabar-experiment::before {
+    display: none;
+  }
+}
+
+/* Per-identity tool sources replace the old modulo atlas mapping. */
+body.warm-cinnabar-experiment .tool-art[data-warm-tool] { background-size:100% 100%!important; background-position:center!important; background-repeat:no-repeat!important; }
+body.warm-cinnabar-experiment .world-day-bell::before { background-image:url('assets/warm-cinnabar/props/tool-lucky.webp')!important; background-size:contain!important; background-position:center!important; background-repeat:no-repeat!important; }
+body.warm-cinnabar-experiment .counter-note img { filter:drop-shadow(1px 2px 1px #57361f55)!important; }

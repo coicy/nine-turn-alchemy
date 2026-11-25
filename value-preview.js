@@ -17,7 +17,7 @@
     line.setAttribute('aria-label',line.textContent+'；药力每点售1铜钱，委托超额每点补1铜钱。');
     if(innerWidth<=650){line.querySelector('.success-value-main').textContent='下次成功\n药力 '+delta(p.increase);line.querySelector('.success-value-sale').textContent='可售 '+format(p.currentSale)+'钱';}
     line.title=s.craftKind?'按普通成功计算的造物估值，不保证盈利。':'按普通成功计算；药力每点售1铜钱，委托超额每点补1铜钱。';
-    if(s.craftKind){for(const el of line.querySelectorAll('div'))el.textContent=el.textContent.replaceAll('药力','估值');line.querySelector('.success-value-sale').textContent='可售 '+format(p.currentSale)+'钱';line.setAttribute('aria-label',line.textContent+'；自购器料成本 '+s.craftCost+' 文。');}
+    if(s.craftKind){for(const el of line.querySelectorAll('div'))el.textContent=el.textContent.replace(/药力/g,'估值');line.querySelector('.success-value-sale').textContent='可售 '+format(p.currentSale)+'钱';line.setAttribute('aria-label',line.textContent+'；自购器料成本 '+s.craftCost+' 文。');}
   }
   for(const e of ['alchemy:render','alchemy:view-ready','alchemy:interaction','resize'])window.addEventListener(e,update);
   update();

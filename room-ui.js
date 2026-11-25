@@ -1,7 +1,7 @@
 (() => {
  const api=window.AlchemyGame,UX=window.AlchemyUX,forge=document.querySelector('.forge-panel'),stage=document.getElementById('pillStage');document.body.classList.add('painted-room');forge.dataset.room='true';
  stage.insertAdjacentHTML('beforeend','<section class="room-observation" aria-label="炉中丹药"><h2>炉中丹药</h2><div id="roomFacts"></div><small></small></section><p class="room-empty" id="roomEmpty" hidden></p><section id="roomSettlement" class="room-loop-card" hidden aria-live="polite"></section>');
- const fire=document.getElementById('fireObject');fire.insertAdjacentHTML('afterbegin','<img class="room-tool" src="assets/runtime/alchemy-fan-v1.webp" alt="" draggable="false">');document.querySelector('.tray-object b').textContent='收丹盘';
+ const fire=document.getElementById('fireObject');fire.insertAdjacentHTML('afterbegin','<img class="room-tool" src="'+(window.AlchemyWarmProps?.props.fan.src||'assets/runtime/alchemy-fan-v1.webp')+'" alt="" draggable="false">');document.querySelector('.tray-object b').textContent='收丹盘';
  const decision=document.createElement('p');decision.id='roomDecision';const stock=document.createElement('p');stock.id='roomStock';document.querySelector('.room-observation').append(decision,stock);
  let receiptKey='',dismissedReceipt='';
  const receiptId=s=>[s.orderId,s.attempt,s.endReason,s.collected.length].join(':');

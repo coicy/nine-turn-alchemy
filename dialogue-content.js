@@ -25,6 +25,8 @@
     opt_intro:'初次见面，怎么称呼？',opt_chat:'聊聊近况',opt_market:'打听行商',opt_market_locked:'第二日开门后可聊',opt_letter:'打开原委托纸笺',opt_back:'还有一事',opt_goodbye:'先去忙了',opt_close:'结束交谈',
     visitor_return:'掌柜，我们又见面了。这回还是先把手头这一单说清楚。',
     commission_notice:'掌柜，我带了药料来，有一份代炼委托。详情都在这张纸笺上。',
+    special_action:'{{arcAction}}',
+    special_demand:'{{arcDemand}}',
     opt_read_commission:'查看委托',
     merchant_hello:'听说这儿新开了间丹坊，过来认个门。掌柜，借点柜面？我带了四件法器。',
     merchant_offer:'这枚{{toolName}}，能压一压炸炉的险。掌柜刚开张，可要添一件？',
@@ -49,6 +51,11 @@
     }},
     commission:{id:'commission',version:2,title:'来客委托',start:'notice',kind:'commission',nodes:{
       notice:{speaker:'visitor',line:'commission_notice',scene:'orders',next:'letter',nextText:'opt_read_commission'},
+      letter:{end:true,action:'letter'}
+    }},
+    special_commission:{id:'special_commission',version:1,title:'特殊来客',start:'action',kind:'commission',nodes:{
+      action:{speaker:'narrator',line:'special_action',scene:'orders',next:'demand'},
+      demand:{speaker:'visitor',line:'special_demand',scene:'orders',facts:true,next:'letter',nextText:'opt_read_commission'},
       letter:{end:true,action:'letter'}
     }},
     opening:{id:'opening',version:7,title:'丹坊开张',start:'room',kind:'opening',legacySteps:['room','arrival','fire'],legacyStarts:['question','answer'],nodes:{

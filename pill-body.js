@@ -15,6 +15,14 @@
     canvas.width = canvas.height = SIZE;
     const ctx = canvas.getContext('2d');
     const shade = {warm: '#9b5943', cool: '#526967', neutral: '#83684c'};
+    if (window.AlchemyWarmStyle) {
+      // Missing artwork remains a readable matte placeholder in the experiment palette.
+      ctx.fillStyle=shade[nature]||shade.neutral;ctx.strokeStyle='#62452f';ctx.lineWidth=3;
+      ctx.beginPath();ctx.moveTo(42,132);ctx.bezierCurveTo(35,83,76,39,126,41);ctx.bezierCurveTo(177,37,216,79,213,131);ctx.bezierCurveTo(214,180,170,218,124,213);ctx.bezierCurveTo(79,217,43,180,42,132);ctx.closePath();ctx.fill();ctx.stroke();ctx.save();ctx.clip();
+      ctx.fillStyle='#d3ad75';ctx.beginPath();ctx.moveTo(34,99);ctx.lineTo(105,47);ctx.lineTo(174,40);ctx.lineTo(201,82);ctx.lineTo(119,125);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#62452f';ctx.lineWidth=2;for(let i=0;i<4;i++){ctx.beginPath();ctx.moveTo(66+i*18,167);ctx.lineTo(79+i*18,185);ctx.stroke();}ctx.restore();
+      const entry={canvas,url:canvas.toDataURL('image/png')};fallback.set(nature,entry);return entry;
+    }
     const gradient = ctx.createRadialGradient(104, 94, 8, 129, 128, 89);
     gradient.addColorStop(0, '#d7bea0');
     gradient.addColorStop(.57, shade[nature] || shade.neutral);
@@ -57,7 +65,7 @@
     if(d.craftKind){
       const def=window.AlchemyCrafts.get(d.craftKind),source=window.AlchemyCrafts.atlas(def.atlas),im=window.AlchemyAssets.getImage(source);
       if(!im){loadAppearance(source);const c=document.createElement('canvas');c.width=c.height=SIZE;return {canvas:c,url:c.toDataURL(),description:d};}
-      const index=window.AlchemyCrafts.stage(d.turn),[x,y,w,h]=craftFrames[def.atlas][index];
+      const index=window.AlchemyCrafts.stage(d.turn),[x,y,w,h]=(window.AlchemyWarmGrowth?.frames[def.atlas]||craftFrames[def.atlas])[index];
       const c=document.createElement('canvas');c.width=c.height=SIZE;const ctx=c.getContext('2d'),scale=Math.min(236/w,236/h),dw=w*scale,dh=h*scale;ctx.drawImage(im,x,y,w,h,(SIZE-dw)/2,(SIZE-dh)/2,dw,dh);const entry={canvas:c,url:c.toDataURL(),description:d};cache.set(d.key,entry);return entry;
     }
     const source = palettes.sources[d.appearance];
@@ -74,14 +82,14 @@
     const entry={canvas:c,url:c.toDataURL('image/png'),description:d};cache.set(d.key,entry);if(cache.size>48)cache.delete(cache.keys().next().value);return entry;
   }
   const image=p=>make(p).url;
-  function geometry(p){const d=describe(p);if(!d.craftKind)return null;const def=window.AlchemyCrafts.get(d.craftKind),rect=craftFrames[def.atlas][window.AlchemyCrafts.stage(d.turn)],scale=236/Math.max(rect[2],rect[3]);return {w:rect[2]*scale/SIZE,h:rect[3]*scale/SIZE};}
+  function geometry(p){const d=describe(p);if(!d.craftKind)return null;const def=window.AlchemyCrafts.get(d.craftKind),rect=(window.AlchemyWarmGrowth?.frames[def.atlas]||craftFrames[def.atlas])[window.AlchemyCrafts.stage(d.turn)],scale=236/Math.max(rect[2],rect[3]);return {w:rect[2]*scale/SIZE,h:rect[3]*scale/SIZE};}
   let current=null,previous=null,feedback=null;
   function draw(ctx,x,y,size,p){
     const rendered=make(p),d=rendered.description;
     const motion=window.AlchemyGameFeel?.sample();
     ctx.save();
     if(motion){ctx.translate(x+size/2,y+size/2+motion.lift*size);ctx.scale(motion.sx,motion.sy);ctx.translate(-x-size/2,-y-size/2);}
-    const performanceActive=!d.craftKind&&window.AlchemyRefinePerformance?.drawPill(ctx,rendered.canvas,x,y,size);
+    const performanceActive=(!d.craftKind||window.AlchemyWarmGrowth)&&window.AlchemyRefinePerformance?.drawPill(ctx,rendered.canvas,x,y,size);
     if(!performanceActive)ctx.drawImage(rendered.canvas,x,y,size,size);
     const elapsed=feedback&&performance.now()-feedback.start;
     const animating=!!(feedback&&feedback.key===d.key&&elapsed<650&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!window.AlchemyGameFeel?.reduced);

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>九转丹坊 · 正式场景锚点参考</title>
+  <style>
+    :root{color:#38291f;background:#eadcc4;font-family:"Microsoft YaHei",sans-serif}*{box-sizing:border-box}body{margin:0;padding:18px;max-width:1280px;margin-inline:auto}h1{margin:0 0 6px;font:26px Georgia,serif}p{margin:0 0 14px;color:#725b45}.compare{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,.8fr);gap:16px;align-items:start}.stage{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border:2px solid #8b553a;background:#cdbb9e}.stage img,.stage svg{position:absolute;inset:0;width:100%;height:100%;display:block}.stage svg{pointer-events:none}.side{display:grid;gap:10px}.card{background:#f7ecd4;border:1px solid #b18a60;padding:10px}.card h2{margin:0 0 7px;font-size:14px}.thumbs{display:grid;grid-template-columns:1fr 1fr;gap:8px}.thumb{margin:0;border:1px solid #c09c72;background:#fff7e7}.thumb img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain;background:#17120f}.thumb figcaption{padding:4px 6px;font-size:11px;color:#725b45}.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.legend span{padding:5px 9px;border:1px solid #a17b51;background:#f7ecd4;font-size:12px}.legend i{display:inline-block;width:12px;height:12px;margin-right:5px;vertical-align:-2px}.furnace i{background:#bd4430}.shelf i{background:#c18b28}.table i{background:#47735e}.window i{background:#3e7790}.door i{background:#7c5b9b}.anchor-table{width:100%;border-collapse:collapse;font-size:11px}.anchor-table th,.anchor-table td{padding:5px;border-bottom:1px solid #d1b992;text-align:left}.anchor-table th{color:#725b45}.note{margin-top:12px;font-size:12px}.link{display:inline-block;margin-top:12px;color:#8f3428}@media(max-width:800px){.compare{grid-template-columns:1fr}.stage{max-width:720px}}
+  </style>
+</head>
+<body>
+  <h1>正式场景 · 物件锚点参考</h1>
+  <p>用于校准实验场景的空间位置。彩色轮廓只表示参考区域，不代表运行中的拆分层。</p>
+  <div class="compare">
+  <div>
+  <div class="stage">
+    <img src="assets/scene-entry/room-desktop-open.webp" alt="正式工坊场景">
+    <svg viewBox="0 0 1600 1600" aria-label="正式场景物件描边">
+      <g fill="none" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" opacity=".95">
+        <path stroke="#3e7790" d="M0 426 L108 430 L250 442 L252 520 L246 640 L252 790 L250 887 L174 879 L96 872 L0 866 Z"/>
+        <path stroke="#bd4430" d="M354 742 Q414 714 520 710 Q635 710 704 750 L733 825 L720 965 L704 1065 Q640 1110 535 1122 Q420 1118 350 1080 L319 980 L310 840 Z"/>
+        <path stroke="#bd4430" d="M414 734 L673 734 L673 798 L414 798 Z"/>
+        <path stroke="#ff5b43" d="M469 954 L567 954 L567 1045 L469 1045 Z"/>
+        <path stroke="#c18b28" d="M775 500 L1128 500 L1137 551 L1130 917 L1105 943 L794 943 L770 916 L770 550 Z"/>
+        <path stroke="#c18b28" d="M781 640 L1131 640 M777 784 L1133 784 M805 892 L1112 892"/>
+        <path stroke="#7c5b9b" d="M1192 492 L1418 492 L1416 564 L1420 710 L1417 895 L1364 894 L1280 898 L1200 890 L1198 710 Z"/>
+        <path stroke="#47735e" d="M824 928 L1467 928 L1488 958 L1484 1089 L1458 1103 L846 1093 L817 1068 Z"/>
+        <path stroke="#47735e" d="M847 1090 L891 1092 L891 1259 L876 1455 M1428 1097 L1469 1099 L1469 1268 L1456 1450"/>
+        <path stroke="#a54b34" stroke-dasharray="14 10" d="M318 825 L718 825 M470 956 L603 956"/>
+        <path stroke="#6b4a9a" stroke-dasharray="14 10" d="M820 1120 L1460 1128"/>
+      </g>
+      <g fill="none" stroke="#0f6f72" stroke-width="5" stroke-dasharray="18 10">
+        <rect x="414.55" y="734.20" width="258.16" height="63.31"/>
+        <rect x="468.78" y="953.84" width="98.15" height="91.33"/>
+        <circle cx="543.63" cy="765.85" r="12" fill="#0f6f72" stroke="none"/>
+        <circle cx="517.98" cy="999.50" r="12" fill="#ff5b43" stroke="none"/>
+      </g>
+      <g font-family="Microsoft YaHei,sans-serif" font-size="30" font-weight="700">
+        <text x="24" y="410" fill="#3e7790">窗户</text>
+        <text x="285" y="700" fill="#bd4430">炉体视觉轮廓</text><text x="420" y="685" fill="#0f6f72">运行时炉口框</text><text x="455" y="950" fill="#ff5b43">运行时火口框</text>
+        <text x="780" y="475" fill="#c18b28">药柜</text>
+        <text x="1210" y="465" fill="#7c5b9b">通道</text>
+        <text x="835" y="915" fill="#47735e">工作台</text>
+      </g>
+    </svg>
+  </div>
+  <div class="legend"><span class="window"><i></i>窗户区域</span><span class="furnace"><i></i>炉体与炉口</span><span class="shelf"><i></i>药柜区域</span><span class="door"><i></i>通道区域</span><span class="table"><i></i>工作台区域</span></div>
+  </div>
+  <aside class="side">
+    <section class="card"><h2>正式场景拆分素材</h2><div class="thumbs">
+      <figure class="thumb"><img src="assets/scene-entry/room-desktop-open.webp" alt="工坊开放"><figcaption>room open · 底图</figcaption></figure>
+      <figure class="thumb"><img src="assets/scene-entry/room-desktop-closed.webp" alt="工坊关闭"><figcaption>room closed · 底图</figcaption></figure>
+      <figure class="thumb"><img src="assets/scene-entry/room-desktop-front.webp" alt="工坊前景"><figcaption>room front · 前景</figcaption></figure>
+      <figure class="thumb"><img src="assets/scene-entry/furnace-desktop-open.webp" alt="炉前开放"><figcaption>furnace open · 底图</figcaption></figure>
+      <figure class="thumb"><img src="assets/scene-entry/furnace-desktop-front.webp" alt="炉前前景"><figcaption>furnace front · 前景</figcaption></figure>
+    </div></section>
+    <section class="card"><h2>运行时锚点坐标 · 1600×1600</h2><table class="anchor-table"><thead><tr><th>锚点</th><th>x / y</th><th>宽 / 高</th><th>用途</th></tr></thead><tbody>
+      <tr><td>炉口框</td><td>414.55 / 734.20</td><td>258.16 / 63.31</td><td>投药/丹药</td></tr><tr><td>火口框</td><td>468.78 / 953.84</td><td>98.15 / 91.33</td><td>催炼</td></tr><tr><td>丹药中心</td><td>543.63 / 765.85</td><td>—</td><td>丹药投放</td></tr><tr><td>药柜视觉区</td><td>770–1137 / 500–943</td><td>—</td><td>底图轮廓</td></tr><tr><td>工作台视觉区</td><td>817–1488 / 928–1103</td><td>—</td><td>前景与法器</td></tr>
+    </tbody></table></section>
+    <section class="card"><h2>核查顺序</h2><p class="note">先对齐底图结构，再检查前景遮罩覆盖范围，最后核对炉盖、炉火、丹药和面板位置。任何一个状态切换都要使用对应的 open、closed、front 素材组。</p></section>
+  </aside>
+  </div>
+  <p class="note">校准顺序应以炉口、药柜、通道和工作台四个稳定结构为主，再调整炉盖、火口和交互 UI。</p>
+  <a class="link" href="index-warm-cinnabar.html">打开温暖金石丹坊实验入口</a>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#eee2ca" />
+    <meta name="game-build" content="v219-warm-cinnabar-experiment" />
+    <meta name="style-experiment" content="warm-cinnabar" />
+    <link rel="preload" as="image" href="assets/scene-entry/warm-cinnabar/room-desktop-open.webp" media="(min-width: 651px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/scene-entry/warm-cinnabar/room-desktop-closed.webp" media="(min-width: 651px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/scene-entry/warm-cinnabar/room-desktop-front.webp" media="(min-width: 651px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/scene-entry/warm-cinnabar/furnace-desktop-open.webp" media="(min-width: 651px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/scene-entry/warm-cinnabar/furnace-desktop-closed.webp" media="(min-width: 651px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/scene-entry/warm-cinnabar/furnace-desktop-front.webp" media="(min-width: 651px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/scene-entry/warm-cinnabar/room-mobile-open.webp" media="(max-width: 650px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/scene-entry/warm-cinnabar/room-mobile-closed.webp" media="(max-width: 650px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/scene-entry/warm-cinnabar/room-mobile-front.webp" media="(max-width: 650px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/scene-entry/warm-cinnabar/furnace-mobile-open.webp" media="(max-width: 650px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/scene-entry/warm-cinnabar/furnace-mobile-closed.webp" media="(max-width: 650px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/scene-entry/warm-cinnabar/furnace-mobile-front.webp" media="(max-width: 650px)" fetchpriority="high" />
+    <title>九转丹坊 · 温暖金石丹坊实验入口</title>
+    <link rel="stylesheet" href="styles.css?r=219" />
+    <link rel="stylesheet" href="simulation.css?r=219" /><link rel="stylesheet" href="campaign.css?r=219" /><link rel="stylesheet" href="art-assets.css?r=219" /><link rel="stylesheet" href="alchemy-assets.css?r=219" /><link rel="stylesheet" href="game-shell.css?r=219"><link rel="stylesheet" href="room-ui.css?r=219"><link rel="stylesheet" href="scene2d.css?r=219"><link rel="stylesheet" href="scene-feedback.css?r=219"><link rel="stylesheet" href="refine-animation.css?r=219"><link rel="stylesheet" href="observation-near.css?r=219"><link rel="stylesheet" href="herb-tray.css?r=219"><link rel="stylesheet" href="herb-cubby.css?r=219"><link rel="stylesheet" href="painted-scenes.css?r=219"><link rel="stylesheet" href="scene-props.css?r=219"><link rel="stylesheet" href="journal-ui.css?r=219"><link rel="stylesheet" href="counter-people.css?r=219"><link rel="stylesheet" href="unified-theme.css?r=219"><link rel="stylesheet" href="view-transitions.css?r=219"><link rel="stylesheet" href="customers.css?r=219"><link rel="stylesheet" href="onboarding.css?r=219"><link rel="stylesheet" href="save-slots.css?r=219"><link rel="stylesheet" href="counter-ui-state.css?r=219"><link rel="stylesheet" href="commission-motion.css?r=219"><link rel="stylesheet" href="refine-odds.css?r=219"><link rel="stylesheet" href="pill-bag.css?r=219"><link rel="stylesheet" href="information-ui.css?r=219"><link rel="stylesheet" href="world-ui.css?r=219"><link rel="stylesheet" href="ui-revision.css?r=219">
+<link rel="stylesheet" href="workbench.css?r=219"><link rel="stylesheet" href="feedback.css?r=219"><link rel="stylesheet" href="furnace-view.css?r=219"><link rel="stylesheet" href="pill-body.css?r=219">
+<link rel="stylesheet" href="scene-art.css?r=219"><link rel="stylesheet" href="scene-visual.css?r=219">
+<link rel="stylesheet" href="furnace-surface.css?r=219"><link rel="stylesheet" href="loop.css?r=219"><link rel="stylesheet" href="game-feel-effects.css?r=219"><link rel="stylesheet" href="visual-feedback.css?r=219"><link rel="stylesheet" href="main-menu.css?r=219"><link rel="stylesheet" href="opening-load.css?r=219"><link rel="stylesheet" href="lease.css?r=219"><link rel="stylesheet" href="game-feel.css?r=219"><link rel="stylesheet" href="warm-cinnabar-experiment.css?r=10">
+<link rel="stylesheet" href="navigation-split.css?r=219">
+<link rel="stylesheet" href="consignment-ui.css?r=219"><link rel="stylesheet" href="value-preview.css?r=219"><link rel="stylesheet" href="merchant-visit.css?r=219"><link rel="stylesheet" href="market-merchants.css?r=219"><link rel="stylesheet" href="warm-cinnabar-ui.css?r=8"><link rel="stylesheet" href="warm-cinnabar-motion.css?r=1"><link rel="stylesheet" href="warm-cinnabar-stock.css?r=stock-labels-2"><link rel="stylesheet" href="dialogue.css?r=219"><link rel="stylesheet" href="crafts.css?r=219">
+</head>
+  <body class="warm-cinnabar-experiment" data-screen="opening">
+    <main class="main-menu" id="mainMenu" aria-labelledby="mainMenuTitle" aria-describedby="mainMenuStatus">
+      <div class="main-menu__scene" aria-hidden="true"></div>
+      <div class="main-menu__layout">
+        <header class="main-menu__brand"><h1 id="mainMenuTitle"><img src="assets/warm-cinnabar/ui/danfang-wordmark.svg" alt="九转丹坊"></h1></header>
+        <section class="main-menu__card" aria-label="丹坊主菜单">
+          <nav class="main-menu__buttons" aria-label="主菜单">
+            <button class="main-menu__button is-primary" id="mainMenuPrimary" type="button" data-focus-key="main-menu-primary" autofocus disabled>
+              <span class="main-menu__button-label">开始营业</span>
+              <small class="main-menu__button-context"></small>
+            </button>
+            <button class="main-menu__button" id="mainMenuSaves" type="button" data-focus-key="main-menu-saves">存档管理</button>
+            <button class="main-menu__button" id="mainMenuSettings" type="button" data-focus-key="main-menu-settings">设置</button>
+          </nav>
+          <p class="main-menu__status" id="mainMenuStatus" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+      <section class="main-menu__settings" id="mainMenuSettingsPanel" hidden aria-labelledby="mainMenuSettingsTitle">
+        <div class="main-menu__settings-card">
+          <header><h2 id="mainMenuSettingsTitle">设置</h2><button type="button" id="mainMenuSettingsBack" data-focus-key="main-menu-settings-back">返回</button></header>
+          <div class="main-menu__settings-actions">
+            <button type="button" id="mainMenuDataSettings">试玩数据设置</button>
+            <button type="button" id="mainMenuRules">帮助与规则</button>
+          </div>
+          <p>其他经营信息会在对应场景中显示。</p>
+        </div>
+      </section>
+    </main>
+    <section class="opening-load" id="openingLoad" hidden aria-labelledby="openingLoadTitle">
+      <div class="opening-load__content">
+        <div class="opening-load__kiln" aria-hidden="true">
+          <span class="opening-load__lid"></span>
+          <span class="opening-load__vessel"></span>
+          <span class="opening-load__foot"></span>
+          <span class="opening-load__hearth">
+            <span class="opening-load__flame"></span>
+            <span class="opening-load__embers"></span>
+          </span>
+        </div>
+        <h1 id="openingLoadTitle" tabindex="-1">正在加载…</h1>
+        <progress id="openingLoadProgress" class="opening-load__progress" value="0" max="1" aria-label="加载进度"></progress>
+        <p id="openingLoadStatus" class="opening-load__status" role="status"></p>
+        <div class="opening-load__actions">
+          <button id="openingLoadRetry" type="button" hidden>重试进入</button>
+          <button id="openingLoadBack" type="button">返回主菜单</button>
+        </div>
+      </div>
+    </section>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">散修丹坊 · 炉火长明</p>
+          <h1>九转丹坊</h1>
+        </div>
+        <div class="topbar-actions">
+          <div class="stat-chip"><span>本局炉数</span><strong id="attemptText">0 / 3</strong></div>
+          <button class="ghost-button" id="restartButton" type="button">重新开始</button>
+        </div>
+      </header>
+
+      <main class="game-layout">
+        <details class="panel order-panel record-fold"><summary>展开委托簿与本单记录</summary>
+          <div class="panel-kicker">代炼委托</div>
+          <div class="order-heading">
+            <div>
+              <h2 id="trialTitle">完成首份委托</h2>
+              <p id="trialFlavor">三包委托药材，累计提交达到目标药力。</p>
+            </div>
+            <span class="order-number" id="attemptBadge">第 1 炉</span>
+          </div>
+
+          <div class="target-card">
+            <div class="target-label">订单已交价值</div>
+            <div class="target-value"><strong id="turnGoalText">0</strong><span id="orderGoalLabel">/ 120</span></div>
+            <div class="progress-track" aria-label="订单进度"><div id="turnProgressFill"></div></div>
+          </div>
+
+          <div class="order-rule" id="trialRule">继续炼丹提高药力，或收丹入匣。入匣后可从丹匣提交委托或处理丹药；炸丹会消耗一颗原料。</div>
+
+          <div class="resource-grid">
+            <div class="resource-card">
+              <span>最高转数</span>
+              <strong id="bestTurnText">1 转</strong>
+            </div>
+            <div class="resource-card">
+              <span>最高价值</span>
+              <strong id="bestValueText">24</strong>
+            </div>
+            <div class="resource-card">
+              <span>累计炸丹</span>
+              <strong id="explosionText">0 次</strong>
+            </div>
+            <div class="resource-card">
+              <span>百转成丹</span>
+              <strong id="completedText">0 颗</strong>
+            </div>
+          </div>
+
+          <div class="hint-box">
+
+            <p id="trialHint">下一次炼丹风险不会提前揭示，结果会在炼丹后出现。</p>
+          </div>
+          <p class="deferred-note">本局为实验订单，数值尚需试玩调整。</p>
+        </details>
+
+        <section class="panel forge-panel">
+          <div class="order-strip"><span>本单已交 <strong id="compactOrderValue">0 / 300</strong></span><span>剩余原料 <strong id="compactStockValue">3 包</strong></span></div>
+          <div class="forge-header">
+            <div>
+              <div class="panel-kicker">当前丹药</div>
+              <h2 id="pillName">无名丹</h2>
+            </div>
+            <div class="risk-badge" id="riskBadge">炸丹概率</div>
+          </div>
+
+          <div class="pill-stage" id="pillStage">
+            <section class="ritual-panel hidden" id="ritualPanel" aria-label="敕火符">
+              <button id="ritualGrid" type="button" aria-describedby="refineFeedback" aria-label="描敕火符，沿墨稿运笔；键盘可按住空格运笔">
+                <svg viewBox="0 0 100 168" aria-hidden="true">
+                  <defs><linearGradient id="talisman-gold" x2="1" y2=".15" gradientUnits="objectBoundingBox"><stop stop-color="#c3934e"/><stop offset=".17" stop-color="#eed092"/><stop offset=".53" stop-color="#f7dd9f"/><stop offset="1" stop-color="#dcaf68"/></linearGradient></defs>
+                  <path class="rite-paper" d="M3 2 96 1 98 47 96 97 98 163 80 166 59 164 38 167 3 164 4 89 2 46Z"/>
+                  <path class="rite-border" d="M8 10V6l81-1 4 3-1 147-2 4-78 2-4-3Z"/>
+                  <g class="rite-guides">
+                    <path d="M17 36 Q26 32 33 17 Q32 30 30 36 Q43 30 50 12 Q50 25 46 35 Q61 29 68 16 Q68 28 63 35 Q73 35 81 29"/>
+                    <path d="M17 53 Q42 51 80 46 Q62 57 36 74 Q25 82 21 87 Q44 80 62 68 C79 57 84 74 68 83 Q55 91 41 90 Q44 82 54 73 Q53 95 46 117"/>
+                    <path d="M21 109 Q32 107 37 98 Q38 115 22 133 Q42 130 59 104 Q57 123 70 132 Q76 137 84 133 Q71 148 47 154 Q53 147 55 141"/>
+                  </g>
+                  <path class="rite-lead" d=""/><g class="rite-ink"><path/><path/><path/></g>
+                  <g class="rite-tip"><circle r="5"/><circle r="1.6"/></g>
+                </svg>
+              </button>
+            </section>
+            <div class="scene-mountains" aria-hidden="true"></div>
+            <span class="scene-inscription inscription-left" aria-hidden="true">守火</span>
+            <span class="scene-inscription inscription-right" aria-hidden="true">凝丹</span>
+            <div class="stage-caption"><span class="caption-line"></span><strong id="eventTitle">炉火初起</strong><span class="caption-line"></span></div>
+            <div class="stage-ring ring-one"></div>
+            <div class="stage-ring ring-two"></div>
+            <div class="pill-aura" id="pillAura"></div>
+            <div class="pill-levitation">
+            <div class="pill-visual" id="pillVisual" aria-label="当前丹药">
+              <div class="pill-sheen"></div>
+              <svg class="pill-etching" viewBox="0 0 120 120" aria-hidden="true"><path d="M26 78C5 41 52 9 74 30S62 95 96 76M28 44C51 77 82 7 100 51M32 93C58 65 53 110 87 91" /></svg>
+              <div class="pill-core">
+                <span class="pill-turn-label">转</span>
+                <strong id="turnValue">一</strong>
+              </div>
+              <div class="pill-seal">炼</div>
+            </div>
+            </div>
+            <div class="value-change" id="valueChange" aria-hidden="true"></div>
+            <div class="feedback-burst" aria-hidden="true"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i></div>
+            <div class="furnace-glow" aria-hidden="true"></div>
+            <svg class="furnace" viewBox="0 0 320 174" aria-hidden="true">
+              <defs><linearGradient id="bronze" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c0a16a"/><stop offset=".45" stop-color="#62583e"/><stop offset="1" stop-color="#283f37"/></linearGradient><linearGradient id="furnaceBody" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#4f6755"/><stop offset="1" stop-color="#152d2a"/></linearGradient><radialGradient id="ember"><stop stop-color="#ffe5a2"/><stop offset="1" stop-color="#c77d3c" stop-opacity="0"/></radialGradient></defs>
+              <ellipse cx="160" cy="154" rx="126" ry="12" fill="#060d0e" opacity=".7"/>
+              <path d="M89 63C41 29 34 107 88 106M231 63C279 29 286 107 232 106" fill="none" stroke="url(#bronze)" stroke-width="12"/>
+              <path d="M85 57Q76 126 113 137H207Q244 126 235 57Z" fill="url(#furnaceBody)" stroke="url(#bronze)" stroke-width="3"/>
+              <path d="M109 131L99 157H121L132 137M211 131L221 157H199L188 137" fill="url(#bronze)"/>
+              <ellipse cx="160" cy="55" rx="83" ry="17" fill="#243e35" stroke="url(#bronze)" stroke-width="6"/>
+              <ellipse cx="160" cy="53" rx="68" ry="10" fill="#0d1917"/><ellipse class="ember" cx="160" cy="52" rx="63" ry="12" fill="url(#ember)"/>
+              <path d="M96 79Q160 99 224 79M101 119Q160 137 219 119" fill="none" stroke="#b99a66" opacity=".55"/>
+              <circle cx="160" cy="108" r="19" fill="#142a25" stroke="#9b8456" stroke-width="2"/><text x="160" y="116" text-anchor="middle" fill="#dfc18a" font-size="23" font-family="serif">丹</text>
+              <path d="M121 100L113 108L121 116M199 100L207 108L199 116" fill="none" stroke="#9b8456" stroke-width="2"/>
+            </svg>
+            <div class="event-banner" id="eventBanner">炉火已起</div>
+          <p class="rune-trigger-status" id="toolTriggerStatus" role="status"></p>
+          </div>
+
+          <div class="pill-summary"><div class="summary-item"><span>药性（丹体颜色）</span><strong id="natureValue">—</strong></div>
+            <div class="summary-item"><span>当前价值</span><strong id="pillValue">24</strong></div>
+            <div class="summary-item"><span>品质</span><strong id="qualityValue">凡品</strong></div>
+          </div>
+
+          <div class="risk-panel">
+            <div class="risk-heading">
+              <span>动作前炉险</span>
+              <strong id="riskResultValue">--</strong>
+            </div>
+            <div class="risk-detail">
+              <strong id="riskDescription">按当前转数计算，保护结果另行结算</strong>
+            </div>
+            <div class="outcome-list" id="outcomeList"></div>
+          </div>
+
+          <div class="action-row scene-actions">
+            <button class="primary-button" id="refineButton" type="button">♨ 守火炼化 <span>Enter</span></button>
+            <button class="secondary-button" id="collectButton" type="button">◉ 收丹入匣</button>
+            <button class="secondary-button" id="newPillButton" type="button">♧ 取药开炉</button>
+          </div>
+          <p class="action-hint" id="actionHint">先看动作前炉险，再决定继续炼化或收丹入匣。</p>
+        </section>
+
+        <details class="panel side-panel record-fold"><summary>翻阅炉谱与炉讯</summary>
+          <div class="panel-kicker">最近炉讯</div>
+          <div class="log-list" id="logList" aria-live="polite"></div>
+          <div class="divider"></div>
+          <div class="panel-kicker">试玩记录</div>
+          <label class="telemetry-option"><input type="checkbox" id="telemetryEnabled" /> 同意并开启匿名操作记录</label>
+          <a class="policy-link" href="data-policy.html" target="_blank" rel="noopener">查看数据收集说明</a>
+          <p class="deferred-note">用于分析收丹时机、炼丹结果和订单胜负。不记录姓名和联系方式，可随时关闭。</p>
+          <p class="deferred-note" id="telemetryStatus" role="status">开始游戏后记录；上传失败将在本机暂存。</p>
+          <button class="ghost-button" id="exportDataButton" type="button">导出本机记录</button>
+        </details>
+      </main>
+
+      <footer class="footer-note">
+        <span>一炉烟火，百转成丹 · V219 优化制作试玩</span>
+        <span>整包投药起炉 · 点击炉膛催炼 · 引丹入盘</span>
+      </footer>
+    </div>
+
+    <div class="opening-screen" id="introModal">
+
+      <main class="opening-content" aria-labelledby="openingTitle">
+        <section class="opening-story">
+
+          <h1 id="openingTitle">九转丹坊</h1>
+          <p class="opening-tagline">一炉烟火，百转成丹。</p>
+          <p class="opening-prose">一只旧丹炉，一间新丹坊。<br>在坊市中，经营属于你的小丹坊。</p>
+        </section>
+        <section class="opening-launch" aria-label="开始试玩">
+          <button class="primary-button opening-start" id="startButton" type="button">开张迎客 <span aria-hidden="true">→</span></button>
+
+        <details class="opening-help"><summary>查看试炉要诀</summary><ol><li>点药包拿起，再点炉口整包投入；也可将药包拖入炉口。</li><li>点击炉膛挥扇催炼，一次一炼。先查看动作前炉险，再决定继续或收丹入匣。</li><li>炼丹结束后点击“收丹入匣”；再从丹匣选择提交委托或处理丹药。提交达到本单目标即可结单。</li></ol></details>
+          <div class="opening-consent">
+            <label class="telemetry-option"><input type="checkbox" id="introTelemetryEnabled" /> 我已阅读并同意上传匿名试玩记录</label>
+            <a class="policy-link" href="data-policy.html" target="_blank" rel="noopener">《试玩数据收集说明与同意》</a>
+            <p class="deferred-note">自愿参与；不勾选也可试玩，开始后仍可关闭。</p>
+          </div>
+        </section>
+      </main>
+
+    </div>
+
+    <script src="save-slots.js?r=219"></script>
+    <script src="telemetry.js?r=219"></script>
+  <script src="customer-catalog.js?r=219"></script><script src="customers.js?r=219"></script><script src="customer-view.js?r=219"></script><script src="pill-palette.js?r=219"></script><script src="entry-images.js?r=219"></script><script src="local-image-sources.js?r=1"></script><script src="asset-loader.js?r=warm-local-1"></script><script src="warm-cinnabar-assets.js?r=2"></script><script src="crafts.js?r=219"></script><script src="warm-cinnabar-growth.js?r=1"></script><script src="economy.js?r=219"></script><script src="warm-cinnabar-props.js?r=2"></script><script src="lease.js?r=219"></script><script src="campaign.js?r=ten-reputation-zero-failure-20261125"></script><script src="ritual-brush.js?r=219"></script><script src="app.js?r=ten-reputation-zero-failure-20261125"></script>
+<script src="pill-body.js?r=warm-audit-2"></script><script src="ui-runtime.js?r=219"></script><script src="simulation.js?r=219"></script><script src="campaign-ui.js?r=ten-reputation-zero-failure-20261125"></script><script src="dialogue-content.js?r=219"></script><script src="dialogue-core.js?r=219"></script><script src="dialogue-opening.js?r=219"></script><script src="art-assets.js?r=warm-props-1"></script><script src="alchemy-assets.js?r=warm-audit-1"></script><script src="economy-ui.js?r=219"></script><script src="equipment-ui.js?r=219"></script><script src="pill-bag.js?r=stock-tabs-1"></script><script src="consignment-bag.js?r=warm-audit-2"></script><script src="world-layout.js?r=219"></script><script src="game-shell.js?r=ten-reputation-zero-failure-20261125"></script><script src="room-ui.js?r=warm-audit-1"></script><script src="scene2d.js?r=warm-motion-1"></script><script src="scene-feedback.js?r=return-2"></script><script src="refine-animation.js?r=warm-motion-1"></script><script src="observation-near.js?r=219"></script><script src="herb-tray.js?r=stock-tabs-1"></script><script src="market-merchants.js?r=219"></script><script src="warm-cinnabar-visitors.js?r=1"></script><script src="market-scene.js?r=warm-props-1"></script><script src="scene-props.js?r=warm-props-1"></script><script src="journal-ui.js?r=219"></script><script src="consignment-ui.js?r=219"></script><script src="counter-people.js?r=219"></script><script src="onboarding.js?r=219"></script><script src="save-slots-ui.js?r=219"></script><script src="commission-motion.js?r=219"></script><script src="refine-odds.js?r=219"></script><script src="information-ui.js?r=219"></script><script src="world-ui.js?r=warm-props-1"></script><script src="ui-settings.js?r=warm-ui-1"></script><script src="workbench.js?r=219"></script><script src="furnace-view.js?r=219"></script><script src="furnace-guidance.js?r=219"></script><script src="scene-projection.js?r=warm-fire-1"></script><script src="scene-lid-layer.js?r=mobile-plate-1"></script><script src="scene-runtime.js?r=stock-labels-1"></script><script src="furnace-surface.js?r=219"></script><script src="loop.js?r=stock-tabs-1"></script><script src="value-preview.js?r=219"></script><script src="warm-cinnabar-ui.js?r=2"></script><script src="warm-cinnabar-stock.js?r=stock-labels-1"></script>
+<script src="main-menu.js?r=warm-settings-1"></script>
+<script src="game-feel.js?r=219"></script>
+<script src="furnace-fire.js?r=warm-fire-1"></script>
+<script src="refine-performance.js?r=warm-motion-1"></script>
+<script src="dialogue-ui.js?r=219"></script>
+<script src="merchant-visit.js?r=219"></script>
+<script src="craft-buyer.js?r=219"></script>
+</body>
+</html>

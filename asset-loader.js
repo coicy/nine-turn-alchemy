@@ -32,7 +32,13 @@
         }
       };
       image.onerror = () => finish(false);
-      image.src = src;
+      // Local files have opaque origins: use the same approved bytes via a script
+      // transport only for images whose consumers read or export Canvas pixels.
+      if (window.AlchemyLocalImages?.has(src)) {
+        window.AlchemyLocalImages.source(src).then(uri => {
+          if (image.onload) image.src = uri;
+        }).catch(() => { if (image.onerror) finish(false); });
+      } else image.src = src;
     }).finally(() => pending.delete(src));
     pending.set(src, loading);
     return loading;
@@ -42,8 +48,12 @@
     return layout.matches ? 'mobile' : 'desktop';
   }
 
+  function sceneDirectory(size) {
+    return document.body.classList.contains('warm-cinnabar-experiment') ? 'assets/scene-entry/warm-cinnabar/' : size === 'desktop' ? 'assets/scene-entry/' : 'assets/scene-illustrated/';
+  }
+
   function roomImages(size) {
-    const room = (size === 'desktop' ? 'assets/scene-entry/' : 'assets/scene-illustrated/') + 'room-' + size;
+    const room = sceneDirectory(size) + 'room-' + size;
     return [room + '-open.webp', room + '-closed.webp'];
   }
 
@@ -54,7 +64,7 @@
   function entryImages(size) {
     // The first room and immediately reachable furnace are the entry contract on both platforms.
     // Customer art and later scenes already load through their own renderers.
-    const directory = size === 'desktop' ? 'assets/scene-entry/' : 'assets/scene-illustrated/';
+    const directory = sceneDirectory(size);
     return ['room', 'furnace'].flatMap(scene => ['open', 'closed', 'front'].map(layer =>
       directory + scene + '-' + size + '-' + layer + '.webp'));
   }

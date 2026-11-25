@@ -21,7 +21,7 @@
   if (!quote.complete) return progress + ' · 还需 ' + Math.ceil(quote.target - quote.after) + ' 药力';
   return progress + ' · 可交齐 · 到账 ' + quote.reward + ' 铜钱';
  }
- function restore(key,fallback){const el=key&&document.querySelector(key);(el?.checkVisibility()?el:fallback)?.focus?.({preventScroll:true});}
+ function restore(key,fallback){const el=key&&document.querySelector(key);(el?.isConnected&&!el.inert&&el.getClientRects().length?el:fallback)?.focus?.({preventScroll:true});}
  function art(p){const a=window.AlchemyPillArt,d=a.describe(p),state={...(p.craftKind?{craftKind:p.craftKind}:{}),appearance:d.appearance,nature:d.nature,turn:d.turn,quality:d.quality};return '<span class="ux-pill-art" data-pill-art-state="'+esc(JSON.stringify(state))+'" data-pill-art-key="'+esc(d.key)+'"><img src="'+a.image(state)+'" alt=""></span>';}
  let blocked='',blockScope='',noticeTimer;
  function scope(){const s=api.snapshot(),c=api.campaign();return [c?.day,c?.phase,s.orderId,s.attempt,s.turn,s.pillEnded,s.roundEnded,s.busy,c?.economy?.coins].join('|');}

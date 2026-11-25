@@ -1,0 +1,222 @@
+/* Experiment UI contract: ivory paper, warm wood, jade support, cinnabar decisions. */
+body.warm-cinnabar-experiment {
+  color-scheme:light;
+  --bg:#d9c5a4; --text:#3a2d25; --muted:#705b46; --faint:#78654d;
+  --gold:#934832; --gold-light:#bd794f; --cyan:#376d5c;
+  --danger:#9b3b2b; --success:#355e46; --line:#b59870;
+  --panel:#f4e6c9; --panel-strong:#ead4ad;
+  --warm-ui-paper:linear-gradient(110deg,#fbf0d9,#f0dfbc);
+  --warm-ui-shadow:0 5px 18px #462d202e,inset 0 0 0 3px #fff5df55;
+  --warm-nav-bottom:60px;
+}
+body.warm-cinnabar-experiment :is(button,input,select,textarea) { font-family:inherit; }
+body.warm-cinnabar-experiment :is(button,summary,[role=button],input,select):focus-visible {
+  outline:2px solid #315f50; outline-offset:3px;
+}
+body.warm-cinnabar-experiment :is(button,input,select):disabled { cursor:default; }
+body.warm-cinnabar-experiment :is(dialog,.engine-panel,.main-menu__card,.main-menu__settings-card) {
+  scrollbar-color:#a98055 #ead9bb; scrollbar-width:thin;
+}
+body.warm-cinnabar-experiment :is(dialog,.journal-page,.pill-bag-detail,.loop-letter-body) :is(p,dd,small,strong,h2,h3) { overflow-wrap:anywhere; }
+
+/* Navigation keeps one semantic order at every width. Popovers remain separate surfaces. */
+body.warm-cinnabar-experiment.art-repair .engine-nav {
+  gap:8px; padding:5px max(10px,env(safe-area-inset-right)) 5px max(10px,env(safe-area-inset-left))!important;
+  min-height:56px!important; flex:0 0 auto!important; align-items:center;
+  background:linear-gradient(#f6e9cf,#ead7b3)!important;
+  border-bottom:2px solid #9a7650; box-shadow:0 2px 4px #40281b22;
+}
+body.warm-cinnabar-experiment.art-repair .engine-nav>button {
+  flex-shrink:0; min-height:44px!important; padding:7px 12px!important;
+  font-size:14px!important; line-height:1.3; border:1px solid #a17c50;
+  background:#f8ecd2; color:#493624; border-radius:2px;
+}
+body.warm-cinnabar-experiment .engine-nav>.world-location-toggle { order:1!important; }
+body.warm-cinnabar-experiment .engine-nav>.world-catalog-toggle { order:2!important; }
+body.warm-cinnabar-experiment .engine-nav>.world-books-toggle { order:3!important; }
+body.warm-cinnabar-experiment .engine-nav>.scene-demand { order:4!important; flex:1; min-width:0; white-space:normal; }
+body.warm-cinnabar-experiment .engine-nav>#engineWallet { order:5!important; margin-left:auto; color:#6d563e; font-size:13px; white-space:nowrap; }
+body.warm-cinnabar-experiment .engine-nav>.world-settings-toggle { order:7!important; margin-left:0!important; }
+body.warm-cinnabar-experiment :is(#worldLocationMenu,#worldCatalogMenu,#worldBooksMenu,#worldSettings) {
+  max-height:calc(100dvh - var(--warm-nav-bottom) - 12px)!important;
+  overflow:auto; background:var(--warm-ui-paper)!important;
+  border:1px solid #9a7650!important; border-radius:2px; box-shadow:var(--warm-ui-shadow);
+}
+body.warm-cinnabar-experiment.art-repair .engine-nav :is(#worldLocationMenu,#worldCatalogMenu,#worldBooksMenu,#worldSettings) button {
+  min-height:44px; color:#493624; background:#fbf0da; border:1px solid #b79970; border-radius:2px;
+}
+body.warm-cinnabar-experiment.art-repair .engine-nav :is(#worldLocationMenu,#worldCatalogMenu,#worldBooksMenu,#worldSettings) button[aria-pressed=true] {
+  color:#fff1da; background:#a04e36; border-color:#763a29;
+}
+body.warm-cinnabar-experiment #worldSettings>.main-menu-return { order:1; margin:4px 0 0; justify-self:stretch; }
+
+/* Paper surfaces use flow instead of a stretched decorative bitmap. */
+body.warm-cinnabar-experiment :is(.save-picker,.ux-data-settings,.ux-title-rules,.ux-confirm,.main-menu__settings-card) {
+  color:#3a2d25; background:var(--warm-ui-paper)!important;
+  border:1px solid #987148!important; border-top:3px double #987148!important;
+  border-radius:2px; box-shadow:var(--warm-ui-shadow);
+}
+body.warm-cinnabar-experiment :is(.save-picker,.ux-data-settings,.ux-title-rules,.ux-confirm) {
+  width:min(680px,calc(100vw - 24px)); max-height:calc(100dvh - 32px);
+  padding:24px; font:15px/1.75 "Microsoft YaHei",sans-serif; overflow:auto;
+}
+body.warm-cinnabar-experiment dialog::backdrop { background:#30251c99; }
+body.warm-cinnabar-experiment :is(.save-picker,.ux-data-settings,.ux-title-rules) header {
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  border-bottom:1px solid #ba986c; padding-bottom:12px;
+}
+body.warm-cinnabar-experiment :is(.save-picker,.ux-data-settings,.ux-title-rules,.ux-confirm) h2 { margin:0; font-size:23px; line-height:1.4; }
+body.warm-cinnabar-experiment :is(.save-picker,.ux-data-settings,.ux-title-rules,.ux-confirm) :is(button,select) {
+  min-height:44px; padding:8px 14px; color:#493624; background:#fcf2dd;
+  border:1px solid #a17c50; border-radius:2px; font:inherit;
+}
+body.warm-cinnabar-experiment .ux-confirm [data-confirm],
+body.warm-cinnabar-experiment .save-picker [data-confirm-reset] { color:#fff2d9; background:#a04d35; border-color:#783a29; }
+body.warm-cinnabar-experiment .save-slot { background:#fbefd7; border:1px solid #b99a70; border-radius:2px; padding:16px; }
+body.warm-cinnabar-experiment .save-actions,.warm-cinnabar-experiment .save-reset-confirm { display:flex; flex-wrap:wrap; gap:8px; }
+body.warm-cinnabar-experiment .save-reset-confirm p { flex-basis:100%; }
+body.warm-cinnabar-experiment .ux-confirm>div { display:flex; flex-wrap:wrap; gap:10px; }
+body.warm-cinnabar-experiment .ux-data-settings :is(label,.telemetry-option) { color:#493624; }
+body.warm-cinnabar-experiment .ux-data-settings input { accent-color:#9f4d35; }
+body.warm-cinnabar-experiment .ux-data-settings :is(p,small,.telemetry-status) { color:#705b46; }
+body.warm-cinnabar-experiment .main-menu__settings-card { padding:24px; }
+body.warm-cinnabar-experiment .main-menu__settings-card button { min-height:44px; border-radius:2px; }
+body.warm-cinnabar-experiment .main-menu__status { color:#614a35; }
+
+/* Reading pages share the actual navigation bottom; content scrolls within the paper. */
+body.warm-cinnabar-experiment.engine-shell .journal-book.engine-panel {
+  inset:calc(var(--warm-nav-bottom) + 12px) max(12px,calc((100vw - 1100px)/2)) 12px!important;
+  display:flex; flex-direction:column; background:var(--warm-ui-paper)!important;
+  border:1px solid #987148; border-top:3px double #987148; border-radius:2px;
+  color:#3a2d25; box-shadow:var(--warm-ui-shadow);
+}
+body.warm-cinnabar-experiment .journal-heading {
+  flex:none; padding:18px 100px 0 24px; border-bottom:1px solid #b49165;
+  background:linear-gradient(#ebd5ad,#f1dfbd);
+}
+body.warm-cinnabar-experiment .journal-heading h2 { font:26px/1.4 KaiTi,serif; margin:0 0 12px; }
+body.warm-cinnabar-experiment .journal-tabs { flex-wrap:wrap; gap:6px; }
+body.warm-cinnabar-experiment .journal-tabs button { min-height:44px; padding:8px 16px; border-radius:2px 2px 0 0; background:#fbefd4; }
+body.warm-cinnabar-experiment .journal-tabs button[aria-pressed=true] { background:#a04f37; color:#fff2d9; border-color:#783a29; }
+body.warm-cinnabar-experiment .journal-page { height:auto!important; flex:1 1 auto; min-height:0; overflow:auto; padding:24px 30px 32px; color:#493624; font-size:15px; line-height:1.8; }
+body.warm-cinnabar-experiment .loop-letter-body { flex:1; min-height:0; overflow:auto; padding:24px; color:#493624; }
+body.warm-cinnabar-experiment .engine-close { top:calc(var(--warm-nav-bottom) + 22px)!important; right:max(24px,calc((100vw - 1100px)/2 + 12px))!important; min-height:44px; padding:8px 12px; background:#fcf0d8; color:#493624; border:1px solid #a17c50; border-radius:2px; }
+body.warm-cinnabar-experiment :is(.target-card,.resource-card,.order-rule,.fusion-entry,.rune-entry,.hint-box,.ledger-day,.lease-ledger,.consignment-board-v158) { border-color:#b79b75; border-radius:2px; }
+body.warm-cinnabar-experiment .journal-page :is(.target-card,.resource-card,.order-rule,.fusion-entry,.hint-box) { background:#f8ebcf; color:#493624; }
+body.warm-cinnabar-experiment .ledger-totals :is(dt,dd) { padding:12px; }
+
+/* Inventory retains identity and action labels at small sizes and in long lists. */
+body.warm-cinnabar-experiment.engine-shell .pill-bag-panel.engine-panel {
+  inset:calc(var(--warm-nav-bottom) + 12px) max(12px,calc((100vw - 1020px)/2)) 12px!important;
+  padding:20px!important; overflow:auto; background:var(--warm-ui-paper)!important;
+  border:1px solid #987148; border-top:3px double #987148; border-radius:2px; color:#493624;
+  grid-template-rows:auto minmax(0,1fr); align-content:start;
+}
+body.warm-cinnabar-experiment .pill-bag-heading { gap:12px; border-bottom:1px solid #b49165; margin-bottom:14px; }
+body.warm-cinnabar-experiment .pill-bag-heading h2 { font-size:25px; }
+body.warm-cinnabar-experiment .pill-bag-heading button { flex-shrink:0; min-height:44px; }
+body.warm-cinnabar-experiment #pillBagList { background:#dce0c8; border:4px solid #9c7c50; box-shadow:inset 0 0 0 1px #f8edcf; padding:10px; }
+body.warm-cinnabar-experiment .pill-bag-card { color:#493624!important; background:#f8eccf!important; border:1px solid #b49b72!important; border-radius:2px; }
+body.warm-cinnabar-experiment .pill-bag-card[aria-pressed=true] { color:#3d2e23!important; background:#f1d5a3!important; border:2px solid #9b4b32!important; box-shadow:inset 0 0 0 2px #fff0d0; }
+body.warm-cinnabar-experiment :is(.pill-bag-place,.empty-pill-place) { background:#7c927329; border:1px solid #8a9a7944; border-radius:2px; }
+body.warm-cinnabar-experiment .pill-bag-empty { color:#493624; border-color:#9b825d; background:#f8ebd1; }
+body.warm-cinnabar-experiment :is(.pill-bag-detail-actions,.pill-bag-consignment-note) { color:#654a31; }
+body.warm-cinnabar-experiment .pill-bag-panel button { border-radius:2px; }
+body.warm-cinnabar-experiment .pill-bag-panel button.pill-bag-action { background:#fcf0d6; color:#5d402b; border:1px solid #a37c4d; box-shadow:none; }
+body.warm-cinnabar-experiment .pill-bag-panel button.pill-bag-action-submit { background:#a04d35; color:#fff2d9; border-color:#783a29; }
+body.warm-cinnabar-experiment :is(.pill-bag-action-consign,.loop-action-consign) { background:#ead4ad!important; color:#593c27!important; border-color:#9e774a!important; }
+body.warm-cinnabar-experiment :is(.equipment-drawer,.pill-detail-panel,.craft-trade-panel) { color:#493624; background:var(--warm-ui-paper)!important; border:1px solid #987148!important; border-radius:2px; box-shadow:var(--warm-ui-shadow); max-height:calc(100dvh - var(--warm-nav-bottom) - 24px); overflow:auto; }
+body.warm-cinnabar-experiment .equipment-card { color:#493624; background:#fbefd6; border:1px solid #b79b70; border-radius:2px; }
+body.warm-cinnabar-experiment .equipment-card small { color:#705b46; line-height:1.7; }
+body.warm-cinnabar-experiment .equipment-heading h2 { margin:0; font-size:23px; line-height:1.4; }
+body.warm-cinnabar-experiment .equipment-library { border-color:#b99a70; }
+body.warm-cinnabar-experiment :is(.equipment-actions,.equipment-targets) button { min-height:44px; border-radius:2px; }
+
+/* Dialogue keeps its scene transparent. Only text and auxiliary views receive paper. */
+body.warm-cinnabar-experiment #gameDialogue.game-dialogue { background:transparent!important; border:0!important; box-shadow:none!important; --dialogue-bottom:68px; }
+body.warm-cinnabar-experiment #gameDialogue .dialogue-main,
+body.warm-cinnabar-experiment #gameDialogue [data-dialogue-view]:not([data-dialogue-view=conversation]) { background:var(--warm-ui-paper); border:1px solid #a17a4b; border-top:3px double #a17a4b; border-radius:2px; box-shadow:var(--warm-ui-shadow); }
+body.warm-cinnabar-experiment #gameDialogue .dialogue-copy header { background:#a04e36; border-color:#783a29; border-radius:2px; }
+body.warm-cinnabar-experiment #gameDialogue #dialogueChoices button { background:#fbefd7; color:#493624; border-color:#aa8352; border-radius:2px; }
+body.warm-cinnabar-experiment #gameDialogue footer { padding:3px 12px; background:#f4e4c5f5; border:1px solid #aa8659; gap:12px; }
+body.warm-cinnabar-experiment #gameDialogue footer button { color:#65482f!important; text-shadow:none; min-height:44px; font-size:13px; }
+body.warm-cinnabar-experiment #gameDialogue footer button[aria-pressed=true] { color:#963f2c!important; }
+body.warm-cinnabar-experiment #gameDialogue #dialogueNext { color:#8f3e2b!important; font-weight:600; }
+body.warm-cinnabar-experiment #gameDialogue :is(select,[data-dialogue-back],#dialogueKeep,#dialogueConfirmSkip) { border-radius:2px; color:#493624; background:#fbf0d8; }
+body.warm-cinnabar-experiment #gameDialogue #dialogueConfirmSkip { color:#fff2d9; background:#a04d35; border-color:#783a29; }
+body.warm-cinnabar-experiment:has(#gameDialogue[open][data-view=conversation]) #counterServices { visibility:hidden!important; }
+body.warm-cinnabar-experiment .counter-board .counter-letter { background:#fbefd5!important; }
+body.warm-cinnabar-experiment .craft-trade-panel.engine-panel:not([hidden]) { display:block; }
+body.warm-cinnabar-experiment .craft-buyer-goods { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+body.warm-cinnabar-experiment .craft-offer-card { padding:16px; border:1px solid #b79970; background:#f9ecd2; border-radius:2px; }
+body.warm-cinnabar-experiment .opening-load { background:linear-gradient(#f0e0bd,#dfc49c); color:#493624; }
+body.warm-cinnabar-experiment .opening-load__progress { accent-color:#a04d35; }
+body.warm-cinnabar-experiment .opening-load__actions button { min-height:44px; border-radius:2px; }
+body.warm-cinnabar-experiment .opening-load__status { color:#614a35!important; }
+body.warm-cinnabar-experiment .opening-load[data-state=failed] .opening-load__status { color:#8e3828!important; }
+body.warm-cinnabar-experiment #openingLoadBack { color:#493624; background:#f8ebd1; border:1px solid #9f794e; }
+
+@media(max-width:650px) {
+  body.warm-cinnabar-experiment.art-repair .engine-nav {
+    display:grid!important; grid-template-columns:auto minmax(0,1fr) auto auto;
+    gap:4px; align-items:stretch; overflow:visible;
+    padding:5px max(8px,env(safe-area-inset-right)) 5px max(8px,env(safe-area-inset-left))!important;
+  }
+  body.warm-cinnabar-experiment .engine-nav .scene-demand[hidden],
+  body.warm-cinnabar-experiment.art-repair:not([data-work-mode=furnace]) .engine-nav .furnace-heading { display:none!important; }
+  body.warm-cinnabar-experiment.art-repair .engine-nav>button { padding:7px 8px!important; font-size:13px!important; min-width:0; }
+  body.warm-cinnabar-experiment .engine-nav>.world-location-toggle { grid-column:1; grid-row:1; }
+  body.warm-cinnabar-experiment .engine-nav>.world-books-toggle { grid-column:3; grid-row:1; }
+  body.warm-cinnabar-experiment .engine-nav>.world-settings-toggle { grid-column:4; grid-row:1; align-self:stretch; justify-self:stretch; }
+  body.warm-cinnabar-experiment.art-repair .engine-nav>#engineWallet { display:block!important; grid-column:1/-1; grid-row:2; align-self:center; margin:0!important; font-size:12px; min-width:0; overflow-wrap:anywhere; white-space:normal; }
+  body.warm-cinnabar-experiment .engine-nav>.scene-demand { grid-column:2; grid-row:1; max-width:none; text-align:center; }
+  body.warm-cinnabar-experiment :is(#worldLocationMenu,#worldCatalogMenu,#worldBooksMenu,#worldSettings) { left:8px!important; right:8px!important; width:auto!important; min-width:0!important; }
+  /* Put the furnace controls and the shared navigation in the same grid. */
+  body.warm-cinnabar-experiment.art-repair[data-work-mode=furnace] .engine-nav { grid-template-columns:44px minmax(0,1fr) repeat(3,minmax(44px,auto)); }
+  body.warm-cinnabar-experiment.art-repair[data-work-mode=furnace] .engine-nav .furnace-heading { display:contents!important; }
+  body.warm-cinnabar-experiment.art-repair[data-work-mode=furnace] .engine-nav .furnace-heading>button {
+    min-width:0; min-height:44px; margin:0; justify-self:stretch; align-self:stretch;
+  }
+  body.warm-cinnabar-experiment.art-repair .engine-nav .furnace-heading>.furnace-back { grid-area:1 / 1; font-size:22px; line-height:1; }
+  body.warm-cinnabar-experiment.art-repair .engine-nav .furnace-heading>.scene-demand {
+    grid-area:1 / 2; align-self:stretch; white-space:nowrap; text-align:left; padding-inline:8px!important;
+  }
+  body.warm-cinnabar-experiment.art-repair .engine-nav .furnace-heading>.furnace-inspect { grid-area:1 / 3; }
+  body.warm-cinnabar-experiment.art-repair .engine-nav .furnace-heading>.furnace-manual { grid-area:1 / 4; }
+  body.warm-cinnabar-experiment[data-work-mode=furnace] .engine-nav>.world-settings-toggle { grid-area:1 / 5; }
+  body.warm-cinnabar-experiment[data-work-mode=furnace] .engine-nav>#engineWallet { display:none!important; }
+  body.warm-cinnabar-experiment .journal-heading { padding:14px 88px 0 16px; }
+  body.warm-cinnabar-experiment .journal-heading h2 { font-size:23px; }
+  body.warm-cinnabar-experiment .journal-tabs { margin-right:-70px; }
+  body.warm-cinnabar-experiment .journal-tabs button { padding:8px 12px; font-size:14px; }
+  body.warm-cinnabar-experiment .journal-page { padding:18px 16px 26px; }
+  body.warm-cinnabar-experiment .engine-close { right:24px!important; top:calc(var(--warm-nav-bottom) + 22px)!important; }
+  body.warm-cinnabar-experiment.engine-shell .pill-bag-panel.engine-panel { padding:14px!important; }
+  body.warm-cinnabar-experiment .pill-bag-heading h2 { font-size:22px; }
+  body.warm-cinnabar-experiment :is(.equipment-drawer,.pill-detail-panel,.craft-trade-panel) { top:calc(var(--warm-nav-bottom) + 12px)!important; bottom:12px!important; left:12px!important; right:12px!important; width:auto!important; max-height:none!important; }
+  body.warm-cinnabar-experiment.world-mobile.object-world.engine-shell .equipment-drawer.engine-panel:has(.equipment-library) { inset:calc(var(--warm-nav-bottom) + 12px) 12px 12px!important; height:auto!important; max-height:none!important; }
+  body.warm-cinnabar-experiment :is(.save-picker,.ux-data-settings,.ux-title-rules,.ux-confirm) { padding:18px; }
+  body.warm-cinnabar-experiment :is(select,input:not([type=checkbox])) { font-size:16px; }
+  body.warm-cinnabar-experiment #gameDialogue footer { gap:4px; padding:3px 8px; flex-wrap:wrap; }
+  body.warm-cinnabar-experiment #gameDialogue footer button { font-size:12px; padding:4px 6px; }
+  body.warm-cinnabar-experiment .counter-board .counter-note { width:clamp(96px,calc(215 * var(--counter-scale,1px)),215px)!important; }
+  body.warm-cinnabar-experiment.object-world .counter-board .daily-actions { bottom:12px; right:12px; left:80px; display:flex; justify-content:flex-end; gap:6px; margin:0; }
+  body.warm-cinnabar-experiment.object-world .counter-board .daily-actions button { min-height:44px; max-width:50%; padding:6px 10px; font-size:12px; line-height:1.35; border-radius:2px; }
+  body.warm-cinnabar-experiment.object-world .counter-board .world-day-bell { height:44px; min-height:44px; min-width:110px; padding:5px 5px 5px 35px!important; }
+  body.warm-cinnabar-experiment.object-world .counter-board .world-day-bell::before { left:4px; top:6px; width:30px; height:30px; }
+  body.warm-cinnabar-experiment #counterServices { left:12px; right:auto; bottom:64px; max-width:calc(100% - 24px); gap:6px; }
+  body.warm-cinnabar-experiment #counterServices button { font-size:12px; padding:6px 10px; border-radius:2px; }
+}
+@media(max-height:500px) {
+  body.warm-cinnabar-experiment :is(.save-picker,.ux-data-settings,.ux-title-rules,.ux-confirm) { max-height:calc(100dvh - 16px); padding:14px 20px; }
+  body.warm-cinnabar-experiment .journal-heading { padding-top:10px; }
+  body.warm-cinnabar-experiment .journal-heading h2 { margin-bottom:6px; }
+}
+
+/* Readable ink wordmark on its own paper shop sign. */
+body.warm-cinnabar-experiment .main-menu__brand { width:min(576px,100%); box-sizing:border-box; padding:8px 16px; background:#f2e4c5; border:1px solid #98744d; box-shadow:0 3px 0 #76503866,inset 0 0 0 4px #d5bc9055; filter:none; text-shadow:none; }
+body.warm-cinnabar-experiment .main-menu__brand h1 img { width:100%; max-width:520px; margin:auto; }
+body.warm-cinnabar-experiment #worldSettings .scene-sound { display:block!important; margin:0; }
+
+body.warm-cinnabar-experiment .main-menu__settings-card { max-height:calc(100dvh - 32px); overflow:auto; min-height:0; }
+body.warm-cinnabar-experiment .main-menu__settings-card header { position:sticky; top:0; z-index:1; background:#f3e6c9; }

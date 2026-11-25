@@ -15,7 +15,8 @@
     button.classList.add('pill-bag-action', `pill-bag-action-${kind}`);
     button.replaceChildren();
     const icon = document.createElement('img');
-    icon.src = `assets/ui/${icons[kind]}`;
+    const src = `assets/ui/${icons[kind]}`;
+    icon.src = window.AlchemyWarmProps?.resolve(src) || src;
     icon.alt = '';
     icon.setAttribute('aria-hidden', 'true');
     const text = document.createElement('span');
@@ -33,8 +34,8 @@
     const actions = detail.querySelector('.pill-bag-detail-actions');
     setActionContent(detail.querySelector('[data-submit-pill]'), 'submit', '提交委托');
     const sale = detail.querySelector('[data-sell-pill]');
-    if (sale && pill) setActionContent(sale, 'sell', `立即出售 · ${economy.saleValue(game.campaign(), pill)} 铜钱`);
-    if (!pill || !game.previewConsignment) return;
+    if (sale && pill) setActionContent(sale, 'sell', `${pill.materialAdvance ? '抵料后出售' : '立即出售'} · ${economy.saleValue(game.campaign(), pill)} 铜钱`);
+    if (!pill || pill.craftKind || !game.previewConsignment) return;
     const result = game.previewConsignment(id);
     const note = document.createElement('p');
     note.className = 'pill-bag-consignment-note';
