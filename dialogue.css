@@ -48,7 +48,7 @@
 .dialogue-sr{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden;white-space:nowrap}
 .counter-conversation{position:absolute;z-index:7;right:24px;top:90px;min-height:44px;padding:9px 16px;background:#f0dfbb;color:#6d432c;border:1px solid #a98659;border-radius:3px;font:15px "Microsoft YaHei",sans-serif}
 .counter-conversation[hidden]{display:none!important}
-body:has(#gameDialogue[open][data-view=conversation]) :is(.engine-nav,.visitor-dialogue,.counter-conversation,.counter-note,.counter-letter,.counter-lease-slip,.counter-receipt,.counter-board .daily-actions,.daily-heading,.browse-customers,.world-passage,.world-books,.world-day-bell,.herb-tray,.furnace-judgment,.furnace-tray){visibility:hidden!important}
+body:has(#gameDialogue[open][data-view=conversation]) :is(.engine-nav,.visitor-dialogue,.counter-conversation,.counter-note,.counter-letter,.counter-lease-slip,.counter-receipt,.counter-board .daily-actions,.daily-heading,.browse-customers,.world-passage,.world-books,.world-day-bell,#counterServices,.herb-tray,.furnace-judgment,.furnace-tray){visibility:hidden!important}
 /* Native dialog blocks the page visually, and this makes the same boundary explicit for hit testing. */
 body:has(#gameDialogue[open]) .engine-viewport{pointer-events:none!important;cursor:default!important}
 body:has(#gameDialogue[open]) :is(.engine-nav,.engine-panel,.world-passage,.world-books,.herb-tray,.furnace-judgment,.furnace-tray){cursor:default!important}

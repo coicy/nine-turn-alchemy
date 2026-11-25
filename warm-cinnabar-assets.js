@@ -6,7 +6,7 @@
   const portraits={merchant:'merchant',traveller:'scholar',herbalist:'herbalist','clothier-v61':'clothier'};
   for(const asset of window.AlchemyCustomerCatalog.assets){
     const name=portraits[asset.id];if(!name)continue;
-    for(const state of Object.values(asset.states))state.src=root+name+'.png';
+    for(const state of Object.values(asset.states))state.src=root+name+'.webp';
   }
   const previous=window.AlchemyPillPalette;
   const sources=Object.freeze(Object.fromEntries(Object.keys(previous.sources).map(id=>[id,root+'growth/pill-'+id+'.webp'])));

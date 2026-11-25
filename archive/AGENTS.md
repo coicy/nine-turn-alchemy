@@ -11,6 +11,7 @@
 - `assets/`：已退出正式运行目录的历史资源，按原专项版本保留。
 - `opening-story-legacy/`：已被当前对白系统替代的旧开场实现，仅用于追溯。
 - `previews/`：已退出当前预览入口的历史页面和截图核查材料，按原专项版本保留。
+- `verify-legacy/`：无活跃外部依赖、已退出当前规则的前代验证脚本（`verify-mvp.cjs`、`verify-rune-combos.cjs`、`verify-art-assets.cjs`、`verify-unified-pills-v156.cjs`）。
 
 ## 迁移规则
 

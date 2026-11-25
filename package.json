@@ -4,6 +4,8 @@
   "version": "220.0.0",
   "description": "九转丹坊浏览器原型验证工具",
   "scripts": {
+    "build": "node build-bundle.cjs",
+    "build:check": "node build-bundle.cjs --check",
     "verify:painted-scenes": "node verify-painted-scenes.cjs"
   },
   "devDependencies": {

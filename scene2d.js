@@ -40,7 +40,7 @@
     const imageHeight=parseFloat(stage.style.getPropertyValue('--room-base-height')),imageTop=window.AlchemySceneContinuity?parseFloat(stage.style.getPropertyValue('--scene-image-top'))||0:0;
     const base=imageHeight+imageTop,roomWidth=parseFloat(stage.style.getPropertyValue('--room-base-width')),left=parseFloat(stage.style.getPropertyValue('--room-camera-left'));
     if(!Number.isFinite(base)||canvas.height<=base||roomWidth<1)return;
-    const near=furnace(),im=window.AlchemyAssets?.getImage(window.AlchemySceneContinuity?.imageFor(near)||(near?'assets/furnace-view/mobile-v2.webp':'assets/workbench/room-mobile.png'));
+    const near=furnace(),im=window.AlchemyAssets?.getImage(window.AlchemySceneContinuity?.imageFor(near)||(near?'assets/furnace-view/mobile-v2.webp':'assets/workbench/room-mobile.webp'));
     if(!im?.naturalWidth)return;
     const sourceH=near?Math.floor(im.naturalHeight*.14):148,sourceY=near?im.naturalHeight-sourceH:1300,tileH=sourceH*roomWidth/im.naturalWidth;
     // Continue the same scene's unobstructed floor; reflected edges meet without a seam.

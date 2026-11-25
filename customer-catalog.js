@@ -7,8 +7,8 @@
   states:{neutral:{src:sheet,columns:3,rows:1,column,row:0}},
   source:'customers',notes:'现有三人图集；其他状态暂用默认立绘'
  }));
- assets.push({id:'clothier-v61',canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-market/clothier-v2.webp',columns:1,rows:1,column:0,row:0}},source:'OrdinaryCustomersStylePass20261125',notes:'陆绣统一木刻绘本风；静态柜台接入'});
- for(const [id,file] of [['merchant','merchant-v2'],['traveller','scholar-v2'],['herbalist','herbalist-v2']]){const a=assets.find(a=>a.id===id);a.layout='native-v61';a.states.neutral={src:'assets/customers-market/'+file+'.png',columns:1,rows:1,column:0,row:0};a.source='OrdinaryCustomersStylePass20261125';a.notes='统一木刻绘本风；静态状态共用母稿';}
+ assets.push({id:'clothier-v61',canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-market/clothier-v3.webp',columns:1,rows:1,column:0,row:0}},source:'OrdinaryCustomersStylePass20261125',notes:'陆绣统一木刻绘本风；静态柜台接入'});
+ for(const [id,file] of [['merchant','merchant-v3'],['traveller','scholar-v3'],['herbalist','herbalist-v3']]){const a=assets.find(a=>a.id===id);a.layout='native-v61';a.states.neutral={src:'assets/customers-market/'+file+'.webp',columns:1,rows:1,column:0,row:0};a.source='OrdinaryCustomersStylePass20261125';a.notes='统一木刻绘本风；静态状态共用母稿';}
  assets.push({id:'imperial-gao',canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-market/gao-quan.webp',columns:1,rows:1,column:0,row:0}},source:'SpecialCustomerGao20261125',notes:'高全独立透明立绘；朱漆文书匣为身份锚点'});
  for(const [id,file,note] of [['special-hua','hua-mantang','红蟒戏服与半卸油彩'],['special-bai','bai-xiaoqi','药痕与草药包'],['special-qin','qin-yuchan','深紫侯府锦衣与孝帕'],['special-jiao','jiao-banxian','放大镜、酸水葫芦与做旧丹'],['special-cui','cui-baojuan','青灰吏袍、契书与竹扇']]) assets.push({id,canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-market/'+file+'.webp',columns:1,rows:1,column:0,row:0}},source:'SpecialCustomers20261125',notes:note});
  // Several profiles currently share a placeholder appearance. Identity never depends on image index.
@@ -31,7 +31,7 @@
   ['special-cui','崔抱卷','刑房书办','special-cui','求驻颜提气之丸，令久病之人在两日内面色红润。'],
   ['imperial-gao','高全','司礼监内侍','imperial-gao','奉旨宣办御前延年丹药，今日需见回执。']
  ].map(([id,name,role,appearanceId,request])=>({id,name,role,appearanceId,request}));
- const notes=Object.fromEntries(['merchant','herbal','scholar','courier','guard','recluse'].map(id=>[id,{id,src:'assets/counter-props/'+id+'.png'}]));
+ const notes=Object.fromEntries(['merchant','herbal','scholar','courier','guard','recluse'].map(id=>[id,{id,src:'assets/counter-props/'+id+'.webp'}]));
  const noteRoles={'坊市行商':'merchant','采药散修':'herbal','山间药农':'herbal','游学弟子':'scholar','驿路信使':'courier','渡口船客':'courier','远行修士':'courier','守夜修士':'guard','探洞修士':'guard','闭关散修':'recluse','布庄行商':'merchant','客栈掌柜':'merchant','食摊掌勺':'herbal','炉坊学徒':'herbal','采石工':'herbal','采药人':'herbal','山居散修':'recluse','退隐散修':'recluse','私塾先生':'scholar','游学书生':'scholar','商队护卫':'guard','行脚护送':'guard','山路跑腿':'courier','渡口船工':'courier','试药童':'herbal','侯府内眷':'merchant','奇石造假客':'recluse','春台班主':'courier','刑房书办':'scholar','司礼监内侍':'guard'};
  for(const p of profiles)p.noteStyle=noteRoles[p.role]||'recluse';
 

@@ -45,8 +45,8 @@
     'assets/ui/danfang-wordmark.svg',
     'assets/ui/sale-mark.svg',
     'assets/ui/submit-mark.svg',
-    'assets/workbench/folio.png',
-    'assets/workbench/room-desktop.png',
-    'assets/workbench/room-mobile.png',
+    'assets/workbench/folio.webp',
+    'assets/workbench/room-desktop.webp',
+    'assets/workbench/room-mobile.webp',
   ])]);
 })();

@@ -32,7 +32,7 @@
   const e=game.campaign()?.economy;if(!e)return;herbs.querySelector('.scene-balance').textContent=String(e.coins);
   const list=Array.isArray(e.pills)?e.pills:[];pills.hidden=!warm&&!list.length;const next=list.map(p=>p.id+':'+p.value+':'+p.turn+':'+(p.appearance||'plain')).join('|');
   if(next!==stockKey||!pills.childElementCount){stockKey=next;window.AlchemyUX.html(pills,'<div class="scene-pill-caption">收纳 <span>'+list.length+'</span></div>'+(list.length?'<div class="scene-pill-row">'+list.map(p=>'<button type="button" data-stock-pill="'+p.id+'" data-focus-key="stock-pill-'+p.id+'" aria-label="查看'+p.turn+'转丹药，药力'+Math.round(p.value)+'">'+window.AlchemyUX.art(p)+'<span>'+Math.round(p.value)+'</span></button>').join('')+'</div>':warm?'<p class="warm-stock-empty">暂无成品</p>':''));}
-  herbs.querySelectorAll('.herb-slot[data-slot]').forEach(el=>{const title=el.getAttribute('title')||'';el.dataset.shortLabel=title.includes('委托供料')?'本单料':title.startsWith('本炉药包')?'本炉料':title.startsWith('普通药包')?'普通料':title.startsWith('精选药包')?'精选料':title.split(' · ')[0];});
+  herbs.querySelectorAll('.herb-slot[data-slot]').forEach(el=>{const title=el.getAttribute('title')||'';el.dataset.shortLabel=(title.includes('委托供料')||title.includes('本单供料'))?'本单料':title.startsWith('本炉药包')?'本炉料':title.startsWith('普通药包')?'普通料':title.startsWith('精选药包')?'精选料':title.split(' · ')[0];});
  }
  function fit(){if(fitting)return true;fitting=true;try{
   const s=game.snapshot(),v=route.snapshot(),near=v.workMode==='furnace',mobile=innerWidth<=650,w=viewport.clientWidth,h=viewport.clientHeight,data=P[keyFor()];if(!w||!h||!data)return true;
@@ -45,7 +45,7 @@
   const fireAnchor=(warm&&window.AlchemyWarmFireProjection[keyFor()])||data.fire;
   const fireBottom=(fireAnchor.y+fireAnchor.h/2)*imageHeight+Math.max(fireAnchor.h*imageHeight,44/scale)/2;
   const minimumScene=Math.ceil(Math.max(imageHeight*(1-2*data.mouth.y),2*fireBottom-imageHeight)*scale+16);
-  const stockLimit=mobile?Math.max(112,Math.min(360,h-minimumScene,h*.56)):Math.min(360,h*.48);
+  const stockLimit=mobile?Math.max(112,Math.min(410,h-minimumScene,h*.56)):Math.min(360,h*.48);
   const stockBorder=Math.max(0,herbs.offsetHeight-herbs.clientHeight);
   const stockHeight=Math.max(112,Math.min(stockLimit,herbs.scrollHeight+stockBorder));
   const sceneH=mobile?Math.max(245,h-stockLimit):h,top=(sceneH/scale-imageHeight)/2;

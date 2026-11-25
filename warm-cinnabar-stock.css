@@ -74,6 +74,12 @@ body.warm-cinnabar-experiment.scene-continuity .scene-stock .herb-slot strong {
 .warm-stock-drop.is-targeted { background:#ffe2a044; border-color:#fff3c3; }
 
 @media(max-width:650px) {
+ body.warm-cinnabar-experiment .scene-stock { scroll-padding-bottom:max(12px,env(safe-area-inset-bottom)); }
+ body.warm-cinnabar-experiment .scene-stock .loop-selection { padding-top:4px; }
+ body.warm-cinnabar-experiment .scene-stock .loop-trades { gap:5px; }
+ body.warm-cinnabar-experiment .scene-stock .loop-trades button { min-height:44px; padding:4px 8px; font-size:13px; line-height:1.3; }
+ body.warm-cinnabar-experiment .scene-stock .loop-preview,
+ body.warm-cinnabar-experiment .scene-stock .loop-consignment-note { margin:2px 0; font-size:12px; line-height:1.35; }
  body.warm-cinnabar-experiment.art-repair .engine-nav>.scene-demand,
  body.warm-cinnabar-experiment.art-repair .engine-nav .furnace-heading>.scene-demand {
   white-space:normal!important; word-break:keep-all!important;
@@ -81,4 +87,25 @@ body.warm-cinnabar-experiment.scene-continuity .scene-stock .herb-slot strong {
  body.warm-cinnabar-experiment[data-work-mode=furnace] .furnace-fire::after {
   top:calc(100% + 6px); bottom:auto; pointer-events:none;
  }
+}
+@media(max-height:650px) {
+ body.warm-cinnabar-experiment.loop .scene-stock[data-scene-visible=true] {
+  display:flex!important; flex-direction:column; gap:2px; padding:4px 10px!important;
+ }
+ body.warm-cinnabar-experiment.loop .scene-stock .warm-stock-title { font-size:16px; line-height:1.25; }
+ body.warm-cinnabar-experiment.loop .scene-stock .scene-stock-nav { padding-bottom:4px; }
+ body.warm-cinnabar-experiment.loop .scene-stock .herb-materials,
+ body.warm-cinnabar-experiment.loop .scene-stock .scene-pill-stock {
+  grid-column:auto; grid-row:auto; display:block; max-height:none;
+ }
+ body.warm-cinnabar-experiment.loop .scene-stock .herb-slot { height:60px; min-height:60px; }
+ body.warm-cinnabar-experiment.loop .scene-stock .herb-slot img { width:36px; height:36px; }
+ body.warm-cinnabar-experiment.loop .scene-stock .scene-pill-row>button { height:58px; min-height:58px; max-height:none; }
+ body.warm-cinnabar-experiment.loop .scene-stock .scene-pill-row .ux-pill-art { width:34px!important; height:34px!important; min-width:34px; }
+ body.warm-cinnabar-experiment.loop .scene-stock .loop-selection { display:block; padding-top:4px; }
+ body.warm-cinnabar-experiment.loop .scene-stock .loop-selected-heading { display:flex; align-items:center; height:auto; min-height:36px; }
+ body.warm-cinnabar-experiment.loop .scene-stock .loop-selected-heading button { position:static; height:auto; min-height:44px; }
+ body.warm-cinnabar-experiment.loop .scene-stock .loop-preview { margin:2px 0 4px; font-size:12px; line-height:1.35; }
+ body.warm-cinnabar-experiment.loop .scene-stock .loop-trades { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; padding-right:0; }
+ body.warm-cinnabar-experiment.loop .scene-stock .loop-trades [data-loop-consign] { grid-column:1/-1; }
 }

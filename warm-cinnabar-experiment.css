@@ -41,10 +41,10 @@ body.warm-cinnabar-experiment input {
 
 /* Second style pass: shared carved bronze, paper and cinnabar language. */
 body.warm-cinnabar-experiment .tool-art {
-  background-image: var(--warm-tool-image,url('assets/warm-cinnabar/tools.png')) !important;
+  background-image: var(--warm-tool-image,url('assets/warm-cinnabar/tools.webp')) !important;
 }
 body.warm-cinnabar-experiment .world-day-bell::before {
-  background-image: url('assets/warm-cinnabar/tools.png') !important;
+  background-image: url('assets/warm-cinnabar/tools.webp') !important;
 }
 body.warm-cinnabar-experiment .engine-nav {
   background: linear-gradient(#f7ebd1,#e6cfaa);

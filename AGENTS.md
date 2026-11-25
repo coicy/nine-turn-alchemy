@@ -7,15 +7,18 @@
 
 ## 版本整理约定
 
-- 当前运行入口是 `index.html`；当前代码与资源使用稳定文件名和稳定目录名，不再把产品版本号写入运行路径。
+- 当前运行入口是 `index.html`（加载合并产物 `bundle.css` 与 `bundle.js`）；当前代码与资源使用稳定文件名和稳定目录名，不再把产品版本号写入运行路径。
+- 修改 `bundle-manifest.json` 列出的任意 `.css` / `.js` 源文件后，必须运行 `npm run build`（即 `node build-bundle.cjs`）重新生成 `bundle.css` 与 `bundle.js`，并通过 `npm run build:check` 校验同步。
+- `index-warm-cinnabar.html` 保留为散文件调试入口；`verify-simulation.cjs` 与 `verify-value-formula-v104.cjs` 作为共享测试沙箱前置依赖保留在根目录。
 - 根目录中仍保留的 `verify-*-vNN.cjs` 是历史验证工具，服务于旧交付证据，不属于当前运行入口；新验证脚本使用不带产品版本号的名称。
-- `archive/` 只保存已退出当前运行的资源、预览和过程材料；历史内容可追溯，但不得从中复制文件覆盖当前运行副本。
+- `archive/` 只保存已退出当前运行的资源、预览、失效历史验证脚本（`archive/verify-legacy/`）和过程材料；历史内容可追溯，但不得从中复制文件覆盖当前运行副本。
 
 ## 子目录
 
 - .qa/AGENTS.md。
 - archive/AGENTS.md。
 - archive/opening-story-legacy/AGENTS.md。
+- archive/verify-legacy/AGENTS.md。
 - assets/AGENTS.md。
 - character-style/AGENTS.md。
 - docs/AGENTS.md。
@@ -33,6 +36,10 @@
 - art-assets.js：运行逻辑或验证脚本。
 - asset-loader.js：运行逻辑或验证脚本。
 - asset-preview.html：项目资源或配置。
+- build-bundle.cjs：零依赖前端打包与同步校验脚本（按 `bundle-manifest.json` 合并生成 `bundle.css` / `bundle.js`）。
+- bundle-manifest.json：正式入口合并清单（54 CSS + 71 JS 精确加载顺序）。
+- bundle.css：正式入口合并样式产物（由 `build-bundle.cjs` 生成）。
+- bundle.js：正式入口合并脚本产物（由 `build-bundle.cjs` 生成）。
 - campaign-ui.js：运行逻辑或验证脚本。
 - campaign.css：界面样式。
 - campaign.js：运行逻辑或验证脚本。
@@ -178,7 +185,6 @@
 - verify-journal-browser.cjs：运行逻辑或验证脚本。
 - verify-logic-fixes.cjs：核心逻辑、法器联动、预览结算一致性与运行时兼容性回归验证脚本。
 - verify-loop-flow-browser.cjs：运行逻辑或验证脚本。
-- verify-mvp.cjs：运行逻辑或验证脚本。
 - verify-new-customer-v62.cjs：运行逻辑或验证脚本。
 - verify-object-world-v86.cjs：运行逻辑或验证脚本。
 - verify-observation-near.cjs：运行逻辑或验证脚本。
@@ -191,18 +197,16 @@
 - verify-reputation.cjs：运行逻辑或验证脚本。
 - verify-reputation-browser.cjs：运行逻辑或验证脚本。
 - verify-room-browser.cjs：运行逻辑或验证脚本。
-- verify-rune-combos.cjs：运行逻辑或验证脚本。
 - verify-save-slots-browser.cjs：运行逻辑或验证脚本。
 - verify-save-slots.cjs：运行逻辑或验证脚本。
 - verify-scene2d-browser.cjs：运行逻辑或验证脚本。
 - verify-shell.cjs：运行逻辑或验证脚本。
-- verify-simulation.cjs：运行逻辑或验证脚本。
+- verify-simulation.cjs：共享测试沙箱前置依赖。
 - verify-special-customers.cjs：特殊顾客四幕多轮剧情、特质打赏、第四幕捎信与来客旧闻验证脚本。
 - verify-telemetry.cjs：运行逻辑或验证脚本。
 - verify-theme-transitions.cjs：运行逻辑或验证脚本。
 - verify-tools.cjs：运行逻辑或验证脚本。
-- verify-unified-pills-v156.cjs：运行逻辑或验证脚本。
-- verify-value-formula-v104.cjs：运行逻辑或验证脚本。
+- verify-value-formula-v104.cjs：共享模拟沙箱前置依赖。
 - VERSION：当前产品统一版本号。
 - view-transitions.css：界面样式。
 - visual-feedback.css：界面样式。

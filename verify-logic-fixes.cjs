@@ -119,7 +119,8 @@ assert.ok(api().submit(yuanPill.id));
 assert.equal(economy().coins-coinsBefore,quote.reward,'preview reward matches settled reward 1:1');
 assert.ok(quote.reward>E.commissionReward({target:activeTarget},[yuanPill]),'preview includes artifact bonuses');
 
-// 7. HTML structure & ES2020-safe runtime APIs.
+// 7. HTML structure, bundle synchronization, WebP-only asset refs & ES2020-safe runtime APIs.
+const buildVer=fs.readFileSync(__dirname+'/VERSION','utf8').trim().toLowerCase();
 for(const entry of ['index.html','index-warm-cinnabar.html']){
   const html=fs.readFileSync(__dirname+'/'+entry,'utf8');
   const bodyEnd=html.indexOf('</body>'),headEnd=html.indexOf('</head>');
@@ -129,13 +130,22 @@ for(const entry of ['index.html','index-warm-cinnabar.html']){
 }
 const formalHtml=fs.readFileSync(__dirname+'/index.html','utf8');
 const formalRefs=[...formalHtml.matchAll(/<(?:script[^>]+src|link[^>]+rel="stylesheet"[^>]+href)="([^"]+)"/g)].map(m=>m[1]);
-assert.ok(formalRefs.length>100);
-assert.ok(formalRefs.every(u=>u.endsWith('?v=220')),'index.html uses uniform ?v=220 cache revision');
+assert.equal(formalRefs.length,2,'index.html bundles down to 2 requests (bundle.css + bundle.js)');
+assert.deepEqual(formalRefs,[`bundle.css?v=${buildVer.slice(1)}`,`bundle.js?v=${buildVer.slice(1)}`],'index.html references versioned bundle.css and bundle.js matching VERSION');
 
-const scripts=[...new Set(formalRefs.map(u=>u.split('?')[0]))];
-for(const file of scripts){
+const manifest=JSON.parse(fs.readFileSync(__dirname+'/bundle-manifest.json','utf8'));
+for(const file of manifest.scripts){
   const src=fs.readFileSync(__dirname+'/'+file,'utf8');
   assert.ok(!/\.findLast(Index)?\(|\.at\(-?\d|Object\.hasOwn\(|\.replaceAll\(/.test(src),file+' uses an ES2021+ API');
 }
+for(const file of [...manifest.styles,...manifest.scripts,'index.html','index-warm-cinnabar.html']){
+  const src=fs.readFileSync(__dirname+'/'+file,'utf8');
+  assert.ok(!/assets\/[^\s"')<>`]+\.png\b/.test(src),file+' still references archived .png assets');
+  for(const m of src.matchAll(/assets\/[A-Za-z0-9_./-]+\.webp/g)){
+    assert.ok(fs.existsSync(__dirname+'/'+m[0]),file+' references missing WebP: '+m[0]);
+  }
+}
+const cp=require('node:child_process');
+cp.execFileSync(process.execPath,[__dirname+'/build-bundle.cjs','--check'],{stdio:'pipe'});
 
-console.log('PASS logic & HTML structure fixes: scars without repair, pattern_tray on collect, stacked turn bonuses, yuanBonus submission & preview parity, craft_mold & consignment guard, legacy id migration, valid HTML & WebView-safe APIs');
+console.log('PASS logic, bundle & asset fixes: scars without repair, pattern_tray on collect, stacked turn bonuses, yuanBonus submission & preview parity, craft_mold & consignment guard, legacy id migration, 2-request bundle sync, WebP-only assets & WebView-safe APIs');

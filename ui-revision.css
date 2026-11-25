@@ -66,7 +66,7 @@ body.object-world .counter-board .world-books{left:18px;bottom:88px;top:auto!imp
 body.object-world .counter-board #dailySummary{left:50%;right:auto;top:auto;bottom:120px;transform:translateX(-50%);width:min(600px,80%);max-width:none;padding:18px;box-sizing:border-box;white-space:pre-line;background:#f7ecd4;border:1px solid #ad9067;z-index:12;font-size:16px;line-height:1.8}
 body.object-world .counter-board #dailySummary:empty{display:none!important}
 body.object-world .counter-board[data-counter-state=settled] #counterReceipt,body.object-world .counter-board[data-counter-state=finished] #counterReceipt{display:none!important}
-body.object-world .counter-board[data-counter-state=active] .counter-note:before{content:'已接';position:absolute;right:0;top:0;color:#914e35;border:2px solid;padding:4px;z-index:1;font-size:14px}
+body.object-world .counter-board[data-counter-state=active] .counter-note:before{content:'已接';position:absolute;right:10%;top:14%;color:#914e35;background:#f6e7c9f0;border:2px solid #914e35;padding:2px 6px;z-index:1;font-size:13px;font-weight:700;line-height:1.2;transform:rotate(8deg);pointer-events:none;border-radius:2px}
 body.object-world .world-market .market-heading{top:10px;left:24px;right:200px;min-height:0;z-index:30}
 body.object-world .world-market .market-heading p{margin:0;padding:6px;font-size:14px}
 body.object-world .world-market-tabs{top:22px;left:24px;right:auto}
