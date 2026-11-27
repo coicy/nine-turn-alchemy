@@ -122,3 +122,13 @@
   }
   window.AlchemyCounterTrade={merchants,ensure,ready,change,offered,price,bought};
 })();
+
+/* === Merged from warm-cinnabar-visitors.js (warm-cinnabar merchant portraits) === */
+(() => {
+  'use strict';
+  if (typeof document === 'undefined' || !document.body?.classList?.contains('warm-cinnabar-experiment')) return;
+  const merchants=window.AlchemyCounterTrade.merchants;
+  for (const [id,file] of Object.entries({artificer:'artificer',trader:'merchant',herbalist:'herbalist'})) {
+    merchants[id].portrait='assets/warm-cinnabar/'+file+'.webp';
+  }
+})();

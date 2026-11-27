@@ -2,223 +2,51 @@
 
 ## 本目录功能
 
-- 本文件记录正式发布副本的直接子目录和文件用途；历史资源集中在 `archive/`。
+- 本文件记录正式发布副本的直接子目录和文件用途；历史资源与合并前源码原件集中在 `archive/`。
 - 当前产品版本由根目录 `VERSION` 统一声明，变化记录见 `CHANGELOG.md`。
 
-## 版本整理约定
+## 版本整理与综合约定
 
-- 当前运行入口是 `index.html`（加载合并产物 `bundle.css` 与 `bundle.js`）；当前代码与资源使用稳定文件名和稳定目录名，不再把产品版本号写入运行路径。
-- 修改 `bundle-manifest.json` 列出的任意 `.css` / `.js` 源文件后，必须运行 `npm run build`（即 `node build-bundle.cjs`）重新生成 `bundle.css` 与 `bundle.js`，并通过 `npm run build:check` 校验同步。
-- `index-warm-cinnabar.html` 保留为散文件调试入口；`verify-simulation.cjs` 与 `verify-value-formula-v104.cjs` 作为共享测试沙箱前置依赖保留在根目录。
-- 根目录中仍保留的 `verify-*-vNN.cjs` 是历史验证工具，服务于旧交付证据，不属于当前运行入口；新验证脚本使用不带产品版本号的名称。
-- `archive/` 只保存已退出当前运行的资源、预览、失效历史验证脚本（`archive/verify-legacy/`）和过程材料；历史内容可追溯，但不得从中复制文件覆盖当前运行副本。
+- **正式运行入口**：`index.html`（加载合并产物 `bundle.css` 与 `bundle.js`）；当前代码与资源使用稳定名称，不再把产品版本号写入运行路径。
+- **源码模块地图**：全部运行源码已按原加载与层叠顺序综合为 **8 个 CSS + 31 个 JS** 模块；修改前先查阅 `docs/ARCHITECTURE_MAP.md` 直达目标模块。
+- **构建与回归**：修改 `bundle-manifest.json` 列出的任意 `.css` / `.js` 后，必须运行 `npm run build` 重新生成 `bundle.css` 与 `bundle.js`，并通过 `npm run verify:core` 校验同步与核心回归。
+- **调试与沙箱前置**：`index-warm-cinnabar.html` 保留为散文件调试入口（与 `bundle-manifest.json` 同步）；`verify-simulation.cjs` 与 `verify-value-formula-v104.cjs` 作为共享测试沙箱前置依赖保留在根目录。
+- **历史归档**：`archive/` 保存已退出当前运行的资源、预览、合并前源码备份（`archive/merged-warm-cinnabar/`、`archive/consolidated-v220/`）和历史版本验证脚本（`archive/verify-legacy/`）；不得从 `archive/` 复制旧文件覆盖当前运行副本。
 
 ## 子目录
 
-- .qa/AGENTS.md。
-- archive/AGENTS.md。
-- archive/opening-story-legacy/AGENTS.md。
-- archive/verify-legacy/AGENTS.md。
-- assets/AGENTS.md。
-- character-style/AGENTS.md。
-- docs/AGENTS.md。
-- previews/AGENTS.md。
+- .qa/AGENTS.md
+- archive/AGENTS.md
+- archive/consolidated-v220/AGENTS.md
+- archive/merged-warm-cinnabar/AGENTS.md
+- archive/opening-story-legacy/AGENTS.md
+- archive/verify-legacy/AGENTS.md
+- assets/AGENTS.md
+- character-style/AGENTS.md
+- docs/AGENTS.md
+- previews/AGENTS.md
 
 ## 文件索引
 
-- .gitignore：项目资源或配置。
-- AGENTS.md：项目说明或交付文档。
-- alchemy-assets.css：界面样式。
-- alchemy-assets.js：运行逻辑或验证脚本。
-- alchemy-preview.html：项目资源或配置。
-- app.js：运行逻辑或验证脚本。
-- art-assets.css：界面样式。
-- art-assets.js：运行逻辑或验证脚本。
-- asset-loader.js：运行逻辑或验证脚本。
-- asset-preview.html：项目资源或配置。
-- build-bundle.cjs：零依赖前端打包与同步校验脚本（按 `bundle-manifest.json` 合并生成 `bundle.css` / `bundle.js`）。
-- bundle-manifest.json：正式入口合并清单（54 CSS + 71 JS 精确加载顺序）。
-- bundle.css：正式入口合并样式产物（由 `build-bundle.cjs` 生成）。
-- bundle.js：正式入口合并脚本产物（由 `build-bundle.cjs` 生成）。
-- campaign-ui.js：运行逻辑或验证脚本。
-- campaign.css：界面样式。
-- campaign.js：运行逻辑或验证脚本。
-- CHANGELOG.md：产品版本变化记录。
-- commission-motion.css：界面样式。
-- commission-motion.js：运行逻辑或验证脚本。
-- consignment-bag.js：运行逻辑或验证脚本。
-- consignment-ui.css：界面样式。
-- consignment-ui.js：运行逻辑或验证脚本。
-- counter-people.css：界面样式。
-- counter-people.js：运行逻辑或验证脚本。
-- counter-ui-state.css：界面样式。
-- craft-buyer.js：运行逻辑或验证脚本。
-- crafts.css：界面样式。
-- crafts.js：运行逻辑或验证脚本。
-- customer-catalog.js：运行逻辑或验证脚本。
-- customer-view.js：运行逻辑或验证脚本。
-- customers.css：界面样式。
-- customers.js：运行逻辑或验证脚本。
-- data-policy.html：项目资源或配置。
-- dialogue-content.js：运行逻辑或验证脚本。
-- dialogue-core.js：运行逻辑或验证脚本。
-- dialogue-opening.js：运行逻辑或验证脚本。
-- dialogue-ui.js：运行逻辑或验证脚本。
-- dialogue.css：界面样式。
-- economy-ui.js：运行逻辑或验证脚本。
-- economy.js：运行逻辑或验证脚本。
-- entry-images.js：运行逻辑或验证脚本。
-- equipment-ui.js：运行逻辑或验证脚本。
-- estimate-orders.cjs：运行逻辑或验证脚本。
-- estimate-risk-orders.cjs：运行逻辑或验证脚本。
-- estimate-values.cjs：运行逻辑或验证脚本。
-- feedback.css：界面样式。
-- furnace-fire.js：运行逻辑或验证脚本。
-- furnace-guidance.js：运行逻辑或验证脚本。
-- furnace-surface.css：界面样式。
-- furnace-surface.js：运行逻辑或验证脚本。
-- furnace-view.css：界面样式。
-- furnace-view.js：运行逻辑或验证脚本。
-- game-feel-effects.css：界面样式。
-- game-feel.css：界面样式。
-- game-feel.js：运行逻辑或验证脚本。
-- game-shell.css：界面样式。
-- game-shell.js：运行逻辑或验证脚本。
-- herb-cubby.css：界面样式。
-- herb-tray.css：界面样式。
-- herb-tray.js：运行逻辑或验证脚本。
-- index.html：正式浏览器入口。
-- index-warm-cinnabar.html：温暖金石版本的兼容预览入口；正式入口为 `index.html`。
-- scene-anchor-reference.html：正式场景物件描边与实验场景校准参考页。
-- information-ui.css：界面样式。
-- information-ui.js：运行逻辑或验证脚本。
-- journal-ui.css：界面样式。
-- journal-ui.js：运行逻辑或验证脚本。
-- lease.css：界面样式。
-- lease.js：运行逻辑或验证脚本。
-- LICENSE：项目资源或配置。
-- loop.css：界面样式。
-- loop.js：运行逻辑或验证脚本。
-- main-menu.css：界面样式。
-- main-menu.js：运行逻辑或验证脚本。
-- market-merchants.css：界面样式。
-- market-merchants.js：运行逻辑或验证脚本。
-- market-scene.js：运行逻辑或验证脚本。
-- merchant-visit.css：界面样式。
-- merchant-visit.js：运行逻辑或验证脚本。
-- navigation-split.css：界面样式。
-- observation-near.css：界面样式。
-- observation-near.js：运行逻辑或验证脚本。
-- onboarding.css：界面样式。
-- onboarding.js：运行逻辑或验证脚本。
-- opening-load.css：界面样式。
-- painted-scenes.css：界面样式。
-- pill-bag.css：界面样式。
-- pill-bag.js：运行逻辑或验证脚本。
-- pill-body.css：界面样式。
-- pill-body.js：运行逻辑或验证脚本。
-- pill-palette.js：运行逻辑或验证脚本。
-- pill-style-preview.html：项目资源或配置。
-- PROJECT_STAGE.md：项目说明或交付文档。
-- README.md：项目说明或交付文档。
-- refine-animation.css：界面样式。
-- refine-animation.js：运行逻辑或验证脚本。
-- refine-odds.css：界面样式。
-- refine-odds.js：运行逻辑或验证脚本。
-- refine-performance.js：运行逻辑或验证脚本。
-- reputation-review.html：浏览器页面、预览或运行入口。
-- risk-curve-order-estimate.json：结构化数据或配置。
-- ritual-brush.js：运行逻辑或验证脚本。
-- room-ui.css：界面样式。
-- room-ui.js：运行逻辑或验证脚本。
-- save-slots-ui.js：运行逻辑或验证脚本。
-- save-slots.css：界面样式。
-- save-slots.js：运行逻辑或验证脚本。
-- scene-art.css：界面样式。
-- scene-feedback.css：界面样式。
-- scene-feedback.js：运行逻辑或验证脚本。
-- scene-lid-layer.js：运行逻辑或验证脚本。
-- scene-projection.js：运行逻辑或验证脚本。
-- scene-props.css：界面样式。
-- scene-props.js：运行逻辑或验证脚本。
-- scene-runtime.js：运行逻辑或验证脚本。
-- scene-visual.css：界面样式。
-- scene2d.css：界面样式。
-- scene2d.js：运行逻辑或验证脚本。
-- simulation.css：界面样式。
-- simulation.js：运行逻辑或验证脚本。
-- styles.css：界面样式。
-- warm-cinnabar-experiment.css：温暖金石正式视觉皮肤，由正式入口和兼容预览入口加载。
-- warm-cinnabar-experiment.md：温暖金石版本、场景素材和验收说明。
-- warm-cinnabar-assets.js：温暖金石人物与丹药重绘图集映射。
-- warm-cinnabar-growth.js：温暖金石造物重绘图集与帧边界。
-- warm-cinnabar-ui.css、warm-cinnabar-ui.js：温暖金石界面组件样式与导航布局测量。
-- warm-cinnabar-props.js：温暖金石法器身份、交互物件与纸笺来源映射。
-- warm-cinnabar-visitors.js：温暖金石售货来客的独立人物映射。
-- telemetry.js：运行逻辑或验证脚本。
-- ui-revision.css：界面样式。
-- ui-runtime.js：运行逻辑或验证脚本。
-- ui-settings.js：运行逻辑或验证脚本。
-- unified-theme.css：界面样式。
-- value-estimate.json：结构化数据或配置。
-- value-preview.css：界面样式。
-- value-preview.js：运行逻辑或验证脚本。
-- verify-animation-browser.cjs：运行逻辑或验证脚本。
-- verify-art-assets.cjs：运行逻辑或验证脚本。
-- verify-artifacts-v217.cjs：运行逻辑或验证脚本。
-- verify-artifacts-v219.cjs：运行逻辑或验证脚本。
-- verify-asset-loading.cjs：运行逻辑或验证脚本。
-- verify-campaign.cjs：运行逻辑或验证脚本。
-- verify-counter-browser.cjs：运行逻辑或验证脚本。
-- verify-counter-note-v64.cjs：运行逻辑或验证脚本。
-- verify-counter-scale.cjs：运行逻辑或验证脚本。
-- verify-counter-states-v63.cjs：运行逻辑或验证脚本。
-- verify-crafts.cjs：运行逻辑或验证脚本。
-- verify-economy.cjs：运行逻辑或验证脚本。
-- verify-equipment-browser.cjs：运行逻辑或验证脚本。
-- verify-feedback-acceptance.cjs：运行逻辑或验证脚本。
-- verify-feedback-browser.cjs：运行逻辑或验证脚本。
-- verify-forge-odds-v82.cjs：运行逻辑或验证脚本。
-- verify-herb-tray.cjs：运行逻辑或验证脚本。
-- verify-identity-notes-v67.cjs：运行逻辑或验证脚本。
-- verify-information-v84.cjs：运行逻辑或验证脚本。
-- verify-journal-browser.cjs：运行逻辑或验证脚本。
-- verify-logic-fixes.cjs：核心逻辑、法器联动、预览结算一致性与运行时兼容性回归验证脚本。
-- verify-loop-flow-browser.cjs：运行逻辑或验证脚本。
-- verify-new-customer-v62.cjs：运行逻辑或验证脚本。
-- verify-object-world-v86.cjs：运行逻辑或验证脚本。
-- verify-observation-near.cjs：运行逻辑或验证脚本。
-- verify-onboarding-browser.cjs：运行逻辑或验证脚本。
-- verify-online.cjs：运行逻辑或验证脚本。
-- verify-opening-note-v78.cjs：运行逻辑或验证脚本。
-- verify-painted-scenes.cjs：运行逻辑或验证脚本。
-- verify-pill-shape-browser.cjs：运行逻辑或验证脚本。
-- verify-progression.cjs：运行逻辑或验证脚本。
-- verify-reputation.cjs：运行逻辑或验证脚本。
-- verify-reputation-browser.cjs：运行逻辑或验证脚本。
-- verify-room-browser.cjs：运行逻辑或验证脚本。
-- verify-save-slots-browser.cjs：运行逻辑或验证脚本。
-- verify-save-slots.cjs：运行逻辑或验证脚本。
-- verify-scene2d-browser.cjs：运行逻辑或验证脚本。
-- verify-shell.cjs：运行逻辑或验证脚本。
-- verify-simulation.cjs：共享测试沙箱前置依赖。
-- verify-special-customers.cjs：特殊顾客四幕多轮剧情、特质打赏、第四幕捎信与来客旧闻验证脚本。
-- verify-telemetry.cjs：运行逻辑或验证脚本。
-- verify-theme-transitions.cjs：运行逻辑或验证脚本。
-- verify-tools.cjs：运行逻辑或验证脚本。
-- verify-value-formula-v104.cjs：共享模拟沙箱前置依赖。
-- VERSION：当前产品统一版本号。
-- view-transitions.css：界面样式。
-- visual-feedback.css：界面样式。
-- workbench.css：界面样式。
-- workbench.js：运行逻辑或验证脚本。
-- world-layout.js：运行逻辑或验证脚本。
-- world-ui.css：界面样式。
-- world-ui.js：运行逻辑或验证脚本。
+### 入口、构建与版本配置
+- `index.html`：正式浏览器运行入口（加载 `bundle.css` + `bundle.js`）。
+- `index-warm-cinnabar.html`：温暖金石散文件调试入口。
+- `data-policy.html`：试玩数据收集说明页。
+- `build-bundle.cjs`：零依赖前端打包与同步校验脚本。
+- `bundle-manifest.json`：正式入口合并清单（8 CSS + 31 JS 精确加载顺序）。
+- `bundle.css`、`bundle.js`：正式入口合并产物（由 `build-bundle.cjs` 生成，勿手改）。
+- `VERSION`、`CHANGELOG.md`、`PROJECT_STAGE.md`、`TODOLIST.md`、`README.md`、`LICENSE`、`package.json`、`package-lock.json`、`.gitignore`、`warm-cinnabar-experiment.md`：版本、工程与说明文档。
+- `alchemy-preview.html`、`asset-preview.html`、`pill-style-preview.html`、`reputation-review.html`、`scene-anchor-reference.html`：专项静态预览与参考页。
+- `risk-curve-order-estimate.json`、`value-estimate.json`：数值估算参考数据。
 
-- warm-cinnabar-motion.css：温暖金石动作及结果反馈样式。
+### 8 个样式模块（详见 `docs/ARCHITECTURE_MAP.md`）
+- `styles.css`、`game-shell.css`、`unified-theme.css`、`world-ui.css`、`furnace-view.css`、`warm-cinnabar-experiment.css`、`value-preview.css`、`warm-cinnabar-ui.css`。
 
-- local-image-sources.js：生成的按需本地图片数据加载入口，仅供实验页文件协议兼容。
+### 31 个脚本模块（详见 `docs/ARCHITECTURE_MAP.md`）
+- 核心与数据模型：`save-slots.js`、`telemetry.js`、`customer-catalog.js`、`customers.js`、`customer-view.js`、`pill-palette.js`、`entry-images.js`、`local-image-sources.js`、`asset-loader.js`、`crafts.js`、`economy.js`、`warm-cinnabar-props.js`、`lease.js`、`campaign.js`、`ritual-brush.js`、`app.js`、`simulation.js`、`dialogue-content.js`、`dialogue-core.js`、`value-preview.js`。
+- 前端界面与场景运行时：`ui-runtime.js`、`campaign-ui.js`、`alchemy-assets.js`、`economy-ui.js`、`world-layout.js`、`game-shell.js`、`scene2d.js`、`world-ui.js`、`furnace-view.js`、`warm-cinnabar-ui.js`、`dialogue-ui.js`。
 
-- warm-cinnabar-stock.css、warm-cinnabar-stock.js：温暖金石药匣筛选、侧栏与丹药拖放。
-
+### 验证与数值估算脚本
+- 数值估算与共享沙箱：`estimate-orders.cjs`、`estimate-risk-orders.cjs`、`estimate-values.cjs`、`verify-simulation.cjs`、`verify-value-formula-v104.cjs`。
+- 核心 Node 回归：`verify-logic-fixes.cjs`、`verify-economy.cjs`、`verify-crafts.cjs`、`verify-save-slots.cjs`、`verify-campaign.cjs`、`verify-tools.cjs`、`verify-progression.cjs`、`verify-reputation.cjs`、`verify-special-customers.cjs`、`verify-shell.cjs`、`verify-telemetry.cjs`、`verify-painted-scenes.cjs`。
+- 浏览器与专项核查：`verify-animation-browser.cjs`、`verify-asset-loading.cjs`、`verify-counter-browser.cjs`、`verify-counter-scale.cjs`、`verify-equipment-browser.cjs`、`verify-feedback-acceptance.cjs`、`verify-feedback-browser.cjs`、`verify-herb-tray.cjs`、`verify-journal-browser.cjs`、`verify-loop-flow-browser.cjs`、`verify-observation-near.cjs`、`verify-onboarding-browser.cjs`、`verify-online.cjs`、`verify-pill-shape-browser.cjs`、`verify-reputation-browser.cjs`、`verify-room-browser.cjs`、`verify-save-slots-browser.cjs`、`verify-scene2d-browser.cjs`、`verify-theme-transitions.cjs`。

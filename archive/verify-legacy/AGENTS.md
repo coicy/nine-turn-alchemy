@@ -11,6 +11,8 @@
 - `verify-rune-combos.cjs`：前代六种丹纹组合回归脚本。
 - `verify-art-assets.cjs`：前代 `AlchemyPillArt.patterns` 切片资产回归脚本。
 - `verify-unified-pills-v156.cjs`：V156 阶段脚本（硬编码断言前代 `TOOL_DEFS.length === 7`，与 V217/V219 后的 40 件法器体系冲突）。
+- `verify-artifacts-v217.cjs`、`verify-artifacts-v219.cjs`：V217/V219 阶段法器专项验收脚本（零外部引用，已由当前核心回归脚本覆盖）。
+- `verify-new-customer-v62.cjs`、`verify-counter-states-v63.cjs`、`verify-counter-note-v64.cjs`、`verify-identity-notes-v67.cjs`、`verify-opening-note-v78.cjs`、`verify-forge-odds-v82.cjs`、`verify-information-v84.cjs`、`verify-object-world-v86.cjs`：V62–V86 早期柜台、纸笺与世界物件专项验收脚本。
 
 ## 仍在根目录保留的共享前置依赖
 

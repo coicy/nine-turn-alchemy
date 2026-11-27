@@ -809,12 +809,12 @@
     get ready() { return preparedLayout === roomLayout(); }
   };
 })();
-;
-/* === warm-cinnabar-assets.js === */
+
+/* === Merged from warm-cinnabar-assets.js (warm-cinnabar portraits & pill atlas) === */
 /* Experiment-only character and fully redrawn growth sources. */
 (() => {
   'use strict';
-  if (!document.body.classList.contains('warm-cinnabar-experiment')) return;
+  if (typeof document === 'undefined' || !document.body?.classList?.contains('warm-cinnabar-experiment')) return;
   const root='assets/warm-cinnabar/';
   const portraits={
     merchant:'merchant',
@@ -866,12 +866,12 @@
  const api={defs,turns,get,stage,name,ensure,quote,atlas:id=>'assets/crafts/'+id+'.webp'};
  if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.AlchemyCrafts=api;
 })(typeof window!=='undefined'?window:globalThis);
-;
-/* === warm-cinnabar-growth.js === */
+
+/* === Merged from warm-cinnabar-growth.js (warm-cinnabar craft atlas frames) === */
 /* Experiment-only fully redrawn craft atlases and tight frame geometry. */
 (() => {
   'use strict';
-  if (!document.body.classList.contains('warm-cinnabar-experiment')) return;
+  if (typeof document === 'undefined' || !document.body?.classList?.contains('warm-cinnabar-experiment')) return;
   const frames = {"bird":[[16,32,224,191],[272,30,224,196],[535,17,211,223],[785,38,223,179],[35,271,186,225],[272,302,225,164],[539,274,202,222],[784,276,224,216],[37,526,180,227],[288,527,192,226],[527,550,226,180]],"lion":[[34,17,187,222],[294,16,184,223],[529,20,222,218],[784,20,224,216],[27,273,204,223],[272,305,226,161],[553,273,175,222],[785,276,226,214],[17,537,224,207],[272,533,224,213],[535,529,211,224]],"home":[[50,63,173,143],[304,60,166,149],[564,52,166,164],[812,58,173,155],[48,298,173,161],[299,311,174,139],[557,322,176,123],[821,292,159,174],[50,552,172,143],[296,556,177,134],[553,550,172,147]],"beast":[[44,54,175,154],[294,55,178,153],[550,53,181,157],[801,59,180,146],[43,293,177,167],[295,305,175,149],[549,309,180,147],[802,306,185,150],[49,554,170,160],[295,565,177,147],[553,560,177,152]],"tower":[[40,20,180,226],[291,21,194,222],[568,17,164,228],[845,21,134,223],[15,284,223,206],[273,283,225,208],[531,315,233,153],[794,295,223,190],[17,541,226,215],[277,537,226,221],[537,538,224,218]],"spring":[[60,51,153,181],[296,73,180,143],[554,51,153,182],[788,75,177,137],[57,287,169,179],[294,324,184,111],[542,314,184,130],[797,286,169,183],[53,542,171,141],[296,515,173,183],[549,528,178,164]]};
   const original = window.AlchemyCrafts.atlas;
   window.AlchemyCrafts.atlas = id => frames[id] ? 'assets/warm-cinnabar/growth/craft-'+id+'.webp' : original(id);
@@ -2432,7 +2432,8 @@ if(typeof module!=='undefined')module.exports=api;else root.AlchemyCampaign=api;
   render();
 })();
 ;
-/* === pill-body.js === */
+/* === ui-runtime.js === */
+/* === Consolidated source: pill-body.js === */
 (() => {
   'use strict';
   const BODIES = Object.freeze({warm:'assets/pill-mineral/warm.webp',neutral:'assets/pill-mineral/neutral.webp',cool:'assets/pill-mineral/cool.webp'});
@@ -2566,7 +2567,7 @@ if(typeof module!=='undefined')module.exports=api;else root.AlchemyCampaign=api;
   window.addEventListener('alchemy:assets-ready',()=>hydrate());
 })();
 ;
-/* === ui-runtime.js === */
+/* === Consolidated source: ui-runtime.js === */
 /* Shared presentation helpers; business state stays in AlchemyGame. */
 (() => {
  'use strict';
@@ -3254,7 +3255,8 @@ window.addEventListener('alchemy:merchant-change',render);window.addEventListene
   const api={create,validate,template};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.AlchemyDialogueEngine=api;
 })(typeof window!=='undefined'?window:globalThis);
 ;
-/* === dialogue-opening.js === */
+/* === alchemy-assets.js === */
+/* === Consolidated source: dialogue-opening.js === */
 /* Three-room opening now runs on the same dialogue graph as all NPC conversations. */
 (() => {
   'use strict';
@@ -3283,7 +3285,7 @@ window.addEventListener('alchemy:merchant-change',render);window.addEventListene
   window.AlchemyOpening={get active(){return !!(window.AlchemyDialogue?.active&&window.AlchemyDialogue?.present()?.graph==='opening');},snapshot:()=>({active:window.AlchemyOpening.active,step:window.AlchemySaves.preference('openingStep')||0,finishing:false})};
 })();
 ;
-/* === art-assets.js === */
+/* === Consolidated source: art-assets.js === */
 (() => {
   const assets = [
     ['.herb-object > svg','assets/runtime/herb-parcel-v1.webp','raster-prop'],
@@ -3300,7 +3302,7 @@ window.addEventListener('alchemy:merchant-change',render);window.addEventListene
   }
 })();
 ;
-/* === alchemy-assets.js === */
+/* === Consolidated source: alchemy-assets.js === */
 (() => {
   // Use the same growth frame for the furnace and tray.
   const target=document.getElementById('pillVisual');
@@ -3346,7 +3348,8 @@ toolBadge.hidden=!e.tools.length;toolBadge.textContent=`法器 ${equipped.length
 window.addEventListener('alchemy:render',render);window.addEventListener('alchemy:interaction',render);render();
 })();
 ;
-/* === equipment-ui.js === */
+/* === world-layout.js === */
+/* === Consolidated source: equipment-ui.js === */
 (() => {
  const api=window.AlchemyGame,E=window.AlchemyEconomy,UX=window.AlchemyUX,panel=document.createElement('aside');panel.id='equipmentDrawer';panel.className='equipment-drawer';panel.hidden=true;panel.setAttribute('aria-label','炉旁法器说明');document.querySelector('.game-layout').append(panel);
  let selected=null,changing=false,notice='',timer;let anchor=null;
@@ -3363,7 +3366,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
  window.AlchemyEquipmentView={inspect};window.addEventListener('alchemy:view-ready',e=>{if(e.detail.view==='equipment')render();else {notice='';changing=false;clearTimeout(timer);}});window.addEventListener('alchemy:render',render);window.addEventListener('alchemy:interaction',render);render();
 })();
 ;
-/* === pill-bag.js === */
+/* === Consolidated source: pill-bag.js === */
 (() => {
  const api=window.AlchemyGame,E=window.AlchemyEconomy,UX=window.AlchemyUX,panel=document.createElement('section');panel.className='pill-bag-panel';panel.setAttribute('aria-labelledby','pillBagTitle');panel.innerHTML='<header class="pill-bag-heading"><div><h2 id="pillBagTitle">收纳匣</h2><p id="pillBagCount"></p></div><button data-bag-return data-focus-key="close-bag">合上收纳匣</button></header><p id="pillBagStatus" role="status"></p><p id="pillBagLeaseOffer" class="pill-bag-lease-offer" hidden></p><div id="pillBagList" tabindex="-1"></div><section id="pillBagSelected" aria-label="选中丹药详情"></section>';document.querySelector('.game-layout').append(panel);
  let selected=null,vacancy=null;const nature={warm:'温性',cool:'寒性',neutral:'平性'},quality=['凡品','良品','上品','极品','绝品'];
@@ -3418,7 +3421,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
  });window.addEventListener('alchemy:render',render);window.addEventListener('alchemy:interaction',render);render();
 })();
 ;
-/* === consignment-bag.js === */
+/* === Consolidated source: consignment-bag.js === */
 (() => {
   const game = window.AlchemyGame;
   const economy = window.AlchemyEconomy;
@@ -3489,7 +3492,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
   render();
 })();
 ;
-/* === world-layout.js === */
+/* === Consolidated source: world-layout.js === */
 /* Geometry is shared by art, anchors and hit targets. Reserve only visible reading surfaces. */
 (() => {
  const objects={herbs:{},tool:{src:'alchemy-fan-v1',flat:true},tray:{src:'delivery-tray-v1',flat:true},pill:{}},mouth={},firebox={},cutaway={},bookRest={},toolRest={},judgment={};let key='',lastViewport='';
@@ -3570,7 +3573,8 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
  window.addEventListener('alchemy:render',()=>{const c=window.AlchemyGame.campaign();document.getElementById('engineWallet').textContent=c?'第 '+c.day+' 天 · '+(c.economy?.coins||0)+' 铜钱 · 声望 '+c.reputation+'/10':'';fit();});window.addEventListener('alchemy:equipment-replaced',e=>{if(current!=='equipment')return;const row=document.querySelector('.world-tool-row'),old=document.querySelector('[data-world-tool="'+CSS.escape(e.detail.oldId||'')+'"]'),index=old?[...row.children].indexOf(old):0;queueMicrotask(()=>{const anchor=e.detail.newId?document.querySelector('[data-world-tool="'+CSS.escape(e.detail.newId)+'"]'):row?.children[index];context={...context,objectId:e.detail.newId,anchor};if(stack.length)stack[stack.length-1].focus=window.AlchemyUX.focusKey(anchor);fit();});});window.addEventListener('alchemy:ux-layout',()=>requestAnimationFrame(fit));window.addEventListener('resize',fit);show('work',{internal:true});
 })();
 ;
-/* === room-ui.js === */
+/* === scene2d.js === */
+/* === Consolidated source: room-ui.js === */
 (() => {
  const api=window.AlchemyGame,UX=window.AlchemyUX,forge=document.querySelector('.forge-panel'),stage=document.getElementById('pillStage');document.body.classList.add('painted-room');forge.dataset.room='true';
  stage.insertAdjacentHTML('beforeend','<section class="room-observation" aria-label="炉中丹药"><h2>炉中丹药</h2><div id="roomFacts"></div><small></small></section><p class="room-empty" id="roomEmpty" hidden></p><section id="roomSettlement" class="room-loop-card" hidden aria-live="polite"></section>');
@@ -3606,7 +3610,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
  window.addEventListener('alchemy:furnace-leave',dismissReceipt);window.addEventListener('alchemy:view-ready',e=>{if(e.detail.location!=='work'||(e.detail.view!=='work'&&e.detail.workMode!=='furnace'))dismissReceipt();update();});window.addEventListener('alchemy:render',update);window.addEventListener('alchemy:order',update);update();
 })();
 ;
-/* === scene2d.js === */
+/* === Consolidated source: scene2d.js === */
 (() => {
   'use strict';
   const stage=document.getElementById('pillStage'), game=window.AlchemyGame;
@@ -3675,7 +3679,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
   window.AlchemyWorldLayout.fit();
 })();
 ;
-/* === scene-feedback.js === */
+/* === Consolidated source: scene-feedback.js === */
 (() => {
   'use strict';
   const stage=document.getElementById('pillStage');
@@ -3747,7 +3751,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
     get muted(){return muted;},get audioState(){return audio?.state||'locked';}};
 })();
 ;
-/* === refine-animation.js === */
+/* === Consolidated source: refine-animation.js === */
 /* Transient painted effects share the scene coordinates and use no gameplay randomness. */
 (() => {
   'use strict';
@@ -3944,7 +3948,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
   window.AlchemyRefineAnimation={get phase(){return phase?.kind||null;},get frames(){return frames;},get serial(){return serial;}};
 })();
 ;
-/* === observation-near.js === */
+/* === Consolidated source: observation-near.js === */
 (() => {
   const card=document.querySelector('.room-observation'),source=document.getElementById('pillVisual');
   card.querySelector('h2').textContent='观丹 · 炉内映像';
@@ -3955,7 +3959,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
   window.addEventListener('alchemy:render',sync);window.addEventListener('alchemy:assets-ready',sync);sync();
 })();
 ;
-/* === herb-tray.js === */
+/* === Consolidated source: herb-tray.js === */
 (() => {
   const warm=document.body.classList.contains('warm-cinnabar-experiment');
   const stage=document.getElementById('pillStage'),api=window.AlchemyGame;
@@ -3981,7 +3985,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
   window.addEventListener('alchemy:view-ready',render);window.addEventListener('alchemy:render',render);window.addEventListener('alchemy:order',()=>{delete panel.dataset.selectReserve;render();});render();
 })();
 ;
-/* === market-merchants.js === */
+/* === Consolidated source: market-merchants.js === */
 /* Stock and appointments live in the campaign so a resumed day keeps its visitors and prices. */
 (() => {
   'use strict';
@@ -4106,18 +4110,18 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
   }
   window.AlchemyCounterTrade={merchants,ensure,ready,change,offered,price,bought};
 })();
-;
-/* === warm-cinnabar-visitors.js === */
+
+/* === Merged from warm-cinnabar-visitors.js (warm-cinnabar merchant portraits) === */
 (() => {
   'use strict';
-  if (!document.body.classList.contains('warm-cinnabar-experiment')) return;
+  if (typeof document === 'undefined' || !document.body?.classList?.contains('warm-cinnabar-experiment')) return;
   const merchants=window.AlchemyCounterTrade.merchants;
   for (const [id,file] of Object.entries({artificer:'artificer',trader:'merchant',herbalist:'herbalist'})) {
     merchants[id].portrait='assets/warm-cinnabar/'+file+'.webp';
   }
 })();
 ;
-/* === market-scene.js === */
+/* === Consolidated source: market-scene.js === */
 /* Merchandise sits on the player's reception counter, above the same painted desk as commissions. */
 (() => {
   'use strict';
@@ -4229,7 +4233,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
   window.AlchemyCounterDisplay={render,focus(){const b=wares.querySelector('[aria-pressed=true]');b?.focus({preventScroll:true});}};
 })();
 ;
-/* === scene-props.js === */
+/* === Consolidated source: scene-props.js === */
 (() => {
  const drawer=document.getElementById('equipmentDrawer'),board=document.querySelector('.counter-board');
  const ids=['seal',null,'ward','stone','lucky','chain','repair','phoenix','breath_pearl','guard_casket','still_incense','hearth_pin','cooling_tag','quiet_lamp','pulse_ring','steady_talisman','slow_plate','pressure_plate','red_nail','fissure_cone','reverse_lamp','scorch_seal','ignite_pearl','risk_ruler','ash_contract','crack_bowl','reverse_fire','broken_link','scar_ruler','ash_box','ember_tray','failed_contract','pattern_tray','market_tag','medicine_seal','material_pouch','consign_plate','craft_mold','material_scale','client_contract','stock_talisman'];
@@ -4246,7 +4250,8 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
  new MutationObserver(decorate).observe(drawer,{childList:true,subtree:true});new MutationObserver(queue).observe(document.getElementById('counterVisitor'),{childList:true,subtree:true});window.addEventListener('alchemy:render',()=>{decorate();queue();});decorate();queue();
 })();
 ;
-/* === journal-ui.js === */
+/* === world-ui.js === */
+/* === Consolidated source: journal-ui.js === */
 (() => {
  const api=window.AlchemyGame,E=window.AlchemyEconomy,UX=window.AlchemyUX,record=document.querySelector('.order-panel'),manual=document.querySelector('.side-panel');
  function book(panel,title,labels){panel.classList.add('journal-book');const original=[...panel.children].filter(n=>n.tagName!=='SUMMARY');panel.replaceChildren();if(panel.tagName==='DETAILS'){const summary=document.createElement('summary');summary.hidden=true;summary.textContent=title;panel.append(summary);}const header=document.createElement('header');header.className='journal-heading';header.innerHTML='<h2>'+title+'</h2>';const nav=document.createElement('nav');nav.className='journal-tabs';nav.setAttribute('aria-label',title+'书页');const pages=labels.map((label,i)=>{const page=document.createElement('section');page.className='journal-page';page.hidden=i!==0;const b=document.createElement('button');b.type='button';b.textContent=label;b.dataset.focusKey=title+'-tab-'+i;b.onclick=()=>select(i);nav.append(b);return page;});function select(i){pages.forEach((p,j)=>p.hidden=i!==j);[...nav.children].forEach((b,j)=>b.setAttribute('aria-pressed',String(i===j)));}header.append(nav);panel.append(header,...pages);select(0);return {original,pages,select};}
@@ -4312,7 +4317,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
  window.addEventListener('alchemy:view-ready',e=>{if(e.detail.view==='record'&&e.detail.context?.chapter==='lease'){ledger.select(1);requestAnimationFrame(()=>leaseLedger.scrollIntoView({block:'start'}));}if(e.detail.view==='record'&&e.detail.context?.chapter==='chronicle'){ledger.select(2);requestAnimationFrame(()=>chroniclePage.scrollIntoView({block:'start'}));}if(e.detail.view==='manual'){handbook.select(0);if(e.detail.context?.chapter==='probability')requestAnimationFrame(()=>handbook.pages[0].querySelector('[data-rules-section=probability]')?.scrollIntoView({block:'start'}));}});window.addEventListener('alchemy:render',render);render();
 })();
 ;
-/* === consignment-ui.js === */
+/* === Consolidated source: consignment-ui.js === */
 (() => {
   const game = window.AlchemyGame;
   const economy = window.AlchemyEconomy;
@@ -4363,7 +4368,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
   render();
 })();
 ;
-/* === counter-people.js === */
+/* === Consolidated source: counter-people.js === */
 (() => {
  const board=document.querySelector('.counter-board');if(!board)return;
  // Use the same cover transform as the 1672 × 941 counter painting.
@@ -4371,7 +4376,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
  new ResizeObserver(fit).observe(board);fit();
 })();
 ;
-/* === onboarding.js === */
+/* === Consolidated source: onboarding.js === */
 (() => {
  const api=window.AlchemyGame,UX=window.AlchemyUX,observation=document.querySelector('.room-observation');
  const details=document.createElement('details');details.className='observation-details';details.innerHTML='<summary>查看丹药</summary>';observation.append(details);
@@ -4390,7 +4395,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
  window.AlchemyOnboarding={instruction};window.addEventListener('alchemy:render',update);window.addEventListener('alchemy:interaction',update);update();
 })();
 ;
-/* === save-slots-ui.js === */
+/* === Consolidated source: save-slots-ui.js === */
 (() => {
  const saves=window.AlchemySaves,api=window.AlchemyGame,UX=window.AlchemyUX,dialog=document.createElement('dialog');dialog.className='save-picker';dialog.id='savePicker';dialog.setAttribute('aria-labelledby','savePickerTitle');dialog.innerHTML='<header><h2 id="savePickerTitle">存档</h2><button type="button" data-close>关闭</button></header><div class="save-slot-list"></div><p id="savePickerNotice" role="status"></p><small>进度自动保存在当前浏览器。</small>';document.body.append(dialog);
  const notice=document.createElement('p');notice.className='save-notice';notice.setAttribute('role','status');notice.hidden=true;document.body.append(notice);const buttons=[];let confirmId=null,origin=null;
@@ -4406,7 +4411,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
  dialog.addEventListener('cancel',e=>{e.preventDefault();e.stopPropagation();if(confirmId!==null){confirmId=null;render();dialog.querySelector('[data-close]').focus();}else close();});dialog.addEventListener('keydown',e=>{if(e.key==='Escape')e.stopPropagation();});window.addEventListener('alchemy:view-ready',()=>{if(dialog.open)close();});window.addEventListener('alchemy:opening-finished',render);window.addEventListener('alchemy:render',render);window.addEventListener('alchemy:interaction',render);window.addEventListener('alchemy:fanning',()=>{queueMicrotask(render);setTimeout(render,1000);});render();
 })();
 ;
-/* === commission-motion.js === */
+/* === Consolidated source: commission-motion.js === */
 (() => {
   'use strict';
   const note=document.getElementById('counterNote'),letter=document.getElementById('counterLetter');
@@ -4444,7 +4449,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
   window.AlchemyCommissionMotion={snapshot:()=>({active:running.size,reduced:reduced.matches})};schedule();
 })();
 ;
-/* === refine-odds.js === */
+/* === Consolidated source: refine-odds.js === */
 (() => {
  const api=window.AlchemyGame,stage=document.getElementById('pillStage'),toggle=document.createElement('button');toggle.type='button';toggle.className='refine-odds-toggle';toggle.textContent='展开五类概率';toggle.setAttribute('aria-controls','refineOdds');
  const panel=document.createElement('aside');panel.id='refineOdds';panel.className='refine-odds';panel.setAttribute('aria-labelledby','refineOddsTitle');panel.innerHTML='<header><h2 id="refineOddsTitle">下一次炼化</h2><button type="button" aria-label="收起炼丹概率窗口">收起 ×</button></header><p id="refineOddsState"></p><p id="refineOddsRisk" class="refine-odds-risk"></p><dl></dl><div class="chance-bar" aria-hidden="true"></div><div class="odds-charge-strip" hidden></div><p id="refineOddsProtection" class="refine-odds-protection"></p><button class="odds-rules" data-focus-key="odds-rules" type="button">查阅炼化概率</button>';
@@ -4496,7 +4501,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
  window.addEventListener('alchemy:render',update);window.addEventListener('alchemy:interaction',update);window.addEventListener('alchemy:view-ready',update);window.addEventListener('resize',update);update();
 })();
 ;
-/* === information-ui.js === */
+/* === Consolidated source: information-ui.js === */
 (() => {
   'use strict';
   const stage=document.getElementById('pillStage'),observation=document.querySelector('.room-observation'),settlement=document.getElementById('roomSettlement'),herbs=document.querySelector('.herb-tray'),instruction=document.getElementById('workInstruction');
@@ -4538,7 +4543,7 @@ window.addEventListener('alchemy:render',render);window.addEventListener('alchem
   document.addEventListener('toggle',schedule,true);fit();
 })();
 ;
-/* === world-ui.js === */
+/* === Consolidated source: world-ui.js === */
 /* Object affordances and short reading surfaces; business state stays in AlchemyGame. */
 (() => {
 'use strict';
@@ -4593,7 +4598,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!e.defaultPrevented
 decorateTools(document);fitReading();update();
 })();
 ;
-/* === ui-settings.js === */
+/* === Consolidated source: ui-settings.js === */
 (() => {
  const UX=window.AlchemyUX,source=document.getElementById('uxDataSettingsSource'),dialog=document.createElement('dialog');dialog.className='ux-data-settings';dialog.setAttribute('aria-labelledby','uxDataTitle');dialog.innerHTML='<header><h2 id="uxDataTitle">试玩数据设置</h2><button data-close-data>关闭</button></header>';document.body.append(dialog);source.hidden=false;dialog.append(source);
  const intro=document.getElementById('introTelemetryEnabled'),main=document.getElementById('telemetryEnabled');let origin=null;
@@ -4609,7 +4614,8 @@ decorateTools(document);fitReading();update();
  const closeRules=()=>{rules.close();UX.restore(origin,help.querySelector('summary'));};rules.querySelector('button').onclick=closeRules;rules.addEventListener('cancel',e=>{e.preventDefault();e.stopPropagation();closeRules();});rules.addEventListener('keydown',e=>{if(e.key==='Escape')e.stopPropagation();});
 })();
 ;
-/* === workbench.js === */
+/* === furnace-view.js === */
+/* === Consolidated source: workbench.js === */
 /* Painted objects and transparent controls share the same camera and anchors. */
 (()=>{'use strict';const stage=document.getElementById('pillStage'),books=stage.querySelector('.world-books'),bag=stage.querySelector('.world-casket'),row=stage.querySelector('.world-tool-row'),L=window.AlchemyWorldLayout;
 const stack=document.createElement('button');stack.className='world-book-stack';stack.setAttribute('aria-label','打开案上书册');stack.textContent='书册';stage.append(stack);
@@ -4623,7 +4629,7 @@ function fit(){if(window.AlchemyViewState?.snapshot().workMode==='furnace')retur
 }
 const baseFit=L.fit;L.fit=function(){const r=baseFit();fit();return r;};window.addEventListener('alchemy:view-ready',()=>{pick.hidden=true;fit();});window.addEventListener('alchemy:render',fit);window.addEventListener('resize',fit);fit();})();
 ;
-/* === furnace-view.js === */
+/* === Consolidated source: furnace-view.js === */
 /* One business furnace, two working views. Visual state never owns inventory or rewards. */
 (() => {
   'use strict';
@@ -4915,7 +4921,7 @@ const baseFit=L.fit;L.fit=function(){const r=baseFit();fit();return r;};window.a
   update();
 })();
 ;
-/* === furnace-guidance.js === */
+/* === Consolidated source: furnace-guidance.js === */
 /* First-use cues follow actual actions. Only presentation preferences are saved. */
 (() => {
   'use strict';
@@ -5024,7 +5030,7 @@ const baseFit=L.fit;L.fit=function(){const r=baseFit();fit();return r;};window.a
   render();
 })();
 ;
-/* === scene-projection.js === */
+/* === Consolidated source: scene-projection.js === */
 window.AlchemySceneProjection={"room-desktop":{"width":1600,"height":1600,"mouth":{"x":0.25909638357543374,"y":0.4588745879192532,"w":0.1613518010270666,"h":0.039569924624833386},"fire":{"x":0.292987212195029,"y":0.5961496357374031,"w":0.06134436856502423,"h":0.05708114219412885},"pill":{"x":0.3427262147641108,"y":0.497176205120526},"pillDiameter":0.03132948765951865,"tools":[{"foot":{"x":0.5928266816645337,"y":0.5707141361388282},"top":{"x":0.5944096741895087,"y":0.5288076628474196}},{"foot":{"x":0.666,"y":0.595},"top":{"x":0.668,"y":0.553}},{"foot":{"x":0.734,"y":0.608},"top":{"x":0.737,"y":0.566}}],"bodyRight":0.44286409045394026,"book":{"x":0.6023206171571258,"y":0.5901323919735669},"casket":{"x":0.7988948874289681,"y":0.5830407905266801},"door":{"x":0.7209297523157857,"y":0.35741487328622673,"w":0.11181019772259781,"h":0.17810732544767288}},"furnace-desktop":{"width":1600,"height":1600,"mouth":{"x":0.10146566166594628,"y":0.346380770620373,"w":0.34907574487177523,"h":0.1319057736585968},"fire":{"x":0.22420620522222617,"y":0.6762866785626975,"w":0.14241469817840863,"h":0.10418332764173699},"pill":{"x":0.2919488341942954,"y":0.43961648521983177},"pillDiameter":0.06623134628948174,"tools":[{"foot":{"x":0.9677812701969097,"y":0.6420382123232176},"top":{"x":1.0058564898641,"y":0.5566444175573249}},{"foot":{"x":1.1316592779824177,"y":0.6238353249402959},"top":{"x":1.1812567535390852,"y":0.5400295306436359}},{"foot":{"x":1.285140191618392,"y":0.6067873035242665},"top":{"x":1.344684951546114,"y":0.5245487042668511}}],"bodyRight":0.49424553556389306,"book":{"x":1.1169067111133204,"y":0.7553475631407953},"casket":{"x":1.5723786399435005,"y":0.6881962068859377},"door":{"x":0.8162952821519374,"y":0.1340050383094158,"w":0.20433069046510943,"h":0.2786526987780261}},"room-mobile":{"width":390,"height":900,"mouth":{"x":0.10426549154804898,"y":0.43890331488789414,"w":0.29856038442105104,"h":0.027220020016444357},"fire":{"x":0.18327951456837144,"y":0.544875359841248,"w":0.11385069574944179,"h":0.0468017424846463},"pill":{"x":0.2581693722632273,"y":0.4678989271511601},"pillDiameter":0.05892599857798314,"tools":[{"foot":{"x":0.71,"y":0.548},"top":{"x":0.71,"y":0.514}},{"foot":{"x":0.81,"y":0.549},"top":{"x":0.81,"y":0.515}},{"foot":{"x":0.91,"y":0.550},"top":{"x":0.91,"y":0.516}}],"bodyRight":0.4431642145037506,"book":{"x":0.7887754259212119,"y":0.5283099686849939},"casket":{"x":1.1387540232480298,"y":0.5192706412562318},"door":{"x":0.9164975620428069,"y":0.3586337117893358,"w":0.20047242247158237,"h":0.14201647361797842}},"furnace-mobile":{"width":390,"height":900,"mouth":{"x":0.09698712432625783,"y":0.40184003715007466,"w":0.5278252078564636,"h":0.08875010240966957},"fire":{"x":0.21326685731738726,"y":0.6247125545468009,"w":0.19394384794527275,"h":0.0754273104004839},"pill":{"x":0.3659092323360393,"y":0.46833468717407584},"pillDiameter":0.1020065410324763,"tools":[{"foot":{"x":1.325281747597228,"y":0.6570079067709333},"top":{"x":1.3621064165529795,"y":0.5974274078992187}},{"foot":{"x":1.6401760389216313,"y":0.6665095814185019},"top":{"x":1.6919760608817258,"y":0.606278023868796}},{"foot":{"x":1.9662115533297482,"y":0.6763474332526184},"top":{"x":2.0340568180082457,"y":0.6154562718948307}}],"bodyRight":0.6812945342210865,"book":{"x":1.4243841847864682,"y":0.7239991325159844},"casket":{"x":2.2877428524693384,"y":0.7439220712720701},"door":{"x":1.498937824036215,"y":0.2523144420192849,"w":0.5124154882984264,"h":0.24377675378467656}},"toolSprites":[{"l":0.14,"t":0.14333333333333334,"r":0.92,"b":0.97},{"l":0.08333333333333333,"t":0.10666666666666667,"r":0.9266666666666666,"b":0.97},{"l":0.09333333333333334,"t":0.09666666666666666,"r":0.9166666666666666,"b":0.9933333333333333},{"l":0.043333333333333335,"t":0.35333333333333333,"r":0.9733333333333334,"b":0.89},{"l":0.13666666666666666,"t":0.11333333333333333,"r":0.79,"b":0.9733333333333334},{"l":0.05,"t":0.3233333333333333,"r":0.9333333333333333,"b":0.9166666666666666},{"l":0.11,"t":0.17,"r":0.9433333333333334,"b":0.9066666666666666},{"l":0.08,"t":0.09,"r":0.9,"b":0.9566666666666667},{"l":0.12,"t":0.07,"r":0.8833333333333333,"b":0.9533333333333334},{"l":0.13,"t":0.20333333333333334,"r":0.8666666666666667,"b":0.9},{"l":0.1,"t":0.11333333333333333,"r":0.89,"b":0.9333333333333333},{"l":0.08666666666666667,"t":0.05333333333333334,"r":0.89,"b":0.9933333333333333},{"l":0.11,"t":0.09666666666666666,"r":0.9366666666666666,"b":0.8733333333333333},{"l":0.11,"t":0.1,"r":0.8966666666666666,"b":0.87},{"l":0.11,"t":0.11666666666666667,"r":0.89,"b":0.87},{"l":0.10666666666666667,"t":0.11,"r":0.8933333333333333,"b":0.87},{"l":0.10666666666666667,"t":0.12333333333333334,"r":0.8933333333333333,"b":0.87}]};
 // The mobile room painting places the firebox higher than the initial anchor trace.
 window.AlchemySceneProjection['room-mobile'].fire.y=0.519875359841248;
@@ -5040,7 +5046,7 @@ window.AlchemyWarmFireProjection={
   'furnace-mobile':{x:88/390,y:539/900,w:74/390,h:54/900}
 };
 ;
-/* === scene-lid-layer.js === */
+/* === Consolidated source: scene-lid-layer.js === */
 /* Keep the open painting as the static room where the two lid patches align.
    The experiment's mobile paintings and desktop furnace plates swap as a whole. */
 (() => {
@@ -5134,7 +5140,7 @@ window.AlchemyWarmFireProjection={
   };
 })();
 ;
-/* === scene-runtime.js === */
+/* === Consolidated source: scene-runtime.js === */
 /* One spatial projection supplies backgrounds, objects and input. Business state stays in AlchemyGame. */
 (()=>{'use strict';
  const warm=document.body.classList.contains('warm-cinnabar-experiment');
@@ -5297,7 +5303,7 @@ window.AlchemyWarmFireProjection={
  const ro=new ResizeObserver(schedule);ro.observe(viewport);ro.observe(judgment);update();
 })();
 ;
-/* === furnace-surface.js === */
+/* === Consolidated source: furnace-surface.js === */
 /* Visual backing only: measure existing controls without moving their hit regions. */
 (() => {
  'use strict';
@@ -5324,7 +5330,7 @@ window.AlchemyWarmFireProjection={
  schedule();
 })();
 ;
-/* === loop.js === */
+/* === Consolidated source: loop.js === */
 /* Inventory, furnace and commission are independent. UI never settles a viewed pill. */
 (() => {
  'use strict';
@@ -5464,6 +5470,7 @@ window.AlchemyWarmFireProjection={
 })();
 ;
 /* === warm-cinnabar-ui.js === */
+/* === Consolidated source: warm-cinnabar-ui.js === */
 /* Measure navigation on layout changes; page state remains owned by the existing UI stack. */
 (() => {
  'use strict';
@@ -5486,8 +5493,8 @@ window.AlchemyWarmFireProjection={
  window.addEventListener('resize',schedule);window.addEventListener('alchemy:view-ready',schedule);window.addEventListener('alchemy:opening-finished',schedule);
  window.AlchemyWarmUI=Object.freeze({reference:'1440x900',navigation:'adaptive flow',refresh:schedule});schedule();
 })();
-;
-/* === warm-cinnabar-stock.js === */
+
+/* === Merged from warm-cinnabar-stock.js (warm-cinnabar stock panel & interactions) === */
 (() => {
  'use strict';
  const game=window.AlchemyGame,route=window.AlchemyViewState,UX=window.AlchemyUX;
@@ -5672,7 +5679,7 @@ window.AlchemyWarmFireProjection={
  },true);
 })();
 ;
-/* === main-menu.js === */
+/* === Consolidated source: main-menu.js === */
 (() => {
   'use strict';
 
@@ -5989,7 +5996,7 @@ window.AlchemyWarmFireProjection={
   primary.focus({preventScroll:true});
 })();
 ;
-/* === game-feel.js === */
+/* === Consolidated source: game-feel.js === */
 /* Presentation only: deterministic impulses never consume the alchemy random stream. */
 (() => {
   'use strict';
@@ -6161,7 +6168,7 @@ window.AlchemyWarmFireProjection={
   };
 })();
 ;
-/* === furnace-fire.js === */
+/* === Consolidated source: furnace-fire.js === */
 /* Living fire, confined to the painted firebox. No game random numbers or saved state. */
 (() => {
   'use strict';
@@ -6284,7 +6291,7 @@ window.AlchemyWarmFireProjection={
   requestAnimationFrame(tick);
 })();
 ;
-/* === refine-performance.js === */
+/* === Consolidated source: refine-performance.js === */
 /* Furnace heat and pill results: presentation only, driven by real actions/results. */
 (() => {
   'use strict';
@@ -6420,6 +6427,7 @@ window.AlchemyWarmFireProjection={
 })();
 ;
 /* === dialogue-ui.js === */
+/* === Consolidated source: dialogue-ui.js === */
 (() => {
   'use strict';
   const content=window.AlchemyDialogueContent,media=matchMedia('(prefers-reduced-motion: reduce)');
@@ -6551,7 +6559,7 @@ window.AlchemyWarmFireProjection={
   new ResizeObserver(fitLayout).observe(root.querySelector('.dialogue-main'));window.addEventListener('resize',fitLayout);
 })();
 ;
-/* === merchant-visit.js === */
+/* === Consolidated source: merchant-visit.js === */
 /* Reception arbitrates between selling visitors, craft buyers and the next commission. */
 (() => {
   'use strict';
@@ -6640,7 +6648,7 @@ window.AlchemyWarmFireProjection={
   new MutationObserver(schedule).observe(menu,{attributes:true,attributeFilter:['hidden']});schedule();
 })();
 ;
-/* === craft-buyer.js === */
+/* === Consolidated source: craft-buyer.js === */
 /* A buyer purchases existing stock; no materials, commissions, deposits or debts. */
 (() => {
  'use strict';

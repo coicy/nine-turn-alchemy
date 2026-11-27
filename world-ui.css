@@ -1,3 +1,294 @@
+/* === Consolidated source: view-transitions.css === */
+.view-entering{animation:room-enter .24s ease-out both!important;transform-origin:center}
+.view-leaving{animation:room-leave .12s ease-in both!important;pointer-events:none!important}
+.view-entering[data-motion-view=work]{animation-name:forge-enter!important}
+.view-entering[data-motion-view=orders]{animation-name:counter-enter!important}
+.view-entering[data-motion-view=shop]{animation-name:market-enter!important}
+.view-entering[data-motion-view=equipment]{animation-name:drawer-enter!important}
+.view-entering[data-motion-view=record],.view-entering[data-motion-view=manual]{animation-name:book-enter!important;transform-origin:left center}
+.view-leaving[data-motion-view=equipment]{animation-name:drawer-leave!important}
+.view-leaving[data-motion-view=work]{animation-name:forge-leave!important}
+.view-leaving[data-motion-view=orders]{animation-name:counter-leave!important}
+.view-leaving[data-motion-view=shop]{animation-name:market-leave!important}
+.view-leaving[data-motion-view=record],.view-leaving[data-motion-view=manual]{animation-name:book-leave!important;transform-origin:left center}
+@keyframes room-enter{from{opacity:.25}to{opacity:1}}@keyframes room-leave{from{opacity:1}to{opacity:0}}
+@keyframes forge-enter{from{opacity:.2;transform:scale(1.015)}to{opacity:1;transform:none}}
+@keyframes forge-leave{to{opacity:0;transform:scale(.992)}}
+@keyframes counter-enter{from{opacity:.2;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes counter-leave{to{opacity:0;transform:translateY(6px)}}
+@keyframes market-enter{from{opacity:.2;transform:translateX(16px)}to{opacity:1;transform:none}}
+@keyframes market-leave{to{opacity:0;transform:translateX(-10px)}}
+@keyframes drawer-enter{from{opacity:.3;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes drawer-leave{to{opacity:0;transform:translateX(18px)}}
+@keyframes book-enter{from{opacity:.2;transform:perspective(1200px) rotateY(-5deg)}to{opacity:1;transform:none}}
+@keyframes book-leave{to{opacity:0;transform:perspective(1200px) rotateY(3deg)}}
+/* The shell owns entrance timing; prevent the legacy drawer animation from restarting. */
+#equipmentDrawer.engine-panel:not(.view-entering):not(.view-leaving){animation:none!important}
+@media(max-width:650px){.view-entering[data-motion-view=equipment]{animation-name:counter-enter!important}.view-leaving[data-motion-view=equipment]{animation-name:room-leave!important}}
+@media(prefers-reduced-motion:reduce){.view-entering,.view-leaving{animation:none!important}}
+
+/* === Consolidated source: customers.css === */
+.customer-art-missing{display:grid!important;place-items:center;color:#76583b;background:#dbc5a0!important;border:2px dashed #98784f;border-radius:45% 45% 4px 4px;font:18px KaiTi,serif}
+
+/* === Consolidated source: onboarding.css === */
+/* V54: story first, then one current goal; advanced features remain reachable. */
+.opening-content{grid-template-columns:1fr;max-width:650px;gap:24px;text-align:center}
+.opening-launch{grid-column:1;grid-row:2;max-width:480px;justify-self:center}
+.opening-help{text-align:left}
+.guided-journey .engine-nav button[data-view]:not([data-view="work"]),
+.guided-journey .scene-loadout,.guided-journey .equipped-tool-status{display:none!important}
+.guided-journey.journey-orders .engine-nav button[data-view="orders"],
+.guided-journey.journey-shop .engine-nav button[data-view="shop"],
+.guided-journey.journey-tools .engine-nav button[data-view="equipment"]{display:block!important}
+.guided-journey #engineWallet{font-size:12px}
+.guided-opening #engineWallet{display:none}
+.onboarding-expand{margin-left:auto;font-size:13px!important}
+.onboarding-expand[hidden]{display:none!important}
+.canvas-room #roomFacts>div:nth-child(2),.canvas-room .room-observation>small{display:none!important}
+.canvas-room #roomFacts>div:nth-child(1){font-size:14px;color:#685139}
+.canvas-room #roomFacts>div:nth-child(3),.canvas-room #roomFacts>div:nth-child(4){font-size:19px}
+.canvas-room #roomFacts{min-height:140px}
+.canvas-room #roomDecision{font-size:18px;line-height:1.5}
+#roomStock{font-size:14px;color:#685139;margin:8px 0}
+.observation-details{font-size:14px;line-height:1.5;margin-top:8px}
+.observation-details summary,.market-help summary{cursor:pointer}
+.observation-details>p{margin:6px 0}
+.canvas-room .refine-feedback{top:580px}
+.canvas-room .room-observation:has(.observation-details[open]){z-index:26;max-height:480px;overflow:auto}
+#roomSettlement [data-destination="orders"]{background:#934d35;color:#fff1d7;border-color:#7c402d}
+#roomSettlement [data-destination="shop"]{font-size:14px}
+.market-help{margin:12px 0;padding:12px;border:1px solid #b79b77;border-radius:6px}
+.counter-board .browse-customers{background:#f5ead4;color:#493624;border-color:#ae9068}
+.browse-customers{position:absolute;top:120px;right:20px;z-index:7}
+.counter-focused #dailyOrders{display:none!important}
+.counter-board:not(.counter-focused) .browse-customers{top:120px}
+@media(max-width:800px){.opening-launch{grid-row:2}.browse-customers,.counter-board:not(.counter-focused) .browse-customers{top:180px;right:12px}}
+
+@media(max-width:800px){
+ .counter-focused .browse-customers{top:110px}
+ .counter-board:not(.counter-focused) .browse-customers{top:206px}
+ .counter-focused .counter-letter{width:62%;max-height:57%;font-size:14px;padding:14px}
+ .counter-focused .counter-letter dl{gap:12px}
+ .counter-focused .counter-letter .accept-stamp{font-size:16px;padding:8px 14px}
+}
+
+/* === Consolidated source: save-slots.css === */
+.save-open{background:#f5ead4;color:#493624;border:1px solid #ae9068;border-radius:4px;padding:9px 12px;cursor:pointer}
+.opening-launch>.save-open{display:block;margin:16px auto 0}
+.save-picker{box-sizing:border-box;width:min(650px,calc(100vw - 24px));max-height:85svh;overflow:auto;background:#f3e6ce;color:#493624;border:2px solid #98754e;border-radius:8px;padding:20px;font:15px/1.6 'Microsoft YaHei',sans-serif}
+.save-picker::backdrop{background:#35271988}
+.save-picker header{display:flex;justify-content:space-between;align-items:center;gap:12px}.save-picker h2{margin:0;font-size:23px}
+.save-picker button{border:1px solid #98754e;background:#934d35;color:#fff1d7;border-radius:4px;min-height:42px;padding:8px 12px;font:inherit;cursor:pointer}
+.save-slot{border:1px solid #b79b77;padding:14px;margin:12px 0;background:#f9efdb;border-radius:5px}.save-slot h3{margin:0;font-size:18px}.save-slot p{margin:6px 0}.save-slot small{display:block;margin-bottom:10px;color:#685139}
+.save-slot .save-reset,.save-picker header button{background:#f5ead4;color:#713c29;margin-left:8px}
+.save-notice{position:fixed;bottom:8px;left:12px;right:12px;z-index:100;background:#f3e6ce;border:1px solid #a53e2c;color:#713c29;padding:10px;margin:0;font-size:14px}
+.save-notice[hidden]{display:none}
+
+/* === Consolidated source: counter-ui-state.css === */
+/* V63: modeless order book, compact day state, physical stock follows ownership. */
+.counter-board [hidden]{display:none!important}
+.counter-board .daily-heading{display:flex;align-items:center;gap:18px;max-width:max-content;padding:8px 14px;border:1px solid #b89f79;border-radius:4px;background:#f5ead7ed}
+.counter-board .daily-heading h2{margin:0;font-size:17px}.counter-board .daily-heading strong{font-size:13px;font-weight:400}
+.counter-board .browse-customers,.counter-board:not(.counter-focused) .browse-customers{top:18px;right:20px;left:auto;z-index:9;padding:9px 14px}
+.counter-board .counter-tickets{position:absolute;top:68px;right:20px;left:auto;bottom:auto;z-index:8;width:360px;max-width:calc(100% - 40px);max-height:calc(100% - 150px);display:grid!important;grid-template-columns:1fr;overflow:auto;padding:16px;background:#f3e5cceF;border:2px solid #a88b61;border-radius:5px;box-shadow:0 6px 18px #402b1926}
+.counter-board .counter-tickets::before{content:'今日来笺 · 选择客人后收起';font-size:14px;color:#755d3e;padding-bottom:8px}
+.counter-board .counter-ticket{min-height:68px;flex-basis:auto;display:grid;grid-template-columns:1fr auto;text-align:left;padding:10px 12px;background:#f9f0de;border:1px solid #c3ac88;color:#493624}.counter-board .counter-ticket small{grid-column:1/-1}.counter-board .counter-ticket span{font-size:12px}.counter-board .counter-ticket.selected{border:2px solid #98563c;background:#ead9b7}
+.counter-board .counter-ticket.completed,.counter-board .counter-ticket.failed,.counter-board .counter-ticket.skipped{opacity:.7}
+.counter-board .counter-ticket:focus-visible,.counter-board .browse-customers:focus-visible{outline:3px solid #945438;outline-offset:2px}
+.counter-board .counter-receipt{width:auto;min-width:230px;max-width:36%;padding:12px 18px;font-size:14px}
+.counter-board[data-counter-state="settled"] .counter-letter,.counter-board[data-counter-state="finished"] .counter-letter,.counter-board[data-counter-state="settled"] .counter-receipt,.counter-board[data-counter-state="finished"] .counter-receipt{display:none}
+@media(max-width:800px){.counter-board .daily-heading{gap:8px;padding:6px 8px}.counter-board .daily-heading h2{font-size:14px}.counter-board .daily-heading strong{font-size:11px}.counter-board .browse-customers,.counter-board:not(.counter-focused) .browse-customers{top:60px;right:12px;font-size:12px;padding:7px 10px}.counter-board .counter-tickets{top:106px;right:12px;width:330px;max-width:calc(100% - 24px);max-height:calc(100% - 190px)}.counter-board .counter-letter{width:58%;max-height:55%;padding:12px;font-size:12px}.counter-board .counter-letter h3{font-size:18px}.counter-board .counter-receipt{right:3%;bottom:15%;min-width:0;max-width:35%;font-size:12px;padding:8px}}
+@media(prefers-reduced-motion:no-preference){.counter-book-open .counter-tickets{animation:counter-book-enter .16s ease-out}@keyframes counter-book-enter{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}}
+.counter-board .counter-tickets[hidden]{display:none!important}
+.counter-board .counter-tickets{background:#f3e5cc}.counter-board[data-counter-state="settled"] #counterVisitor,.counter-board[data-counter-state="finished"] #counterVisitor,.counter-board[data-counter-state="settled"] #dailyHint,.counter-board[data-counter-state="finished"] #dailyHint{display:none}.counter-board[data-counter-state="settled"] #dailySummary,.counter-board[data-counter-state="finished"] #dailySummary{top:20%;right:10%;max-width:80%;padding:20px;font-size:16px;line-height:1.8;border:1px solid #ad9067}
+.counter-book-open .visitor-dialogue{visibility:hidden}
+/* V64: only the arrived customer's desk note opens the detailed letter. */
+.counter-board .counter-note{position:absolute;left:12%;top:72%;z-index:4;width:190px;min-height:96px;padding:12px 18px;background:#f3e5c8;color:#503b28;border:1px solid #baa17c;border-radius:0;box-shadow:2px 5px 7px #422a1838;transform:rotate(-5deg) skewX(-5deg);text-align:left;cursor:pointer;display:grid;gap:3px;font:15px KaiTi,serif}
+.counter-note strong{font-weight:400;border-bottom:1px solid #bca27b;padding-bottom:4px}.counter-note span{font-size:20px}.counter-note small{font:11px system-ui;color:#8b6648}.counter-note:hover{filter:brightness(1.04);outline:1px solid #9e7651}.counter-note:focus-visible{outline:3px solid #945438;outline-offset:4px}
+.counter-board .letter-close{float:right;font:13px system-ui;padding:4px 10px;margin:-5px -6px 6px 8px;position:relative;z-index:2;color:#75442f;background:#eee0c3;border:1px solid #ad9067;cursor:pointer}
+.counter-board .counter-letter{z-index:10}.counter-letter-open .counter-note{visibility:hidden}
+body:has(.counter-board.counter-letter-open) .engine-nav,body:has(.counter-board.counter-letter-open) .engine-viewport{pointer-events:none!important;cursor:default!important}
+body:has(.counter-board.counter-letter-open) .engine-nav *,body:has(.counter-board.counter-letter-open) .engine-viewport *{cursor:default!important}
+body:has(.counter-board.counter-letter-open) .counter-board button:not(.letter-close):not(.accept-stamp){cursor:default!important}
+@media(max-width:800px){.counter-board .counter-note{left:7%;top:73%;width:145px;min-height:80px;padding:9px 12px}.counter-note span{font-size:17px}.counter-board .counter-letter{width:min(430px,94%);left:3%;bottom:8%;max-height:75%;font-size:14px;overflow:auto}}
+@media(prefers-reduced-motion:no-preference){.counter-note:not([hidden]){animation:note-place .18s ease-out}@keyframes note-place{from{opacity:0;translate:0 -8px}to{opacity:1;translate:0 0}}}
+.counter-board .letter-close{float:none;display:block;margin:12px 0 0 auto}
+/* V65: register the desk note to the current visitor's painted-room anchor. */
+.counter-board .counter-note{left:clamp(86px,calc(var(--counter-origin-x,0px) + 950 * var(--counter-scale,1px)),calc(100% - 86px));top:calc(var(--counter-origin-y,0px) + 580 * var(--counter-scale,1px));width:clamp(145px,calc(190 * var(--counter-scale,1px)),190px);min-height:80px;transform:translateX(-50%) rotate(-4deg) skewX(-5deg)}
+.counter-board .counter-parcels{left:29%;width:22%;max-width:320px}.counter-board #counterParcelHint{left:29%}
+/* V66: the visible note is generated raster artwork; button only supplies hit/focus semantics. */
+.counter-board .counter-note{background:transparent;border:0;border-radius:0;box-shadow:none;padding:0;display:block;gap:0;min-height:0;height:auto;width:clamp(150px,calc(215 * var(--counter-scale,1px)),215px);transform:translateX(-50%) rotate(-3deg)}
+.counter-note img{display:block;width:100%;height:auto;pointer-events:none}.counter-note:hover{outline:none;filter:brightness(1.06)}.counter-note:focus-visible{outline:2px solid #945438;outline-offset:3px}
+/* V68: two packets form the base; the third rests across them. */
+.counter-board .counter-parcels{display:block;left:clamp(12px,calc(var(--counter-origin-x,0px) + 650 * var(--counter-scale,1px)),calc(100% - 160px));top:calc(var(--counter-origin-y,0px) + 570 * var(--counter-scale,1px));bottom:auto;width:calc(190 * var(--counter-scale,1px));height:calc(165 * var(--counter-scale,1px));max-width:none;pointer-events:none}
+.counter-board .counter-parcels img{position:absolute;width:calc(130 * var(--counter-scale,1px));height:calc(130 * var(--counter-scale,1px));max-height:none;object-fit:contain;bottom:0;left:0;transform:rotate(-8deg);z-index:1}
+.counter-board .counter-parcels img:nth-child(2){left:calc(50 * var(--counter-scale,1px));transform:rotate(9deg);z-index:2}
+.counter-board .counter-parcels img:nth-child(3){left:calc(25 * var(--counter-scale,1px));bottom:calc(45 * var(--counter-scale,1px));transform:rotate(-3deg);z-index:3}
+@media(max-width:520px){.counter-board .counter-parcels{left:4%}}
+.counter-board #counterParcelHint{left:clamp(100px,calc(var(--counter-origin-x,0px) + 745 * var(--counter-scale,1px)),calc(100% - 100px));transform:translateX(-50%)}
+
+/* V72: generated counter-specific paper props; match the painted room's soft edges. */
+.counter-board .counter-note img{filter:brightness(.86) saturate(.78) blur(.25px) drop-shadow(1px 2px 1.5px rgba(58,33,15,.24))}
+.counter-board .counter-note:active:not(:disabled){transform:translateX(-50%) rotate(-3deg)}
+.counter-board .counter-parcels img{width:calc(180 * var(--counter-scale,1px));height:calc(180 * var(--counter-scale,1px));left:calc(-25 * var(--counter-scale,1px));bottom:calc(-24 * var(--counter-scale,1px));filter:brightness(.9) saturate(.72) blur(.25px)}
+.counter-board .counter-parcels img:nth-child(2){left:calc(25 * var(--counter-scale,1px))}
+.counter-board .counter-parcels img:nth-child(3){left:0;bottom:calc(21 * var(--counter-scale,1px))}
+
+.counter-board .counter-note[data-note-art="text"] {
+  min-height: 44px;
+  background: #f3e5c8;
+  border: 1px solid #baa17c;
+  box-shadow: 2px 4px 8px #422a1838;
+}
+.counter-board .counter-note .counter-note-label {
+  color: #503b28;
+  font: 14px/1.4 system-ui, sans-serif;
+}
+.counter-note[data-note-art="image"] .counter-note-label { display: none; }
+
+/* === Consolidated source: commission-motion.css === */
+/* Keep note animation under the current commission state module. */
+.counter-board .counter-note:not([hidden]){animation:none!important}
+
+/* === Consolidated source: refine-odds.css === */
+.refine-odds-toggle{position:absolute;left:770px;top:103px;width:340px;z-index:21;padding:8px 12px;border:1px solid #9e7854;border-radius:4px;background:#f5e8cc;color:#683e29;font:17px system-ui;cursor:pointer}
+.refine-odds{position:absolute;left:1140px;top:24px;width:390px;max-height:430px;overflow:auto;overscroll-behavior:contain;box-sizing:border-box;z-index:21;padding:16px 18px;background:#f7ecdaf5;border:2px solid #b79b77;border-radius:5px;color:#49382a;box-shadow:0 5px 14px #50332126;font:16px/1.5 system-ui}
+.refine-odds header{display:flex;align-items:center;justify-content:space-between;gap:8px}.refine-odds h2{font-size:21px;margin:0}.refine-odds header button{font:14px system-ui;white-space:nowrap;padding:6px;background:#eee0c3;color:#75442f;border:1px solid #ad9067;border-radius:3px;cursor:pointer}
+.refine-odds p{margin:8px 0;font-size:14px}.refine-odds-risk{font-weight:600;color:#75442f;line-height:1.45;overflow-wrap:anywhere}.refine-odds-protection{overflow-wrap:anywhere}.refine-odds dl{margin:8px 0}.refine-odds dl>div{display:grid;grid-template-columns:1fr auto;padding:5px 0;border-bottom:1px solid #cbb593}.refine-odds dt{font-weight:600}.refine-odds dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}.refine-odds dl small{grid-column:1/-1;color:#786047;font-size:12px}.refine-odds [data-outcome=explode]{color:#9b3e2b}.refine-odds [data-outcome=big]{color:#47603a}.refine-odds details{font-size:13px;margin:8px 0}.refine-odds summary{cursor:pointer}.refine-odds>small{display:block;font-size:12px;color:#786047}
+.refine-odds button:focus-visible,.refine-odds summary:focus-visible,.refine-odds-toggle:focus-visible{outline:3px solid #945438;outline-offset:3px}
+.compact-forge .refine-odds-toggle{left:40px}.compact-forge .refine-odds{left:790px;top:24px;width:300px;padding:12px;font-size:15px}.compact-forge .refine-odds h2{font-size:18px}
+.equipment-open .refine-odds,.equipment-open .refine-odds-toggle{display:none}
+.refine-odds.mobile-odds,.refine-odds-toggle.mobile-odds{position:fixed;left:12px;right:12px;width:auto;z-index:45}
+.refine-odds.mobile-odds{padding:12px 14px;font-size:14px}.refine-odds.mobile-odds h2{font-size:18px}
+.refine-odds-toggle.mobile-odds[aria-expanded=true]{display:none}
+body:not(:has(.engine-nav [data-view=work][aria-pressed=true])) .mobile-odds{display:none}
+#roomSettlement>p,.counter-board .counter-receipt{white-space:pre-line;line-height:1.7}
+.canvas-room #roomSettlement{max-height:440px;overflow:auto}.counter-board .counter-receipt{max-width:min(420px,40%);text-align:left;font-size:14px}
+.herb-tray[data-select-reserve=true]{outline:4px solid #cf9b4d;outline-offset:3px}.herb-tray[data-select-reserve=true] .herb-slot[aria-disabled=false]{box-shadow:inset 0 0 0 2px #e5c06b}
+@media(max-width:800px){.counter-board .counter-receipt{max-width:70%;max-height:42%;overflow:auto;font-size:12px}}
+@media(forced-colors:active){.refine-odds,.refine-odds-toggle{border-color:ButtonText}}
+
+/* ForgeTax reference: five ordered color tiles and a proportional segmented strip. */
+.refine-odds [data-outcome=explode]{--chance-color:#eb1f1a;--chance-ink:#9c302a}
+.refine-odds [data-outcome=damage]{--chance-color:#ff6106;--chance-ink:#955019}
+.refine-odds [data-outcome=hold]{--chance-color:#40ff6e;--chance-ink:#2d663c}
+.refine-odds [data-outcome=success]{--chance-color:#42abff;--chance-ink:#285f94}
+.refine-odds [data-outcome=big]{--chance-color:#d661ff;--chance-ink:#795098}
+.refine-odds dl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:12px 0 9px}
+.refine-odds dl>[data-outcome]{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:68px;padding:9px 2px;border:1px solid #bca887;border-top:4px solid var(--chance-color);border-radius:3px;background:#fff7e8;color:var(--chance-ink);text-align:center}
+.refine-odds dt{font-size:14px;white-space:nowrap}.refine-odds dd{font-size:16px;line-height:1;font-variant-numeric:tabular-nums}
+.refine-odds dl>div[data-hit=true]{outline:2px solid var(--chance-ink);outline-offset:1px;background:color-mix(in srgb,var(--chance-color) 17%,#fff7e8);animation:chance-hit .45s ease-out}
+.chance-bar{display:flex;height:9px;width:100%;overflow:hidden;background:#cabda8;border-radius:2px}.chance-segment{display:block;flex:none;height:100%;background:var(--chance-color)}
+#refineOddsResult{font-size:13px;font-weight:600;min-height:20px}
+.compact-forge .refine-odds dl{gap:3px}.compact-forge .refine-odds dt{font-size:12px}.compact-forge .refine-odds dd{font-size:13px}
+.refine-odds.mobile-odds dt{font-size:14px}.refine-odds.mobile-odds dd{font-size:16px}
+@keyframes chance-hit{from{box-shadow:0 0 0 4px var(--chance-color)}to{box-shadow:0 0 0 0 transparent}}
+@media(prefers-reduced-motion:reduce){.refine-odds dl>div[data-hit=true]{animation:none}}
+
+/* Furnace belly charge arc & guardian flames (warm cinnabar bronze-and-gold inlay). */
+.furnace-charge-wrap{position:absolute;left:var(--rite-arc-x,50%);top:var(--rite-arc-y,65%);width:var(--rite-arc-w,180px);transform:translate(-50%,-100%);z-index:26;pointer-events:none}
+.furnace-charge-wrap[hidden],body:not([data-work-mode=furnace]) .furnace-charge-wrap,.engine-viewport[data-rite=trace] .furnace-charge-wrap,.equipment-open .furnace-charge-wrap,body:has(#gameDialogue[open]) .furnace-charge-wrap{display:none!important}
+.furnace-charge-arc{display:flex;align-items:flex-end;justify-content:center;width:100%;min-height:44px;padding:0;margin:0;border:0;background:transparent!important;box-shadow:none!important;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+.furnace-charge-arc:focus-visible{outline:2px solid #9e4b34;outline-offset:2px;border-radius:999px}
+.charge-arc-svg{display:block;width:100%;height:auto;aspect-ratio:220/52;overflow:visible;filter:drop-shadow(0 1px 1px #3620114d)}
+.charge-arc-track{fill:none;stroke:#634329b8;stroke-width:2.6;stroke-linecap:round}
+.charge-arc-fill{fill:none;stroke:#e3af54d9;stroke-width:2.2;stroke-linecap:round;transition:stroke-dashoffset .26s ease-out}
+.furnace-charge-arc[data-mode=sealed] .charge-studs,.furnace-charge-arc[data-mode=sealed] .charge-arc-fill,.furnace-charge-arc[data-mode=charge] .charge-flames{display:none}
+.stud-keystone{fill:#6a4629a8;stroke:#ba8f56;stroke-width:1}
+.stud-ring{fill:none;stroke:transparent;stroke-width:1.4;transform-box:fill-box;transform-origin:center}
+.stud-socket{fill:#4b3322d8;stroke:#8b6844;stroke-width:1.25}
+.stud-core{fill:#2b1c12;transition:fill .2s ease}
+.stud-glint{fill:transparent}
+.charge-stud[data-state=lit] .stud-socket{fill:#ae4228;stroke:#5d2b1a;stroke-width:1.2}
+.charge-stud[data-state=lit] .stud-core{fill:#f6cf73}
+.charge-stud[data-state=lit] .stud-glint{fill:#fff8e0}
+.charge-stud[data-index="4"][data-state=lit] .stud-keystone{fill:#9e4229cc;stroke:#f4ce74}
+.charge-stud[data-state=imminent] .stud-socket{fill:#6d4728eb;stroke:#e4b457;stroke-width:1.4}
+.charge-stud[data-state=imminent] .stud-ring{stroke:#f2c96c;stroke-dasharray:2.5 2}
+.charge-stud[data-fresh=true] .stud-ring{stroke:#ffe59d;stroke-width:2;animation:stud-pulse .46s ease-out}
+.flame-halo{fill:#f3b5542b;opacity:0}
+.flame-outer{fill:#bc4127;stroke:#5d2215;stroke-width:1.05;stroke-linejoin:round}
+.flame-inner{fill:#ffe084}
+.charge-flame[data-state=active] .flame-halo{opacity:1}
+.charge-flame[data-state=spent] .flame-halo,.charge-flame[data-state=spent] .flame-inner{display:none}
+.charge-flame[data-state=spent] .flame-outer{fill:#4a352544;stroke:#785c42b8;stroke-width:1;stroke-dasharray:2 1.6}
+.furnace-charge-tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(calc(-50% + var(--tip-shift,0px)));width:max-content;max-width:min(256px,calc(100vw - 16px));padding:6px 10px;border:1px solid #9a7449;border-radius:3px;background:#f7ebd0f7;color:#3d2b1c;box-shadow:0 4px 12px #3c241436;font:12.5px/1.45 "Microsoft YaHei",sans-serif;text-align:left;pointer-events:none;z-index:35}
+.furnace-charge-tip[hidden]{display:none}
+#refineOdds [data-outcome=explode][data-sealed=true] dt,#refineOdds [data-outcome=explode][data-sealed=true] dd{color:#6a5a47!important;opacity:.76}
+body.warm-cinnabar-experiment .furnace-judgment #refineOdds [data-outcome=explode][data-sealed=true] dt,body.warm-cinnabar-experiment .furnace-judgment #refineOdds [data-outcome=explode][data-sealed=true] dd{color:#6a5a47!important}
+@keyframes stud-pulse{0%{transform:scale(.85);opacity:1}100%{transform:scale(1.45);opacity:0}}
+@keyframes stud-imminent{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes flame-sway{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-1.1px) scale(1.04)}}
+@media(prefers-reduced-motion:no-preference){
+ body:not(.reduced-feedback) .charge-stud[data-state=imminent] .stud-ring{animation:stud-imminent 1.3s ease-in-out infinite}
+ body:not(.reduced-feedback) .charge-flame[data-state=active]{transform-box:fill-box;transform-origin:center bottom;animation:flame-sway 1.4s ease-in-out infinite}
+}
+@media(prefers-reduced-motion:reduce){.charge-arc-fill,.stud-core,.charge-stud[data-fresh=true] .stud-ring,.charge-stud[data-state=imminent] .stud-ring,.charge-flame[data-state=active]{transition:none!important;animation:none!important}}
+body.reduced-feedback .charge-arc-fill,body.reduced-feedback .stud-core,body.reduced-feedback .charge-stud[data-fresh=true] .stud-ring,body.reduced-feedback .charge-stud[data-state=imminent] .stud-ring,body.reduced-feedback .charge-flame[data-state=active]{transition:none!important;animation:none!important}
+
+/* === Consolidated source: pill-bag.css === */
+.engine-shell .pill-bag-panel.engine-panel{inset:76px 12px 12px!important;background:#f5e8d0!important;color:#493624;border:1px solid #b79b77;padding:20px!important}
+.pill-bag-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #c8af87}.pill-bag-heading h2{margin:0;font-size:25px}.pill-bag-heading p{margin:8px 0}
+.pill-bag-panel button{background:#934d35;color:#fff1d7;border:1px solid #7c402d;border-radius:4px;padding:10px 14px;font:inherit;cursor:pointer}.pill-bag-panel button:focus-visible{outline:3px solid #315f56;outline-offset:3px}.pill-bag-panel button:disabled{opacity:.6;cursor:default}
+#pillBagList{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}.pill-bag-card{border:1px solid #b99b73;background:#fcf4e5;padding:16px;border-radius:5px}.pill-bag-card h3{margin:6px 0;font-size:19px}.pill-bag-card p{font-size:14px;line-height:1.6;overflow-wrap:anywhere}.pill-bag-art{position:relative;width:100px;height:100px}.pill-bag-art img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.pill-bag-empty{grid-column:1/-1;padding:24px;border:1px dashed #b99b73}
+.guided-journey .engine-nav button[data-view=bag]:not([data-view=work]){display:block!important}
+body:has(.engine-nav [data-view=bag][aria-pressed=true]) .engine-close{display:none}
+@media(max-width:650px){.engine-shell .pill-bag-panel.engine-panel{inset:120px 8px 8px!important;padding:14px!important}#pillBagList{grid-template-columns:1fr}.pill-bag-heading h2{font-size:21px}}
+
+/* === Consolidated source: information-ui.css === */
+/* V84: reuse the established paper/wood palette and existing type sizes. */
+.guided-opening #engineWallet{display:block}.engine-nav #engineWallet{font-size:12px}
+.refine-odds-toggle[hidden],#roomStock[hidden],#refineOddsResult[hidden],#refineOddsProtection[hidden]{display:none!important}
+.refine-odds dl>[data-outcome]{min-height:52px}.refine-odds h2{font-size:18px}.refine-odds dd{font-size:18px}.refine-odds details{font-size:12px}
+.odds-expanded #roomFacts>[data-fact="炸丹概率"]{display:none}
+.room-observation .observation-pill{pointer-events:auto;touch-action:none}.canvas-room .room-observation{z-index:11}
+.room-observation .observation-details{pointer-events:auto}.observation-pill:focus-visible{outline:2px solid #9b4e35}
+.equipment-open #roomSettlement,.equipment-open #roomChoices{display:none!important}
+.canvas-room .scene-loadout[hidden],.equipped-tool-status[hidden]{display:none!important}
+.equipment-slot span:empty{display:none}.equipment-slot small,.equipment-slot span{font-size:12px}
+.opening-content{gap:18px}.opening-screen{background:#eee2ca}.opening-prose{margin-bottom:0}
+.opening-screen::before,.opening-screen::after{display:none}
+.refine-odds p:empty,.market-heading p:empty,#pillBagStatus:empty,.work-instruction:empty{display:none}
+.engine-panel .hint-box:has(#trialHint:empty){display:none}
+.engine-panel .panel-kicker{font-size:12px}.engine-panel .resource-card span,.engine-panel .order-number{font-size:12px}
+.engine-panel .target-card[hidden]{display:none!important}
+.engine-shell .pill-bag-panel{border-radius:5px}.pill-bag-card{border-radius:3px}
+.engine-shell .equipment-drawer small,.engine-shell .equipment-drawer span{font-size:12px}
+.engine-nav button,.room-loop-card button,.equipment-card button{transition:none}
+@media(max-width:650px){
+ .engine-nav{flex:0 0 auto;min-height:64px;gap:4px;padding:6px;box-sizing:border-box}.engine-nav button{font-size:12px!important;min-height:32px;padding:5px 8px}.engine-nav #engineWallet{font-size:12px!important;display:block;margin-left:auto}
+ .engine-viewport{top:var(--work-reserve,0px)}
+ .mobile-info{position:fixed!important;left:8px!important;right:8px!important;top:var(--info-top)!important;bottom:auto!important;width:auto!important;box-sizing:border-box;z-index:44!important;transform:none!important}
+ body:not(.info-at-work) .mobile-info{display:none!important}
+ .info-choosing .room-observation.mobile-info,.info-choosing .refine-odds.mobile-odds,.info-choosing .refine-odds-toggle.mobile-odds{display:none!important}
+ .canvas-room .room-observation.mobile-info{padding:10px;min-height:0;max-height:210px;overflow:auto;background:#f7ecd4;border-radius:5px}
+ .canvas-room .room-observation.mobile-info h2{display:none}
+ .canvas-room .room-observation.mobile-info .observation-pill{left:10px;top:10px;width:48px;height:48px}
+ .canvas-room .room-observation.mobile-info #roomFacts{padding-left:60px;min-height:0;display:flex;justify-content:space-between;gap:10px}
+ .canvas-room .room-observation.mobile-info #roomFacts>div{font-size:12px!important;line-height:1.3;flex-direction:column;margin:0 0 4px;gap:3px}
+ .canvas-room .room-observation.mobile-info #roomFacts strong{font-size:18px}
+ .canvas-room .room-observation.mobile-info #roomDecision{font-size:14px;line-height:1.4;padding-top:6px;margin-top:6px}
+ .room-observation.mobile-info #roomStock,.room-observation.mobile-info .observation-details{font-size:12px;margin:4px 0 0;line-height:1.4}
+ .refine-odds.mobile-odds{left:8px;right:8px;padding:10px;max-height:min(230px,30dvh)!important;z-index:44}
+ .refine-odds.mobile-odds dl{margin:7px 0}.refine-odds.mobile-odds dl>[data-outcome]{min-height:42px;gap:6px;padding:7px 1px}.refine-odds.mobile-odds dt{font-size:12px}.refine-odds.mobile-odds dd{font-size:14px}
+ .refine-odds.mobile-odds p{font-size:12px;line-height:1.4;margin:4px 0}.refine-odds.mobile-odds details{font-size:12px;margin:4px 0}.refine-odds.mobile-odds header button{font-size:12px}
+ .refine-odds-toggle.mobile-odds{left:8px;right:8px;font-size:14px}
+ .canvas-room .room-loop-card.mobile-info{padding:14px;max-height:42dvh;overflow:auto;font-size:14px;line-height:1.5;border-radius:5px}
+ .room-loop-card.mobile-info>p{margin:0 0 8px;font-size:14px;line-height:1.6}.room-loop-card.mobile-info button{font-size:14px!important;min-height:40px;padding:8px;margin:4px 4px 0 0}
+ .selecting-reserve #roomSettlement.mobile-info{display:none!important}
+ .canvas-room .herb-tray.mobile-info{padding:10px;max-height:240px;overflow:auto;background:#f3e6cf}
+ .canvas-room .herb-tray.mobile-info h2{font-size:18px;margin:0}.canvas-room .herb-tray.mobile-info>p{font-size:12px;margin:4px 0}
+ .canvas-room .herb-tray.mobile-info .herb-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-height:150px;gap:6px;overflow:auto}
+ .canvas-room .herb-tray.mobile-info .herb-slot{width:auto;height:auto;min-height:52px;display:flex;padding:5px;margin:0;gap:4px;box-sizing:border-box;position:relative}
+ .canvas-room .herb-tray.mobile-info .herb-slot span{display:block!important;position:static}.canvas-room .herb-tray.mobile-info .herb-slot img{width:32px;height:32px;position:static;transform:none}.canvas-room .herb-tray.mobile-info .herb-slot b,.canvas-room .herb-tray.mobile-info .herb-slot small{font-size:12px}.canvas-room .herb-tray.mobile-info .herb-slot strong{font-size:14px;position:static}
+ .canvas-room.info-live .herb-tray.mobile-info,.canvas-room.info-ended:not(.selecting-reserve) .herb-tray.mobile-info{display:none!important}
+ .canvas-room #workInstruction.mobile-info,.canvas-room #refineFeedback.mobile-info{top:auto!important;bottom:8px!important;padding:10px;font-size:14px;max-height:100px;overflow:auto;background:#f7ecd4;line-height:1.4}
+ .canvas-room #refineFeedback.mobile-info strong{font-size:18px}.canvas-room #refineFeedback.mobile-info p,.canvas-room #refineFeedback.mobile-info small{font-size:14px}
+ body:has(#refineFeedback:not([hidden])) #workInstruction.mobile-info{display:none}
+ .canvas-room .scene-loadout,.canvas-room .equipped-tool-status{display:none!important}
+}
+
+/* === Consolidated source: world-ui.css === */
 /* V86: props own the workspace; paper is used for reading and decisions. */
 .object-world{--paper:#f7ecd4;--ink:#49382a;--wood:#795637;--action:#914e35}
 .object-world button:focus-visible,.object-world [role=button]:focus-visible{outline:3px solid #a55638;outline-offset:3px}
@@ -200,4 +491,327 @@
 .object-world .world-market .passage-home{right:8%;top:24%;background:#f7ecd4e8;color:#49382a}
 @media(max-width:650px){.object-world .world-market .passage-home{right:10px;top:10px}}
 
+/* === Consolidated source: ui-revision.css === */
+/* V89: current objects first, measured reading space, explicit presentation lifetime. */
+body.object-world [hidden]{display:none!important}
+body.object-world button,body.object-world summary,body.object-world .policy-link{min-height:44px;box-sizing:border-box}
+body.object-world button{font-size:14px}
+body.object-world summary{display:flex;align-items:center;cursor:pointer}
+body.object-world summary:before{content:'▸';margin-right:6px}
+body.object-world details[open]>summary:before{content:'▾'}
+body.object-world .engine-nav{flex:0 0 auto;min-height:52px}
+body.object-world .engine-nav>button{min-height:44px;font-size:14px!important}
+body.object-world #worldLocationMenu small{margin:4px 0;font-size:12px;color:#715439}
+body.object-world #worldLocationMenu button,body.object-world #worldSettings button{min-height:44px}
+body.object-world .world-section-caption{display:none!important}
+body.object-world .room-observation{overflow:visible!important;max-height:none!important}
+body.object-world .room-observation .observation-details{width:auto;min-width:140px;padding:0 8px}
+body.object-world .room-observation .observation-details summary{font-size:12px;min-height:44px}
+body.object-world[data-reading-mode=short] .world-readout{visibility:visible!important}
+body.object-world[data-reading-mode=long] .engine-viewport{filter:brightness(.68)}
+body.object-world .engine-viewport[inert] :is(.world-passage,.world-books,.world-casket,.world-tool-row),body.object-world .engine-panel[inert] :is(.world-passage,.world-books){visibility:hidden!important}
+body.object-world .work-instruction{font-size:14px;max-height:none;min-height:0}
+body.object-world .work-instruction[hidden]{display:none!important}
+body.object-world .refine-feedback{width:220px}
+body.object-world .refine-feedback p:empty,body.object-world .refine-feedback small:empty{display:none}
+body.object-world .refine-odds{height:auto;max-height:none!important}
+body.object-world .refine-odds header button{min-height:44px}
+body.object-world .refine-odds .odds-rules{min-height:44px;font-size:12px;background:transparent;border:0;text-align:left;padding:4px 0}
+body.object-world .refine-odds dl{margin:4px 0}
+body.object-world .refine-odds #refineOddsState:empty{display:none}
+body.object-world #refineOddsProtection{font-size:12px;margin:4px 0}
+.ux-pill-art{position:relative;display:inline-block;width:80px;height:80px;flex:none;vertical-align:middle}
+.ux-pill-art>img,.ux-pill-art>i{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.ux-pill-art>i{mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center}
+body.object-world .pill-detail-panel.engine-panel,body.object-world .equipment-drawer.engine-panel{position:fixed!important;inset:var(--note-top,80px) auto auto var(--note-left,calc(100vw - 352px))!important;width:320px!important;max-width:calc(100vw - 24px)!important;height:auto;max-height:var(--note-max-height,55dvh);overflow:auto;padding:14px!important;border:1px solid #a7885d;border-radius:3px;background:#f7ecd4!important;color:#49382a;z-index:80;box-shadow:0 5px 12px #46302633}
+body.object-world .pill-detail-panel header{display:flex;justify-content:space-between;align-items:center}
+body.object-world .pill-detail-panel h2{font-size:18px;margin:0}
+.pill-rune-details article{display:flex;align-items:center;gap:8px;border-top:1px solid #b9a17a;padding:6px 0}
+.pill-rune-details .ux-pill-art{width:56px;height:56px}.pill-rune-details p{font-size:14px;line-height:1.5;margin:3px 0}
+body.object-world .equipment-drawer p{margin:6px 0;font-size:14px;line-height:1.5}
+body.object-world .equipment-library{max-height:none!important;overflow:visible}
+.equipment-targets button{margin:4px}
+body.object-world .equipment-card{color:#49382a!important;background:#f5e7c9!important;border-color:#bba27c!important}
+body.object-world .equipment-card:disabled{opacity:.7}
+body.object-world .equipment-card small{font-size:12px}
+body.object-world #roomSettlement{left:805px;top:auto;bottom:24px;width:490px;max-height:260px;background:#f7ecd4ed;padding:12px;z-index:28}
+body.object-world #roomSettlement>p{margin:0 0 6px;font-size:14px}
+.receipt-actions{display:flex;gap:6px;flex-wrap:wrap}.receipt-actions button[data-primary]{background:#914e35;color:#fff0d4;order:-1}.receipt-details{margin:0 0 6px}.receipt-details p{white-space:pre-line;font-size:14px;line-height:1.6}
+body.object-world #roomChoices{left:800px;top:120px;width:500px;max-height:65%;padding:12px;z-index:40;overflow:auto}
+body.object-world #roomChoices [data-rune]{display:flex;align-items:center;gap:8px;width:100%;text-align:left;margin:6px 0;padding:6px 10px;background:#f5e7c9;color:#49382a}
+#roomChoices [data-rune]>.ux-pill-art{width:56px;height:56px}#roomChoices [data-rune]>span:last-child{display:grid;gap:3px;font-size:14px;line-height:1.4}#roomChoices [data-rune] em{font-size:12px;font-style:normal;color:#80452f}
+body.object-world .herb-tray>p{display:none!important}
+body.object-world .herb-slot .parcel-seal{position:absolute;left:5px;top:8px;font-size:12px;font-style:normal;line-height:18px;padding:1px 3px;z-index:1}
+.herb-slot.tier-1 .parcel-seal{background:#476650}.herb-slot.tier-2 .parcel-seal{background:#77577a}
+body.object-world .counter-board .daily-heading{pointer-events:none}
+body.object-world .counter-board .daily-heading small,body.object-world #dayTitle,body.object-world #dailyHint,.counter-board .counter-sign{display:none!important}
+body.object-world .counter-board #careerTotal{font-size:14px}
+body.object-world .counter-board .browse-customers{top:18px!important;right:18px!important;font-size:14px;min-height:44px}
+body.object-world .counter-board .counter-note:after{display:none!important}
+body.object-world .counter-board .counter-receipt{font-size:14px;max-width:380px}
+body.object-world .counter-board .counter-receipt:empty,body.object-world .visitor-departed:empty{display:none!important}
+body.object-world .counter-board .counter-letter{z-index:35;box-sizing:border-box;max-height:72%;overflow:auto;padding:18px!important}
+body.object-world .counter-letter .letter-close{min-width:44px;min-height:44px;float:right}
+body.object-world .counter-letter .accept-stamp{display:block;min-height:48px;margin-top:14px}
+body.object-world .counter-board.counter-letter-open>.world-books,body.object-world .counter-board.counter-letter-open>.world-passage,body.object-world .counter-board.counter-letter-open>.daily-actions{visibility:hidden}
+body.object-world .counter-board .world-passage{top:auto!important;bottom:18px;min-height:44px}
+body.object-world .counter-board .passage-forge{left:18px}.object-world .counter-board .passage-market{right:18px}
+body.object-world .counter-board .world-books{left:18px;bottom:88px;top:auto!important}
+body.object-world .counter-board #dailySummary{left:50%;right:auto;top:auto;bottom:120px;transform:translateX(-50%);width:min(600px,80%);max-width:none;padding:18px;box-sizing:border-box;white-space:pre-line;background:#f7ecd4;border:1px solid #ad9067;z-index:12;font-size:16px;line-height:1.8}
+body.object-world .counter-board #dailySummary:empty{display:none!important}
+body.object-world .counter-board[data-counter-state=settled] #counterReceipt,body.object-world .counter-board[data-counter-state=finished] #counterReceipt{display:none!important}
+body.object-world .counter-board[data-counter-state=active] .counter-note:before{content:'已接';position:absolute;right:10%;top:14%;color:#914e35;background:#f6e7c9f0;border:2px solid #914e35;padding:2px 6px;z-index:1;font-size:13px;font-weight:700;line-height:1.2;transform:rotate(8deg);pointer-events:none;border-radius:2px}
+body.object-world .world-market .market-heading{top:10px;left:24px;right:200px;min-height:0;z-index:30}
+body.object-world .world-market .market-heading p{margin:0;padding:6px;font-size:14px}
+body.object-world .world-market-tabs{top:22px;left:24px;right:auto}
+body.object-world .market-stalls{top:30%;height:30%;align-items:end}
+body.object-world .world-price-tag{left:25%;bottom:82px;max-height:28%;padding:12px 16px}
+body.object-world .world-price-tag button{min-height:44px}
+body.object-world .world-price-tag strong{margin-right:12px}
+body.object-world .world-market .market-stalls>section:has([aria-pressed=true]){border-bottom-color:#914e35}
+body.object-world .pill-bag-panel.engine-panel{padding:18px!important}
+body.object-world #pillBagList{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));max-width:58%;max-height:72%;min-height:150px;align-content:start}
+body.object-world .pill-bag-card .ux-pill-art{width:80px;height:80px}
+body.object-world .pill-bag-card small{font-size:12px}.empty-pill-place{border-style:dashed!important;color:#f5e7c9;opacity:.7}
+body.object-world #pillBagSelected{left:62%;right:24px;top:110px;background:transparent;padding:12px}
+body.object-world #pillBagSelected>.ux-pill-art{width:140px;height:140px}
+body.object-world #pillBagSelected p{font-size:14px;line-height:1.6}
+body.object-world .pill-bag-empty{font-size:14px;grid-column:1/-1}
+body.object-world .journal-book .record-scope{font-size:14px;margin:0 0 10px}
+body.object-world .journal-book #trialFlavor,body.object-world .journal-book #trialRule,body.object-world .journal-book .hint-box{display:none!important}
+body.object-world .journal-book[data-record-source=forge] .target-card{display:none!important}
+body.object-world .journal-book .resource-grid{margin-top:18px}
+.rune-atlas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.rune-atlas article{display:flex;align-items:center;gap:12px;border-bottom:1px solid #bba27c;padding:10px 0}.rune-atlas .ux-pill-art{width:80px;height:80px}.rune-atlas h3{font-size:18px;margin:0 0 6px}.rune-atlas p{font-size:14px;line-height:1.6;margin:0}.rune-discoveries{margin-top:20px}.rules-outcomes{display:grid;grid-template-columns:70px 1fr;gap:12px}.rules-outcomes dt,.rules-outcomes dd{margin:0}.log-scope,.log-entry small{font-size:12px}.log-entry small{display:block;color:#72583f;margin:0 0 5px}
+body.object-world .journal-book .journal-heading{padding-right:80px}.journal-tabs button{min-height:44px}
+body.object-world .ledger-day{font-size:14px;line-height:1.6;border-top:1px solid #bba27c;padding:12px 0}.ledger-day p{margin:4px 0}
+body.object-world dialog{box-sizing:border-box;max-width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 32px);overflow:auto;background:#f7ecd4;color:#49382a;border:1px solid #9f794f;padding:20px;border-radius:4px}
+body.object-world dialog::backdrop{background:#382b1c80}body.object-world dialog h2{font-size:24px;margin:0}body.object-world dialog header{display:flex;align-items:center;justify-content:space-between;gap:16px}body.object-world dialog p{font-size:14px;line-height:1.6}body.object-world dialog button{min-height:44px;font-size:14px}body.object-world .ux-confirm{width:420px}.ux-confirm>div{display:flex;gap:12px;margin-top:16px}.ux-data-settings .telemetry-option{display:flex;align-items:center;min-height:44px}.ux-data-settings .policy-link{display:flex;align-items:center}.ux-data-settings .deferred-note{font-size:14px}.ux-data-settings #uxDataSettingsSource{display:block}
+body.object-world .save-picker{width:520px}.save-slot-list{display:grid;gap:10px}.save-slot{padding:12px}.save-slot h3{font-size:18px;margin:0 0 6px}.save-slot p{margin:4px 0}.save-slot small{font-size:12px}.save-actions,.save-reset-confirm{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.save-reset-confirm>p{width:100%}.save-reset-confirm button:first-of-type{background:#914e35;color:#fff0d4}
+body.object-world .opening-screen{background:#e9dcc0 url('assets/object-world/room-desktop.webp') center/cover no-repeat;padding:24px;box-sizing:border-box}
+body.object-world .opening-content{background:#f7ecd4ed;padding:28px;width:min(510px,100%);gap:12px;border:1px solid #b8a07a;border-radius:3px;box-sizing:border-box;margin:auto}
+body.object-world .opening-launch{width:100%;max-width:none;display:grid;gap:8px}
+body.object-world .opening-story h1{font-size:44px;margin:0}.opening-tagline{font-size:14px}
+body.object-world .opening-help summary,body.object-world .opening-launch>.ux-data-open,body.object-world .opening-launch>.save-open{min-height:44px;font-size:14px;margin:0}
+body.object-world .opening-launch>.ux-data-open,body.object-world .opening-launch>.save-open{background:transparent;text-align:left;color:#715439;border:0}
+@media(max-width:650px){
+ body.object-world .engine-nav{min-height:52px;padding:4px 8px;gap:4px}body.object-world #engineWallet{font-size:12px!important}
+ body.world-mobile.object-world .engine-viewport>.forge-panel{top:var(--work-top,0px)!important;transform:none!important}
+ body.world-mobile.object-world .world-readout{position:absolute;left:0;right:0;top:0;height:auto;min-height:0;display:grid;grid-template-columns:130px 1fr;gap:4px 8px;padding:8px 10px;box-sizing:border-box}
+ body.world-mobile.object-world #roomFacts{grid-row:1/3;min-height:0;font-size:12px!important;display:flex;flex-wrap:wrap;align-content:start;gap:4px 10px}
+ body.world-mobile.object-world #roomFacts strong{font-size:18px}
+ body.world-mobile.object-world #roomFacts>[data-fact="炸丹概率"]{flex:0 0 100%;font-size:12px!important}
+ body.world-mobile.object-world #roomFacts>[data-fact="炸丹概率"] strong{font-size:14px}
+ body.world-mobile.object-world #roomDecision{font-size:14px;line-height:1.4;grid-column:2;margin:0;padding:0}
+ body.world-mobile.object-world #roomStock{font-size:12px;grid-column:2;margin:0;line-height:1.4}
+ body.world-mobile.object-world .refine-odds{position:fixed;left:8px!important;right:8px!important;top:auto!important;bottom:max(8px,env(safe-area-inset-bottom))!important;width:auto!important;height:auto;max-height:240px!important;padding:8px 10px;overflow:auto;z-index:45}
+ body.world-mobile.object-world .refine-odds h2{font-size:14px}.world-mobile.object-world .refine-odds dl>[data-outcome]{min-height:44px;padding:4px 0}
+ body.world-mobile.object-world .refine-odds header button{min-height:44px;font-size:12px}.world-mobile.object-world .refine-odds .odds-rules{min-height:44px;font-size:12px}
+ body.world-mobile.object-world .refine-odds-toggle{bottom:8px;left:8px;right:8px;min-height:44px}
+ body.object-world .pill-detail-panel.engine-panel,body.object-world .equipment-drawer.engine-panel{inset:auto 8px max(8px,env(safe-area-inset-bottom))!important;width:auto!important;max-width:none!important;max-height:36dvh;padding:12px!important;z-index:80}
+ body.object-world #roomChoices,body.object-world #roomSettlement{position:fixed!important;inset:auto 8px max(8px,env(safe-area-inset-bottom))!important;width:auto!important;max-height:38dvh;box-sizing:border-box;margin:0;padding:10px;overflow:auto;z-index:40}
+ body.object-world #roomChoices>strong{font-size:14px}body.object-world #roomChoices [data-rune]{padding:5px 8px;margin:5px 0}#roomChoices [data-rune]>.ux-pill-art{width:44px;height:44px}#roomChoices [data-rune]>span:last-child{font-size:12px}#roomChoices [data-rune] strong{font-size:14px}
+ body.object-world #roomSettlement>p{font-size:14px}.receipt-actions button{font-size:14px;padding:6px 10px}.receipt-details summary{font-size:12px}
+ body.world-mobile.object-world .work-instruction{font-size:12px;left:20%;right:8px;bottom:3%;max-height:none;background:#f7ecd4ee}
+ body.world-mobile.object-world .world-books{top:84%;right:95px}.world-mobile.object-world .world-casket{top:82%}
+ body.world-mobile.object-world .herb-tray{top:43%;max-height:39%}.world-mobile.object-world .herb-slot .parcel-seal{left:4px;top:4px;font-size:12px}
+ body.object-world .counter-board .daily-heading{top:16px;left:12px;right:auto;padding:0;max-width:60%}body.object-world .counter-board #careerTotal{font-size:12px}
+ body.object-world .counter-board .browse-customers{top:14px!important;right:12px!important;font-size:12px}
+ body.object-world .counter-board .counter-letter{left:10px!important;right:10px!important;bottom:100px!important;top:auto!important;width:auto!important;max-height:calc(100% - 170px);padding:14px!important;font-size:14px}
+ body.object-world .counter-board .counter-receipt{left:12px;right:12px;bottom:150px;top:auto;width:auto;max-width:none;max-height:26%;overflow:auto;box-sizing:border-box}
+ body.object-world .counter-board .world-books{bottom:95px!important;left:12px;right:auto;top:auto!important}body.object-world .counter-board .world-passage{bottom:16px;font-size:12px}body.object-world .counter-board .passage-forge{left:12px}body.object-world .counter-board .passage-market{right:12px}
+ body.object-world .counter-board .daily-actions{bottom:75px;right:12px;left:auto}
+ body.object-world .counter-board #dailySummary{bottom:180px;left:12px;right:12px;top:auto;transform:none;width:auto;max-width:none;font-size:14px;padding:14px}
+ body.object-world .counter-board .world-day-bell{min-width:90px;font-size:12px}
+ body.object-world .world-market-tabs{position:absolute;top:16px;left:12px;right:12px;gap:6px}.world-market-tabs button{font-size:14px}
+ body.object-world .world-market .market-heading{top:70px;left:12px;right:12px}
+ body.object-world .world-market .market-stalls{position:absolute;left:12px;right:12px;top:31%;height:28%;display:block;overflow:auto}
+ body.object-world .world-market .world-price-tag{position:absolute;left:12px;right:12px;top:61%;bottom:80px;max-height:none;overflow:auto;padding:10px 12px}
+ body.object-world .world-price-tag h3{font-size:18px}.world-price-tag p{font-size:14px}
+ body.object-world .world-market .passage-home{top:auto!important;bottom:16px;right:12px;font-size:12px;min-height:44px}.object-world .world-market .world-books{bottom:16px!important;left:12px;top:auto!important}
+ body.object-world .market-merchant{top:100px!important;height:125px!important;width:auto!important}
+ body.object-world #pillBagList{max-width:none;max-height:45%;grid-template-columns:repeat(3,minmax(0,1fr));min-height:120px;padding:8px}
+ body.object-world .pill-bag-card{min-height:100px;padding:5px}.pill-bag-card .ux-pill-art{width:64px!important;height:64px!important}body.object-world .pill-bag-card span{font-size:12px}
+ body.object-world #pillBagSelected{position:static;margin-top:12px;padding:12px;background:#f7ecd4bb}body.object-world #pillBagSelected>.ux-pill-art{width:90px;height:90px;float:left;margin-right:12px}
+ body.object-world .rune-atlas{grid-template-columns:1fr;gap:0}.rune-atlas .ux-pill-art{width:64px;height:64px}.rune-atlas article{gap:10px;padding:8px 0}.rune-atlas h3{font-size:18px}.rune-atlas p{font-size:14px}
+ body.object-world .journal-heading{padding:12px 76px 10px 12px}.journal-tabs{gap:5px}.journal-tabs button{font-size:14px;padding:6px 9px}
+ body.object-world .opening-screen{background-image:url('assets/object-world/room-mobile.webp');padding:16px;display:flex;align-items:center}body.object-world .opening-content{padding:24px;gap:8px}body.object-world .opening-story h1{font-size:40px}
+ body.object-world .engine-close{min-height:44px;top:59px;right:10px}
+}
+@media(prefers-reduced-motion:reduce){body.object-world *,body.object-world *:before,body.object-world *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
+body.object-world .journal-book .panel-kicker{display:none!important}
+body.compact-forge.object-world #roomSettlement{left:680px;width:380px}
+body.compact-forge.object-world #roomChoices{left:680px;width:380px}
+
+body.object-world .opening-screen.hidden{display:none!important}
+body.object-world .herb-slot[data-empty=true] .parcel-seal{display:none}
+
+body.object-world[data-world-surface][data-reading-mode=short] .world-readout{visibility:visible!important}
+body.object-world .room-observation .observation-details{min-width:0;width:110px!important;padding:0 6px!important;background:#f7ecd4df}
+body.world-mobile.object-world .room-observation .observation-details{left:12px;top:calc(100% + 8px)}
+
+body.object-world .counter-board .daily-actions{bottom:18px;right:18px;left:auto}
+body.object-world .counter-board .passage-market{bottom:122px}
+@media(max-width:650px){body.object-world .counter-board .daily-actions{bottom:75px;right:12px}body.object-world .counter-board .passage-market{bottom:16px}}
+
+body.object-world .counter-board .daily-heading{position:absolute!important;display:block!important;left:18px!important;right:auto!important;top:18px!important;width:auto!important;max-width:none!important;padding:0!important}
+body.object-world .counter-board .daily-heading>div{display:none!important}
+body.object-world .counter-board #careerTotal{display:inline-block!important;position:static!important;max-width:none!important;width:max-content!important;margin:0!important;padding:8px!important;white-space:nowrap;line-height:20px}
+body.object-world.engine-shell .pill-bag-panel.engine-panel{inset:72px max(12px,calc((100vw - 1000px)/2)) auto!important;height:auto!important;max-height:calc(100dvh - 90px);display:grid;grid-template-columns:58% 1fr;gap:12px;align-items:start}
+.pill-bag-heading,#pillBagStatus{grid-column:1/-1}
+body.object-world #pillBagList{max-width:none;max-height:55dvh;min-height:240px;margin:0}
+body.object-world #pillBagSelected{position:static;padding:12px;margin:0}
+.pill-bag-place{min-height:110px;border:1px solid #b2ac8144;border-radius:5px;background:radial-gradient(ellipse,#373e2e33,transparent)}
+body.object-world .pill-bag-card{justify-content:center}.empty-pill-place{cursor:default}
+@media(min-width:651px){
+ body.object-world .world-price-tag{top:64%;bottom:auto;max-height:26%;width:32%;left:5%;right:auto}
+ body.object-world [data-market-tab=tool] .world-price-tag{left:42%;width:34%}
+ body.object-world [data-market-tab=furnace] .world-price-tag{left:72%;width:26%}
+}
+@media(max-width:650px){
+ body.world-mobile.object-world .work-instruction{position:fixed!important;left:8px;right:8px;bottom:calc(var(--work-reserve,0px) + 16px);font-size:12px;padding:5px;z-index:35;margin:0;min-height:24px;line-height:20px}
+ body.object-world .counter-board .daily-heading{left:12px!important;top:14px!important}
+ body.object-world .counter-board #careerTotal{font-size:12px;padding:8px 6px!important}
+ body.object-world.engine-shell .pill-bag-panel.engine-panel{inset:60px 8px auto!important;display:block;max-height:calc(100dvh - 76px);padding:14px!important}
+ body.object-world #pillBagList{max-height:35dvh;min-height:200px;grid-template-columns:repeat(3,minmax(0,1fr));margin:10px 0 0}
+ .pill-bag-place{min-height:90px}body.object-world #pillBagSelected{margin-top:12px;background:#f7ecd4bb}
+ body.object-world .world-market .world-price-tag{bottom:auto;max-height:calc(39% - 80px)}
+}
+
+body.object-world .pill-detail-panel button,body.object-world dialog button{background:#efe0bd;color:#60432d;border:1px solid #aa875a;border-radius:3px;padding:6px 12px}
+body.object-world dialog [data-confirm],body.object-world dialog [data-confirm-reset]{background:#914e35;color:#fff0d4}
+
+body.object-world .world-market-tabs [aria-pressed=true]{background:#f4e5c5;color:#60432d;border:2px solid #914e35}
+body.object-world [data-market-tab=material] .market-goods,body.object-world [data-market-tab=tool] .market-artifacts,body.object-world [data-market-tab=furnace] .market-upgrade{border-bottom-color:#914e35}
+@media(min-width:651px){
+ body.object-world .world-books button,body.object-world .world-passage,body.object-world .observation-details summary{font-size:calc(14px / var(--scene-scale,1))!important;min-height:calc(44px / var(--scene-scale,1))!important}
+ body.object-world .world-casket>span,body.object-world .world-casket>small,body.object-world .world-herb-source,body.object-world .herb-slot .parcel-seal{font-size:calc(12px / var(--scene-scale,1))}
+body.object-world .herb-slot strong,body.object-world .work-instruction{font-size:calc(14px / var(--scene-scale,1))}
+body.object-world .refine-odds-toggle,body.object-world #roomChoices [data-read-runes]{min-height:calc(44px / var(--scene-scale,1));font-size:calc(14px / var(--scene-scale,1))}
+ body.object-world .refine-odds{width:calc(355px / var(--scene-scale,1));font-size:calc(14px / var(--scene-scale,1))}
+ body.object-world .refine-odds h2,body.object-world .refine-odds dd{font-size:calc(18px / var(--scene-scale,1))}
+ body.object-world .refine-odds dt,body.object-world .refine-odds button,body.object-world .refine-odds #refineOddsProtection{font-size:calc(12px / var(--scene-scale,1))}
+ body.object-world .refine-odds button{min-height:calc(44px / var(--scene-scale,1))}
+ body.object-world #roomSettlement{width:calc(460px / var(--scene-scale,1))}
+ body.object-world #roomSettlement>p,body.object-world #roomSettlement button,body.object-world #roomSettlement summary,body.object-world #roomSettlement details p{font-size:calc(14px / var(--scene-scale,1))}
+ body.object-world #roomSettlement button,body.object-world #roomSettlement summary{min-height:calc(44px / var(--scene-scale,1))}
+ body.object-world #roomChoices{width:calc(460px / var(--scene-scale,1))}
+ body.object-world #roomChoices button,body.object-world #roomChoices [data-rune]>span:last-child,body.object-world #roomChoices>strong{font-size:calc(14px / var(--scene-scale,1))}
+ body.object-world #roomChoices [data-rune] em{font-size:calc(12px / var(--scene-scale,1))}
+}
+
+.rules-outcomes,[data-rules-section]{scroll-margin-top:120px}
+
+/* Align the actual tool sprite foot to its rest, rather than to the button bottom. */
+body.object-world .world-placed-tool .tool-art{position:absolute;left:50%;bottom:30px;transform:translateX(-50%)}
+body.object-world .world-placed-tool.tool-needle .tool-art{bottom:37px}
+body.object-world .world-placed-tool.tool-stand .tool-art{bottom:43px}
+body.object-world .world-casket>span{position:absolute;left:50%;top:auto!important;bottom:5px;transform:translateX(-50%);white-space:nowrap}
+body.object-world .world-casket>small{display:none}
+@media(min-width:651px){
+ body.object-world #refineOdds header button,body.object-world #refineOdds .odds-rules{min-height:calc(44px / var(--scene-scale,1));font-size:calc(12px / var(--scene-scale,1))}
+ body.object-world .world-placed-tool small{font-size:calc(12px / var(--scene-scale,1))}
+}
+@media(max-width:650px){
+ body.world-mobile.object-world .world-placed-tool .tool-art,body.world-mobile.object-world .world-placed-tool.tool-needle .tool-art,body.world-mobile.object-world .world-placed-tool.tool-stand .tool-art{bottom:14px}
+ body.object-world .world-casket>span{bottom:4px}
+}
+
+/* A fixed scene cannot be scrolled by focus on an off-camera prop. Reading panes scroll themselves. */
+body.object-world .counter-board.engine-panel,body.object-world .counter-board .counter-scene{overflow:clip!important}
+
+body.object-world #refineAnimation{width:100%!important;height:100%!important}
+body.object-world .world-market.engine-panel{overflow:clip!important}
+body.object-world .counter-board #nextDay{min-height:44px}
+/* A physical side ledge ties the mobile books and casket to the workbench. */
+@media(max-width:650px){
+ body.world-mobile.object-world #pillStage>.world-books{left:calc(100% - 172px);right:76px;top:calc(85% - 52px);bottom:auto;height:52px;gap:6px;overflow:visible;align-items:end}
+ body.world-mobile.object-world #pillStage>.world-books button{box-sizing:border-box;flex:0 0 44px;width:44px;min-width:44px;height:52px;min-height:52px;padding:5px 4px;font-size:12px;line-height:14px;writing-mode:vertical-rl;transform:none;box-shadow:2px 2px 0 #65482d}
+ body.world-mobile.object-world #pillStage>.world-books:before{content:'';position:absolute;left:-8px;right:-76px;bottom:-10px;height:9px;background:linear-gradient(#a77c4e,#815831);border-bottom:5px solid #543a28;box-shadow:1px 5px 5px #36281c55;z-index:-1}
+ body.world-mobile.object-world #pillStage>.world-casket{top:calc(85% - 44px);bottom:auto;width:60px;height:44px;right:8px}
+ body.world-mobile.object-world #pillStage[data-carry]:not([data-carry=''])>.world-delivery-seals{visibility:hidden}
+}
+
+/* V91 round 1: one physical room plane, independently cropped reading window. */
+@media(max-width:650px){
+ body.world-mobile.object-world #pillStage{background-size:var(--room-base-width) var(--room-base-height);background-position:var(--room-camera-left) top;background-repeat:no-repeat}
+ body.world-mobile.object-world #pillStage>.herb-tray{top:calc(var(--room-base-height)*.43);max-height:calc(var(--room-base-height)*.39)}
+ body.world-mobile.object-world #pillStage>.world-tool-row{top:calc(var(--room-base-height)*.43)}
+ body.world-mobile.object-world #pillStage>.world-books{top:calc(var(--room-base-height)*.85 - 52px)}
+ body.world-mobile.object-world #pillStage>.world-casket{top:calc(var(--room-base-height)*.85 - 44px)}
+ body.world-mobile.object-world #pillStage[data-camera-cropped=true]>.world-books,body.world-mobile.object-world #pillStage[data-camera-cropped=true]>.world-casket{visibility:hidden}
+}
+.world-empty-readout{display:none}
+@media(max-width:650px){
+ body.world-mobile.object-world .world-empty-readout:not([hidden]){position:absolute;left:0;right:0;top:0;display:grid;gap:4px;padding:10px;box-sizing:border-box;background:#f5e8cf;color:#49382a;font-size:14px;z-index:24;line-height:1.5}
+ body.world-mobile.object-world #pillStage>.commission-slip{display:none!important}
+}
+
+/* V91 round 2: the painted countertop and all goods share one camera. */
+body.object-world.engine-shell .world-market.engine-panel[data-shell-active=true]{display:grid;grid-template-rows:auto minmax(260px,1fr) auto auto;padding:0!important;background:#e9d8b6!important;gap:0;overflow:clip!important}
+body.object-world .world-market>.world-market-tabs{position:static;display:flex;gap:8px;padding:8px 12px;min-height:60px;box-sizing:border-box;z-index:4;background:#e9d8b6}
+body.object-world .world-market>.world-market-tabs button{min-height:44px;font-size:14px;margin:0}
+body.object-world .world-market>.market-heading{position:absolute;left:12px;right:auto;top:66px;z-index:8;pointer-events:none}
+body.object-world .world-market .market-stage{position:relative;min-height:260px;overflow:hidden;background:url('assets/object-world/market.webp') center/cover no-repeat}
+body.object-world .world-market .market-stage .market-foreground{position:absolute;inset:0;background:url('assets/object-world/market.webp') center/cover no-repeat;clip-path:inset(var(--market-table-y,58.45%) 0 0);pointer-events:none;z-index:2}
+body.object-world .world-market .market-stage .market-merchant{position:absolute;bottom:auto;max-width:none;object-fit:contain;z-index:1;pointer-events:none}
+body.object-world .world-market .market-stage .market-stalls{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible;pointer-events:none;z-index:3}
+body.object-world .world-market .market-stage .market-stalls>section{position:absolute;right:auto;bottom:auto;display:block;max-height:none;padding:0;background:none!important;border:0!important;box-shadow:none;overflow:visible;pointer-events:auto}
+body.object-world .world-market .market-stage .package-display{display:flex;align-items:start;justify-content:space-around;gap:4px}
+body.object-world .world-market .market-stage .world-parcel{flex:0 1 100px;min-width:0;padding:0 2px;gap:2px;margin:0;box-sizing:border-box}
+body.object-world .world-market .market-stage .world-parcel img{width:72px;height:72px;max-width:100%;object-fit:contain;filter:drop-shadow(1px 4px 2px #44301d66)}
+body.object-world .world-market .market-stage .world-parcel>.parcel-seal{top:36px;left:44%;font-size:12px;line-height:18px;padding:1px 3px}
+body.object-world .world-market .market-stage .world-parcel>span:last-of-type,body.object-world .world-market .market-stage .world-parcel small{font-size:12px;line-height:18px;padding:2px 4px;margin:0;white-space:nowrap}
+body.object-world .world-market .market-stage .artifact-picker{display:flex;align-items:start;flex-wrap:nowrap;gap:8px;height:132px;max-height:132px;overflow-x:auto;overflow-y:hidden;padding:0 0 8px;scrollbar-width:thin}
+body.object-world .world-market .market-stage .artifact-picker button{flex:0 0 80px;min-width:80px;min-height:110px;padding:0 2px;gap:2px;border:0;background:none;color:#49382a;justify-content:start;margin:0;box-sizing:border-box}
+body.object-world .world-market .market-stage .artifact-picker .tool-art{width:66px;height:66px;filter:drop-shadow(1px 3px 2px #44301d55)}
+body.object-world .world-market .market-stage .artifact-picker button>span:last-of-type,body.object-world .world-market .market-stage .artifact-picker button>small{padding:2px 4px;margin:0;background:#f7ecd4e8;font-size:12px;line-height:18px;white-space:nowrap;color:#49382a}
+body.object-world .world-market .market-stage .artifact-picker button[aria-pressed=true]{outline:2px solid #915139;outline-offset:-2px}
+body.object-world .world-market .market-stage .world-upgrade-plan{margin:0;box-sizing:border-box;width:120px;height:130px;font-size:14px;min-height:130px}
+body.object-world .world-market>.world-price-tag{position:static;inset:auto;width:auto;margin:0;padding:12px 16px;max-height:28dvh;overflow:auto;border:0;border-top:3px solid #92623c;box-shadow:none;background:#f7ecd4;color:#49382a;box-sizing:border-box}
+body.object-world .world-market>.world-price-tag[hidden]{display:none!important}
+body.object-world .world-market .market-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:64px;padding:10px 12px;box-sizing:border-box;background:#c4a47b}
+body.object-world .world-market .market-foot>.world-books,body.object-world .world-market .market-foot>.passage-home{position:static!important;inset:auto!important;margin:0;height:auto;flex:none}
+body.object-world .world-market .market-foot .world-books button{min-height:44px;font-size:14px;padding:7px 10px;writing-mode:horizontal-tb}
+body.object-world .world-market .market-foot>.passage-home{min-height:44px;font-size:14px}
+@media(max-width:650px){
+ body.object-world .world-market .market-stage .market-stalls>section{display:none}
+ body.object-world .world-market[data-market-tab=material] .market-stage .market-goods,body.object-world .world-market[data-market-tab=tool] .market-stage .market-artifacts,body.object-world .world-market[data-market-tab=furnace] .market-stage .market-upgrade{display:block}
+ body.object-world .world-market .market-foot .world-books{gap:6px}
+ body.object-world .world-market .market-foot .world-books button{padding:6px;font-size:12px}
+ body.object-world .world-market .market-foot>.passage-home{font-size:12px;padding:6px 8px}
+}
+
+/* V91 round 3: document identity never occupies the close-control row. */
+body.object-world .counter-board .counter-letter .letter-top,body.object-world .counter-board .counter-letter .letter-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+body.object-world .counter-board .counter-letter .letter-top{margin-bottom:14px}
+body.object-world .counter-board .counter-letter .letter-top .letter-close{position:static;float:none;flex:none;min-height:44px;min-width:44px;margin:0}
+body.object-world .counter-board .counter-letter .letter-title-row{margin:0 0 14px}
+body.object-world .counter-board .counter-letter .letter-title-row h3{margin:0;min-width:0}
+body.object-world .counter-board .counter-letter .letter-title-row .counter-seal{position:static;inset:auto;flex:none;margin:0;max-width:100px;white-space:normal}
+body.object-world .world-reading-scrim{position:absolute;inset:0;background:#241a14b8;z-index:70;pointer-events:auto}
+body.object-world[data-reading-mode=long] .engine-viewport{filter:none}
+body.object-world[data-reading-mode=long] .engine-panel[data-shell-active=true]:not([inert]){z-index:80}
+
+/* V91 round 4: an explicit magnification source and a ledge joined to the painted table leg. */
+body.object-world .room-observation{background-size:contain}
+body.object-world .world-book-rest{display:none;pointer-events:none}
+@media(max-width:650px){
+ body.world-mobile.object-world .room-observation .observation-details{left:var(--inspect-x);top:var(--inspect-y);right:auto}
+ body.world-mobile.object-world #pillStage>.passage-counter{top:8px;right:8px}
+ body.world-mobile.object-world #pillStage>.world-books{left:calc(var(--book-rest-x) + 4px);right:auto;top:calc(var(--book-rest-y) - 52px);gap:0;width:88px}
+ body.world-mobile.object-world #pillStage>.world-books:before{content:none}
+ body.world-mobile.object-world #pillStage>.world-casket{left:auto;right:8px;top:calc(var(--book-rest-y) - 44px);width:44px;height:44px}
+ body.world-mobile.object-world #pillStage>.world-book-rest{display:block;position:absolute;left:var(--book-rest-x);top:var(--book-rest-y);width:152px;height:10px;box-sizing:border-box;background:repeating-linear-gradient(1deg,#9f774d 0 3px,#95683f 4px 5px);border-top:3px solid #bd9465;border-bottom:5px solid #64452d;box-shadow:0 4px 4px #32221844;z-index:1}
+ body.world-mobile.object-world .world-book-rest .rest-post{position:absolute;left:var(--book-rest-postX);top:-19px;width:8px;height:var(--book-rest-postHeight);background:linear-gradient(90deg,#a27c50,#775332);z-index:-1}
+ body.world-mobile.object-world .world-book-rest .rest-brace{position:absolute;left:1px;top:5px;width:var(--book-rest-braceLength);height:7px;background:linear-gradient(#b38a5d,#775332);transform-origin:left top;transform:rotate(var(--book-rest-angle));box-shadow:1px 2px 2px #3a281e55}
+ body.world-mobile.object-world .world-book-rest .rest-stud{position:absolute;left:calc(var(--book-rest-postX) + 2px);width:4px;height:4px;border-radius:50%;background:#5e5140;box-shadow:inset 1px 1px #ceba8c}
+ body.world-mobile.object-world .world-book-rest .rest-stud-top{top:0}
+ body.world-mobile.object-world .world-book-rest .rest-stud-bottom{top:calc(var(--book-rest-postHeight) - 24px)}
+ body.world-mobile.object-world #pillStage[data-camera-cropped=true]>.world-book-rest{visibility:hidden}
+}
+
+/* V91 round 5: the mobile rests meet the same tabletop in both camera compositions. */
+@media(max-width:650px){
+ body.world-mobile.object-world #pillStage>.world-tool-row{left:var(--tool-rest-x);top:var(--tool-rest-y);width:var(--tool-rest-w)}
+}

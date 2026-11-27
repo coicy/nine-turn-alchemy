@@ -6,6 +6,7 @@
   "scripts": {
     "build": "node build-bundle.cjs",
     "build:check": "node build-bundle.cjs --check",
+    "verify:core": "node build-bundle.cjs --check && node verify-logic-fixes.cjs && node verify-economy.cjs && node verify-crafts.cjs && node verify-save-slots.cjs",
     "verify:painted-scenes": "node verify-painted-scenes.cjs"
   },
   "devDependencies": {
