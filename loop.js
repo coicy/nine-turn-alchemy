@@ -19,11 +19,11 @@
  function busy(s){return s.busy||window.AlchemyScene2D.busy||!!window.AlchemyScene2D.held||!!window.AlchemyInteractionBusy;}
  function terminate(){UX.confirm({title:'终止本单',message:'未用本单料退还，本单记为未完成。丹匣丹药保留，免赔。',confirmLabel:'终止并退还',onConfirm:()=>game.abandonOrder()});}
  function openDemand(anchor){const s=game.snapshot();if(!s.commission)return;renderLetter();route.navigate('demand',{anchor});}
- function renderLetter(){const s=game.snapshot(),o=s.commission;if(!o)return;html(letter,'<header class="journal-heading"><h2>'+UX.esc(o.name)+'</h2><button data-close-demand>合上 ×</button></header><div class="loop-letter-body"><p>'+UX.esc(o.client)+' · 来客手书</p><dl><dt>所求药力</dt><dd>'+o.target+'</dd><dt>已交药力</dt><dd>'+Math.round(s.delivered)+'</dd><dt>还需</dt><dd>'+Math.max(0,Math.ceil(o.target-s.delivered))+'</dd><dt>本单余料</dt><dd>'+s.remaining+' 包</dd><dt>约定工钱</dt><dd>'+E.fee(o)+' 铜钱，超额药力每点补1铜钱</dd></dl><p>从丹匣选中丹药后，点击“提交委托”才会累计；达标后结单。交单按全额药力结算；成丹转售先抵每包24文客料款。炸丹免赔，成功后余料赠留。</p><p>丹药统一进入丹匣；收丹、选中与查看都不代表提交或交易。</p></div>');}
+ function renderLetter(){const s=game.snapshot(),o=s.commission;if(!o)return;html(letter,'<header class="journal-heading"><h2>'+UX.esc(o.name)+'</h2><button data-close-demand>合上 ×</button></header><div class="loop-letter-body"><p>'+UX.esc(o.client)+' · 来客手书</p><dl><dt>所求药力</dt><dd>'+o.target+'</dd><dt>已交药力</dt><dd>'+Math.round(s.delivered)+'</dd><dt>还需</dt><dd>'+Math.max(0,Math.ceil(o.target-s.delivered))+'</dd><dt>本单余料</dt><dd>'+s.remaining+' 包</dd><dt>约定工钱</dt><dd>'+E.fee(o)+' 铜钱，超额药力每点补1铜钱</dd></dl><p>收丹先入匣。选中丹药后点“交丹”，本单按全额药力累计，达标即结单。成丹转售先抵每包24文客料款。炸炉免赔，结单后余料赠留。</p></div>');}
  letter.addEventListener('click',e=>{if(e.target.closest('[data-close-demand]'))route.close();});letter.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();route.close();}});
  function showNotice(text){notice=text;noticeUntil=performance.now()+1600;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{notice='';schedule();},1600);}
  function consignmentSummary(q){return q?.quote?.guaranteedPayout?`寄售${q.quote.waitDays}天后回款 ${q.quote.guaranteedPayout} 铜钱 · ${q.quote.tierName}`:'';}
- function trade(kind,id){const p=game.campaign()?.economy.pills.find(p=>p.id===id);if(!p)return;selected=null;const ok=kind==='submit'?game.submit(id):kind==='consign'?game.economyAction('consign',id):game.economyAction('sell',id);if(!ok){selected=id;showNotice('未处理，请重新查看。');}else{const s=game.snapshot();showNotice(kind==='submit'?(s.commission?'已提交委托':'已结单'):kind==='consign'?'已寄售，等待回款':'已出售');}schedule();}
+ function trade(kind,id){const p=game.campaign()?.economy.pills.find(p=>p.id===id);if(!p)return;selected=null;const ok=kind==='submit'?game.submit(id):kind==='consign'?game.economyAction('consign',id):game.economyAction('sell',id);if(!ok){selected=id;showNotice('未处理，请重新查看。');}else{const s=game.snapshot();showNotice(kind==='submit'?(s.commission?'已交丹 · '+Math.round(s.delivered)+' / '+s.target:'本单已结清'):kind==='consign'?'已寄售，等待回款':'已出售');}schedule();}
  stock.addEventListener('click',e=>{
    const card=e.target.closest('[data-stock-pill]'),sell=e.target.closest('[data-loop-sell]'),submit=e.target.closest('[data-loop-submit]'),consign=e.target.closest('[data-loop-consign]'),inspect=e.target.closest('[data-loop-inspect]'),clear=e.target.closest('[data-loop-clear]');
    if(!card&&!sell&&!submit&&!consign&&!inspect&&!clear)return;e.preventDefault();e.stopImmediatePropagation();const s=game.snapshot();if(busy(s)){UX.tell('先处理或放回手中物件。');return;}
@@ -52,7 +52,7 @@
    const consignDisabled=cq?.ok?'':' disabled';
    html(selection,'<div class="loop-selected-heading"><strong>'+p.turn+'转 · '+(p.craftKind?window.AlchemyCrafts.name(p)+' · 估值 ':'药力 ')+E.grossValue(p)+'</strong><button data-loop-inspect aria-label="查看选中物品">看丹</button><button data-loop-clear aria-label="取消选中丹药">×</button></div>'
     +(preview?'<p class="loop-preview">'+preview+'</p>':'')+'<div class="loop-trades">'
-    +(q.ok?actionButton('submit',p.id,'提交委托',disabled):'')+actionButton('sell',p.id,(p.materialAdvance?'抵料后出售 · ':'立即出售 · ')+E.saleValue(c,p)+' 铜钱',disabled)
+    +(q.ok?actionButton('submit',p.id,'交丹',disabled):'')+actionButton('sell',p.id,(p.materialAdvance?'抵料后出售 · ':'立即出售 · ')+E.saleValue(c,p)+' 铜钱',disabled)
     +(!p.craftKind&&cq?.quote?actionButton('consign',p.id,'寄售',consignDisabled+(warm&&!cq.ok?' title="'+UX.esc(cq.reason||'')+'"':'')):'')+'</div>'
     +(!warm&&!p.craftKind&&consignPreview?'<p class="loop-consignment-note">'+consignPreview+(cq.ok?'':' · '+UX.esc(cq.reason))+'</p>':''));
   }

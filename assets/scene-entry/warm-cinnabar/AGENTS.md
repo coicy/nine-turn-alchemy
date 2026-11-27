@@ -1,7 +1,12 @@
 # 温暖金石实验专用场景素材
 
-本目录只由 `index-warm-cinnabar.html` 通过 `scene-runtime.js` 选择。正式入口继续使用上一级 `assets/scene-entry/` 原始素材。
+本目录为温暖金石（`V220`）正式入口通过 `scene-runtime.js` 与 `warm-cinnabar-experiment.css` 使用的室内外场景素材，替代早期冷色底图；独立市场方案废除后，原 `market-desktop-*` 已移入 `Art/history/WarmCinnabarMarketArchived20261126/` 归档。
 
-工坊与炉前六张桌面素材保持原有命名、1600×1600 画布和前景透明度；柜台与坊市各新增 open/closed/front 三张实验场景板，由实验皮肤通过背景层接入。
+## 文件索引
 
-手机工坊与炉前使用同目录 room-mobile-*、furnace-mobile-* 六个资源位，保持390×900画布；不影响正式入口的手机资源。
+- `room-desktop-open.webp` / `room-desktop-closed.webp` / `room-desktop-front.webp`：桌面炼丹房全景开合盖底图与前景遮挡层（1600×1600）。
+- `furnace-desktop-open.webp` / `furnace-desktop-closed.webp` / `furnace-desktop-front.webp`：桌面炉前开合盖底图与前景遮挡层（1600×1600）。
+- `counter-desktop-open.webp` / `counter-desktop-closed.webp` / `counter-desktop-front.webp`：桌面接待柜台（同时用于委托接待与上门售货商人 `.sale-stage`）底图与前景遮挡层（1600×900）。
+- `room-mobile-open.webp` / `room-mobile-closed.webp` / `room-mobile-front.webp`：手机炼丹房全景（390×900）。
+- `furnace-mobile-open.webp` / `furnace-mobile-closed.webp` / `furnace-mobile-front.webp`：手机炉前（390×900）。
+- `AGENTS.md`：本目录说明与文件索引。

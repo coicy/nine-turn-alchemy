@@ -32,16 +32,16 @@
     detail.querySelector('[data-consignment-pill]')?.remove();
     detail.querySelector('.pill-bag-consignment-note')?.remove();
     const actions = detail.querySelector('.pill-bag-detail-actions');
-    setActionContent(detail.querySelector('[data-submit-pill]'), 'submit', '提交委托');
+    setActionContent(detail.querySelector('[data-submit-pill]'), 'submit', '交丹');
     const sale = detail.querySelector('[data-sell-pill]');
     if (sale && pill) setActionContent(sale, 'sell', `${pill.materialAdvance ? '抵料后出售' : '立即出售'} · ${economy.saleValue(game.campaign(), pill)} 铜钱`);
     if (!pill || pill.craftKind || !game.previewConsignment) return;
     const result = game.previewConsignment(id);
     const note = document.createElement('p');
     note.className = 'pill-bag-consignment-note';
-    note.textContent = result.quote
-      ? `寄售${result.quote.waitDays}天后回款 ${result.quote.guaranteedPayout} 铜钱 · ${result.quote.tierName}${result.ok ? '' : ` · ${result.reason}`}`
-      : '当前丹药不可寄售。';
+    note.textContent = result.ok
+      ? `寄售${result.quote.waitDays}天后回款 ${result.quote.guaranteedPayout} 铜钱 · ${result.quote.tierName}`
+      : result.reason || '当前丹药不可寄售。';
     const button = document.createElement('button');
     button.type = 'button';
     button.dataset.consignmentPill = id;

@@ -30,12 +30,16 @@
   herbs.hidden=!warm&&route.snapshot().workMode!=='furnace';
   const s=game.snapshot(),scope=[route.snapshot().workMode,s.orderId,s.attempt,s.turn,s.pillEnded].join(':');if(scope!==noticeScope||window.AlchemyScene2D.held)notice='';stockStatus.textContent=notice;stockStatus.hidden=!notice;
   const e=game.campaign()?.economy;if(!e)return;herbs.querySelector('.scene-balance').textContent=String(e.coins);
-  const list=Array.isArray(e.pills)?e.pills:[];pills.hidden=!warm&&!list.length;const next=list.map(p=>p.id+':'+p.value+':'+p.turn+':'+(p.appearance||'plain')).join('|');
-  if(next!==stockKey||!pills.childElementCount){stockKey=next;window.AlchemyUX.html(pills,'<div class="scene-pill-caption">收纳 <span>'+list.length+'</span></div>'+(list.length?'<div class="scene-pill-row">'+list.map(p=>'<button type="button" data-stock-pill="'+p.id+'" data-focus-key="stock-pill-'+p.id+'" aria-label="查看'+p.turn+'转丹药，药力'+Math.round(p.value)+'">'+window.AlchemyUX.art(p)+'<span>'+Math.round(p.value)+'</span></button>').join('')+'</div>':warm?'<p class="warm-stock-empty">暂无成品</p>':''));}
+  const list=Array.isArray(e.pills)?e.pills:[];pills.hidden=!warm&&!list.length;const next=list.map(p=>p.id+':'+p.value+':'+(p.yuanBonus||0)+':'+p.turn+':'+(p.appearance||'plain')).join('|');
+  if(next!==stockKey||!pills.childElementCount){stockKey=next;window.AlchemyUX.html(pills,'<div class="scene-pill-caption">收纳 <span>'+list.length+'</span></div>'+(list.length?'<div class="scene-pill-row">'+list.map(p=>{const v=window.AlchemyEconomy.grossValue(p);return '<button type="button" data-stock-pill="'+p.id+'" data-focus-key="stock-pill-'+p.id+'" aria-label="查看'+p.turn+'转丹药，药力'+v+'">'+window.AlchemyUX.art(p)+'<span>'+v+'</span></button>';}).join('')+'</div>':warm?'<p class="warm-stock-empty">暂无成品</p>':''));}
   herbs.querySelectorAll('.herb-slot[data-slot]').forEach(el=>{const title=el.getAttribute('title')||'';el.dataset.shortLabel=(title.includes('委托供料')||title.includes('本单供料'))?'本单料':title.startsWith('本炉药包')?'本炉料':title.startsWith('普通药包')?'普通料':title.startsWith('精选药包')?'精选料':title.split(' · ')[0];});
  }
  function fit(){if(fitting)return true;fitting=true;try{
   const s=game.snapshot(),v=route.snapshot(),near=v.workMode==='furnace',mobile=innerWidth<=650,w=viewport.clientWidth,h=viewport.clientHeight,data=P[keyFor()];if(!w||!h||!data)return true;
+  const mobileDock=mobile&&warm&&near&&live(s)&&v.current==='work';
+  const desktopCard=!mobile&&warm&&near&&live(s)&&v.current==='work';
+  document.body.dataset.mobileFurnaceDock=mobileDock?'true':'';
+  document.body.dataset.desktopFurnaceCard=desktopCard?'true':'';
   const viewportKey=[near,w,h].join(':');if(window.AlchemyScene2D.held&&heldViewport===viewportKey)return true;heldViewport=viewportKey;
   if(judgment.parentElement!==viewport)viewport.append(judgment);if(herbs.parentElement!==viewport)viewport.append(herbs);
   const items=Math.max(herbs.querySelectorAll('.herb-slot[data-slot]').length,game.campaign()?.economy?.pills?.length||0),dockWidth=mobile?w:Math.min(420,Math.max(248,Math.min(6,items)*68+24));if(mobile||!window.AlchemyWarmStyle||!matchMedia('(pointer:fine)').matches)herbs.style.setProperty('width',dockWidth+'px','important');
@@ -48,7 +52,8 @@
   const stockLimit=mobile?Math.max(112,Math.min(410,h-minimumScene,h*.56)):Math.min(360,h*.48);
   const stockBorder=Math.max(0,herbs.offsetHeight-herbs.clientHeight);
   const stockHeight=Math.max(112,Math.min(stockLimit,herbs.scrollHeight+stockBorder));
-  const sceneH=mobile?Math.max(245,h-stockLimit):h,top=(sceneH/scale-imageHeight)/2;
+  const mobileRoomDock=Math.min(220,h*0.30),visibleRoomH=mobile&&!near?Math.max(245,h-mobileRoomDock):h;
+  const sceneH=mobile?Math.max(245,h-stockLimit):h,top=mobile&&!near?Math.min(0,Math.max(h/scale-imageHeight,(visibleRoomH/scale)*0.50-0.44*imageHeight)):(sceneH/scale-imageHeight)/2;
   const next=[near,mobile,w,h,sceneH,width,height].join(':');if(window.AlchemyScene2D.held&&geometry&&geometry!==next)window.AlchemyScene2D.cancel();
   document.body.classList.toggle('world-mobile',mobile);document.body.classList.toggle('compact-forge',!mobile&&w<1280);
   viewport.style.setProperty('--work-top','0px');document.body.style.setProperty('--work-reserve','0px');
@@ -72,6 +77,13 @@
   viewport.dataset.rite=near&&v.current==='work'?(s.ritualActive?'trace':s.ritualRemaining?'sealed':''):'';
   const minimum=(r,min=44/scale)=>{const nw=Math.max(r.w,min),nh=Math.max(r.h,min);return{x:r.x-(nw-r.w)/2,y:r.y-(nh-r.h)/2,w:nw,h:nh};};
   Object.assign(L.mouth,minimum(mouth));Object.assign(L.firebox,minimum(fire));
+  const fireTop=Math.min(fire.y,L.firebox.y)*scale;
+  const arcW=Math.max(124,Math.min(236,Math.max(fire.w*scale*1.52,mouth.w*scale*.66)));
+  const arcGap=Math.max(0,fireTop-rim);
+  const arcBottom=fireTop-Math.max(6,Math.min(16,arcGap*.1));
+  viewport.style.setProperty('--rite-arc-x',(fire.x+fire.w/2)*scale+'px');
+  viewport.style.setProperty('--rite-arc-y',arcBottom+'px');
+  viewport.style.setProperty('--rite-arc-w',arcW+'px');
   const center=point(data.pill),diameter=data.pillDiameter*width*(s.craftKind?(near?2.6:1.5):1),size=Math.max(48/scale,diameter),shape=s.craftKind?window.AlchemyPillArt.geometry(s):null;let contact=null;
   if(shape){const base=mouth.y+mouth.h*.73,footprint={bird:.34,lion:.7,home:.85,beast:.65,tower:.85,spring:.85}[s.craftKind]||.7;center.y=base-diameter*shape.h/2;contact={x:center.x,y:base+diameter*.01,rx:Math.min(diameter*shape.w*footprint/2,mouth.w*.22),ry:Math.min(diameter*.045,mouth.h*.09),mouth:{...mouth}};}
   Object.assign(L.objects.pill,{x:center.x-size/2,y:center.y-size/2,w:size,h:size,visualDiameter:diameter,contact});L.cutaway.source=null;
@@ -82,18 +94,44 @@
     const lidClearance=Math.max(18/scale,height*.2);
     rect(document.querySelector('.furnace-resume'),{x:L.mouth.x,y:L.mouth.y-lidClearance,w:L.mouth.w,h:height+lidClearance});
   }
-  const x=Math.min(w-76,Math.max(mobile?w*.72:w*.54,data.bodyRight*w+(mobile?10:44))),jw=Math.min(mobile?110:190,w-x-(mobile?3:8)),jy=(top+(data.mouth.y+data.mouth.h)*imageHeight)*scale+(mobile?34:16);
-  rect(judgment,{x,y:jy,w:jw,h:220});judgment.style.removeProperty('height');
-  const jh=judgment.getBoundingClientRect().height,cy=Math.min(sceneH-52,Math.max(jy+jh+10,0)),adjustedY=Math.min(jy,cy-jh-10);
-  judgment.style.setProperty('top',Math.max(8,adjustedY)+'px','important');Object.assign(L.judgment,{x,y:Math.max(8,adjustedY),w:jw,h:jh});
-  rect(collect,{x,y:Math.max(8,adjustedY)+jh+10,w:Math.min(90,jw),h:44});Object.assign(L.objects.tray,{x:x/scale,y:(Math.max(8,adjustedY)+jh+10)/scale,w:Math.min(90,jw)/scale,h:44/scale});
+  if(mobileDock){
+   rect(judgment,{x:0,y:0,w,h:160});judgment.style.removeProperty('height');
+   const jh=Math.ceil(judgment.getBoundingClientRect().height);
+   const jTop=Math.max(8,h-jh);
+   judgment.style.setProperty('top',jTop+'px','important');
+   Object.assign(L.judgment,{x:0,y:jTop,w,h:jh});
+   const cw=w<=340?78:88,padR=w<=340?8:12,cxBtn=w-cw-padR,cyBtn=jTop+9;
+   rect(collect,{x:cxBtn,y:cyBtn,w:cw,h:44});
+   Object.assign(L.objects.tray,{x:cxBtn/scale,y:cyBtn/scale,w:cw/scale,h:44/scale});
+  }else if(desktopCard){
+   const minW=216,maxW=286,padRight=12;
+   const x=Math.max(12,Math.min(w-minW-padRight,Math.max(Math.round(w*0.522),Math.round(data.bodyRight*w+28))));
+   const jw=Math.min(maxW,Math.max(minW,w-x-padRight));
+   const jy=Math.round((top+(data.mouth.y+data.mouth.h)*imageHeight)*scale+10);
+   rect(judgment,{x,y:jy,w:jw,h:240});judgment.style.removeProperty('height');
+   const jh=Math.ceil(judgment.getBoundingClientRect().height);
+   const adjustedY=Math.max(8,Math.min(jy,sceneH-jh-10));
+   judgment.style.setProperty('top',adjustedY+'px','important');
+   Object.assign(L.judgment,{x,y:adjustedY,w:jw,h:jh});
+   const padX=13,padB=12,btnH=44;
+   const bx=x+padX,by=adjustedY+jh-padB-btnH,bw=Math.max(90,jw-padX*2);
+   rect(collect,{x:bx,y:by,w:bw,h:btnH});
+   Object.assign(L.objects.tray,{x:bx/scale,y:by/scale,w:bw/scale,h:btnH/scale});
+  }else{
+   const x=Math.min(w-76,Math.max(mobile?w*.72:w*.54,data.bodyRight*w+(mobile?10:44))),jw=Math.min(mobile?110:190,w-x-(mobile?3:8)),jy=(top+(data.mouth.y+data.mouth.h)*imageHeight)*scale+(mobile?34:16);
+   rect(judgment,{x,y:jy,w:jw,h:220});judgment.style.removeProperty('height');
+   const jh=judgment.getBoundingClientRect().height,cy=Math.min(sceneH-52,Math.max(jy+jh+10,0)),adjustedY=Math.min(jy,cy-jh-10);
+   judgment.style.setProperty('top',Math.max(8,adjustedY)+'px','important');Object.assign(L.judgment,{x,y:Math.max(8,adjustedY),w:jw,h:jh});
+   rect(collect,{x,y:Math.max(8,adjustedY)+jh+10,w:Math.min(90,jw),h:44});Object.assign(L.objects.tray,{x:x/scale,y:(Math.max(8,adjustedY)+jh+10)/scale,w:Math.min(90,jw)/scale,h:44/scale});
+  }
   const row=document.querySelector('.world-tool-row');rect(row,{x:0,y:0,w:width,h:height});L.toolRest.slots=[];
   [...row.children].forEach((el,i)=>{const slot=data.tools[i],foot=point(slot.foot),tip=point(slot.top),visual=Math.abs(foot.y-tip.y),r={x:foot.x-visual/2,y:foot.y-visual,w:visual,h:visual},interactive=!mobile&&visual*scale>=44;L.toolRest.slots.push(r);rect(el,r);el.style.setProperty('position','absolute','important');el.style.setProperty('--tool-size',visual+'px');el.style.pointerEvents=interactive?'auto':'none';el.tabIndex=interactive?0:-1;el.setAttribute('aria-hidden',String(!interactive));
    const art=el.querySelector('[data-tool-art]'),index=window.AlchemyEconomy.TOOL_DEFS.findIndex(t=>t.id===art?.dataset.toolArt),bounds=window.AlchemyWarmProps?.tools[art?.dataset.toolArt]?.bounds||P.toolSprites[index];if(art&&bounds){const frame=visual/(bounds.b-bounds.t);el.style.setProperty('--tool-art-size',frame+'px');el.style.setProperty('--tool-art-left',(visual/2-frame*(bounds.l+bounds.r)/2)+'px');el.style.setProperty('--tool-art-top',(visual-frame*bounds.b)+'px');}
   });
   Object.assign(L.toolRest,{x:0,y:0,w:width,h:height});Object.assign(L.objects.tool,{x:-300,y:-300,w:100,h:100});
-  const book=point(data.book),casket=point(data.casket),door=minimum(project(data.door));rect(document.querySelector('.world-book-stack'),{x:book.x-48/scale,y:book.y-30/scale,w:96/scale,h:48/scale});rect(document.querySelector('.world-books'),{x:book.x-48/scale,y:book.y-30/scale,w:96/scale,h:48/scale});rect(document.querySelector('.world-casket'),{x:casket.x-28/scale,y:casket.y-24/scale,w:56/scale,h:48/scale});rect(document.querySelector('.passage-counter'),door);
-  for(const sel of ['.world-book-stack','.world-books','.world-casket','.passage-counter']){const el=document.querySelector(sel);const r=el.getBoundingClientRect();el.style.visibility=near||r.right>w||r.left<0||r.bottom>sceneH||r.width<40?'hidden':'visible';}
+  const book=point(data.book),casket=point(data.casket),door=minimum(project(data.door));if(mobile&&!near){const mw=Math.min(door.w,72/scale);door.x=Math.min(door.x,width-mw-6/scale);door.w=mw;}rect(document.querySelector('.world-book-stack'),{x:book.x-48/scale,y:book.y-30/scale,w:96/scale,h:48/scale});rect(document.querySelector('.world-books'),{x:book.x-48/scale,y:book.y-30/scale,w:96/scale,h:48/scale});rect(document.querySelector('.world-casket'),{x:casket.x-28/scale,y:casket.y-24/scale,w:56/scale,h:48/scale});rect(document.querySelector('.passage-counter'),door);
+  const maxBottom=mobile&&!near?Math.max(245,h-stockHeight):sceneH;
+  for(const sel of ['.world-book-stack','.world-books','.world-casket','.passage-counter']){const el=document.querySelector(sel);const r=el.getBoundingClientRect();el.style.visibility=near||r.right>w||r.left<0||r.bottom>maxBottom||r.width<40?'hidden':'visible';}
   if(!mobile&&window.AlchemyWarmStyle&&matchMedia('(pointer:fine)').matches){
    for(const name of ['left','top','width','height','--stock-max-height'])herbs.style.removeProperty(name);
    herbs.style.setProperty('--warm-stock-top',Math.max(0,viewport.getBoundingClientRect().top)+'px');
@@ -102,10 +140,13 @@
   }
   if(geometry!==next){geometry=next;window.dispatchEvent(new Event('alchemy:world-layout'));}return true;
  }finally{fitting=false;}}
- function update(){const s=game.snapshot(),v=route.snapshot(),near=v.workMode==='furnace',heading=document.querySelector('.furnace-heading');stock();
-  const host=near?heading:document.querySelector('.engine-nav');if(demand.parentElement!==host)host.append(demand);demand.hidden=v.location!=='work'||!s.order||s.roundEnded;demand.textContent=warm?'委托要求 '+Math.round(s.delivered)+'\u00a0/\u00a0'+s.target:(s.order?.client||'委托')+' · 还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'药力';demand.setAttribute('aria-label',(warm?'委托要求，':'查看完整需求，')+'目标'+s.target+'药力，已交'+Math.round(s.delivered)+'，还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'药力');
+ function update(){const s=game.snapshot(),v=route.snapshot(),near=v.workMode==='furnace',heading=document.querySelector('.furnace-heading');
+  document.body.dataset.mobileFurnaceDock=(innerWidth<=650&&warm&&near&&live(s)&&v.current==='work')?'true':'';
+  document.body.dataset.desktopFurnaceCard=(innerWidth>650&&warm&&near&&live(s)&&v.current==='work')?'true':'';
+  stock();
+  const host=near?heading:document.querySelector('.engine-nav');if(demand.parentElement!==host)host.append(demand);demand.hidden=v.location!=='work'||!s.order||s.roundEnded;demand.textContent=warm?'交丹进度 '+Math.round(s.delivered)+'\u00a0/\u00a0'+s.target:(s.order?.client||'委托')+' · 还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'药力';demand.setAttribute('aria-label',(warm?'委托要求，':'查看完整需求，')+'目标'+s.target+'药力，已交'+Math.round(s.delivered)+'，还需'+Math.max(0,Math.ceil(s.target-s.delivered))+'药力');
   caption.textContent=s.craftKind?window.AlchemyCrafts.name(s)+' · 估值':'药力';
-  const amount=facts.querySelector('b');amount.textContent=Math.round(s.value);amount.style.fontSize=amount.textContent.length>7?(innerWidth<=340?'14px':'18px'):amount.textContent.length>4?'22px':innerWidth<=650?'28px':'32px';amount.style.lineHeight='1.2';facts.querySelector('span').textContent=s.turn+'转';facts.querySelector('small').hidden=true;
+  const amount=facts.querySelector('b');amount.textContent=Math.round(s.value);amount.style.fontSize=amount.textContent.length>7?(innerWidth<=340?'14px':'18px'):amount.textContent.length>4?'22px':innerWidth<=650?'28px':'32px';amount.style.setProperty('--mobile-potency-size',amount.textContent.length>7?'18px':amount.textContent.length>5?'22px':'26px');amount.style.lineHeight='1.2';facts.querySelector('span').textContent=s.turn+'转';facts.querySelector('small').hidden=true;
   judgment.hidden=!near||v.current!=='work'||!live(s);
   const back=heading.querySelector('.furnace-back');back.textContent='‹';back.setAttribute('aria-label','返回炼丹房');
   herbs.classList.add('scene-stock');herbs.dataset.sceneVisible=String(v.location==='work'&&v.current==='work'&&document.getElementById('roomSettlement').hidden);
@@ -116,5 +157,5 @@
  const schedule=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;update();});};
  window.AlchemySceneContinuity={fitFurnace:fit,fitRoom:fit,imageFor,lidState,get image(){return imageFor();},version:128};L.fit=fit;
  for(const event of ['alchemy:render','alchemy:fanning','alchemy:interaction','alchemy:carry','alchemy:view-ready','alchemy:order','alchemy:opening-finished','alchemy:ux-layout','resize'])window.addEventListener(event,schedule);
- new ResizeObserver(schedule).observe(viewport);update();
+ const ro=new ResizeObserver(schedule);ro.observe(viewport);ro.observe(judgment);update();
 })();

@@ -1,5 +1,5 @@
 /* Keep the open painting as the static room where the two lid patches align.
-   The experiment's mobile paintings have different silhouettes and swap as a whole. */
+   The experiment's mobile paintings and desktop furnace plates swap as a whole. */
 (() => {
   'use strict';
 
@@ -8,7 +8,7 @@
       ? 'assets/scene-entry/warm-cinnabar/'
       : key.endsWith('desktop') ? 'assets/scene-entry/' : 'assets/scene-illustrated/';
   };
-  const usesFullPlate = key => key.endsWith('mobile') &&
+  const usesFullPlate = key => (key.endsWith('mobile') || key === 'furnace-desktop') &&
     document.body.classList.contains('warm-cinnabar-experiment');
   const patches = {
     'room-desktop': {

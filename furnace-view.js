@@ -252,11 +252,12 @@
     resume.dataset.entryLabel = live(s) ? '回炉前 ›' : '进炉前 ›';
     resume.setAttribute('aria-label', live(s) ? '返回炉前' : '点击丹炉，进入炉前');
     const campaign = game.campaign();
-    facts.querySelector('b').textContent = s.endReason === 'explode' ? '本炉炸丹' : s.turn+'转 · 药力 '+Math.round(s.value);
+    const potency = Number.isFinite(s.grossValue) ? s.grossValue : Math.round(s.value + (s.yuanBonus || 0));
+    facts.querySelector('b').textContent = s.endReason === 'explode' ? '本炉炸炉' : s.turn+'转 · 药力 '+potency;
     facts.querySelector('span').textContent = ended
-      ? collected ? (s.order ? '已入丹匣 · 可提交本单' : '已入丹匣') : '未成丹'
+      ? collected ? (s.order ? '已入丹匣 · 可交丹' : '已入丹匣') : '未成丹'
       : s.order
-      ? '收丹入匣后提交 '+Math.round(s.delivered+s.value)+' / '+s.target
+      ? '交丹后 '+Math.round(s.delivered+potency)+' / '+s.target
       : '收丹入匣 · 售价估计 '+window.AlchemyEconomy.saleValue(campaign,s)+' 铜钱';
     facts.querySelector('small').textContent = ended && s.roundEnded ? '' : s.order
       ? '本单余料 '+s.remaining+' 包' : '';

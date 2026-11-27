@@ -16,12 +16,13 @@ body.object-world #counterSale .sale-wares button{min-width:0;min-height:44px;wi
 .sale-object{width:var(--size);height:var(--size);display:grid;place-items:end center;position:relative}
 .sale-object:before{content:"";position:absolute;width:85%;height:12%;bottom:-2%;background:radial-gradient(ellipse,#47291185,transparent 70%)}
 .sale-object>.ux-pill-art,.sale-object>.sale-parcel,.sale-object>.ux-pill-art img{display:block;position:relative;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(1px 2px 1px #4b301c55)}
-.sale-wares [data-type=tool] .sale-object::before{content:none}
+.sale-wares :is([data-type=tool],[data-type=furnace]) .sale-object::before{content:none}
 .sale-object>.sale-tool{display:block;position:absolute;left:-15%;top:-15%;width:130%;height:130%;max-width:none;pointer-events:none}
 .sale-wares [data-type=craftMaterial] .sale-parcel{position:absolute;left:0;bottom:0;width:36%;height:36%}
 .sale-seal{position:absolute;left:42%;bottom:25%;font:600 13px serif;background:#94492f;color:#fff2cc;padding:1px 3px}
 .sale-plan{display:grid;place-items:center;transform:rotate(-6deg);background:#e9d2a5;border:2px solid #97794b;width:90%;height:76%;box-shadow:1px 2px 3px #3d29175e}
 .sale-plan .world-stove-diagram{display:block;width:65%;height:65%;margin:0}
+.sale-object>.sale-tool.stove-upgrade-plan{left:-5%;top:-5%;width:110%;height:110%;object-fit:contain;filter:drop-shadow(0 3px 3px #3d241266)}
 .sale-tag{display:grid;justify-items:center;padding:3px 7px;min-width:60px;background:#f4dfb6;color:#462f22;border:1px solid #937147;box-shadow:1px 2px 2px #4d361d66;line-height:1.2;white-space:nowrap;transform:rotate(-2deg);position:relative}
 .sale-tag b{font:600 14px/1.25 serif}.sale-tag small{font-size:12px}
 .sale-wares [aria-pressed=true] .sale-tag{background:#fff0ce;border-color:#984e32}

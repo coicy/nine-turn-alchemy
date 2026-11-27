@@ -54,12 +54,18 @@ body.object-world #refineFeedback.furnace-hint[hidden] {display:none!important}
 }
 .engine-viewport[data-rite=sealed] .ritual-panel :is(.rite-guides,.rite-tip,.rite-lead) {display:none}
 .engine-viewport[data-rite=sealed] #ritualGrid:disabled {
-  opacity:1!important;transform:translate(-50%,-50%) rotate(-6deg) scale(.52);
+  opacity:1!important;transform:translate(-50%,-66%) rotate(-6deg) scale(.44);
   filter:drop-shadow(1px 2px 1px #55361b99);pointer-events:none
 }
 @media(prefers-reduced-motion:no-preference){
   .engine-viewport[data-rite=sealed] #ritualGrid {animation:affix-written-paper .42s ease-in-out}
-  @keyframes affix-written-paper {from{transform:translate(-50%,-50%)}to{transform:translate(-50%,-50%) rotate(-6deg) scale(.52)}}
+  @keyframes affix-written-paper {from{transform:translate(-50%,-50%)}to{transform:translate(-50%,-66%) rotate(-6deg) scale(.44)}}
+}
+@media(max-width:650px){
+  .engine-viewport[data-rite=sealed] #ritualGrid:disabled {
+    height:118px;transform:translate(-50%,-88%) rotate(-6deg) scale(.44);
+  }
+  @keyframes affix-written-paper {from{transform:translate(-50%,-50%)}to{transform:translate(-50%,-88%) rotate(-6deg) scale(.44)}}
 }
 .engine-viewport[data-rite=sealed]::after {content:"";pointer-events:none;position:absolute;z-index:30;left:var(--rite-fire-x);top:var(--rite-fire-y);
   width:var(--rite-fire-w);height:calc(var(--rite-fire-w)*.75);transform:translate(-50%,-50%);border-radius:50%;
@@ -808,6 +814,47 @@ body:not(:has(.engine-nav [data-view=work][aria-pressed=true])) .mobile-odds{dis
 @keyframes chance-hit{from{box-shadow:0 0 0 4px var(--chance-color)}to{box-shadow:0 0 0 0 transparent}}
 @media(prefers-reduced-motion:reduce){.refine-odds dl>div[data-hit=true]{animation:none}}
 
+/* Furnace belly charge arc & guardian flames (warm cinnabar bronze-and-gold inlay). */
+.furnace-charge-wrap{position:absolute;left:var(--rite-arc-x,50%);top:var(--rite-arc-y,65%);width:var(--rite-arc-w,180px);transform:translate(-50%,-100%);z-index:26;pointer-events:none}
+.furnace-charge-wrap[hidden],body:not([data-work-mode=furnace]) .furnace-charge-wrap,.engine-viewport[data-rite=trace] .furnace-charge-wrap,.equipment-open .furnace-charge-wrap,body:has(#gameDialogue[open]) .furnace-charge-wrap{display:none!important}
+.furnace-charge-arc{display:flex;align-items:flex-end;justify-content:center;width:100%;min-height:44px;padding:0;margin:0;border:0;background:transparent!important;box-shadow:none!important;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+.furnace-charge-arc:focus-visible{outline:2px solid #9e4b34;outline-offset:2px;border-radius:999px}
+.charge-arc-svg{display:block;width:100%;height:auto;aspect-ratio:220/52;overflow:visible;filter:drop-shadow(0 1px 1px #3620114d)}
+.charge-arc-track{fill:none;stroke:#634329b8;stroke-width:2.6;stroke-linecap:round}
+.charge-arc-fill{fill:none;stroke:#e3af54d9;stroke-width:2.2;stroke-linecap:round;transition:stroke-dashoffset .26s ease-out}
+.furnace-charge-arc[data-mode=sealed] .charge-studs,.furnace-charge-arc[data-mode=sealed] .charge-arc-fill,.furnace-charge-arc[data-mode=charge] .charge-flames{display:none}
+.stud-keystone{fill:#6a4629a8;stroke:#ba8f56;stroke-width:1}
+.stud-ring{fill:none;stroke:transparent;stroke-width:1.4;transform-box:fill-box;transform-origin:center}
+.stud-socket{fill:#4b3322d8;stroke:#8b6844;stroke-width:1.25}
+.stud-core{fill:#2b1c12;transition:fill .2s ease}
+.stud-glint{fill:transparent}
+.charge-stud[data-state=lit] .stud-socket{fill:#ae4228;stroke:#5d2b1a;stroke-width:1.2}
+.charge-stud[data-state=lit] .stud-core{fill:#f6cf73}
+.charge-stud[data-state=lit] .stud-glint{fill:#fff8e0}
+.charge-stud[data-index="4"][data-state=lit] .stud-keystone{fill:#9e4229cc;stroke:#f4ce74}
+.charge-stud[data-state=imminent] .stud-socket{fill:#6d4728eb;stroke:#e4b457;stroke-width:1.4}
+.charge-stud[data-state=imminent] .stud-ring{stroke:#f2c96c;stroke-dasharray:2.5 2}
+.charge-stud[data-fresh=true] .stud-ring{stroke:#ffe59d;stroke-width:2;animation:stud-pulse .46s ease-out}
+.flame-halo{fill:#f3b5542b;opacity:0}
+.flame-outer{fill:#bc4127;stroke:#5d2215;stroke-width:1.05;stroke-linejoin:round}
+.flame-inner{fill:#ffe084}
+.charge-flame[data-state=active] .flame-halo{opacity:1}
+.charge-flame[data-state=spent] .flame-halo,.charge-flame[data-state=spent] .flame-inner{display:none}
+.charge-flame[data-state=spent] .flame-outer{fill:#4a352544;stroke:#785c42b8;stroke-width:1;stroke-dasharray:2 1.6}
+.furnace-charge-tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(calc(-50% + var(--tip-shift,0px)));width:max-content;max-width:min(256px,calc(100vw - 16px));padding:6px 10px;border:1px solid #9a7449;border-radius:3px;background:#f7ebd0f7;color:#3d2b1c;box-shadow:0 4px 12px #3c241436;font:12.5px/1.45 "Microsoft YaHei",sans-serif;text-align:left;pointer-events:none;z-index:35}
+.furnace-charge-tip[hidden]{display:none}
+#refineOdds [data-outcome=explode][data-sealed=true] dt,#refineOdds [data-outcome=explode][data-sealed=true] dd{color:#6a5a47!important;opacity:.76}
+body.warm-cinnabar-experiment .furnace-judgment #refineOdds [data-outcome=explode][data-sealed=true] dt,body.warm-cinnabar-experiment .furnace-judgment #refineOdds [data-outcome=explode][data-sealed=true] dd{color:#6a5a47!important}
+@keyframes stud-pulse{0%{transform:scale(.85);opacity:1}100%{transform:scale(1.45);opacity:0}}
+@keyframes stud-imminent{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes flame-sway{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-1.1px) scale(1.04)}}
+@media(prefers-reduced-motion:no-preference){
+ body:not(.reduced-feedback) .charge-stud[data-state=imminent] .stud-ring{animation:stud-imminent 1.3s ease-in-out infinite}
+ body:not(.reduced-feedback) .charge-flame[data-state=active]{transform-box:fill-box;transform-origin:center bottom;animation:flame-sway 1.4s ease-in-out infinite}
+}
+@media(prefers-reduced-motion:reduce){.charge-arc-fill,.stud-core,.charge-stud[data-fresh=true] .stud-ring,.charge-stud[data-state=imminent] .stud-ring,.charge-flame[data-state=active]{transition:none!important;animation:none!important}}
+body.reduced-feedback .charge-arc-fill,body.reduced-feedback .stud-core,body.reduced-feedback .charge-stud[data-fresh=true] .stud-ring,body.reduced-feedback .charge-stud[data-state=imminent] .stud-ring,body.reduced-feedback .charge-flame[data-state=active]{transition:none!important;animation:none!important}
+
 /* === pill-bag.css === */
 .engine-shell .pill-bag-panel.engine-panel{inset:76px 12px 12px!important;background:#f5e8d0!important;color:#493624;border:1px solid #b79b77;padding:20px!important}
 .pill-bag-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #c8af87}.pill-bag-heading h2{margin:0;font-size:25px}.pill-bag-heading p{margin:8px 0}
@@ -953,7 +1000,7 @@ body:has(.engine-nav [data-view=bag][aria-pressed=true]) .engine-close{display:n
 .object-world .market-stalls h3{font:18px KaiTi,serif;background:#f7ecd4d9;padding:4px 12px;width:max-content;margin:0 0 6px}.object-world .package-display{gap:8px}.object-world .world-parcel{position:relative;background:none;border:0;padding:4px;color:#49382a;font-size:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center}.object-world .world-parcel img{width:95px;height:95px}.object-world .world-parcel>span:last-of-type,.object-world .world-parcel small{background:#f7ecd4e8;padding:2px 5px}.object-world .parcel-seal{position:absolute;top:47px;left:46%;background:#765135;color:#fff0c9;padding:3px 4px;font-size:12px}.object-world .tier-1 .parcel-seal{background:#476650}.object-world .tier-2 .parcel-seal{background:#77577a}.object-world .world-parcel[aria-pressed=true] img{filter:drop-shadow(0 0 4px #fff4cf)}
 .object-world .artifact-picker{display:flex;gap:5px;max-height:190px;overflow:auto;align-items:end;flex-wrap:wrap;padding-bottom:6px}.object-world .artifact-picker button{display:flex;flex-direction:column;align-items:center;justify-content:end;background:none;border:0;border-bottom:5px solid #73553c;min-width:70px;min-height:95px;color:#49382a;padding:3px;font-size:12px}.object-world .artifact-picker button>span:last-child{background:#f7ecd4dd;padding:3px}.object-world .artifact-picker .tool-art{width:65px;height:65px}
 .object-world .world-price-tag{position:absolute;bottom:25px;left:25%;right:4%;max-height:26%;overflow:auto;background:#f7ecd4f0;border:1px solid #ab895d;border-left:5px solid #ae7755;padding:12px 18px;z-index:20;color:#49382a;box-sizing:border-box}.world-price-tag h3{margin:0 0 6px;font-size:18px}.world-price-tag p{font-size:14px;line-height:1.5;margin:5px 0}.world-price-tag button{margin:5px 8px 0 0;min-height:44px}.world-price-tag strong{font-size:18px}
-.object-world .world-upgrade-plan{width:120px;height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#e6d1a6;border:1px solid #947047;color:#503b29;transform:rotate(-6deg)}.world-stove-diagram{width:50px;height:58px;border:2px solid #725a3d;border-radius:45% 45% 12% 12%;position:relative;display:block;margin-bottom:10px}.world-stove-diagram:after{content:'';position:absolute;width:15px;height:20px;border:2px solid #725a3d;bottom:0;left:15px;border-radius:50% 50% 0 0}
+.object-world .world-upgrade-plan{width:120px;height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#e6d1a6;border:1px solid #947047;color:#503b29;transform:rotate(-6deg)}.world-stove-diagram{width:50px;height:58px;border:2px solid #8b5e36;border-radius:45% 45% 12% 12%;position:relative;display:block;margin-bottom:10px;background:radial-gradient(circle at 50% 28%,#f7e5bb 0 14%,transparent 15%),linear-gradient(90deg,transparent 46%,#b27642 47% 53%,transparent 54%),linear-gradient(#f0d5a1,#d7ae72);box-shadow:inset 0 0 0 3px #e8c98f,0 2px 4px #4e2b1c44}.world-stove-diagram:before{content:'';position:absolute;inset:8px 7px 20px;border-top:1px solid #a36b3c;border-bottom:1px solid #a36b3c;transform:skewY(-10deg);opacity:.8}.world-stove-diagram:after{content:'';position:absolute;width:15px;height:20px;border:2px solid #8b5e36;background:linear-gradient(135deg,transparent 40%,#b27642 41% 48%,transparent 49%);bottom:0;left:15px;border-radius:50% 50% 0 0}
 .object-world .world-day-bell{display:flex;align-items:center;gap:7px;background:#b88b4b;color:#342719;border:2px solid #725135;min-height:48px}.world-day-bell>span:first-child{font-size:28px}.object-world .counter-board .visitor-dialogue{max-width:220px;box-sizing:border-box}
 .object-world .counter-letter-open .visitor-dialogue{visibility:hidden}
 .object-world .compact-forge .world-tool-row{left:900px}
@@ -1875,20 +1922,21 @@ body.furnace-solid-surface .furnace-judgment {
   text-shadow:none!important;
   opacity:1!important;
 }
-body.furnace-solid-surface .furnace-judgment::before {
-  content:"";
+body.furnace-solid-surface .furnace-surface-backing {
   position:absolute;
-  left:calc(-1 * var(--surface-left,12px));
-  right:calc(-1 * var(--surface-right,0px));
-  top:-12px;
-  bottom:calc(-1 * var(--surface-tail,58px));
-  z-index:-1;
+  z-index:26;
   pointer-events:none;
+  box-sizing:border-box;
   background:linear-gradient(135deg,#d9cba9 0%,#ceba91 100%);
   border:1px solid #826947;
   border-radius:2px;
   box-shadow:inset 0 0 0 3px #bca57c,0 2px 5px #38271530;
   opacity:1;
+}
+body.furnace-solid-surface .furnace-surface-backing[hidden],
+body.furnace-solid-surface .engine-viewport[data-rite=trace] .furnace-surface-backing,
+body:has(#gameDialogue[open]) .furnace-surface-backing {
+  display:none!important;
 }
 body.furnace-solid-surface .furnace-judgment,
 body.furnace-solid-surface .furnace-judgment .scene-value-caption,
@@ -2845,7 +2893,7 @@ body.warm-cinnabar-experiment.scene-spatial .engine-viewport {
 
 body.warm-cinnabar-experiment.scene-continuity.object-world #pillStage,
 body.warm-cinnabar-experiment.scene-spatial.object-world #pillStage {
-  filter: saturate(.98) sepia(.08) contrast(1.02) brightness(.99);
+  filter: none;
 }
 
 body.warm-cinnabar-experiment.scene-spatial .scene-front-mask {
@@ -2944,18 +2992,9 @@ body.warm-cinnabar-experiment .scene-stock-nav button:before {
   filter: sepia(.35) saturate(.9);
 }
 
-/* 炉前核心物件：把“版画”集中在丹炉、丹药和关键状态，不压住场景。 */
+/* 炉前核心物件：保留清洁底画材质，去除斜向排线网格叠层。 */
 body.warm-cinnabar-experiment #pillStage::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  pointer-events: none;
-  opacity: .17;
-  mix-blend-mode: multiply;
-  background:
-    repeating-linear-gradient(115deg, transparent 0 34px, #6f4b321c 35px 36px, transparent 37px 71px),
-    repeating-linear-gradient(8deg, transparent 0 47px, #fff5d516 48px 49px, transparent 50px 93px);
+  display: none;
 }
 
 body.warm-cinnabar-experiment .stage-caption {
@@ -3041,18 +3080,11 @@ body.warm-cinnabar-experiment.engine-shell .counter-board.engine-panel {
   background-color: #9c7048 !important;
 }
 
-body.warm-cinnabar-experiment.engine-shell .world-market.engine-panel,
-body.warm-cinnabar-experiment.engine-shell .painted-market.engine-panel {
-  background-image: url('assets/scene-entry/warm-cinnabar/market-desktop-open.webp') !important;
+body.warm-cinnabar-experiment .sale-stage {
+  background-image: url('assets/scene-entry/warm-cinnabar/counter-desktop-open.webp') !important;
   background-size: cover !important;
   background-position: center !important;
   background-color: #9c7048 !important;
-}
-
-body.warm-cinnabar-experiment .sale-stage {
-  background-image: url('assets/scene-entry/warm-cinnabar/market-desktop-open.webp') !important;
-  background-size: cover !important;
-  background-position: center !important;
 }
 
 body.warm-cinnabar-experiment.engine-shell .counter-board.engine-panel::after,
@@ -3078,17 +3110,21 @@ body.warm-cinnabar-experiment .counter-board .counter-visitor {
   z-index: 1;
 }
 
-/* Keep the formal scene's 417-unit visible upper body, anchored to this desk. */
+/* Keep ~92.3% of the 2:3 portrait above the counter so every character shows down through the hips with a safe bottom tuck. */
 body.warm-cinnabar-experiment .counter-board .counter-visitor {
-  top: calc(var(--warm-counter-edge) - 417 * var(--counter-scale, 1px)) !important;
-  width: calc(400 * var(--counter-scale, 1px)) !important;
-  height: calc(600 * var(--counter-scale, 1px)) !important;
+  top: calc(var(--warm-counter-edge) - 540 * var(--counter-scale, 1px)) !important;
+  width: calc(390 * var(--counter-scale, 1px)) !important;
+  height: calc(585 * var(--counter-scale, 1px)) !important;
 }
 
 body.warm-cinnabar-experiment .counter-board .counter-waiting {
-  top: calc(var(--warm-counter-edge) - 358 * var(--counter-scale, 1px)) !important;
-  height: calc(360 * var(--counter-scale, 1px)) !important;
-  left: max(12px, calc(var(--counter-origin-x, 0px) + 280 * var(--counter-scale, 1px)));
+  top: calc(var(--warm-counter-edge) - 392 * var(--counter-scale, 1px)) !important;
+  height: calc(420 * var(--counter-scale, 1px)) !important;
+  left: max(12px, calc(var(--counter-origin-x, 0px) + 180 * var(--counter-scale, 1px)));
+  gap: calc(6 * var(--counter-scale, 1px));
+}
+body.warm-cinnabar-experiment .counter-board .waiting-person[data-art-layout="native-v61"] {
+  aspect-ratio: 2 / 3;
 }
 
 /* The experiment front plate is the occluder; do not pre-crop the portrait. */
@@ -3102,28 +3138,20 @@ body.warm-cinnabar-experiment .counter-board .counter-note {
 }
 
 body.warm-cinnabar-experiment .counter-board .visitor-dialogue {
-  left: auto !important;
-  right: 16px !important;
-  top: 154px !important;
-  width: min(220px, 52%) !important;
-  transform: none;
-}
-
-@media (max-width: 650px) {
-  body.warm-cinnabar-experiment .counter-board .visitor-dialogue {
-    left: 12px !important;
-    right: auto !important;
-    top: 180px !important;
-    width: 130px !important;
-  }
+  display: none !important;
 }
 
 body.warm-cinnabar-experiment.engine-shell .sale-stage::after {
-  background-image: url('assets/scene-entry/warm-cinnabar/market-desktop-front.webp');
+  background-image: url('assets/scene-entry/warm-cinnabar/counter-desktop-front.webp');
   clip-path: inset(var(--desk-edge) 0 0);
 }
 
-body.warm-cinnabar-experiment .sale-stage .sale-person { z-index: 1; }
+body.warm-cinnabar-experiment .sale-stage .sale-person {
+  z-index: 1;
+  transform: translate(-50%, -92%);
+  height: min(calc(var(--desk-edge, 480px) * 0.94), calc(520 * var(--sale-scale, 1px)));
+  max-width: 78%;
+}
 body.warm-cinnabar-experiment .sale-stage .sale-desk { z-index: 2; }
 body.warm-cinnabar-experiment .sale-stage .sale-wares { z-index: 4; }
 body.warm-cinnabar-experiment .sale-stage header { z-index: 5; }
@@ -3200,7 +3228,7 @@ body.warm-cinnabar-experiment .footer-note {
   color: var(--warm-muted);
 }
 
-/* 保留正式场景的几何关系，只叠加实验风格的纸张与木刻纹理。 */
+/* 保留正式场景的几何关系与清洁壁纸质感，仅保留极轻边晕、不再叠加斜线网格。 */
 body.warm-cinnabar-experiment.scene-continuity.object-world #pillStage::after,
 body.warm-cinnabar-experiment.scene-spatial.object-world #pillStage::after {
   content: "";
@@ -3208,17 +3236,12 @@ body.warm-cinnabar-experiment.scene-spatial.object-world #pillStage::after {
   inset: 0;
   pointer-events: none;
   z-index: 11;
-  background:
-    repeating-linear-gradient(116deg, transparent 0 14px, #6e3b2420 15px 16px, transparent 17px 29px),
-    repeating-linear-gradient(8deg, transparent 0 38px, #8c5b3810 39px 40px, transparent 41px 74px),
-    linear-gradient(90deg, #b23e2a18, transparent 28%, transparent 72%, #b23e2a12);
+  background: linear-gradient(90deg, #b23e2a0c, transparent 22%, transparent 78%, #b23e2a0a);
   mix-blend-mode: multiply;
 }
 
 @media (max-width: 650px) {
   body.warm-cinnabar-experiment.engine-shell .counter-board.engine-panel,
-  body.warm-cinnabar-experiment.engine-shell .world-market.engine-panel,
-  body.warm-cinnabar-experiment.engine-shell .painted-market.engine-panel,
   body.warm-cinnabar-experiment .sale-stage {
     background-position: center !important;
   }
@@ -3244,8 +3267,65 @@ body.warm-cinnabar-experiment.scene-spatial.object-world #pillStage::after {
 
 /* Per-identity tool sources replace the old modulo atlas mapping. */
 body.warm-cinnabar-experiment .tool-art[data-warm-tool] { background-size:100% 100%!important; background-position:center!important; background-repeat:no-repeat!important; }
-body.warm-cinnabar-experiment .world-day-bell::before { background-image:url('assets/warm-cinnabar/props/tool-lucky.webp')!important; background-size:contain!important; background-position:center!important; background-repeat:no-repeat!important; }
+body.warm-cinnabar-experiment .world-day-bell::before { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23503b2b' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 16h12l-1.4-2.5V10a4.6 4.6 0 0 0-9.2 0v3.5z'/%3E%3Cpath d='M10 18.5a2 2 0 0 0 4 0'/%3E%3Cpath d='M12 3.5V5.5'/%3E%3C/svg%3E")!important; background-size:32px 32px!important; background-position:center 15px!important; background-repeat:no-repeat!important; filter:none!important; }
 body.warm-cinnabar-experiment .counter-note img { filter:drop-shadow(1px 2px 1px #57361f55)!important; }
+
+/* P0/P1/P2 closeout: keep receipt hidden over the wood counter, drop props onto desk edge, fix numeric 0, and tighten mobile HUD. */
+body.warm-cinnabar-experiment .counter-board .counter-receipt { display:none!important; }
+body.warm-cinnabar-experiment .counter-board #counterParcelHint { top:calc(var(--warm-counter-edge) + 12 * var(--counter-scale, 1px))!important; bottom:auto!important; z-index:4; }
+body.warm-cinnabar-experiment .world-books-toggle:before { content:''; display:inline-block; width:16px; height:16px; margin-right:4px; vertical-align:-3px; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23503b2b' stroke-width='1.6' stroke-linejoin='round'%3E%3Cpath d='M4 5.5 11 4v15l-7 1.5zM20 5.5 13 4v15l7 1.5zM11 7.5l2-1.5M11 11l2-1.5M11 14.5l2-1.5'/%3E%3C/svg%3E") center/contain no-repeat; }
+body.warm-cinnabar-experiment .scene-balance,
+body.warm-cinnabar-experiment .furnace-judgment #refineOdds dd,
+body.warm-cinnabar-experiment .furnace-judgment .furnace-facts b { font-family:"Microsoft YaHei",system-ui,sans-serif!important; font-variant-numeric:tabular-nums lining-nums; letter-spacing:.01em; }
+body.warm-cinnabar-experiment .loop-trades button,
+body.warm-cinnabar-experiment .pill-bag-detail-actions button { white-space:nowrap; word-break:keep-all; overflow-wrap:normal; }
+body.warm-cinnabar-experiment .furnace-pill:focus-visible { outline:0!important; border-radius:50%!important; box-shadow:0 0 0 5px #e0b76888, 0 0 14px #efcf8899!important; }
+@media(max-width:650px) {
+  body.warm-cinnabar-experiment.object-world .counter-board .daily-actions .world-day-bell { max-width:none; white-space:nowrap; padding:5px 8px 5px 34px!important; }
+  body.warm-cinnabar-experiment.object-world .counter-board .world-day-bell::before { background-size:22px 22px!important; background-position:center!important; }
+  body.warm-cinnabar-experiment .counter-board .counter-lease-slip { top:10px!important; left:8px!important; max-width:min(180px,54%); }
+  body.warm-cinnabar-experiment .counter-board .counter-conversation { top:56px!important; right:8px!important; left:auto!important; max-width:min(160px,48%)!important; min-height:36px; padding:5px 9px; font-size:12px; }
+  body.warm-cinnabar-experiment.scene-continuity[data-work-mode=furnace] .furnace-judgment,
+  body.warm-cinnabar-experiment.scene-spatial[data-work-mode=furnace] .furnace-judgment { padding:4px 7px!important; font-size:11.5px!important; line-height:1.25!important; max-height:none!important; overflow:visible!important; }
+  body.warm-cinnabar-experiment .furnace-judgment .scene-value-caption { font-size:10px!important; line-height:1.2!important; margin:0!important; }
+  body.warm-cinnabar-experiment .furnace-judgment .furnace-facts { gap:1px!important; padding-bottom:3px!important; margin-bottom:3px!important; }
+  body.warm-cinnabar-experiment .furnace-judgment .furnace-facts b { font-size:18px!important; line-height:1.15!important; }
+  body.warm-cinnabar-experiment .furnace-judgment .furnace-facts span,
+  body.warm-cinnabar-experiment .furnace-judgment .furnace-facts small { font-size:10.5px!important; line-height:1.25!important; white-space:normal!important; }
+  body.warm-cinnabar-experiment .furnace-judgment #refineOdds header { padding-top:2px!important; }
+  body.warm-cinnabar-experiment .furnace-judgment #refineOdds h2 { font-size:11px!important; line-height:18px!important; }
+  body.warm-cinnabar-experiment .furnace-judgment #refineOdds header button { min-height:22px!important; font-size:11px!important; line-height:18px!important; }
+  body.warm-cinnabar-experiment .furnace-judgment #refineOdds dl { gap:1px!important; }
+  body.warm-cinnabar-experiment .furnace-judgment #refineOdds dl>div { display:flex!important; flex-direction:row!important; justify-content:space-between!important; align-items:baseline!important; padding:0!important; min-height:0!important; }
+  body.warm-cinnabar-experiment .furnace-judgment #refineOdds dt,
+  body.warm-cinnabar-experiment .furnace-judgment #refineOdds dd { font-size:11px!important; line-height:15px!important; }
+  body.warm-cinnabar-experiment .furnace-judgment .chance-bar { height:4px!important; margin-top:3px!important; }
+}
+
+/* CODE-02 / CODE-03: keep mobile 2-row merchant wares on tabletop planks & ground desktop tools with flat talisman posture. */
+body.warm-cinnabar-experiment .sale-wares.sale-two-rows {
+  top:calc(var(--desk-edge) - 34 * var(--sale-scale, 1px));
+  bottom:auto;
+  height:calc(144 * var(--sale-scale, 1px));
+  gap:2px 4px;
+}
+body.warm-cinnabar-experiment .world-placed-tool .tool-art { position:relative; z-index:1; }
+body.warm-cinnabar-experiment .world-placed-tool:not([data-world-tool^="empty-"])::after {
+  content:"";
+  position:absolute;
+  left:8%;
+  right:8%;
+  bottom:-2px;
+  height:22%;
+  border-radius:50%;
+  background:radial-gradient(ellipse,#3a200d72 0%,#3a200d2e 55%,transparent 78%);
+  pointer-events:none;
+  z-index:0;
+}
+body.warm-cinnabar-experiment .world-placed-tool.tool-flat .tool-art {
+  transform:perspective(160px) rotateX(22deg) rotateZ(-5deg);
+  transform-origin:center bottom;
+}
 
 /* === navigation-split.css === */
 /* Two independent menus, using the same paper-and-ink treatment as the existing navigation. */
@@ -3374,12 +3454,13 @@ body.object-world #counterSale .sale-wares button{min-width:0;min-height:44px;wi
 .sale-object{width:var(--size);height:var(--size);display:grid;place-items:end center;position:relative}
 .sale-object:before{content:"";position:absolute;width:85%;height:12%;bottom:-2%;background:radial-gradient(ellipse,#47291185,transparent 70%)}
 .sale-object>.ux-pill-art,.sale-object>.sale-parcel,.sale-object>.ux-pill-art img{display:block;position:relative;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(1px 2px 1px #4b301c55)}
-.sale-wares [data-type=tool] .sale-object::before{content:none}
+.sale-wares :is([data-type=tool],[data-type=furnace]) .sale-object::before{content:none}
 .sale-object>.sale-tool{display:block;position:absolute;left:-15%;top:-15%;width:130%;height:130%;max-width:none;pointer-events:none}
 .sale-wares [data-type=craftMaterial] .sale-parcel{position:absolute;left:0;bottom:0;width:36%;height:36%}
 .sale-seal{position:absolute;left:42%;bottom:25%;font:600 13px serif;background:#94492f;color:#fff2cc;padding:1px 3px}
 .sale-plan{display:grid;place-items:center;transform:rotate(-6deg);background:#e9d2a5;border:2px solid #97794b;width:90%;height:76%;box-shadow:1px 2px 3px #3d29175e}
 .sale-plan .world-stove-diagram{display:block;width:65%;height:65%;margin:0}
+.sale-object>.sale-tool.stove-upgrade-plan{left:-5%;top:-5%;width:110%;height:110%;object-fit:contain;filter:drop-shadow(0 3px 3px #3d241266)}
 .sale-tag{display:grid;justify-items:center;padding:3px 7px;min-width:60px;background:#f4dfb6;color:#462f22;border:1px solid #937147;box-shadow:1px 2px 2px #4d361d66;line-height:1.2;white-space:nowrap;transform:rotate(-2deg);position:relative}
 .sale-tag b{font:600 14px/1.25 serif}.sale-tag small{font-size:12px}
 .sale-wares [aria-pressed=true] .sale-tag{background:#fff0ce;border-color:#984e32}
@@ -3785,6 +3866,283 @@ body.warm-cinnabar-experiment.scene-continuity .scene-stock .herb-slot strong {
  body.warm-cinnabar-experiment.loop .scene-stock .loop-trades [data-loop-consign] { grid-column:1/-1; }
 }
 
+@media(max-width:650px) {
+ body.warm-cinnabar-experiment.loop[data-mobile-furnace-dock="true"] .scene-stock,
+ body.warm-cinnabar-experiment.loop[data-mobile-furnace-dock="true"] .scene-stock[data-scene-visible=true] {
+  display:none!important;
+ }
+ body.warm-cinnabar-experiment.scene-continuity.scene-spatial[data-work-mode=furnace][data-mobile-furnace-dock="true"] .furnace-judgment:not([hidden]) {
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  grid-template-rows:minmax(28px,auto) minmax(18px,auto) auto;
+  column-gap:6px;
+  row-gap:2px;
+  align-items:baseline;
+  padding:9px 12px max(10px,env(safe-area-inset-bottom))!important;
+  background:repeating-linear-gradient(0deg,#ffffff0a 0 2px,transparent 3px 9px),#f0e0bf!important;
+  border:0!important;
+  border-top:3px solid var(--warm-wood)!important;
+  border-radius:0!important;
+  box-shadow:0 -4px 14px #3c241526,inset 0 1px #fff8e4!important;
+  font-size:12px!important;
+  line-height:1.3!important;
+  max-height:none!important;
+  overflow:visible!important;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment .scene-value-caption {
+  grid-column:1; grid-row:1;
+  margin:0!important;
+  font-size:12px!important; line-height:1.2!important;
+  color:var(--warm-muted)!important; letter-spacing:.08em; white-space:nowrap;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment .furnace-facts {
+  grid-column:2; grid-row:1;
+  display:flex!important; align-items:baseline!important; flex-wrap:wrap!important;
+  gap:2px 7px!important; width:auto!important;
+  margin:0!important; padding:0 98px 0 0!important; border:0!important; min-width:0;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment .furnace-facts b {
+  flex:0 0 auto; font-size:var(--mobile-potency-size,26px)!important; line-height:1.1!important; font-weight:700!important; white-space:nowrap!important;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment .furnace-facts span {
+  font-size:13px!important; line-height:1.2!important; color:#65543e!important; white-space:nowrap!important;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment .success-value-preview {
+  grid-column:1 / -1; grid-row:2;
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 10px;
+  margin:1px 0 6px!important; padding-right:98px;
+  font-size:12px!important; line-height:1.35!important;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment .success-value-sale:empty {
+  display:none;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds:not([hidden]) {
+  grid-column:1 / -1; grid-row:3;
+  display:flex!important; flex-direction:column!important; gap:5px!important;
+  padding-top:7px!important; border-top:1px solid #b89a7088!important; margin:0!important;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds dl {
+  order:1; display:grid!important; grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:4px!important; margin:0!important;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds dl>div {
+  display:flex!important; flex-direction:column!important; align-items:center!important; justify-content:center!important;
+  gap:2px!important; padding:4px 2px 5px!important;
+  background:#fbf1da!important; border:1px solid #c5a676aa!important; border-top:2px solid var(--chance-color,#a17b51)!important;
+  border-radius:2px!important; min-height:0!important;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds [data-outcome=explode] { --chance-color:#a83b28; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds [data-outcome=damage] { --chance-color:#b97336; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds [data-outcome=hold] { --chance-color:#9e8b70; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds [data-outcome=success] { --chance-color:#4d7258; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds [data-outcome=big] { --chance-color:#bd882c; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds [data-outcome=explode] :is(dt,dd) { color:#a83b28!important; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds [data-outcome=damage] dd { color:#955019!important; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds [data-outcome=hold] :is(dt,dd) { color:#52402d!important; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds [data-outcome=success] :is(dt,dd) { color:#3f6b4c!important; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds [data-outcome=big] dd { color:#8c5d19!important; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds dt {
+  font-size:11px!important; line-height:1.2!important; font-weight:500!important;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds dd {
+  font-size:13px!important; line-height:1.2!important; font-weight:700!important;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds .chance-bar {
+  order:2; display:flex!important; height:4px!important; margin:0!important;
+  border-radius:2px!important; background:#d8c39b!important; overflow:hidden;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOddsRisk {
+  order:3; margin:0!important; font-size:11.5px!important; line-height:1.35!important;
+  color:#6e4e34!important; font-weight:600;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOddsProtection {
+  order:4; margin:0!important; font-size:11.5px!important; line-height:1.35!important;
+  color:#46604d!important;
+ }
+}
+@media(max-width:340px) {
+ body.warm-cinnabar-experiment.scene-continuity.scene-spatial[data-work-mode=furnace][data-mobile-furnace-dock="true"] .furnace-judgment:not([hidden]) {
+  padding:8px 8px max(9px,env(safe-area-inset-bottom))!important;
+ }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment .furnace-facts { padding-right:86px!important; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment .success-value-preview { padding-right:86px; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds dl { gap:3px!important; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds dt { font-size:10.5px!important; }
+ body.warm-cinnabar-experiment[data-mobile-furnace-dock="true"] .furnace-judgment #refineOdds dd { font-size:12px!important; }
+}
+
+@media(min-width:651px) {
+ body.warm-cinnabar-experiment.scene-continuity .engine-viewport[data-rite=trace] .furnace-judgment,
+ body.warm-cinnabar-experiment:has(#gameDialogue[open]) .furnace-judgment {
+  display:none!important;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"][data-work-mode="furnace"] .furnace-judgment:not([hidden]) {
+  box-sizing:border-box;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:end;
+  column-gap:8px;
+  row-gap:8px;
+  padding:11px 13px 66px!important;
+  color:#3a281d!important;
+  background:repeating-linear-gradient(0deg,#ffffff09 0 2px,transparent 3px 9px),linear-gradient(180deg,#f7ebd2 0%,#efdcba 100%)!important;
+  border:1px solid #967048!important;
+  border-top:3px solid #8a5a32!important;
+  border-radius:3px!important;
+  box-shadow:0 8px 20px #3a231438,inset 0 1px 0 #fff9ea!important;
+  font-variant-numeric:tabular-nums;
+  overflow:visible!important;
+  max-height:none!important;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment .scene-value-caption {
+  grid-column:1; grid-row:1;
+  margin:0!important;
+  font:700 12px/1.25 "Microsoft YaHei",sans-serif!important;
+  color:#75583c!important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment .furnace-facts {
+  grid-column:1; grid-row:2;
+  margin:0!important; padding:0!important; border:0!important;
+  display:flex!important; align-items:baseline!important; gap:6px!important;
+  flex-wrap:nowrap!important; width:auto!important; min-width:0;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment .furnace-facts b {
+  line-height:1!important; font-weight:800!important; color:#2f1f15!important; white-space:nowrap!important;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment .furnace-facts span {
+  font-size:12px!important; line-height:1.25!important; font-weight:700;
+  color:#674b32!important; background:#e7cfa3; border:1px solid #bc9968;
+  padding:1px 6px; border-radius:2px; white-space:nowrap;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment .success-value-preview {
+  grid-column:2; grid-row:1 / 3;
+  margin:0!important; align-self:end; text-align:right;
+  background:#e8f0e4; border:1px solid #82a288; border-radius:2px;
+  padding:4px 8px; line-height:1.25;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment .success-value-kicker {
+  display:block; font-size:10.5px; font-weight:500; color:#46654e;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment .success-value-delta {
+  display:block; font-size:13px; font-weight:700; color:#315a3c; white-space:nowrap;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment .success-value-sale {
+  display:none!important;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment .furnace-goal-strip:not([hidden]) {
+  grid-column:1 / -1; grid-row:3;
+  display:block;
+  background:#fbf2dd; border:1px solid #cbb084; border-radius:2px; padding:5px 8px;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-goal-top,
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-goal-sale {
+  display:flex; align-items:baseline; justify-content:space-between; gap:6px;
+  font-size:12px; color:#5b432e;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-goal-rem {
+  font-size:11.5px; font-weight:700; color:#8c4829; white-space:nowrap;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-goal-strip[data-met="true"] .furnace-goal-rem {
+  color:#325e3f;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-goal-sale small {
+  font-size:11px; color:#7c6045; white-space:nowrap;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-goal-track {
+  height:5px; background:#dfd0ae; border-radius:99px; overflow:hidden; margin-top:4px;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-goal-track i {
+  display:block; height:100%; background:linear-gradient(90deg,#b87b33,#8f482b);
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-goal-strip[data-met="true"] .furnace-goal-track i {
+  background:linear-gradient(90deg,#628f6f,#3b6b4a);
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds:not([hidden]) {
+  grid-column:1 / -1; grid-row:4;
+  display:flex!important; flex-direction:column!important; gap:5px!important;
+  margin:0!important; padding:0!important;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds [data-outcome="explode"] { --chance-color:#a83b28; }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds [data-outcome="damage"] { --chance-color:#bd7130; }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds [data-outcome="hold"] { --chance-color:#9c896d; }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds [data-outcome="success"] { --chance-color:#497455; }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds [data-outcome="big"] { --chance-color:#c58e28; }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds .chance-bar {
+  order:1; display:flex!important; height:7px!important; margin:0!important;
+  border-radius:2px!important; background:#dcc59b!important; border:1px solid #b59163; overflow:hidden;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds dl {
+  order:2; display:grid!important; grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:4px!important; margin:0!important;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds dl>:is([data-outcome="explode"],[data-outcome="damage"],[data-outcome="hold"]) {
+  grid-column:span 2;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds dl>:is([data-outcome="success"],[data-outcome="big"]) {
+  grid-column:span 3;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds dl>div {
+  display:flex!important; flex-direction:row!important; align-items:center!important; justify-content:flex-start!important;
+  gap:3px!important; padding:4px 5px!important; min-height:0!important;
+  background:#fbf1da!important; border:1px solid #ccb287!important; border-radius:2px!important;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds dl>div::before {
+  content:""; width:5px; height:5px; border-radius:50%; background:var(--chance-color,#9c896d); flex:none;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds dl>div[data-top="true"] {
+  background:#eaf2e5!important; border-color:#638b6d!important; box-shadow:inset 0 0 0 1px #ffffff77;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds dt {
+  font-size:11px!important; line-height:1.25!important; font-weight:500!important;
+  color:#5c4532!important; margin-right:auto!important; white-space:nowrap;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds dd {
+  font-size:11.5px!important; line-height:1.25!important; font-weight:700!important;
+  color:#2f1f15!important; white-space:nowrap;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds [data-outcome="explode"] dd { color:#a83b28!important; }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds [data-outcome="success"] dd { color:#3a6948!important; }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOdds .odds-charge-strip:not([hidden]) {
+  order:3; display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding-top:5px; border-top:1px dashed #c5a67a; font-size:11.5px; color:#634932;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment .odds-charge-pips {
+  display:grid; grid-template-columns:repeat(9,1fr); gap:2px; width:106px; flex:none;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment .odds-pip {
+  display:block; height:5px; border-radius:1px; background:#d6c096; border:1px solid #b5966a;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment .odds-pip.is-on {
+  background:#a84d33; border-color:#7c3420;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"] .furnace-judgment #refineOddsProtection:not([hidden]) {
+  order:4; margin:0!important; font-size:11.5px!important; line-height:1.35!important; font-weight:700!important;
+  color:#395c44!important; background:#e8f0e4; border:1px solid #8aa990; border-radius:2px; padding:3px 7px;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"][data-work-mode="furnace"] .engine-viewport>button.furnace-tray {
+  background:linear-gradient(180deg,#ab563d 0%,#984630 100%)!important;
+  border:1px solid #783a29!important; border-radius:2px!important;
+  box-shadow:inset 0 1px 0 #ffffff2c,0 2px 5px #45241430!important;
+  cursor:pointer;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"][data-work-mode="furnace"] .engine-viewport>button.furnace-tray:after {
+  font:700 15px/1 "Microsoft YaHei",sans-serif!important;
+  letter-spacing:.16em; text-indent:.16em; color:#fff4de!important;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"][data-work-mode="furnace"] .engine-viewport>button.furnace-tray:hover:not(:disabled) {
+  background:linear-gradient(180deg,#b65d43 0%,#a24b33 100%)!important;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"][data-work-mode="furnace"] .engine-viewport>button.furnace-tray:focus-visible {
+  outline:2px solid #ba802f; outline-offset:2px;
+ }
+ body.warm-cinnabar-experiment[data-desktop-furnace-card="true"][data-work-mode="furnace"] .engine-viewport>button.furnace-tray:disabled {
+  opacity:.6; cursor:default;
+ }
+}
+
 /* === dialogue.css === */
 /* ADV layout: scene actors, a low dialogue band, and an independent response list. */
 #gameDialogue.game-dialogue{position:fixed;inset:0;margin:0;width:100vw;height:100dvh;max-width:none;max-height:none;padding:0;border:0;border-radius:0;background:transparent;color:#493727;box-shadow:none;overflow:hidden;font:16px/1.7 "Microsoft YaHei",sans-serif;--dialogue-bottom:54px;--dialogue-gutter:max(32px,calc((100vw - 1120px)/2));--dialogue-box-height:156px}
@@ -3870,6 +4228,10 @@ body:has(#gameDialogue[open]) .furnace-resume {visibility:hidden!important}
 /* Opening-only subtraction: one progression cue, reading modes on demand. */
 #gameDialogue[data-kind=opening] #dialogueAdvance i {display:none}
 #gameDialogue #dialogueReadingTools {display:flex;flex-wrap:wrap;gap:12px;margin:16px 0 4px}
+/* 2C: fill the full-screen dialogue backdrop and let the counter scene occupy the top edge cleanly. */
+body.warm-cinnabar-experiment:has(#gameDialogue[open]){background:#4b3022!important}
+body.warm-cinnabar-experiment:has(#gameDialogue[open][data-view=conversation]) .counter-board.engine-panel{inset:0!important}
+body.warm-cinnabar-experiment:has(#gameDialogue[open]) #gameDialogue.game-dialogue{background:transparent!important}
 
 /* === crafts.css === */
 .market-craft-goods{position:absolute;z-index:3}

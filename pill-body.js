@@ -55,10 +55,11 @@
     const craft=window.AlchemyCrafts?.get(p.craftKind);if(craft){const turn=Math.max(1,Math.min(100,Number(p.turn)||1));return {craftKind:craft.id,appearance:'craft-'+craft.id,nature:'neutral',quality:p.quality||0,turn,key:craft.id+'/'+window.AlchemyCrafts.stage(turn)}}
 
     const nature=p.nature||p.order?.nature||'neutral';
+    const scars=Math.max(0,Math.min(4,Number(p.scars)||0));
     const appearance=palettes.resolve(nature,p.appearance);
     const turn=Math.max(1,Math.min(100,Number(p.turn)||1));
     const quality=Math.max(0,Math.min(4,Number(p.quality)||0));
-    return {nature,appearance,quality,turn,key:appearance+'/'+palettes.frame(appearance,turn)};
+    return {nature,appearance,quality,turn,scars,key:appearance+'/'+palettes.frame(appearance,turn)+'/scars-'+scars};
   }
   function make(p) {
     const d=describe(p);if(cache.has(d.key)){const hit=cache.get(d.key);cache.delete(d.key);cache.set(d.key,hit);return {...hit,description:d};}
@@ -78,6 +79,25 @@
     const frame=palettes.frame(d.appearance,d.turn), sx=frame*SIZE;
     ctx.save();
     ctx.drawImage(im,sx,0,SIZE,SIZE,0,0,SIZE,SIZE);
+    if(d.scars>0){
+      const cracks=[
+        [[90,66],[108,94],[99,118],[118,144]],
+        [[164,74],[148,100],[158,128],[138,158]],
+        [[78,128],[102,140],[114,168]],
+        [[154,148],[172,170],[150,188]]
+      ];
+      ctx.save();
+      ctx.globalCompositeOperation='source-atop';
+      ctx.lineCap='round';ctx.lineJoin='round';
+      for(let i=0;i<d.scars&&i<cracks.length;i++){
+        const pts=cracks[i];
+        ctx.strokeStyle='#ead7b8';ctx.lineWidth=3.8;ctx.globalAlpha=.42;
+        ctx.beginPath();ctx.moveTo(pts[0][0]+1,pts[0][1]+1);for(let k=1;k<pts.length;k++)ctx.lineTo(pts[k][0]+1,pts[k][1]+1);ctx.stroke();
+        ctx.strokeStyle='#4b2a1c';ctx.lineWidth=2.5;ctx.globalAlpha=Math.min(.88,.55+d.scars*.1);
+        ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(let k=1;k<pts.length;k++)ctx.lineTo(pts[k][0],pts[k][1]);ctx.stroke();
+      }
+      ctx.restore();
+    }
     ctx.restore();
     const entry={canvas:c,url:c.toDataURL('image/png'),description:d};cache.set(d.key,entry);if(cache.size>48)cache.delete(cache.keys().next().value);return entry;
   }

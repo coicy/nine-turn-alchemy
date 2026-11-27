@@ -85,16 +85,81 @@ while (c.day < 30) {
       assert.equal(special.specialMatched, true, `Special trait should match for ${special.arcId} stage ${special.arcStage}`);
     }
   }
+  if (c.day === 28 || c.day === 29) {
+    assert.equal(c.orders.some(o => ['special-hua', 'special-jiao', 'special-cui'].includes(o.arcId) && o.arcStage === 4), false, `Day ${c.day} must not trigger Act 4 state-mourning orders early`);
+    assert.equal(c.specialPostscripts.some(p => ['special-jiao', 'special-cui'].includes(p.arcId)), false, `Day ${c.day} must not deliver Day 30 postscripts early`);
+  }
 }
 
 assert.equal(c.day, 30);
-assert.ok(c.specialPostscripts.length >= 3, 'Bai Xiaoqi, Qin Yuchan, and Jiao Banxian deliver Act 4 postscripts by Day 30');
+assert.ok(c.orders.some(o => o.arcId === 'special-hua' && o.arcStage === 4), 'Day 30 schedules Hua Mantang Act 4 after state mourning');
+assert.ok(c.specialPostscripts.length >= 4, 'Bai Xiaoqi, Qin Yuchan, Jiao Banxian, and Cui Baojuan deliver Act 4 postscripts by Day 30');
+assert.ok(c.specialPostscripts.some(p => p.arcId === 'special-jiao'), 'Jiao Banxian Act 4 postscript arrives on Day 30');
+assert.ok(c.specialPostscripts.some(p => p.arcId === 'special-cui'), 'Cui Baojuan Act 4 postscript arrives on Day 30');
 const baiPost = c.specialPostscripts.find(p => p.arcId === 'special-bai');
 assert.ok(baiPost);
 const beforeClaim = c.economy.coins;
 assert.equal(Economy.claimPostscript(c, baiPost.id), true);
 assert.equal(c.economy.coins, beforeClaim + baiPost.bonusCoins);
 assert.equal(Economy.claimPostscript(c, baiPost.id), false, 'Cannot double-claim postscript');
+
+// 3. Verify 2026-11-27 copy & status-branch fixes
+{
+  const cui = Catalog.specialArcs['special-cui'].stages;
+  assert.doesNotMatch(cui[1].letter, /顶缸契|赌徒/);
+  assert.match(cui[1].pending, /顶缸契/);
+  assert.doesNotMatch(cui[2].letter, /顶缸赌徒|独吞赏银/);
+  assert.match(cui[2].pending, /独吞赏银/);
+  assert.doesNotMatch(cui[3].prevCompleted, /半月前/);
+  assert.doesNotMatch(cui[3].prevFailed, /半月前/);
+
+  const bai = Catalog.specialArcs['special-bai'].stages;
+  assert.doesNotMatch(bai[1].traitReaction, /差点炸炉/);
+  assert.match(bai[2].pending, /过几日/);
+  assert.doesNotMatch(bai[2].pending, /下个月/);
+  assert.match(bai[3].prevCompleted, /这趟从省城回来/);
+  assert.match(bai[3].prevFailed, /这趟从省城回来/);
+
+  for (const note of Catalog.randomNotes) {
+    assert.doesNotMatch(note.letter + note.completed, /低血糖/);
+  }
+
+  // Gao Quan: failed Act 1 (empty box) + completed Act 2 -> Act 3 uses receipt wording
+  const gaoLine = Customers.line({ arcId: 'imperial-gao', arcStage: 3, arcPrevOutcome: 'completed', status: 'pending', materials: 3, target: 200 });
+  assert.match(gaoLine, /回执都入了档/);
+  assert.doesNotMatch(gaoLine, /前两回的丹都进了内廷档/);
+
+  // Qin Stage 2 & Jiao Stage 1 distinguish skipped vs failed in specialChronicle
+  const branchTest = Campaign.create();
+  Economy.ensure(branchTest);
+  branchTest.day = 14;
+  branchTest.orders = [
+    { id: 'D14-1', client: '侯府内眷', name: '彻夜亢奋丹', target: 150, materials: 3, status: 'pending', delivered: 0, used: 0, returned: 0, arcId: 'special-qin', arcStage: 2 },
+    { id: 'D14-2', client: '奇石造假客', name: '铜鹤做旧胚', target: 150, materials: 3, status: 'pending', delivered: 0, used: 0, returned: 0, arcId: 'special-jiao', arcStage: 1 }
+  ];
+  Campaign.accept(branchTest, 'D14-1');
+  Campaign.resolve(branchTest, 0, 1, true);
+  Campaign.settle(branchTest);
+  assert.match(branchTest.specialChronicle[0].text, /未能如期交丹/);
+  assert.match(branchTest.specialChronicle[1].text, /本坊未接/);
+
+  const branchTest2 = Campaign.create();
+  Economy.ensure(branchTest2);
+  branchTest2.day = 14;
+  branchTest2.orders = [
+    { id: 'D14-1', client: '侯府内眷', name: '彻夜亢奋丹', target: 150, materials: 3, status: 'pending', delivered: 0, used: 0, returned: 0, arcId: 'special-qin', arcStage: 2 },
+    { id: 'D14-2', client: '奇石造假客', name: '铜鹤做旧胚', target: 150, materials: 3, status: 'pending', delivered: 0, used: 0, returned: 0, arcId: 'special-jiao', arcStage: 1 }
+  ];
+  Campaign.accept(branchTest2, 'D14-2');
+  Campaign.resolve(branchTest2, 0, 1, true);
+  Campaign.settle(branchTest2);
+  const jiaoFail = branchTest2.specialChronicle.find(x => x.arcId === 'special-jiao');
+  const qinSkip = branchTest2.specialChronicle.find(x => x.arcId === 'special-qin');
+  assert.equal(jiaoFail?.status, 'failed');
+  assert.match(jiaoFail.text, /未能如期交丹/);
+  assert.equal(qinSkip?.status, 'skipped');
+  assert.match(qinSkip.text, /本坊未接此单/);
+}
 
 console.log('PASS unit & 30-day simulation: catalog, dialogue graph, 4-act scheduler, trait match bonus, failure branch memory, Act 4 postscripts, and random background notes.');
 

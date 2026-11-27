@@ -27,10 +27,12 @@
     }
     if (g.kind==='craftMaterial') {
       const d=window.AlchemyCrafts.get(g.id);
-      return {name:d.material,price:d.price,status:'库存 '+e.craftStock[g.id]+' 份',disabled:e.craftStock[g.id]>=999,description:'一份炼一件'+d.name+'，炸炉损失器料。',art:UX.art({craftKind:g.id,turn:1})+parcel};
+      const scaled=E.hasTool(e.equipped,'material_scale');
+      const unitPrice=Math.max(1,Math.round(trade.price(c,g.kind,g.id,d.price*(scaled?.85:1))));
+      return {name:d.material,price:unitPrice,status:'库存 '+e.craftStock[g.id]+' 份',disabled:e.craftStock[g.id]>=999,description:'一份炼一件'+d.name+'，炸炉损失器料。'+(scaled?'（工料秤85折，原价'+d.price+'文）':''),art:UX.art({craftKind:g.id,turn:1})+parcel};
     }
     if (g.kind==='furnace') {
-      return {name:'改炉图样',price:E.UPGRADES[e.furnace+1],status:['原炉胆','护胆已改','改良完成'][e.furnace],disabled:e.furnace>=2,description:['改良炉胆，每炉首次受损时，药力损失减半。','改良凝丹部件，受损时保住当前转数，药力损失减半。','两道改炉工序都已完成。'][e.furnace],art:'<i class="sale-plan"><span class="world-stove-diagram"></span></i>'};
+      return {name:'改炉图样',price:E.UPGRADES[e.furnace+1],status:['原炉胆','护胆已改','改良完成'][e.furnace],disabled:e.furnace>=2,description:['改良炉胆，每炉首次受损时，药力损失减半。','改良凝丹部件，受损时保住当前转数，药力损失减半。','两道改炉工序都已完成。'][e.furnace],art:'<img class="sale-tool stove-upgrade-plan" src="assets/warm-cinnabar/props/stove-upgrade-plan.webp" alt="" draggable="false">'};
     }
     const fine=g.id===1;
     return {name:fine?'精选药包':'普通药包',price:trade.price(c,g.kind,g.id,E.PRICES[g.id]),status:'库存 '+e.stock[g.id]+' 包',description:fine?'起炉至少良品。这趟随身带的货，便宜六文。':'一包可自炼一炉。',art:parcel+'<i class="sale-seal">'+(fine?'精':'普')+'</i>'};
@@ -40,14 +42,16 @@
     if (!w||!h) return;
     const experimental=document.body.classList.contains('warm-cinnabar-experiment');
     const scale=experimental?Math.max(w/1600,h/900):Math.max(w/1672,h/941);
-    const edge=experimental?(h-900*scale)/2+692*scale:(h-941*scale)/2+523*scale;
+    const edge=experimental?(h-900*scale)/2+614*scale:(h-941*scale)/2+523*scale;
     const count=wares.children.length, depth=h-edge;
     const twoRows=count>=4 && w<=650 && (w<count*84+24 || depth>=170);
     const rowPadding=wares.classList.contains('sale-objects-only')?14:42;
-    const size=twoRows?Math.min(94,w/(count===4?2:3)*.76,(depth-18)/2-rowPadding):Math.min(104,w/(count+1)*.77,h*.22);
+    const tabletopSpan=144*scale;
+    const size=experimental&&twoRows?Math.min(64,w/(count===4?2:3)*.64,(tabletopSpan-4)/2-(wares.classList.contains('sale-objects-only')?4:18)):twoRows?Math.min(94,w/(count===4?2:3)*.76,(depth-18)/2-rowPadding):Math.min(104,w/(count+1)*.77,h*.22);
     wares.dataset.count=String(count);
     wares.classList.toggle('sale-two-rows',twoRows);
     stage.style.setProperty('--desk-edge',edge+'px');
+    stage.style.setProperty('--sale-scale',scale+'px');
     stage.style.setProperty('--size',Math.max(28,Math.round(size))+'px');
   }
   new ResizeObserver(fit).observe(stage);

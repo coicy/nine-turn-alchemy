@@ -82,3 +82,7 @@ body:has(#gameDialogue[open]) .furnace-resume {visibility:hidden!important}
 /* Opening-only subtraction: one progression cue, reading modes on demand. */
 #gameDialogue[data-kind=opening] #dialogueAdvance i {display:none}
 #gameDialogue #dialogueReadingTools {display:flex;flex-wrap:wrap;gap:12px;margin:16px 0 4px}
+/* 2C: fill the full-screen dialogue backdrop and let the counter scene occupy the top edge cleanly. */
+body.warm-cinnabar-experiment:has(#gameDialogue[open]){background:#4b3022!important}
+body.warm-cinnabar-experiment:has(#gameDialogue[open][data-view=conversation]) .counter-board.engine-panel{inset:0!important}
+body.warm-cinnabar-experiment:has(#gameDialogue[open]) #gameDialogue.game-dialogue{background:transparent!important}

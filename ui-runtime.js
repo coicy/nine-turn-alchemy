@@ -17,7 +17,7 @@
  }
  function submissionSummary(quote) {
   if (!quote.ok) return '';
-  const progress = '交后 ' + Math.round(quote.after) + ' / ' + quote.target;
+  const progress = '交丹后 ' + Math.round(quote.after) + ' / ' + quote.target;
   if (!quote.complete) return progress + ' · 还需 ' + Math.ceil(quote.target - quote.after) + ' 药力';
   return progress + ' · 可交齐 · 到账 ' + quote.reward + ' 铜钱';
  }

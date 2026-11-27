@@ -57,9 +57,9 @@
     nib.setAttribute('transform',`translate(${x} ${y})`);
     const drawing=pointer!==null || keyTimer;
     nib.classList.toggle('is-ready',!drawing&&!waitingForLift);
-    const instruction=waitingForLift ? '抬手换笔。' : drawing ? '沿亮线运笔。' :
-      cursor ? '按住金点，接着描。' : '按住金点，沿亮线拖动。';
-    window.AlchemyFeedback?.setRitualGuide(names[step]+' · '+instruction);
+    const instruction=waitingForLift ? '抬手换下一笔。' : drawing ? '沿亮线运笔。' :
+      cursor ? '按住金点，接着描（第'+(step+1)+'/'+guides.length+'笔）。' : '按住金点沿亮线描，分三笔写完。';
+    window.AlchemyFeedback?.setRitualGuide(pill.ritualActive ? names[step]+'（'+(step+1)+'/'+guides.length+'）· '+instruction : '');
   }
 
   function prepare(p, sealed) {

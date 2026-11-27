@@ -7,10 +7,10 @@
   states:{neutral:{src:sheet,columns:3,rows:1,column,row:0}},
   source:'customers',notes:'现有三人图集；其他状态暂用默认立绘'
  }));
- assets.push({id:'clothier-v61',canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-market/clothier-v3.webp',columns:1,rows:1,column:0,row:0}},source:'OrdinaryCustomersStylePass20261125',notes:'陆绣统一木刻绘本风；静态柜台接入'});
- for(const [id,file] of [['merchant','merchant-v3'],['traveller','scholar-v3'],['herbalist','herbalist-v3']]){const a=assets.find(a=>a.id===id);a.layout='native-v61';a.states.neutral={src:'assets/customers-market/'+file+'.webp',columns:1,rows:1,column:0,row:0};a.source='OrdinaryCustomersStylePass20261125';a.notes='统一木刻绘本风；静态状态共用母稿';}
- assets.push({id:'imperial-gao',canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-market/gao-quan.webp',columns:1,rows:1,column:0,row:0}},source:'SpecialCustomerGao20261125',notes:'高全独立透明立绘；朱漆文书匣为身份锚点'});
- for(const [id,file,note] of [['special-hua','hua-mantang','红蟒戏服与半卸油彩'],['special-bai','bai-xiaoqi','药痕与草药包'],['special-qin','qin-yuchan','深紫侯府锦衣与孝帕'],['special-jiao','jiao-banxian','放大镜、酸水葫芦与做旧丹'],['special-cui','cui-baojuan','青灰吏袍、契书与竹扇']]) assets.push({id,canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-market/'+file+'.webp',columns:1,rows:1,column:0,row:0}},source:'SpecialCustomers20261125',notes:note});
+ assets.push({id:'clothier-v61',canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-market/clothier-v4.webp',columns:1,rows:1,column:0,row:0}},source:'CustomerStyleUnification20261126',notes:'陆绣统一角色母板风格；静态柜台接入'});
+ for(const [id,file] of [['merchant','merchant'],['traveller','scholar'],['herbalist','herbalist']]){const a=assets.find(a=>a.id===id);a.layout='native-v61';a.states.neutral={src:'assets/warm-cinnabar/'+file+'.webp',columns:1,rows:1,column:0,row:0};a.source='CustomerStyleUnification20261126';a.notes='统一角色母板风格；静态状态共用母稿';}
+ assets.push({id:'imperial-gao',canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-market/gao-quan-v4.webp',columns:1,rows:1,column:0,row:0}},source:'CustomerStyleUnification20261126',notes:'高全统一角色母板风格；朱漆文书匣为身份锚点'});
+ for(const [id,file,note] of [['special-hua','hua-mantang-v4','红蟒戏服与半卸油彩'],['special-bai','bai-xiaoqi-v4','药痕与草药包'],['special-qin','qin-yuchan-v4','深紫侯府锦衣与孝帕'],['special-jiao','jiao-banxian-v4','放大镜、酸水葫芦与做旧丹'],['special-cui','cui-baojuan-v4','青灰吏袍、契书与竹扇']]) assets.push({id,canvas:{width:400,height:675},anchor:'bottom-center',layout:'native-v61',states:{neutral:{src:'assets/customers-market/'+file+'.webp',columns:1,rows:1,column:0,row:0}},source:'CustomerStyleUnification20261126',notes:note});
  // Several profiles currently share a placeholder appearance. Identity never depends on image index.
  const profiles=[
   ['clothier-lu','陆绣','坊市行商','clothier-v61','布庄近日要进些远货，替赶路的伙计备些丹药。'],
@@ -74,7 +74,7 @@
        failed:'果然连神仙也没这种药。那我回去拿两根细麻线，把嘴角往鬓角上一吊，台下隔着三丈远，瞧着也是笑的。',
        journalDone:'春台班逃了两个孩子、戏箱被扣。花满堂求去一炉安神定悸丹，好在台上继续维持满脸欢喜。',
        journalMiss:'花满堂来求“能让人笑出来的药”未果，离去时说要用细麻线把嘴角吊在鬓角上登台。'},
-    4:{dayMin:28,dayMax:30,orderName:'闭门润嗓丸',preferredNature:'neutral',traitRule:'unscarred',traitBonus:20,traitLabel:'散班谢礼 +20文',
+    4:{dayMin:30,dayMax:30,orderName:'闭门润嗓丸',preferredNature:'neutral',traitRule:'unscarred',traitBonus:20,traitLabel:'散班谢礼 +20文',
        action:'他脱尽了红蟒与油彩，换回一身素白短打，手里提着一盒寻常点心。',
        letter:'“宫中丧钟已传，全城红绸一夜撤尽。求最寻常的润嗓丸一炉，今晚关门自用。”',
        pending:'宫里那位驾崩了，禁令没人再管，只是我这春台班也散了一半。最后求掌柜一炉最寻常的润嗓丸吧。',
@@ -96,7 +96,7 @@
        pending:'别人怕丹毒，我不怕。掌柜只管把火扇猛些，炼一炉劲儿最大、最冲的丹给我练舌头！',
        active:'白小七趴在柜边，翻看着破账本上密密麻麻的“铅砂三分、舌麻五息”，不时咽口唾沫。',
        completed:'他当柜吞下半颗，鼻血顺着人中淌下也顾不上擦，飞快拿炭笔记账：“入喉如刀割，三息后左肋跳动……好火候！再吃三回，老药工也蒙不了我这根舌头！”',
-       traitReaction:'就是这股差点炸炉的霸道燥劲儿！冲得我天灵盖都发麻，这二十文赏钱您拿好！',
+       traitReaction:'这劲儿直冲天灵盖！掌柜，等我把这一口记到账上，这二十文赏钱您拿好！',
        failed:'掌柜心善不敢卖猛药？那我去铁匠铺抓把铜锈兑酒喝，横竖这身子得赶在月底前练出来。',
        journalDone:'少年白小七主动买走一炉燥烈猛丹，当柜吞下、流着鼻血记下痛感，想把自己练成专替贵人试毒的“尝丹体”。',
        journalMiss:'白小七来求猛火烈丹练身未果，扬言要去抓铜锈兑酒喝，非要在月底前练出辨毒舌。'},
@@ -105,7 +105,7 @@
        prevCompleted:'托掌柜上回那颗猛丹的福，前日我一口尝出江湖骗子丹里掺了三钱铅砂，知县老爷当场收我做专职尝丹郎！',
        prevFailed:'上回没吃着您的正经猛丹，我自己乱吞生朱砂在床上滚了三天，倒也把舌头练出来了，如今进了县衙试丹！',
        letter:'“近夜脏腑常如针扎，然不可用排毒断根之药（恐失耐毒之体）。求暂压腹痛、且绝不令舌苔发木的护脉丹。”',
-       pending:'下个月老爷带我进省城给巡抚试丹，试一次赏十两！肚子疼点不要紧，千万保住我这根舌头的准头——它比十间铺子都值钱！',
+       pending:'过几日老爷带我进省城给巡抚试丹，试一次赏十两！肚子疼点不要紧，千万保住我这根舌头的准头——它比十间铺子都值钱！',
        active:'白小七按着左腹吸了口冷气，却对着柜面反复伸舌头检查舌苔颜色。',
        completed:'腹里那股刀绞的劲儿缓下来了，舌尖还是一样灵！掌柜的，等我进了省城，赏银少不了你的！',
        traitReaction:'又猛又不伤舌苔，只有掌柜这手艺配得出来！拿去，这是知县老爷刚赏我的银子！',
@@ -114,8 +114,8 @@
        journalMiss:'白小七体内金石毒发、腹痛如绞，但因怕普通药物令舌苔发木失了饭碗，最终空手离去。'},
     3:{dayMin:21,dayMax:24,orderName:'遮斑霸道丹',preferredNature:'warm',traitRule:'highRisk',traitBonus:30,traitLabel:'进京搏命赏 +30文',
        action:'他脚蹬体面官靴进门，眼白已泛出金石中毒的青灰色，搭在柜沿的小指止不住地痉挛。',
-       prevCompleted:'省城那几个老试丹官上个月接连暴毙，唯有我扛住了，如今拿到了进京候选“御前尝丹官”的名额！',
-       prevFailed:'省城那几个老试丹官接连暴毙，我硬扛着脏腑绞痛顶了上去，总算拿到进京候选“御前尝丹官”的名额！',
+       prevCompleted:'这趟从省城回来，那几个老试丹官接连暴毙，唯有我扛住了，如今拿到了进京候选“御前尝丹官”的名额！',
+       prevFailed:'这趟从省城回来，那几个老试丹官接连暴毙，我硬扛着脏腑绞痛顶了上去，总算拿到进京候选“御前尝丹官”的名额！',
        letter:'“后日司礼监选拔，求药力极霸道、能将面上青黑毒斑与指尖颤抖强行压下三日之丹。”',
        pending:'只要选上御前尝丹官，直授七品冠带、赐京城宅院！求掌柜最后一炉霸道药，帮我把脸上这层青灰毒斑压下去三天！',
        active:'白小七死死用左手攥住不停发抖的右手小指，眼里全是押上全部身家的狂热。',
@@ -156,7 +156,9 @@
        traitReaction:'好霸道的成色！有这一颗下肚，老侯爷今夜怕是连眼皮都眨不了一下，正够把私印交出来！',
        failed:'掌柜这时候倒胆小起来？横竖圣旨摆在侯府正堂，你不敢炼，自有想发财的丹师敢炼。',
        journalDone:'秦玉蝉搬出《求丹诏》压服侯府大房，今日再度求去高药力亢奋猛丹，逼油尽灯枯的老侯爷交出宗族私印。',
-       journalMiss:'秦玉蝉再来求彻夜不眠之烈丹，本坊未接此单，她恃有求丹圣旨撑腰，转赴他处。'},
+       journalSkipped:'秦玉蝉再来求彻夜不眠之烈丹，本坊未接此单，她恃有求丹圣旨撑腰，转赴他处。',
+       journalFailed:'秦玉蝉再来求彻夜不眠之烈丹，本坊未能如期交丹，她另去寻药。',
+       journalMiss:'秦玉蝉再来求彻夜不眠之烈丹，本坊未能如期交丹，她另去寻药。'},
     3:{dayMin:22,dayMax:25,orderName:'灵前金纸丸',preferredNature:'cool',traitRule:'coolNature',traitBonus:24,traitLabel:'麻衣封口钱 +24文',
        action:'她穿了一身早已裁好、分毫未差的麻布孝衣登门，脸上却红润有光。',
        prevCompleted:'老侯爷连服半月仙丹，昨晚终于在签完最后一份过继文书后“乘鹤西去”了。',
@@ -173,7 +175,7 @@
        title:'靖安侯府的销账口信',
        sender:'侯府当家主母丫鬟',
        body:'侯府的小丫鬟隔着柜台放下一匣三十文茶敬，压低声音传话：\n“我家夫人如今已是侯府当家主母。宫里头传出变故，外头乱得很，夫人昨日给州府捐了五百两‘祈福银’，把先前各处求丹的旧档全销干净了。夫人让我问掌柜一句：您这账册上，想来也只记着我家夫人买过几服温补安神药吧？”',
-       journalDone:'皇帝驾崩前夕，已成侯府主母的秦玉蝉派人送来三十文茶敬与口信，提醒丹坊将往日猛丹旧账一并抹平。'}
+       journalDone:'宫中风声骤紧之际，已成侯府主母的秦玉蝉派人送来三十文茶敬与口信，提醒丹坊将往日猛丹旧账一并抹平。'}
    }
   },
   'special-jiao':{
@@ -189,7 +191,9 @@
        traitReaction:'哎哟！这丹表面还自带两道受损火裂纹，连我拿小锤子敲包浆的工夫都省了，加二十五文手工钱！',
        failed:'掌柜怎的这般死板？连颗硬壳丹都不肯炼，我只好拿铁砂混桐油自己搓一颗了！',
        journalDone:'假古董贩子焦半仙买走一炉硬壳丹，准备拿酸水和蚯蚓泥做旧后埋进废砖窑凿出的“前朝仙洞”，钓京城寻仙使上钩。',
-       journalMiss:'焦半仙来求硬壳丹做假出土仙丹，本坊未接，他嘟囔着要拿铁砂混桐油自己搓丸子埋进土里。'},
+       journalSkipped:'焦半仙来求硬壳丹做假出土仙丹，本坊未接，他嘟囔着要拿铁砂混桐油自己搓丸子埋进土里。',
+       journalFailed:'焦半仙来求硬壳丹做假出土仙丹，本坊未能如期交丹，他嘟囔着要拿铁砂混桐油自己搓丸子埋进土里。',
+       journalMiss:'焦半仙来求硬壳丹做假出土仙丹，本坊未能如期交丹，他嘟囔着要拿铁砂混桐油自己搓丸子埋进土里。'},
     2:{dayMin:15,dayMax:18,orderName:'老坟养胃丹',preferredNature:'neutral',traitRule:'unscarred',traitBonus:25,traitLabel:'巡抚养胃赏 +25文',
        action:'他擦着一脑门冷汗进门，腰间银袋却沉甸甸的，脸上又喜又慌。',
        prevCompleted:'上回那颗假古丹卖了八百两！谁知道买丹的巡抚大人居然真把那颗埋过土的丹吞了——全仗掌柜底子干净，大人吃完没拉肚，反夸“腹中微暖”！',
@@ -214,7 +218,7 @@
        failed:'来不及炼焦的？那我只能买二斤火药去隔壁山头炸个坑了，总不能让禁军真挖着我的砖窑！',
        journalDone:'假仙迹惊动司礼监派三百禁军封山挖掘。焦半仙买走一炉焦黑裂纹丹埋往隔壁山头祸水东引，连夜坐船逃往江南。',
        journalMiss:'三百禁军即将挖穿假仙洞，焦半仙求焦黑废丹嫁祸隔壁山头未成，决定直接买火药炸坑后跑路。'},
-    4:{dayMin:29,dayMax:30,postscript:true,bonusCoins:20,
+    4:{dayMin:30,dayMax:30,postscript:true,bonusCoins:20,
        title:'焦半仙门缝塞入的字条',
        sender:'戴斗笠的过路脚夫',
        body:'开门时门槛下压着一张沾着江南水汽的草纸，底下还压着二十文铜钱：\n“掌柜的，京城那位驾崩啦！三百禁军挖到半山腰接旨撤回，隔壁王善人白白被挖出三口大水塘！如今道家仙洞不值钱喽，我把后山那几个废窑改刻了前朝高僧梵文，明儿起改卖‘佛门万年舍利’。您炉里要是有圆溜溜像舍利子的废丹，记得替我留着！”',
@@ -227,8 +231,8 @@
    stages:{
     1:{dayMin:9,dayMax:12,orderName:'高士驻颜丸',preferredNature:'warm',traitRule:'highTurn',traitBonus:22,traitLabel:'顶缸包装润笔 +22文',
        action:'他穿着洗得发白的青布吏袍，指甲修剪得极干净，慢条斯理展开药笺，用镇纸压平四角。',
-       letter:'“知府大人欲献瑞丹又恐日后获罪，已由下官觅得肺痨赌徒一名签下顶缸契。求驻颜提气之丸，令其两日内面色红润、形如得道高士。”',
-       pending:'不求治好那赌鬼的肺痨，只求后天钦差验人时，他能穿道袍坐稳、两句话之内别咳出声，把知府大人的丹顺顺当当递上去。',
+       letter:'“求驻颜提气之丸，令久病之人在两日内面色红润、语声洪亮。”',
+       pending:'知府大人欲献瑞丹又恐日后获罪，下官已觅得一名肺痨赌徒签下顶缸契。不求治好他的肺痨，只求后天钦差验人时，他能穿道袍坐稳、两句话之内别咳出声，把丹顺顺当当递上去。',
        active:'崔抱卷从袖中抽出两份不同笔迹的契书，对着窗光细致地核对上头的红手印。',
        completed:'有劳掌柜。只要后天他在堂上别咳出声，知府大人的丹就能递上去。至于大后天他咳不咳血……大后天契书都已经归档了。',
        traitReaction:'转数高、成色亮，服下去连将死之人也能透出三分仙气！这二十二文抽成掌柜收好。',
@@ -239,8 +243,8 @@
        action:'他神色依旧平静无波，指尖在柜面上轻轻叩了三下。',
        prevCompleted:'掌柜上回那丹太灵了——那老赌鬼在钦差面前红光满面，宫里头居然真赏了百两黄金！',
        prevFailed:'上回灌了烧刀子推上去，那老赌鬼在钦差面前借酒装疯，宫里头居然当成真高人，赏了百两黄金！',
-       letter:'“那顶缸赌徒见真金白银，竟妄想在钦差复问时自称真丹师独吞赏银。求服下后三日心神木讷、口舌发笨之重镇安神丹。”',
-       pending:'人呐，快死时最守信，一见活路就坏了规矩。明日钦差复问，我得让他变成个“闭口修禅的高人”。',
+       letter:'“求服下后三日心神倦怠、口舌木讷之重镇安神丹。”',
+       pending:'那顶缸赌徒见真金白银，竟妄想在钦差复问时自称真丹师独吞赏银。人呐，快死时最守信，一见活路就坏了规矩。明日钦差复问，我得让他变成个“闭口修禅的高人”。',
        active:'崔抱卷拿小楷笔在空白卷宗上试了试墨，字迹娟秀工整，不带半点烟火气。',
        completed:'掌柜放心，我不害他性命——他活着把赏银交割的手印按完，我那三成佣金才算数。',
        traitReaction:'药力深沉，一丸下肚保管他三日内只会点头不会张嘴！崔某办事最讲信用，这是您的分润。',
@@ -249,8 +253,8 @@
        journalMiss:'替身赌徒企图独吞皇赏，崔抱卷求木讷封口之丹未果，决定交由牢头私下处置。'},
     3:{dayMin:24,dayMax:27,orderName:'新替提气丹',preferredNature:'warm',traitRule:'highTurn',traitBonus:30,traitLabel:'主线挂名定金 +30文',
        action:'他摇着一把新换的湘妃竹扇进门，满面春风，袖袋里又揣了一叠新契书。',
-       prevCompleted:'半月前圣上服丹后心烦腹痛，下旨锁拿献丹人入京问罪。那老赌鬼药劲还没过，木呆呆在囚车里被拉走了，知府大人毫发无伤！',
-       prevFailed:'半月前圣上服丹后心烦腹痛，下旨锁拿献丹人入京问罪。那老赌鬼在木笼里哭天抢地被拉走了，知府大人毫发无伤！',
+       prevCompleted:'上回那药还管用。圣上服丹后心烦腹痛、下旨锁拿献丹人，差役来提人时，那老赌鬼在囚车里连句整话都没说出来。知府大人的名字？卷上压根没有。',
+       prevFailed:'上回没用上您的药，倒也无妨。圣上服丹后心烦腹痛、下旨锁拿献丹人，那老赌鬼在囚车里哭天抢地被拉走了。知府大人的名字？卷上压根没有。',
        letter:'“知府重赏下官，城中另有三位老爷预订下月‘献丹高士’。照头一回的提气方，再备一炉。”',
        pending:'如今我这“顶缸契”成了通州府最稳当的买卖。对了，我看掌柜这几日也在攒好料……怎么，想碰碰宫里的天大富贵？',
        active:'崔抱卷合上折扇，笑眯眯地上下打量着你与身后的丹炉，像在估量一件新货物的价码。',
@@ -259,16 +263,11 @@
        failed:'掌柜自诩清高不肯挂号？那崔某就拭目以待，看掌柜将来献丹时，脖子是不是比知府大人更硬。',
        journalDone:'圣上服丹不适锁拿献丹人，老赌鬼入囚车顶罪，崔抱卷反大发横财。他来为下一批替死鬼备药，并试探本坊是否也要买个替身挂名献丹。',
        journalMiss:'老赌鬼已被囚车押京顶罪，崔抱卷满面春风来订新药并邀本坊合谋挂名，遭拒后冷笑留话而去。'},
-    4:{dayMin:29,dayMax:30,orderName:'乱世安神丸',preferredNature:'neutral',traitRule:'highTurn',traitBonus:25,traitLabel:'旧档封口费 +25文',
-       action:'他不再摇扇子，袖口塞满了刚从县衙刑房抢抄出来的空白路引与死囚卷宗。',
-       letter:'“宫中大变，风向倒转。昔日争相献丹者，今皆急觅脱身死档。求安神丸一炉，压惊自用。”',
-       pending:'宫里那位塌天了！以前是没献丹的怕交不上差，今天起是献过丹的怕被拉去陪葬！掌柜的，我手头还剩半张没填名字的“死囚病故档”，你买不买？',
-       active:'崔抱卷飞快地将几页涉丹旧卷宗撕碎塞进炭盆边，眼神依然冷静得像块冰。',
-       completed:'这世道，皇帝活着时我卖“献丹替身”，皇帝死了我卖“病故假档”。只要官府还认公文，我崔抱卷就永远有饭吃！',
-       traitReaction:'好丹，压得住今夜刑房烧卷宗的烟火气！这张空白路引留给掌柜，说不定哪天你用得上。',
-       failed:'不买算了，城里那些曾上表献祥瑞的老爷们正排着队拿金条换我的死囚档呢。',
-       journalDone:'皇帝驾崩，昔日献丹权贵人人自危。崔抱卷立刻转行倒卖“死囚病故假档”，在朝局崩塌中继续稳赚两头钱。',
-       journalMiss:'皇帝驾崩，崔抱卷携空白死囚病故档登门兜售，在献丹追责的风声中忙着收割下一轮暴利。'}
+    4:{dayMin:30,dayMax:30,postscript:true,bonusCoins:25,
+       title:'刑房塞来的空白档笺',
+       sender:'刑房书办 · 崔抱卷',
+       body:'清晨门缝里塞进一叠刚从县衙刑房抢抄出来的空白路引，底下压着二十五文封口钱：\n“宫里那位塌天了！以前是没献丹的怕交不上差，今天起是献过丹的怕被拉去陪葬！我手头还剩半张没填名字的‘死囚病故档’，掌柜若用得上，随时来寻我。这世道，皇帝活着时我卖‘献丹替身’，皇帝死了我卖‘病故假档’——只要官府还认公文，我崔抱卷就永远有饭吃！”',
+       journalDone:'皇帝驾崩，昔日献丹权贵人人自危。崔抱卷趁乱递来空白路引与口信，立刻转行倒卖“死囚病故假档”，在朝局崩塌中继续稳赚两头钱。'}
    }
   },
   'imperial-gao':{
@@ -299,7 +298,7 @@
        journalMiss:'高全二访催办钦限复验丹未成，收起印泥警告“档册空着一格，不填丹便要填人”。'},
     3:{dayMin:26,dayMax:28,orderName:'无玺急递丹',preferredNature:'warm',traitRule:'highTurn',traitBonus:40,traitLabel:'内廷封口银 +40文',
        action:'他进门时靴边带着宫道上的泥点，递来的急令甚至少盖了一方司礼监骑缝印。',
-       prevCompleted:'前两回的丹都进了内廷档，如今宫里夜夜不熄灯，谁也不知道圣上到底吃了哪一颗。',
+       prevCompleted:'前两回的回执都入了档。至于圣上服过哪一炉，掌柜少问。如今宫里夜夜不熄灯，谁也不知道哪一颗算得上数。',
        prevFailed:'前两回你没交齐，倒也罢了——可如今你的名字早就在征丹册上，交不交丹，你都已经在局里了。',
        letter:'“宫中急递，不经丹会、不走礼部。今日务必见丹一枚，不得向外人道及圣躬近况。”',
        pending:'别问为什么没盖骑缝印，也别问圣上昨日服了谁的药。把这一炉炼完，锁好你的账本。',
@@ -321,7 +320,7 @@
    letter:'字是请邻家孩子代写的，角落画着一枚北境边军的铁箭簇：“求最便宜的祛寒止痛丸。州府下令万寿节前净街，凡缺指断腿的伤退残兵白日不准上主街，免冲撞了太平祥瑞。我入夜从后巷绕道来取。”',
    completed:'老兵用仅剩的三根手指捏住药包塞进怀里：“官爷说咱们这副模样上街不吉利——其实我也觉着，当年在雁门关削掉的两根指头，确实配不上圣上的万寿节。”'},
   {id:'note-qian',author:'常平仓吏 · 钱三石',title:'压着算盘草稿的仓单',
-   letter:'纸角写着半行没擦净的算草“虚报三百石”，正文写：“县仓粮草早被折银办了采丹协济，仓底连耗子都饿搬家了。明日巡按御史查验万寿备荒，求健脾顶饿丸一炉，不求吃饱，只求站着陪笑半日别低血糖晕在仓门口。”',
+   letter:'纸角写着半行没擦净的算草“虚报三百石”，正文写：“县仓粮草早被折银办了采丹协济，仓底连耗子都饿搬家了。明日巡按御史查验万寿备荒，求健脾顶饿丸一炉，不求吃饱，只求站着陪笑半日别晕在仓门口。”',
    completed:'小仓吏把腰带又往里勒了一格：“御史老爷爱听‘鼠雀不惊、颗粒归仓’，我吃下这颗丹站稳了，才好替满城空仓把这出丰年戏念圆。”'},
   {id:'note-hu',author:'南货药商 · 胡四海',title:'盖着半枚贡印的红纸',
    letter:'“如今过城门税卡，正经退烧止泻的黄连没人让运，非得沾个‘仙’字才放行。烦请掌柜将这批好黄连炼作寻常丸药，外头包上印着‘紫霞延年试方’的红纸——对税官说是贵人试药，出了城我再拆散平价卖给城南发烧的穷人。”',

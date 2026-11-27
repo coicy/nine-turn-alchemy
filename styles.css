@@ -51,12 +51,18 @@ body.object-world #refineFeedback.furnace-hint[hidden] {display:none!important}
 }
 .engine-viewport[data-rite=sealed] .ritual-panel :is(.rite-guides,.rite-tip,.rite-lead) {display:none}
 .engine-viewport[data-rite=sealed] #ritualGrid:disabled {
-  opacity:1!important;transform:translate(-50%,-50%) rotate(-6deg) scale(.52);
+  opacity:1!important;transform:translate(-50%,-66%) rotate(-6deg) scale(.44);
   filter:drop-shadow(1px 2px 1px #55361b99);pointer-events:none
 }
 @media(prefers-reduced-motion:no-preference){
   .engine-viewport[data-rite=sealed] #ritualGrid {animation:affix-written-paper .42s ease-in-out}
-  @keyframes affix-written-paper {from{transform:translate(-50%,-50%)}to{transform:translate(-50%,-50%) rotate(-6deg) scale(.52)}}
+  @keyframes affix-written-paper {from{transform:translate(-50%,-50%)}to{transform:translate(-50%,-66%) rotate(-6deg) scale(.44)}}
+}
+@media(max-width:650px){
+  .engine-viewport[data-rite=sealed] #ritualGrid:disabled {
+    height:118px;transform:translate(-50%,-88%) rotate(-6deg) scale(.44);
+  }
+  @keyframes affix-written-paper {from{transform:translate(-50%,-50%)}to{transform:translate(-50%,-88%) rotate(-6deg) scale(.44)}}
 }
 .engine-viewport[data-rite=sealed]::after {content:"";pointer-events:none;position:absolute;z-index:30;left:var(--rite-fire-x);top:var(--rite-fire-y);
   width:var(--rite-fire-w);height:calc(var(--rite-fire-w)*.75);transform:translate(-50%,-50%);border-radius:50%;

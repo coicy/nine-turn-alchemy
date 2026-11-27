@@ -19,7 +19,7 @@
  }
  function traitHint(order){
   const rule=arcStageData(order)?.traitRule;
-  const map={unscarred:'偏好：火候稳妥、无受损裂纹之丹',scarred:'偏好：带受损裂纹或高炉险之做旧胚子',highRisk:'偏好：高炉险、温燥或高转猛火丹',excess:'偏好：药力大幅超额之霸道丹',coolNature:'偏好：寒性泻气、刚好达标之丹',highTurn:'偏好：高转数、卖相端正之丹'};
+  const map={unscarred:'偏好：无受损裂纹之丹',scarred:'偏好：曾受损带裂纹，或炉险曾达35%以上之丹',highRisk:'偏好：炉险曾达35%、温性或达7转以上之丹',excess:'偏好：药力超额≥24，或达8转以上之丹',coolNature:'偏好：寒性之丹，或超额不超过36之丹',highTurn:'偏好：达5转及以上之丹'};
   return rule?map[rule]||'':'';
  }
  function line(order){
@@ -55,7 +55,7 @@
   const bonusStr=traitBonus>0&&order.specialMatchNote?` + ${order.specialMatchNote}`:'';
   return [
    done?'本单完成 · '+profile(order).name:order.status==='failed'?'本单未完成 · 失败免赔':'本单已终止 · 失败免赔',
-   done?`工钱 ${fee} + ${order.excess===undefined?'额外报酬':'超额补价'} ${extra} 铜钱${bonusStr} · 赠留余药 ${order.gifted||0} 包`:`退回余药 ${order.returned||0} 包 · 已有成丹归客`,
+   done?`工钱 ${fee} + ${order.excess===undefined?'额外报酬':'超额补价'} ${extra} 铜钱${bonusStr} · 赠留余药 ${order.gifted||0} 包${order.materialPouchBonus?' + 余料囊 '+order.materialPouchBonus+' 包':''}`:`退回余药 ${order.returned||0} 包 · 丹匣丹药保留`,
    '客户留言：'+line(order)
   ].join('\n');
  }

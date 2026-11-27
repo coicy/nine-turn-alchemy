@@ -7,7 +7,7 @@ const store=new Map(),storage={getItem:k=>store.get(k)||null,setItem:(k,v)=>stor
 function environment(){const outer={require,__dirname,console,auditStorage:storage};vm.createContext(outer);vm.runInContext(base+`;globalThis.env={window,document,el,flush,context};`,outer);return outer.env;}
 let e=environment();const api=()=>e.window.AlchemyGame;
 function click(id){e.el(id).click()}function flush(n){e.flush(n)}function state(){return api().snapshot()}
-click('startButton');assert.equal(api().campaign().orders.length,8);assert.ok(state().target>=60);assert.equal(state().attempt,0);
+click('startButton');assert.ok([3,4].includes(api().campaign().orders.length));assert.ok(state().target>=60);assert.equal(state().attempt,0);
 assert.equal(api().endDay(),false);assert.equal(api().chooseOrder('D1-2'),false,'cannot mix orders');
 click('herbObject');click('fireObject');assert.equal(api().abandonOrder(),false,'pour locks order');flush(720);assert.equal(api().abandonOrder(),false,'live pill must be handled');
 e.context.testApi.getState().pill.value=500;e.context.testApi.render();click('pillVisual');click('trayObject');flush(320);

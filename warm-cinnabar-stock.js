@@ -19,20 +19,32 @@
  function renderTools(){
   const economy=game.campaign()?.economy;
   if(!economy||stock.dataset.filter!=='tools')return;
-  const equipped=equippedIds(economy.equipped),state=game.snapshot();
+  const equipped=equippedIds(economy.equipped),state=game.snapshot(),tp=state.toolProgress||{};
   const owned=TOOL_DEFS.filter(tool=>economy.tools.includes(tool.id));
   if(!owned.some(tool=>tool.id===selectedTool))selectedTool=null;
-  const key=JSON.stringify([owned.map(tool=>tool.id),equipped,state.toolProgress.uses,state.pillEnded,selectedTool]);
+  const key=JSON.stringify([owned.map(tool=>tool.id),equipped,tp.uses,tp.riskRulerConverted,tp.riskRulerBonus,tp.guardCasketUsed,tp.yuanFloorUsed,tp.fissureTriggers,tp.refineCount,state.pillEnded,selectedTool]);
   if(toolsKey===key)return;
   toolsKey=key;
   UX.html(tools,owned.length?'<p class="warm-tool-count"><span>已布置 '+equipped.length+' / '+EQUIP_SLOTS+'</span><span>勾选即生效</span></p><ul>'+owned.map(tool=>{
    const id=UX.esc(tool.id),name=UX.esc(tool.name);
    const placed=equipped.includes(tool.id);
    const expanded=selectedTool===tool.id;
-   const spent=placed&&!state.pillEnded&&['seal','phoenix'].includes(tool.id)&&state.toolProgress.uses[tool.id];
+   const spent=placed&&!state.pillEnded&&['seal','phoenix'].includes(tool.id)&&tp.uses[tool.id];
+   const rulerStatus=placed&&!state.pillEnded&&tool.id==='risk_ruler'
+    ?(tp.riskRulerExpired
+     ?(tp.riskRulerBonus>0?'已达上限失效（30% / 30%）· 待归元 ×'+(1+tp.riskRulerBonus).toFixed(2):'本炉已达上限失效（30% / 30%）')
+     :'已转险 '+((tp.riskRulerConverted||0)*100).toFixed(1).replace(/\.0$/,'')+'% / '+Math.round((tp.riskRulerCap||.3)*100)+'% · 归元 ×'+(1+(tp.riskRulerBonus||0)).toFixed(2))
+    :'';
+   const limitStatus=placed&&!state.pillEnded
+    ?(tool.id==='guard_casket'?(tp.guardCasketUsed?'本炉已用尽':'本炉剩余 1 次护丹')
+     :tool.id==='steady_talisman'?(tp.yuanFloorUsed?'本炉已用尽':'9转归元保底待命')
+     :tool.id==='fissure_cone'?'已触发 '+(tp.fissureTriggers||0)+' / 3 次'
+     :tool.id==='hearth_pin'?(Math.max(0,3-(tp.refineCount||0))?'前3次降险余 '+Math.max(0,3-(tp.refineCount||0))+' 次':'前3次降险已用完')
+     :'')
+    :'';
    return '<li><button type="button" class="warm-tool-pick" data-stock-tool="'+id+'" data-focus-key="tool-detail-'+id+'" aria-expanded="'+expanded+'" aria-controls="warm-tool-'+id+'"><span data-tool-art="'+id+'"></span><span>'+name+'</span></button>'
     +'<label class="warm-tool-check"><input type="checkbox" data-equip-tool="'+id+'" data-focus-key="tool-equip-'+id+'" aria-label="布置'+name+'"'+(placed?' checked':'')+'></label>'
-    +'<div class="warm-tool-detail" id="warm-tool-'+id+'"'+(expanded?'':' hidden')+'><p>'+UX.esc(tool.description)+'</p>'+(spent?'<p>本炉已用尽</p>':'')+'</div>'
+    +'<div class="warm-tool-detail" id="warm-tool-'+id+'"'+(expanded?'':' hidden')+'><p>'+UX.esc(tool.description)+'</p>'+(spent?'<p>本炉已用尽</p>':'')+(rulerStatus?'<p>'+UX.esc(rulerStatus)+'</p>':'')+(limitStatus?'<p>'+UX.esc(limitStatus)+'</p>':'')+'</div>'
     +'<div class="warm-tool-notice" role="alert" hidden></div></li>';
   }).join('')+'</ul>':'<p class="warm-stock-empty">暂无法器</p>');
   window.AlchemyWorldUI.decorateTools(tools);

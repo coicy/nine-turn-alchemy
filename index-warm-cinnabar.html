@@ -104,7 +104,7 @@
             <div class="progress-track" aria-label="订单进度"><div id="turnProgressFill"></div></div>
           </div>
 
-          <div class="order-rule" id="trialRule">继续炼丹提高药力，或收丹入匣。入匣后可从丹匣提交委托或处理丹药；炸丹会消耗一颗原料。</div>
+          <div class="order-rule" id="trialRule">继续炼丹可提高药力。收丹先入匣，交丹才计入本单；炸炉损失本炉药材。</div>
 
           <div class="resource-grid">
             <div class="resource-card">
@@ -116,7 +116,7 @@
               <strong id="bestValueText">24</strong>
             </div>
             <div class="resource-card">
-              <span>累计炸丹</span>
+              <span>累计炸炉</span>
               <strong id="explosionText">0 次</strong>
             </div>
             <div class="resource-card">
@@ -127,7 +127,7 @@
 
           <div class="hint-box">
 
-            <p id="trialHint">下一次炼丹风险不会提前揭示，结果会在炼丹后出现。</p>
+            <p id="trialHint">继续催炼可提高药力与品质，炉前会实时显示五类结果概率；随时可收丹入匣。</p>
           </div>
           <p class="deferred-note">本局为实验订单，数值尚需试玩调整。</p>
         </details>
@@ -139,7 +139,7 @@
               <div class="panel-kicker">当前丹药</div>
               <h2 id="pillName">无名丹</h2>
             </div>
-            <div class="risk-badge" id="riskBadge">炸丹概率</div>
+            <div class="risk-badge" id="riskBadge">炸炉概率</div>
           </div>
 
           <div class="pill-stage" id="pillStage">
@@ -207,7 +207,7 @@
               <strong id="riskResultValue">--</strong>
             </div>
             <div class="risk-detail">
-              <strong id="riskDescription">按当前转数计算，保护结果另行结算</strong>
+              <strong id="riskDescription">五类结果概率以炉前实时显示为准</strong>
             </div>
             <div class="outcome-list" id="outcomeList"></div>
           </div>
@@ -251,7 +251,7 @@
         <section class="opening-launch" aria-label="开始试玩">
           <button class="primary-button opening-start" id="startButton" type="button">开张迎客 <span aria-hidden="true">→</span></button>
 
-        <details class="opening-help"><summary>查看试炉要诀</summary><ol><li>点药包拿起，再点炉口整包投入；也可将药包拖入炉口。</li><li>点击炉膛挥扇催炼，一次一炼。先查看动作前炉险，再决定继续或收丹入匣。</li><li>炼丹结束后点击“收丹入匣”；再从丹匣选择提交委托或处理丹药。提交达到本单目标即可结单。</li></ol></details>
+        <details class="opening-help"><summary>查看试炉要诀</summary><ol><li>点药包拿起，再点炉口整包投入；也可将药包拖入炉口。</li><li>点击炉膛挥扇催炼，一次一炼。先查看动作前炉险，再决定继续或收丹入匣。</li><li>点“收丹入匣”，再选择交丹、出售或寄售。交丹达标即结单。</li></ol></details>
           <div class="opening-consent">
             <label class="telemetry-option"><input type="checkbox" id="introTelemetryEnabled" /> 我已阅读并同意上传匿名试玩记录</label>
             <a class="policy-link" href="data-policy.html" target="_blank" rel="noopener">《试玩数据收集说明与同意》</a>

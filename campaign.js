@@ -1,16 +1,16 @@
 (function(root){
 'use strict';
- const DAYS=30,MAX_REPUTATION=10,economy=root.AlchemyEconomy||(typeof require==='function'?require('./economy.js'):null);
+ const DAYS=30,MAX_REPUTATION=10,INITIAL_REPUTATION=5,economy=root.AlchemyEconomy||(typeof require==='function'?require('./economy.js'):null);
  const catalog=root.AlchemyCustomerCatalog||(typeof require==='function'?require('./customer-catalog.js'):null);
  function clampReputation(value){return Math.max(0,Math.min(MAX_REPUTATION,Math.round(Number(value)||0)));}
  function customerCount(reputation,random){
   const rep=clampReputation(reputation);
   if(rep<=0)return 0;
-  if(rep<4)return random()<0.5?3:4;
-  if(rep<7)return random()<0.5?5:6;
-  return random()<0.5?7:8;
+  if(rep<4)return random()<0.5?2:3;
+  if(rep<7)return random()<0.5?3:4;
+  return random()<0.5?4:5;
  }
- function ordersFor(day,random=Math.random,reputation=MAX_REPUTATION){
+ function ordersFor(day,random=Math.random,reputation=INITIAL_REPUTATION){
  if(!Number.isInteger(day)||day<1||day>DAYS)throw new Error('Invalid day');
  const step=Math.floor((day-1)/5)*24;
  const pool=[
@@ -40,7 +40,7 @@
     for(const order of Array.isArray(c.orders)?c.orders:[])if(Number.isFinite(order.reputationDelta)&&order.reputationScale==null)order.reputationScale=100;
     c.reputationScale=MAX_REPUTATION;
   }
-  c.reputation=Number.isFinite(c.reputation)?clampReputation(c.reputation):MAX_REPUTATION;
+  c.reputation=Number.isFinite(c.reputation)?clampReputation(c.reputation):INITIAL_REPUTATION;
   if(typeof c.endReason!=='string')c.endReason='';
   if(!Array.isArray(c.history))c.history=[];
   if(!Array.isArray(c.orders))c.orders=[];
@@ -64,7 +64,7 @@
    state.lastDay=c.day;
    state.stage=o.arcStage+1;
    c.specialArcs[o.arcId]=state;
-   const entryText=done?stageDef?.journalDone:stageDef?.journalMiss;
+   const entryText=done?stageDef?.journalDone:(o.status==='skipped'?(stageDef?.journalSkipped||stageDef?.journalMiss):(stageDef?.journalFailed||stageDef?.journalMiss));
    if(entryText){
     c.specialChronicle.push({day:c.day,arcId:o.arcId,name:arc.name,role:arc.role,title:arc.title,stage:o.arcStage,status:o.status,matched:!!o.specialMatched,text:entryText});
    }
@@ -132,11 +132,11 @@
   }
   return c;
  }
- function create(){return{day:1,phase:'open',activeId:null,reputation:MAX_REPUTATION,reputationScale:MAX_REPUTATION,endReason:'',orders:ordersFor(1,Math.random,MAX_REPUTATION),history:[],specialArcs:{},specialChronicle:[],specialPostscripts:[],usedRandomNotes:[]};}
+ function create(){return{day:1,phase:'open',activeId:null,reputation:INITIAL_REPUTATION,reputationScale:MAX_REPUTATION,endReason:'',orders:ordersFor(1,Math.random,INITIAL_REPUTATION),history:[],specialArcs:{},specialChronicle:[],specialPostscripts:[],usedRandomNotes:[]};}
  function active(c){ensure(c);return c?.orders.find(o=>o.id===c.activeId&&o.status==='active')||null;}
  function accept(c,id){ensure(c);if(c.reputation<=0){failIfExhausted(c);return false;}if(c.phase!=='open'||active(c))return false;const o=c.orders.find(o=>o.id===id&&o.status==='pending');if(!o)return false;o.status='active';c.activeId=id;return true;}
  function resolve(c,delivered,used,abandon=false){ensure(c);const o=active(c);if(!o||o.status!=='active')return false;const completed=!abandon&&delivered>=o.target;o.delivered=delivered;o.used=used;o.returned=o.materials-used;o.status=completed?'completed':'failed';const before=c.reputation;c.reputation=clampReputation(before+(completed?2:-1));o.reputationDelta=c.reputation-before;o.reputationScale=MAX_REPUTATION;c.activeId=null;recordSpecialOutcome(c,o);failIfExhausted(c);return true;}
- function settle(c){ensure(c);if(c.phase!=='open'||active(c)||false)return false;c.orders.filter(o=>o.status==='pending').forEach(o=>{o.status='skipped';recordSpecialOutcome(c,o);});c.history.push({skipped:c.orders.filter(o=>o.status==='skipped').length,commissionIncome:c.orders.reduce((n,o)=>n+(o.reward||0),0),gifted:c.orders.reduce((n,o)=>n+(o.gifted||0),0),income:c.economy?.earned||0,day:c.day,completed:c.orders.filter(o=>o.status==='completed').length,failed:c.orders.filter(o=>o.status==='failed').length,delivered:c.orders.reduce((n,o)=>n+o.delivered,0),reputation:c.reputation,reputationScale:MAX_REPUTATION,reputationDelta:c.orders.reduce((n,o)=>n+(o.reputationDelta||0)/(o.reputationScale===100?10:1),0)});c.phase=c.day===DAYS?'finished':'settled';if(c.day===DAYS)c.endReason=c.reputation<=0?'reputation':'contract';economy?.settleConsignments?.(c);return true;}
+ function settle(c){ensure(c);if(c.phase!=='open'||active(c)||false)return false;c.orders.filter(o=>o.status==='pending').forEach(o=>{o.status='skipped';recordSpecialOutcome(c,o);});c.history.push({skipped:c.orders.filter(o=>o.status==='skipped').length,commissionIncome:c.orders.reduce((n,o)=>n+(o.reward||0),0),gifted:c.orders.reduce((n,o)=>n+(o.gifted||0),0),pouchBonus:c.orders.reduce((n,o)=>n+(o.materialPouchBonus||0),0),income:c.economy?.earned||0,day:c.day,completed:c.orders.filter(o=>o.status==='completed').length,failed:c.orders.filter(o=>o.status==='failed').length,delivered:c.orders.reduce((n,o)=>n+o.delivered,0),reputation:c.reputation,reputationScale:MAX_REPUTATION,reputationDelta:c.orders.reduce((n,o)=>n+(o.reputationDelta||0)/(o.reputationScale===100?10:1),0)});c.phase=c.day===DAYS?'finished':'settled';if(c.day===DAYS)c.endReason=c.reputation<=0?'reputation':'contract';economy?.settleConsignments?.(c);return true;}
  function next(c){ensure(c);if(c.reputation<=0){failIfExhausted(c);return false;}if(c.phase!=='settled'||c.day>=DAYS)return false;c.day++;c.orders=ordersFor(c.day,Math.random,c.reputation);const penalty=Math.max(0,Math.min(.25,Number(c.economy?.nextOrderTargetPenalty)||0));if(penalty){for(const o of c.orders)o.target=Math.max(24,Math.round(o.target*(1-penalty)));if(c.economy)c.economy.nextOrderTargetPenalty=0;}scheduleSpecialForDay(c);c.phase='open';c.activeId=null;economy?.settleConsignments?.(c);return true;}
  function failIfExhausted(c){
   if(!c||c.reputation>0||c.phase==='finished')return false;
@@ -145,6 +145,6 @@
   if(typeof root.dispatchEvent==='function'&&typeof CustomEvent==='function')root.dispatchEvent(new CustomEvent('alchemy:game-over',{detail:{reason:'reputation',day:c.day,reputation:0}}));
   return true;
  }
- const api={failIfExhausted,DAYS,MAX_REPUTATION,ordersFor,scheduleSpecialForDay,recordSpecialOutcome,create,ensure,active,accept,resolve,settle,next};
+ const api={failIfExhausted,DAYS,MAX_REPUTATION,INITIAL_REPUTATION,ordersFor,scheduleSpecialForDay,recordSpecialOutcome,create,ensure,active,accept,resolve,settle,next};
 if(typeof module!=='undefined')module.exports=api;else root.AlchemyCampaign=api;
 })(typeof window!=='undefined'?window:globalThis);

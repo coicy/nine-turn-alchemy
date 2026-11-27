@@ -3,6 +3,7 @@
 
   // ForgeTax reference: grade = turn - 1; after grade 30 retain terminal risk.
   const BREAK_CURVE=[0,.018,.059,.129,.248,.297,.347,.383,.418,.443,.467,.491,.505,.519,.532,.545,.558,.576,.594,.612,.63,.639,.648,.657,.666,.675,.684,.693,.702,.711,.72];
+  const RITUAL_CHARGE_TARGET = 9, RITUAL_SAFE_STEPS = 5, GREAT_VALUE_MULT = 1.11;
   function qualityAtTurn(turn){return turn>=60?4:turn>=30?3:turn>=15?2:turn>=5?1:0;}
   const QUALITY_NAMES = ["凡品", "良品", "上品", "极品", "绝品"];
   let ORDER_TARGET = 300;
@@ -15,7 +16,7 @@
     const raw = (window.AlchemySaves ? window.AlchemySaves.read() : JSON.parse(window.localStorage?.getItem(SAVE_KEY) || "null"));
     if (campaignRules && raw?.version === 1 && Number.isInteger(raw.campaign?.day) && raw.campaign.day >= 1 && raw.campaign.day <= 30
       && ['open','settled','finished'].includes(raw.campaign.phase)
-      && Array.isArray(raw.campaign.orders) && [0,3,4,5,6,7,8].includes(raw.campaign.orders.length) && Array.isArray(raw.campaign.history)
+      && Array.isArray(raw.campaign.orders) && [0,2,3,4,5,6,7,8].includes(raw.campaign.orders.length) && Array.isArray(raw.campaign.history)
       && raw.campaign.orders.every(o => o && typeof o.id === 'string' && Number.isFinite(o.target) && ['pending','active','completed','failed','skipped'].includes(o.status))
       && Number.isFinite(raw.target) && (raw.target > 0 || (raw.target === 0 && raw.materials === 1)) && [1,3].includes(raw.materials)
       && raw.state?.pill && Number.isFinite(raw.state.delivered) && Number.isInteger(raw.state.attempt)
@@ -36,23 +37,24 @@
   function repricePill() { ensurePricing(); state.pill.value = valueForBase(state.pill.baseValue); }
   function explosionProtection(){
     if(hasTool('seal')&&!uses('seal'))return {source:'seal',outcome:'damage',name:'镇炉印'};
-    if(hasTool('phoenix')&&!uses('phoenix'))return {source:'phoenix',outcome:'hold',name:'返生鼎符（药力持续折损40%）'};
+    if(hasTool('phoenix')&&!uses('phoenix'))return {source:'phoenix',outcome:'hold',name:'返生鼎符（药力×0.6）'};
     return null;
   }
   function refinementProbabilities(){
     const w=window.AlchemyEconomy?.outcomeWeights(campaign?.economy?.equipped)||{big:2,success:12,hold:5,damage:2},total=w.big+w.success+w.hold+w.damage,p=state.riskResult.explode,safeRefines=state.pill.ritualSafe||0,safeRun=safeRefines>0;
+    const rulerShift=safeRun?0:(Number(state.riskResult.rulerShift)||0);
     const rawOutcomes={big:(1-p)*w.big/total,success:(1-p)*w.success/total,hold:(1-p)*w.hold/total,damage:(1-p)*w.damage/total,explode:p};
     const outcomes=safeRun?{big:w.big/total,success:w.success/total,hold:w.hold/total,damage:w.damage/total,explode:0}:{...rawOutcomes};
     const protection=explosionProtection();
     if(!safeRun&&protection){outcomes[protection.outcome]+=p;outcomes.explode=0;}
-    return {outcomes,rawOutcomes,protection,baseExplosion:p,safeRun,safeRefines,available:state.started&&!state.pillEnded&&!state.roundEnded&&state.pill.turn<100};
+    return {outcomes,rawOutcomes,protection,baseExplosion:p,rulerShift,safeRun,safeRefines,available:state.started&&!state.pillEnded&&!state.roundEnded&&state.pill.turn<100};
   }
   function protectedOutcomeLabel(protection){return protection?.outcome==='damage'?'受损':'维持';}
   function riskDescription(probabilities){
     if(!probabilities.available)return '本炉已结束';
-    if(probabilities.safeRun)return `符力自动催炼中，不会炸丹，还剩${probabilities.safeRefines}次`;
-    if(probabilities.protection)return `${probabilities.protection.name}：抽中炸丹时转为${protectedOutcomeLabel(probabilities.protection)}`;
-    return '无护丹效果，抽中炉险将炸丹';
+    if(probabilities.safeRun)return `符火护炉，自动连炼剩余 ${probabilities.safeRefines} 次，期间不会炸炉`;
+    if(probabilities.protection)return `${probabilities.protection.name}：抽中炸炉时转为${protectedOutcomeLabel(probabilities.protection)}`;
+    return '无护炉效果，抽中炉险将炸炉';
   }
   function turnBonus(){return state.pill.toolTurnBonus || 0;}
   function triggerLog(message,tone='good'){state.pill.triggers ||= [];state.pill.triggers.push(message);addLog(message,tone);}
@@ -107,12 +109,23 @@
       day: campaign?.day || 1, orderId: state.orderId || null };
   }
 
-  function randomRisk(turn=state?.pill?.turn||1) {const base=BREAK_CURVE[Math.max(0,Math.min(30,Math.floor(turn)-1))];const pill=state?.pill;let risk=base*(window.AlchemyEconomy?.toolRisk(campaign?.economy?.equipped,pill)||1);if(pill?.riskDampNext){risk*=pill.riskDampNext;pill.riskDampNext=0;}return {explode:Math.max(0,Math.min(.95,risk))};}
+  function randomRisk(turn=state?.pill?.turn||1) {const base=BREAK_CURVE[Math.max(0,Math.min(30,Math.floor(turn)-1))];const pill=state?.pill,E=window.AlchemyEconomy;let risk=base*(E?.toolRisk(campaign?.economy?.equipped,pill)||1);if(pill?.riskDampNext){risk*=pill.riskDampNext;pill.riskDampNext=0;}const raw=Math.max(0,Math.min(.95,risk));const rulerShift=E?.riskRulerShift?.(campaign?.economy?.equipped,pill,raw)||0;return {explode:Math.max(0,raw-rulerShift),rawExplode:raw,rulerShift};}
+
+  function getRitualCharge() {
+    const raw = campaign?.economy ? campaign.economy.ritualCharge : state?.ritualCharge;
+    return Number.isFinite(raw) ? Math.max(0, Math.min(RITUAL_CHARGE_TARGET, Math.floor(raw))) : 0;
+  }
+  function setRitualCharge(n) {
+    const clamped = Math.max(0, Math.min(RITUAL_CHARGE_TARGET, Math.floor(Number(n) || 0)));
+    if (campaign?.economy) campaign.economy.ritualCharge = clamped;
+    if (state) state.ritualCharge = clamped;
+    return clamped;
+  }
 
   function freshPill() {
     const e=campaign?.economy,carry=e?.ashPool||0,buffer=e?.nextRiskBuffer?1:0;
     if(e){e.ashPool=0;e.nextRiskBuffer=0;}
-    return { turn: 1, quality: 0, value: 24, bestTurn: 1, yuanHigh: 24, yuanPool: carry, yuanBonus: 0, yuanNode: 0, ritualSafe: buffer, ritualActive: false, ritualStep: 0, toolUsed:false, damageSoftened:false, refineCount:0, safeStreak:0, riskPeak:0, fissureTriggers:0, guardCasketUsed:false, yuanFloorUsed:false };
+    return { turn: 1, quality: 0, value: 24, bestTurn: 1, yuanHigh: 24, yuanPool: carry, yuanBonus: 0, yuanNode: 0, ritualSafe: buffer, ritualTotal: 0, ritualActive: false, ritualStep: 0, toolUsed:false, damageSoftened:false, refineCount:0, safeStreak:0, riskPeak:0, fissureTriggers:0, guardCasketUsed:false, yuanFloorUsed:false, riskRulerConverted:0, riskRulerBonus:0 };
   }
 
   function createState() {
@@ -125,7 +138,7 @@
       delivered: 0,
       attempt: 0,
       explosions: 0,
-      completedPills: 0, ritualStep: 0, ritualActive: false, ritualSafe: 0,
+      completedPills: 0, ritualStep: 0, ritualActive: false, ritualSafe: 0, ritualCharge: 0,
       bestTurn: 1,
       bestValue: 24,
       riskResult: randomRisk(1),
@@ -172,7 +185,7 @@
         document.querySelector('.order-panel .panel-kicker').textContent='炼丹记录';
         document.querySelector('.target-card').hidden=true;
         document.getElementById('trialRule').hidden=false;
-        document.getElementById('trialRule').textContent='继续炼丹提高药力，或收丹入匣锁定当前价值；之后可从丹匣提交委托或处理丹药。';
+        document.getElementById('trialRule').textContent='继续炼丹可提高药力。收丹先入匣，再选择交丹、出售或寄售。';
       }
     }
     dom.attemptBadge.textContent = `第 ${state.attempt || 1} 炉`;
@@ -185,7 +198,7 @@
     dom.trialHint.textContent = state.roundEnded
       ? (campaign ? (activeOrder ? "本单已结清；可接下一单或回柜台收工。" : "本炉已结束，丹药已留在丹匣中。") : state.delivered >= ORDER_TARGET ? "订单完成！点击重新开始再挑战。" : "原料已用尽，订单未完成。点击重新开始再挑战。")
       : state.pillEnded ? (activeOrder ? "取一包本单药材，投入炉口开炉。" : "取一份储备药材，投入炉口开炉。") : state.pill.turn >= 100 ? "百转已成，收丹入匣即可锁定价值。" : state.pill.ritualSafe > 0
-        ? `正在自动催炼，还剩${state.pill.ritualSafe}次，期间不会炸丹。`
+        ? `符火护炉，自动连炼剩余 ${state.pill.ritualSafe} 次，期间不会炸炉。`
         : `动作前炉险 ${percentage(refinementProbabilities().baseExplosion)}，可继续炼化或收丹入匣。`;
     dom.pillName.textContent = state.pill.craftKind?window.AlchemyCrafts.name(state.pill):`${({warm:'温性',cool:'寒性',neutral:'平性'}[state.pill.nature || activeOrder?.nature || 'neutral'])}灵丹`;
     dom.turnValue.textContent = (TURN_NAMES[state.pill.turn] || String(state.pill.turn));
@@ -211,7 +224,7 @@
     dom.restartButton.disabled = state.busy;
     dom.actionHint.textContent = state.pillEnded
       ? (state.roundEnded ? "本局结束，点击“重新开始”再试一次。" : "本炉已结束，点击“再开一炉”。")
-      : state.pill.turn >= 100 ? "百转成丹，点击“收丹入匣”。" : state.pill.ritualSafe > 0 ? `正在自动催炼，还剩${state.pill.ritualSafe}次，完成后可收丹。` : "炉险随转数上升；收丹入匣可锁定当前价值。";
+      : state.pill.turn >= 100 ? "百转成丹，点击“收丹入匣”。" : state.pill.ritualSafe > 0 ? `符火护炉，自动连炼剩余 ${state.pill.ritualSafe} 次，完成后可收丹。` : "炉险随转数上升；收丹入匣可锁定当前价值。";
     if (state.pillEndReason === "waiting") {
       dom.pillName.textContent = "空炉待药";
       dom.pillValue.textContent = "—";
@@ -238,7 +251,7 @@
     dom.logList.innerHTML=groups.length?groups.map(({entry,messages})=>'<div class="log-entry"><small>'+(entry.day===undefined?'旧炉讯 · 炉次未记录':`第${entry.day}天 · ${entry.source==='commission'?'委托':'炼丹'} · ${entry.attempt?'第'+entry.attempt+'炉':'备料'}`)+'</small>'+messages.map(e=>'<p class="'+e.tone+'">'+e.message+'</p>').join('')+'</div>').join(''):'<p>暂无本次炉讯</p>';
   }
 
-  function setFeedback(message, tone = "", event = "start", value = null, autoStep = 0) {
+  function setFeedback(message, tone = "", event = "start", value = null, autoStep = 0, autoTotal = 0) {
     const titles = { resume:"回炉续炼", "ritual-complete": "敕火符已成", start: "炉火初起", big: "大成功", success: "炼化成功", hold: "火候维持", damage: "丹体受损", explode: "丹散炉息", complete: "百转成丹", collect: "收丹入匣", win: "委托已成", loss: "本局结束" };
     dom.eventTitle.textContent = (state.pill.craftKind?{damage:"造物受损",explode:"炸炉",complete:"百转造物",collect:"收取入匣"}[event]:null)||titles[event]||"炉火流转";
     dom.valueChange.textContent = typeof value === "number" ? (value === 0 ? "价值持平" : `${value > 0 ? "+" : "−"}${formatNumber(Math.abs(value))}`) : value || "";
@@ -248,7 +261,7 @@
     dom.eventBanner.classList.add("flash");
     dom.pillStage.dataset.tone = tone;
     dom.pillStage.dataset.outcome = event;
-    const detail={event,message,value,autoStep,turn:state.pill.turn,quality:state.pill.quality,pillId:state.pill.id||null};
+    const detail={event,message,value,autoStep,autoTotal,turn:state.pill.turn,quality:state.pill.quality,pillId:state.pill.id||null};
     if (typeof CustomEvent !== 'undefined') window.dispatchEvent?.(new CustomEvent('alchemy:feedback', {detail}));
     dom.pillStage.classList.remove("is-feedback");
     void dom.pillStage.offsetWidth;
@@ -267,7 +280,7 @@
 
   function alchemyBaseValue(turn, quality, factor=1) {
     const t=turn-1;
-    return (24+8*t+2*t*t+.08*t*t*t)*(1+quality*.08)*factor;
+    return (24+9*t+2.4*t*t+.09*t*t*t)*(1+quality*.08)*factor;
   }
   function successValuePreview() {
     if(!refinementProbabilities().available || state.busy)return null;
@@ -275,18 +288,24 @@
     const bonusTurns=(hasTool('chain')&&((p.successChain||0)+1)%2===0?1:0)+(p.toolTurnBonus||0);
     next.turn=Math.min(100,p.turn+1+bonusTurns);
     next.quality=Math.max(p.qualityFloor||0,qualityAtTurn(next.turn));
-    next.value=valueForBase(alchemyBaseValue(next.turn,next.quality,p.valueFactor??1));
+    let nextFactor=p.valueFactor??1;
+    const peak=Math.max(p.riskPeak||0,state.riskResult?.explode||0);
+    if(hasTool('fissure_cone')&&peak>=.3&&(p.fissureTriggers||0)<3)nextFactor*=1.05;
+    if(hasTool('slow_plate')&&next.turn>=30)nextFactor*=.92;
+    next.value=valueForBase(alchemyBaseValue(next.turn,next.quality,nextFactor));
     const E=window.AlchemyEconomy,currentSale=E.saleValue(campaign,p),sale=E.saleValue(campaign,next);
-    return {turn:next.turn,value:next.value,increase:next.value-p.value,currentSale,sale,saleIncrease:sale-currentSale};
+    const yuanBonus=Number.isFinite(p.yuanBonus)?p.yuanBonus:0;
+    return {turn:next.turn,value:next.value,grossValue:E.grossValue(next),yuanBonus,increase:next.value-p.value,currentSale,sale,saleIncrease:sale-currentSale};
   }
 
   function applyAlchemy(outcome) {
     const isBigSuccess = outcome === "big";
     const turnGain = (isBigSuccess ? 2 : 1)+turnBonus(outcome);state.pill.toolTurnBonus=0;
     state.pill.turn = Math.min(100, state.pill.turn + turnGain);
+    if(isBigSuccess)state.pill.valueFactor=(state.pill.valueFactor??1)*GREAT_VALUE_MULT;
+    if(hasTool('fissure_cone')&&state.pill.riskPeak>=.3&&state.pill.fissureTriggers<3){state.pill.valueFactor=(state.pill.valueFactor??1)*1.05;state.pill.fissureTriggers++;triggerLog('裂炉锥 · 药力 +5%（'+state.pill.fissureTriggers+'/3）','good');}
     let factor=state.pill.valueFactor??1;
     if(hasTool('slow_plate')&&state.pill.turn>=30)factor*=.92;
-    if(hasTool('fissure_cone')&&state.pill.riskPeak>=.3&&state.pill.fissureTriggers<3){factor*=1.05;state.pill.fissureTriggers++;triggerLog('裂炉锥：高炉险成功，药力额外凝实。','good');}
     state.pill.baseValue=alchemyBaseValue(state.pill.turn,state.pill.quality,factor);
     repricePill();
     state.pill.bestTurn = Math.max(state.pill.bestTurn, state.pill.turn);
@@ -295,7 +314,7 @@
   function applyDamage() {
     ensurePricing();
     const guarded=hasTool('guard_casket')&&!state.pill.guardCasketUsed;
-    if(guarded)state.pill.guardCasketUsed=true;
+    if(guarded){state.pill.guardCasketUsed=true;triggerLog('护胆匣 · 不退转 · 药力 ×0.92','good');}
     if (campaign?.economy?.furnace !== 2&&!guarded) state.pill.turn = Math.max(1, state.pill.turn - 1);
     const softened=campaign?.economy?.furnace>=1&&(campaign.economy.furnace>=2||!state.pill.damageSoftened);
     if(softened)state.pill.damageSoftened=true;
@@ -312,7 +331,10 @@
     const profile = state.riskResult;
     state.pill.riskPeak=Math.max(state.pill.riskPeak||0,profile.explode||0);
     const safeRun = state.pill.ritualSafe > 0;
-    const autoStep = safeRun ? 8 - state.pill.ritualSafe : 0;
+    if (!safeRun) setRitualCharge(getRitualCharge() + 1);
+    const isRitualAuto = safeRun && (state.pill.ritualTotal || 0) > 0;
+    const autoStep = isRitualAuto ? Math.max(1, (state.pill.ritualTotal + 1) - state.pill.ritualSafe) : 0;
+    const autoTotal = isRitualAuto ? state.pill.ritualTotal : 0;
     const explode = safeRun ? false : Math.random() < profile.explode;
     const roll = Math.random();
     const tool=campaign?.economy?.equipped;
@@ -324,24 +346,27 @@
     if (protectedByTool) window.AlchemyGameFeel?.emit('protection', {source:protection.source, outcome:protection.outcome, tier:'large'});
     if(explode&&protection){
       outcome=protection.outcome;
-      if(protection.source==='seal'){useTool('seal');triggerLog('镇炉印挡下炸炉，改为丹体受损。','good');}
-      if(protection.source==='phoenix'){ensurePricing();useTool('phoenix');state.pill.valueFactor=(state.pill.valueFactor??1)*.6;state.pill.baseValue*=.6;repricePill();triggerLog('返生鼎符挡下炸炉：本炉药力持续折损40%。','good');}
+      if(protection.source==='seal'){useTool('seal');triggerLog('镇炉印 · 挡下炸炉转为受损','good');}
+      if(protection.source==='phoenix'){ensurePricing();useTool('phoenix');state.pill.valueFactor=(state.pill.valueFactor??1)*.6;state.pill.baseValue*=.6;repricePill();triggerLog('返生鼎符 · 挡下炸炉转为维持 · 药力 ×0.6','good');}
     }
     if(['big','success','hold'].includes(outcome))state.pill.safeStreak=(state.pill.safeStreak||0)+1;else state.pill.safeStreak=0;
-    if(outcome==='hold'&&hasTool('still_incense')){state.pill.riskDampNext=.72;triggerLog('定息香：维持后的下一次炉险增长降低。','good');}
-    if(hasTool('reverse_lamp')&&(protectedByTool||outcome==='damage')){state.pill.yuanPool=(state.pill.yuanPool||0)+Math.round(before.value*(profile.explode||0)*.35);triggerLog('逆命灯：受护的炉险转为归元余火。','good');}
+    if(outcome==='hold'&&hasTool('still_incense')){state.pill.riskDampNext=.72;triggerLog('定息香 · 下次炸炉率 -28%','good');}
+    if(hasTool('reverse_lamp')&&(protectedByTool||outcome==='damage')){const lampGain=Math.round(before.value*(profile.explode||0)*.35);state.pill.yuanPool=(state.pill.yuanPool||0)+lampGain;triggerLog('逆命灯 · 余火 +'+lampGain,'good');}
     if(outcome==='explode'&&hasTool('ash_box')){
-      campaign.economy.ashPool=Math.round((campaign.economy.ashPool||0)+state.pill.baseValue*.25);
-      triggerLog('灰烬匣：部分基础药力留存到下一炉。','good');
+      ensurePricing();
+      const ashGain=Math.round(state.pill.baseValue*.25);
+      campaign.economy.ashPool=(campaign.economy.ashPool||0)+ashGain;
+      triggerLog('灰烬匣 · 下炉余火 +'+ashGain,'good');
     }
-    if(hasTool('chain')){state.pill.successChain=['big','success'].includes(outcome)?(state.pill.successChain||0)+1:((hasTool('broken_link')&&outcome==='hold')?(state.pill.successChain||0):0);if(state.pill.successChain>0&&state.pill.successChain%2===0){state.pill.toolTurnBonus=(state.pill.toolTurnBonus||0)+1;triggerLog('双仪环：连续两次成丹，额外提升一转。','good');}}
+    if(hasTool('chain')){state.pill.successChain=['big','success'].includes(outcome)?(state.pill.successChain||0)+1:((hasTool('broken_link')&&outcome==='hold')?(state.pill.successChain||0):0);if(state.pill.successChain>0&&state.pill.successChain%2===0){state.pill.toolTurnBonus=(state.pill.toolTurnBonus||0)+1;triggerLog('双仪环 · 当次多升 1 转','good');}}
     // Real damage marks the pill regardless of equipment; scar-school tools and client preferences read this record.
     if(outcome==='damage'&&!protectedByTool){
       state.pill.scars=Math.min(4,(state.pill.scars||0)+1);
-      if(hasTool('repair'))triggerLog('淬火盏：本炉炸炉率相对降低'+(state.pill.scars*15)+'%。','good');
-      if(hasTool('reverse_fire')){state.pill.toolTurnBonus=Math.max(1,state.pill.toolTurnBonus||0);triggerLog('逆火符：本次受损蓄势，下一次成丹额外提升一转。','good');}
+      if(hasTool('repair'))triggerLog('淬火盏 · 本炉炸炉率 -'+(state.pill.scars*15)+'%','good');
+      if(hasTool('reverse_fire')){state.pill.toolTurnBonus=Math.max(1,state.pill.toolTurnBonus||0);triggerLog('逆火符 · 下次成丹多升 1 转','good');}
     }
-    if(outcome!=='explode'){const nextTurn=['big','success'].includes(outcome)?Math.min(100,state.pill.turn+(outcome==='big'?2:1)+turnBonus(outcome)):outcome==='damage'&&campaign?.economy?.furnace!==2?Math.max(1,state.pill.turn-1):state.pill.turn;state.pill.quality=Math.max(state.pill.qualityFloor||0,qualityAtTurn(nextTurn));}
+    const guardCasketActive=outcome==='damage'&&hasTool('guard_casket')&&!state.pill.guardCasketUsed;
+    if(outcome!=='explode'){const nextTurn=['big','success'].includes(outcome)?Math.min(100,state.pill.turn+(outcome==='big'?2:1)+turnBonus(outcome)):outcome==='damage'&&campaign?.economy?.furnace!==2&&!guardCasketActive?Math.max(1,state.pill.turn-1):state.pill.turn;state.pill.quality=Math.max(state.pill.qualityFloor||0,qualityAtTurn(nextTurn));}
 
     let feedback = "";
     let feedbackTone = "";
@@ -369,10 +394,10 @@
       state.explosions += 1;
       state.pillEnded = true;
       state.pillEndReason = "explode";
-      feedback = state.pill.craftKind?"炸炉，器料已损失，未能收取造物。":"炸丹！这颗丹没能留下。";
+      feedback = state.pill.craftKind?"炸炉，器料已损失，未能收取造物。":"炸炉！这颗丹没能留下。";
       feedbackTone = "bad";
       updateRecord();
-      addLog("<strong>炸丹</strong>：当前丹药化为炉灰，本炉结束。", "bad");
+      addLog("<strong>炸炉</strong>：当前丹药化为炉灰，本炉结束。", "bad");
       if (!activeCommission()) state.roundEnded = true;
     }
 
@@ -382,6 +407,21 @@
       feedback = "百转成丹！这颗药力得记入炉谱。";
       feedbackTone = "good";
       addLog(`<strong>百转成丹</strong>：${QUALITY_NAMES[state.pill.quality]}，价值 ${formatNumber(state.pill.value)}，请收丹入匣。`, "good");
+    }
+
+    if (!state.pillEnded && !safeRun && hasTool('risk_ruler') && (Number(profile.rulerShift) || 0) > 0) {
+      const rulerCfg = window.AlchemyEconomy?.RISK_RULER || { ratio: 2, cap: 0.3 };
+      const prevConverted = Math.max(0, Number(state.pill.riskRulerConverted) || 0);
+      const added = Math.min(Math.max(0, rulerCfg.cap - prevConverted), Number(profile.rulerShift) || 0);
+      if (added > 0) {
+        const nextConverted = prevConverted + added;
+        state.pill.riskRulerConverted = nextConverted >= rulerCfg.cap - 1e-6 ? rulerCfg.cap : nextConverted;
+        state.pill.riskRulerBonus = (Number(state.pill.riskRulerBonus) || 0) + added * rulerCfg.ratio;
+        const pct = (added * 100).toFixed(1).replace(/\.0$/, '');
+        const multStr = (1 + state.pill.riskRulerBonus).toFixed(2);
+        const hitCap = state.pill.riskRulerConverted >= rulerCfg.cap - 1e-6;
+        triggerLog('归险尺 · 转险 ' + pct + '% → 归元倍率 ×' + multStr + (hitCap ? '（已达上限，本炉失效）' : ''), 'good');
+      }
     }
 
     if (!state.pillEnded && state.pill.turn < 100) {
@@ -396,8 +436,8 @@
         state.pill.yuanBonus *= ratio;
       }
       if (outcome === 'damage' && !protectedByTool) {
-        if (hasTool('crack_bowl')) { state.pill.yuanPool = (state.pill.yuanPool || 0) + 6; triggerLog('裂纹钵：丹体受损，积累 +6 归元余火。', 'good'); }
-        if (hasTool('scar_ruler')) { const gain = 3 * (state.pill.scars || 1); state.pill.yuanPool = (state.pill.yuanPool || 0) + gain; triggerLog('伤痕尺：按本炉伤痕积累 +' + gain + ' 归元余火。', 'good'); }
+        if (hasTool('crack_bowl')) { state.pill.yuanPool = (state.pill.yuanPool || 0) + 6; triggerLog('裂纹钵 · 余火 +6', 'good'); }
+        if (hasTool('scar_ruler')) { const gain = 3 * (state.pill.scars || 1); state.pill.yuanPool = (state.pill.yuanPool || 0) + gain; triggerLog('伤痕尺 · 余火 +' + gain, 'good'); }
       }
       if (state.pill.value > (state.pill.yuanHigh ?? 24)) {
         let riskYield=profile.explode;
@@ -406,15 +446,24 @@
         if(hasTool('fissure_cone')&&before.value>=180)riskYield*=1.15;
         if(hasTool('scorch_seal')&&state.pill.scars)riskYield*=1+.08*Math.min(4,state.pill.scars);
         if(hasTool('ignite_pearl'))riskYield*=1+.05*Math.min(5,state.pill.safeStreak||0);
-        if(hasTool('risk_ruler'))riskYield*=1.12;
         state.pill.yuanPool += before.value * riskYield;
         state.pill.yuanHigh = state.pill.value;
       } else state.pill.yuanHigh = Math.max(state.pill.yuanHigh ?? 24, state.pill.value);
       const reachedNode = Math.floor(state.pill.turn / 9);
       while (reachedNode > (state.pill.yuanNode ?? 0)) {
-        state.pill.yuanBonus += Math.round(state.pill.yuanPool);
-        state.pill.yuanPool = 0;
-        if(hasTool('steady_talisman')&&!state.pill.yuanFloorUsed&&state.pill.yuanBonus<12){state.pill.yuanBonus=12;state.pill.yuanFloorUsed=true;addLog('<strong>稳元符</strong>：九转归元保底 +12 药力。','good');}
+        const rulerBonus = Number(state.pill.riskRulerBonus) || 0;
+        if (rulerBonus > 0 && state.pill.yuanPool > 0) {
+          const rulerMult = 1 + rulerBonus;
+          const payout = Math.round(state.pill.yuanPool * rulerMult);
+          state.pill.yuanBonus += payout;
+          state.pill.yuanPool = 0;
+          state.pill.riskRulerBonus = 0;
+          triggerLog('归险尺 · 归元药力 ×' + rulerMult.toFixed(2) + '（+' + formatNumber(payout) + '）', 'good');
+        } else {
+          state.pill.yuanBonus += Math.round(state.pill.yuanPool);
+          state.pill.yuanPool = 0;
+        }
+        if(hasTool('steady_talisman')&&!state.pill.yuanFloorUsed&&state.pill.yuanBonus<12){state.pill.yuanBonus=12;state.pill.yuanFloorUsed=true;addLog('<strong>稳元符</strong> · 九转归元保底 +12 药力','good');}
         state.pill.yuanNode = (state.pill.yuanNode ?? 0) + 1;
         addLog(`<strong>${state.pill.yuanNode * 9}转归元</strong>：归元药力累计 +${formatNumber(state.pill.yuanBonus)}，收丹后计入售价。`, 'good');
         window.AlchemyGameFeel?.emit('yuan', {node:state.pill.yuanNode, value:state.pill.yuanBonus, tier:'large'});
@@ -432,9 +481,9 @@
     const visualOutcome = state.pill.turn >= 100 && !state.pillEnded ? "complete" : outcome;
     if (autoStep) window.AlchemyGameFeel?.emit('auto', {step:autoStep, outcome:visualOutcome, remaining:state.pill.ritualSafe, tier:'medium'});
     window.AlchemyGameFeel?.emit('refine', {outcome:visualOutcome, tier:visualOutcome==='explode'||visualOutcome==='complete'?'large':'medium'});
-    setFeedback(feedback, feedbackTone, visualOutcome, outcome === "explode" ? -before.value : state.pill.value - before.value, autoStep);
+    setFeedback(feedback, feedbackTone, visualOutcome, outcome === "explode" ? -before.value : state.pill.value - before.value, autoStep, autoTotal);
     render();
-    if(typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:refine-result',{detail:{outcome,autoStep}}));
+    if(typeof CustomEvent!=='undefined')window.dispatchEvent?.(new CustomEvent('alchemy:refine-result',{detail:{outcome,autoStep,autoTotal}}));
     if (safeRun) {
       if (state.busy) scheduleRitualRefine();
       else document.querySelector('.furnace-fire')?.focus?.({preventScroll:true});
@@ -525,9 +574,9 @@
       state.roundEnded = state.pillEnded;
       telemetry?.finish(playtestSnapshot(), 'win');
     } else {
-      economy.last = '已提交 '+quote.potency+' 药力，累计 '+quote.after+' / '+order.target;
+      economy.last = '本次药力 +'+quote.potency+'，本单累计 '+quote.after+' / '+order.target;
     }
-    addLog('<strong>提交丹药</strong>：'+quote.potency+' 药力，累计 '+quote.after+' / '+order.target+'。','good');
+    addLog('<strong>交丹</strong>：'+quote.potency+' 药力，累计 '+quote.after+' / '+order.target+'。','good');
     setFeedback(quote.complete?'委托已成，工钱已结。':economy.last,'good',quote.complete?'win':'submit');
     render();
     window.dispatchEvent(new CustomEvent('alchemy:inventory-action',{detail:{kind:'submit',id,complete:quote.complete}}));
@@ -566,17 +615,13 @@
       const resumedOldFurnace=!state.pillEnded && campaign.economy?.rulesRevision!==164;
       migrateLoop();migrateLegacyState();ensurePricing();
       state.pill.qualityFloor=state.pill.tier===1?1:0;state.pill.quality=Math.max(state.pill.qualityFloor,qualityAtTurn(state.pill.turn));
-      if (campaign.phase === 'open' && campaign.orders.length === 3) {
-        const extra = campaignRules.ordersFor(campaign.day, Math.random, campaign.reputation);
-        campaign.orders.push(...extra.slice(3));
-      }
       ORDER_TARGET = saved.target; MAX_PILLS = saved.materials; saved = null;
       document.body.dataset.screen = "playing"; dom.introModal.classList.add("hidden");
       if (!state.roundEnded) telemetry?.begin(playtestSnapshot());
       setFeedback(resumedOldFurnace ? "旧炉药力已保留。可立即收丹，继续炼化按当前炉险结算。" : "已回到上次停炉的位置。", "good");
       window.dispatchEvent?.(new Event("alchemy:order")); render();
       if (state.pill.ritualActive) beginRitual(true);
-      else if (state.pill.ritualSafe > 0 && !state.pillEnded && !state.roundEnded && state.pill.turn < 100) {
+      else if (state.pill.ritualSafe > 0 && (state.pill.ritualTotal || 0) > 0 && !state.pillEnded && !state.roundEnded && state.pill.turn < 100) {
         startRitualRefines();
       } else if (ritualDue()) beginRitual();
       return;
@@ -616,8 +661,8 @@
   dom.startButton.addEventListener("click", startGame);
   dom.restartButton.addEventListener("click", startGame);
   function ritualDue() {
-    const {refineSerial, ritualSafe} = state.pill;
-    return !state.pillEnded && state.pill.turn < 100 && ritualSafe === 0 && refineSerial > 0 && refineSerial % 9 === 0;
+    const {ritualSafe} = state.pill;
+    return !state.pillEnded && state.pill.turn < 100 && ritualSafe === 0 && getRitualCharge() >= RITUAL_CHARGE_TARGET;
   }
   // Each timeout settles one result. The saved remainder always describes the next turn.
   function scheduleRitualRefine() {
@@ -631,7 +676,7 @@
     window.AlchemyRitualBrush.seal(state.pill);
     dom.ritualPanel.classList.add('hidden');
     state.busy = true;
-    setFeedback(`自动催炼还剩${state.pill.ritualSafe}次，期间不会炸丹。`, 'good', 'ritual-complete');
+    setFeedback(`符火护炉，自动连炼剩余 ${state.pill.ritualSafe} 次，期间不会炸炉。`, 'good', 'ritual-complete');
     render();
     scheduleRitualRefine();
   }
@@ -648,6 +693,8 @@
       // Logic-only harnesses do not mount the brush UI; keep the simulation testable.
       pill.ritualActive = false;
       pill.ritualSafe = 0;
+      pill.ritualTotal = 0;
+      setRitualCharge(0);
       return;
     }
     pill.ritualActive = true;
@@ -659,7 +706,9 @@
     window.AlchemyRitualBrush.begin(pill, persistProgress, () => {
       if (state.pill !== pill || !pill.ritualActive || state.pillEnded) return;
       pill.ritualActive = false;
-      pill.ritualSafe = 7;
+      setRitualCharge(0);
+      pill.ritualSafe = RITUAL_SAFE_STEPS;
+      pill.ritualTotal = RITUAL_SAFE_STEPS;
       window.AlchemyGameFeel?.emit('ritual-complete', {tier:'large'});
       startRitualRefines();
     });
@@ -670,14 +719,14 @@
     if(window.AlchemyDialogue?.blocking)return false;
     if(!state.started||state.busy||state.pillEnded||state.pill.ritualActive)return false;
     ensurePricing();
-    if(!state.pill.craftKind&&hasTool('breath_pearl')&&(state.pill.yuanPool||0)>0){const converted=Math.min(18,Math.max(1,Math.round(state.pill.yuanPool*.2)));state.pill.baseValue+=converted;state.pill.yuanPool=0;repricePill();triggerLog('纳息珠：收丹前将未兑现炉险转为 +'+converted+' 基础药力。','good');}
+    if(!state.pill.craftKind&&hasTool('breath_pearl')&&(state.pill.yuanPool||0)>0){const converted=Math.min(18,Math.max(1,Math.round(state.pill.yuanPool*.2)));state.pill.baseValue+=converted;state.pill.yuanPool=0;repricePill();triggerLog('纳息珠 · 余火转药力 +'+converted,'good');}
     lockPillIdentity();const before=playtestSnapshot(),o=campaignRules.active(campaign);
     if(!window.AlchemyEconomy.storePill(campaign,state.pill,o)){setFeedback('丹匣记录异常，炉内丹药已保留。','bad');render();return false;}
-    if(!state.pill.craftKind&&hasTool('pattern_tray')&&(state.pill.scars||0)>0&&!state.pill.patternTrayUsed){state.pill.patternTrayUsed=true;campaign.economy.nextRiskBuffer=1;triggerLog('回纹托：带伤收丹，下一炉获得一次缓冲。','good');}
+    if(!state.pill.craftKind&&hasTool('pattern_tray')&&(state.pill.scars||0)>0&&!state.pill.patternTrayUsed){state.pill.patternTrayUsed=true;campaign.economy.nextRiskBuffer=1;triggerLog('回纹托 · 下炉首炼免炸炉','good');}
     const stored=campaign.economy.pills.find(p=>p.id===state.pill.id);
-    if(stored)stored.refinement={version:1,pill:JSON.parse(JSON.stringify(state.pill)),nextRisk:state.riskResult.explode,equipped:window.AlchemyEconomy.equippedIds(campaign.economy.equipped)};
+    if(stored)stored.refinement={version:1,pill:JSON.parse(JSON.stringify(state.pill)),nextRisk:state.riskResult.explode,nextRulerShift:Number.isFinite(state.riskResult.rulerShift)?state.riskResult.rulerShift:0,equipped:window.AlchemyEconomy.equippedIds(campaign.economy.equipped)};
     const id=state.pill.id;state.pillEnded=true;state.pillEndReason='collect';state.roundEnded=o? !activeCommission() : true;
-    telemetry?.record('collect',playtestSnapshot(),{before,decisionMs:Date.now()-decisionSince});addLog('<strong>收丹入匣</strong>：药力 '+formatNumber(state.pill.value+(state.pill.yuanBonus||0))+'，可从丹匣提交委托或处理丹药。','good');setFeedback(state.pill.craftKind?'造物已收纳，可保留或出售。':'丹药已收入丹匣，可选择提交委托或处理丹药。','good','collect');render();window.AlchemyGameFeel?.emit('collect',{id,tier:'medium'});if(typeof CustomEvent!=='undefined'){window.dispatchEvent(new CustomEvent('alchemy:pill-stored',{detail:{stored:true,id}}));window.dispatchEvent(new CustomEvent('alchemy:world-collect',{detail:{stored:true,id}}));}return true;
+    telemetry?.record('collect',playtestSnapshot(),{before,decisionMs:Date.now()-decisionSince});addLog('<strong>收丹入匣</strong>：药力 '+formatNumber(state.pill.value+(state.pill.yuanBonus||0))+'，可在丹匣选丹交付、出售或寄售。','good');setFeedback(state.pill.craftKind?'造物已收纳，可保留或出售。':o?'丹药已收入丹匣。交丹后才计入委托。':'丹药已收入丹匣，可出售或寄售。','good','collect');render();window.AlchemyGameFeel?.emit('collect',{id,tier:'medium'});if(typeof CustomEvent!=='undefined'){window.dispatchEvent(new CustomEvent('alchemy:pill-stored',{detail:{stored:true,id}}));window.dispatchEvent(new CustomEvent('alchemy:world-collect',{detail:{stored:true,id}}));}return true;
   }
   dom.collectButton.addEventListener("click", collectPill);
   function canReturnPill(id) {
@@ -700,7 +749,7 @@
     const e=campaign.economy,index=e.pills.findIndex(p=>p.id===id),stored=e.pills[index],clone=p=>JSON.parse(JSON.stringify(p));
     let history=stored.refinement;
     // The last collected pill in an older save still has its full furnace record.
-    if(!history&&state.pill.id===id&&state.pillEndReason==='collect')history={version:1,pill:state.pill,nextRisk:state.riskResult.explode,equipped:window.AlchemyEconomy.equippedIds(e.equipped)};
+    if(!history&&state.pill.id===id&&state.pillEndReason==='collect')history={version:1,pill:state.pill,nextRisk:state.riskResult.explode,nextRulerShift:Number.isFinite(state.riskResult.rulerShift)?state.riskResult.rulerShift:0,equipped:window.AlchemyEconomy.equippedIds(e.equipped)};
     const exact=history?.version===1&&history.pill?.id===id&&history.pill.turn===stored.turn;
     let pill;
     if(exact)pill=clone(history.pill);
@@ -709,21 +758,21 @@
       pill={turn:stored.turn,quality:stored.quality,value:stored.value,baseValue:Number.isFinite(stored.baseValue)?stored.baseValue:stored.value,valueFactor:Math.max(.001,Math.min(1,(Number.isFinite(stored.baseValue)&&stored.baseValue>0?stored.baseValue:stored.value)/alchemyBaseValue(stored.turn,stored.quality||0))),bestTurn:stored.turn,
         yuanHigh:Number.isFinite(stored.baseValue)?stored.baseValue:stored.value,yuanPool:0,yuanNode:Math.floor(stored.turn/9),yuanBonus:stored.yuanBonus||0,
         ritualSafe:0,ritualActive:false,ritualStep:0,refineSerial:0,refineCount:0,toolUsed:true,toolUses:{seal:1,phoenix:1},
-        damageSoftened:true,guardCasketUsed:true,yuanFloorUsed:true,patternTrayUsed:true,fissureTriggers:3,safeStreak:0,successChain:0,scars:stored.scars||0,riskPeak:stored.riskPeak||0};
+        damageSoftened:true,guardCasketUsed:true,yuanFloorUsed:true,patternTrayUsed:true,fissureTriggers:3,safeStreak:0,successChain:0,scars:stored.scars||0,riskPeak:stored.riskPeak||0,riskRulerConverted:window.AlchemyEconomy?.RISK_RULER?.cap??.3,riskRulerBonus:0};
     }
     // Inventory is authoritative for identity and visible values, including material advances.
     for(const key of ['id','turn','quality','value','nature','appearance','materialAdvance','tier'])if(stored[key]!==undefined)pill[key]=stored[key];
     if(!Number.isFinite(pill.baseValue))pill.baseValue=stored.value;
     if(!Number.isFinite(pill.valueFactor)||pill.valueFactor<=0)pill.valueFactor=1;
     pill.yuanBonus=Number.isFinite(stored.yuanBonus)?stored.yuanBonus:0;
-    pill.ritualActive=false;pill.ritualSafe=0;delete pill.craftKind;delete pill.craftCost;
+    pill.ritualActive=false;pill.ritualSafe=0;pill.ritualTotal=0;delete pill.craftKind;delete pill.craftCost;
     const order=activeCommission();
     e.pills.splice(index,1);state.pill=pill;state.pillEnded=false;state.pillEndReason='';state.roundEnded=false;state.busy=false;state.craftKind=null;
     state.materialNature=pill.nature||'neutral';state.materialTier=pill.tier||0;
     if(!order){ORDER_TARGET=0;MAX_PILLS=1;state.orderId=null;state.attempt=1;state.delivered=0;state.collected=[];}
     const equipped=window.AlchemyEconomy.equippedIds(e.equipped);
     state.riskResult=exact&&Number.isFinite(history.nextRisk)&&history.nextRisk>=0&&history.nextRisk<=.95&&JSON.stringify(equipped)===JSON.stringify(history.equipped)
-      ?{explode:history.nextRisk}:randomRisk();
+      ?{explode:history.nextRisk,rulerShift:Number.isFinite(history.nextRulerShift)?history.nextRulerShift:0}:randomRisk();
     decisionSince=Date.now();updateRecord();
     addLog('<strong>回炉续炼</strong>：'+pill.turn+'转丹药回到炉中，药力 '+formatNumber(pill.value+(pill.yuanBonus||0))+'，未消耗新药材。','good');
     setFeedback('丹药已回炉，可继续炼制。','good','resume',0);render();
@@ -748,12 +797,20 @@
     }
   });
 
+  function applyFailedContract(o){
+    if(!o||o.status!=='failed'||!window.AlchemyEconomy?.hasTool(campaign?.economy?.equipped,'failed_contract'))return;
+    const refund=Math.max(0,Math.floor((o.returned||0)*4));
+    if(refund>0)window.AlchemyEconomy.credit(campaign,refund,'败炉契返还',o.id);
+    campaign.economy.failedContractRelief=(campaign.economy.failedContractRelief||0)+1;
+    campaign.economy.nextOrderTargetPenalty=Math.min(.25,(campaign.economy.nextOrderTargetPenalty||0)+.1);
+    campaign.economy.last='败炉契：'+(refund>0?'返还 '+refund+' 铜钱，':'')+'次日委托目标降10%（累计降'+Math.round(campaign.economy.nextOrderTargetPenalty*100)+'%）。';
+    addLog('<strong>败炉契</strong> · '+(refund>0?'未用客料返 '+refund+' 铜钱，':'')+'次日委托目标降10%（上限25%）。','good');
+  }
+
   function settleOrder() {
     if(!campaign)return;const o=campaignRules.active(campaign);if(!o)return;
     campaignRules.resolve(campaign,state.delivered,state.attempt);
-    if(o.status==='failed'&&window.AlchemyEconomy?.hasTool(campaign.economy.equipped,'failed_contract')){
-      const refund=Math.max(0,Math.floor((o.returned||0)*4));campaign.economy.coins+=refund;campaign.economy.failedContractRelief=(campaign.economy.failedContractRelief||0)+1;campaign.economy.nextOrderTargetPenalty=Math.min(.25,(campaign.economy.nextOrderTargetPenalty||0)+.1);campaign.economy.last='败炉契：返还 '+refund+' 铜钱，下一日委托目标降低10%。';
-    }
+    applyFailedContract(o);
     window.AlchemyEconomy?.commission(campaign,o,state.collected);
   }
   function chooseOrder(id) {
@@ -785,7 +842,9 @@
   function abandonOrder() {
     if(window.AlchemyDialogue?.blocking)return false;
     if (!campaign || state.busy || window.AlchemyInteractionBusy || !state.pillEnded || state.roundEnded) return false;
+    const o = activeCommission();
     if (!campaignRules.resolve(campaign, state.delivered, state.attempt, true)) return false;
+    applyFailedContract(o);
     state.roundEnded = true; telemetry?.finish(playtestSnapshot(), "abandoned");
     setFeedback("本单已终止，未用本单料已退还，丹匣丹药保留。", "", "loss"); window.AlchemyGameFeel?.emit('loss',{tier:'medium'}); render(); return true;
   }
@@ -874,11 +933,17 @@
   }
   window.AlchemyGame = { merchantAction, canReturnPill, returnPill, successValuePreview, submit:submitPill,previewSubmission,previewConsignment,canReplaceEquipment, replaceEquipment, canLeave:canLeaveMainMenu, saveNow, refinementProbabilities, valueForBase, load: startNewPill, refine, collect: collectPill, riskAtTurn:t=>randomRisk(t).explode, economyAction, chooseOrder, endDay, nextDay, abandonOrder,
     campaign: () => campaign ? JSON.parse(JSON.stringify(campaign)) : null,
-    snapshot: () => ({ ...playtestSnapshot(), ...(state.pill.craftKind?{craftKind:state.pill.craftKind,craftCost:state.pill.craftCost}:{}), materialAdvance:state.pill.materialAdvance||0, nature:state.pill.nature||(campaign?campaignRules.active(campaign)?.nature:null)||'neutral',tier:state.pill.tier||0,pillId:state.pill.id||null,commission:activeCommission(), ...(state.pill.appearance?{appearance:state.pill.appearance}:{}), started: state.started,
-    busy: state.busy, ritualActive: !!state.pill.ritualActive, ritualRemaining: state.pill.ritualSafe || 0, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
-    endReason: state.pillEndReason, remaining: campaign&&campaignRules.active(campaign)?.status==='active' ? Math.max(0,MAX_PILLS-state.attempt) : 0, target: ORDER_TARGET,
-    toolProgress:{uses:{...state.pill.toolUses},scars:state.pill.scars||0,chain:state.pill.successChain||0,valueFactor:state.pill.valueFactor??1,triggers:[...(state.pill.triggers||[])]},toolUsed:!!state.pill.toolUsed,campaignEnabled: !!campaign, collected: state.collected,
-    order: campaign ? campaignRules.active(campaign) : null }) };
+    snapshot: () => {
+      const E=window.AlchemyEconomy,rulerCfg=E?.RISK_RULER||{cap:.3};
+      const rulerConverted=Math.max(0,Number(state.pill.riskRulerConverted)||0);
+      const yuanBonus=Number.isFinite(state.pill.yuanBonus)?state.pill.yuanBonus:0;
+      const grossValue=E?.grossValue?E.grossValue(state.pill):Math.round(state.pill.value+yuanBonus);
+      return { ...playtestSnapshot(), yuanBonus, yuanPool:Math.round(state.pill.yuanPool||0), grossValue, scars:state.pill.scars||0, ...(state.pill.craftKind?{craftKind:state.pill.craftKind,craftCost:state.pill.craftCost}:{}), materialAdvance:state.pill.materialAdvance||0, nature:state.pill.nature||(campaign?campaignRules.active(campaign)?.nature:null)||'neutral',tier:state.pill.tier||0,pillId:state.pill.id||null,commission:activeCommission(), ...(state.pill.appearance?{appearance:state.pill.appearance}:{}), started: state.started,
+      busy: state.busy, ritualActive: !!state.pill.ritualActive, ritualRemaining: state.pill.ritualSafe || 0, ritualTotal: state.pill.ritualTotal || 0, ritualCharge: getRitualCharge(), ritualChargeTarget: RITUAL_CHARGE_TARGET, pillEnded: state.pillEnded, roundEnded: state.roundEnded,
+      endReason: state.pillEndReason, remaining: campaign&&campaignRules.active(campaign)?.status==='active' ? Math.max(0,MAX_PILLS-state.attempt) : 0, target: ORDER_TARGET,
+      toolProgress:{uses:{...state.pill.toolUses},scars:state.pill.scars||0,chain:state.pill.successChain||0,valueFactor:state.pill.valueFactor??1,triggers:[...(state.pill.triggers||[])],guardCasketUsed:!!state.pill.guardCasketUsed,yuanFloorUsed:!!state.pill.yuanFloorUsed,fissureTriggers:state.pill.fissureTriggers||0,refineCount:state.pill.refineCount||0,riskRulerConverted:rulerConverted,riskRulerBonus:Number(state.pill.riskRulerBonus)||0,riskRulerCap:rulerCfg.cap,riskRulerExpired:rulerConverted>=rulerCfg.cap-1e-6},toolUsed:!!state.pill.toolUsed,campaignEnabled: !!campaign, collected: state.collected,
+      order: campaign ? campaignRules.active(campaign) : null };
+    } };
   state = createState();
   if (saved) dom.startButton.textContent = "继续经营";
   if (telemetry) {
